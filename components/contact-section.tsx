@@ -44,8 +44,8 @@ export function ContactSection() {
         }}
       />
 
-      <div className="flex min-h-screen relative z-10">
-        <div className="w-1/2 bg-black flex items-center justify-center p-12">
+      <div className="flex flex-col lg:flex-row min-h-screen relative z-10">
+        <div className="w-full lg:w-1/2 bg-black flex items-center justify-center p-8 lg:p-12">
           <div className="w-full max-w-md">
             <div className="mb-8">
               <h2 className="text-4xl font-bold text-white mb-2">Let's Talk</h2>
@@ -126,7 +126,7 @@ export function ContactSection() {
           </div>
         </div>
 
-        <div className="w-1/2 bg-gray-50 relative flex items-center justify-center">
+        <div className="w-full lg:w-1/2 bg-gray-50 relative flex items-center justify-center">
           {/* Brand asset as decorative element */}
           <div
             className="absolute inset-0 opacity-20 bg-cover bg-center bg-no-repeat"

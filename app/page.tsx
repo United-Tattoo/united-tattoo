@@ -6,6 +6,7 @@ import { ArtistsSection } from "@/components/artists-section"
 import { ServicesSection } from "@/components/services-section"
 import { ContactSection } from "@/components/contact-section"
 import { Footer } from "@/components/footer"
+import { MobileBookingBar } from "@/components/mobile-booking-bar"
 
 export default function HomePage() {
   return (
@@ -26,6 +27,7 @@ export default function HomePage() {
         <ContactSection />
       </div>
       <Footer />
+      <MobileBookingBar />
     </main>
   )
 }

@@ -124,18 +124,18 @@ export function ArtistsGrid() {
         </div>
 
         {/* Artists Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {filteredArtists.map((artist) => (
             <Card key={artist.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
-              <div className="md:flex">
+              <div className="flex flex-col h-full">
                 {/* Artist Image */}
-                <div className="relative md:w-1/3 h-64 md:h-auto overflow-hidden">
+                <div className="relative w-full h-48 sm:h-56 overflow-hidden">
                   <img
                     src={artist.image || "/placeholder.svg"}
                     alt={artist.name}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                   />
-                  <div className="absolute top-4 left-4">
+                  <div className="absolute top-3 left-3">
                     <Badge variant={artist.availability === "Available" ? "default" : "secondary"}>
                       {artist.availability}
                     </Badge>
@@ -143,43 +143,43 @@ export function ArtistsGrid() {
                 </div>
 
                 {/* Artist Info */}
-                <CardContent className="md:w-2/3 p-6">
-                  <div className="flex items-start justify-between mb-4">
+                <CardContent className="p-4 flex-grow flex flex-col">
+                  <div className="flex items-start justify-between mb-3">
                     <div>
-                      <h3 className="font-playfair text-2xl font-bold mb-1">{artist.name}</h3>
-                      <p className="text-primary font-medium">{artist.specialty}</p>
+                      <h3 className="font-playfair text-xl font-bold mb-1">{artist.name}</h3>
+                      <p className="text-primary font-medium text-sm">{artist.specialty}</p>
                     </div>
-                    <div className="flex items-center space-x-1 text-sm">
-                      <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                    <div className="flex items-center space-x-1 text-xs">
+                      <Star className="w-3 h-3 fill-yellow-400 text-yellow-400" />
                       <span className="font-medium">{artist.rating}</span>
                       <span className="text-muted-foreground">({artist.reviews})</span>
                     </div>
                   </div>
 
-                  <p className="text-muted-foreground mb-4 text-sm leading-relaxed">{artist.bio}</p>
+                  <p className="text-muted-foreground mb-3 text-xs leading-relaxed line-clamp-3">{artist.bio}</p>
 
-                  <div className="space-y-3 mb-6">
-                    <div className="flex items-center space-x-2 text-sm">
-                      <Calendar className="w-4 h-4 text-muted-foreground" />
+                  <div className="space-y-2 mb-4">
+                    <div className="flex items-center space-x-1 text-xs">
+                      <Calendar className="w-3 h-3 text-muted-foreground" />
                       <span>{artist.experience} experience</span>
                     </div>
-                    <div className="flex items-center space-x-2 text-sm">
-                      <MapPin className="w-4 h-4 text-muted-foreground" />
+                    <div className="flex items-center space-x-1 text-xs">
+                      <MapPin className="w-3 h-3 text-muted-foreground" />
                       <span>{artist.location}</span>
                     </div>
                   </div>
 
                   {/* Styles */}
-                  <div className="mb-6">
-                    <p className="text-sm font-medium mb-2">Specializes in:</p>
-                    <div className="flex flex-wrap gap-2">
+                  <div className="mb-4">
+                    <p className="text-xs font-medium mb-1">Specializes in:</p>
+                    <div className="flex flex-wrap gap-1">
                       {artist.styles.slice(0, 3).map((style) => (
-                        <Badge key={style} variant="outline" className="text-xs">
+                        <Badge key={style} variant="outline" className="text-xs px-2 py-1">
                           {style}
                         </Badge>
                       ))}
                       {artist.styles.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
+                        <Badge variant="outline" className="text-xs px-2 py-1">
                           +{artist.styles.length - 3} more
                         </Badge>
                       )}
@@ -187,14 +187,14 @@ export function ArtistsGrid() {
                   </div>
 
                   {/* Action Buttons */}
-                  <div className="flex space-x-3">
-                    <Button asChild className="flex-1">
+                  <div className="flex space-x-2 mt-auto">
+                    <Button asChild className="flex-1 text-xs py-2">
                       <Link href={`/artists/${artist.id}`}>View Portfolio</Link>
                     </Button>
                     <Button
                       asChild
                       variant="outline"
-                      className="flex-1 bg-white text-black !text-black border-gray-300 hover:bg-gray-50 hover:!text-black"
+                      className="flex-1 bg-white text-black !text-black border-gray-300 hover:bg-gray-50 hover:!text-black text-xs py-2"
                     >
                       <Link href={`/artists/${artist.id}/book`}>Book Now</Link>
                     </Button>

@@ -59,7 +59,7 @@ export function HeroSection() {
         >
           <Button
             size="lg"
-            className="bg-gray-50 text-gray-900 hover:bg-gray-100 px-12 py-6 text-lg font-medium rounded-lg"
+            className="bg-gray-50 text-gray-900 hover:bg-gray-100 px-8 py-4 text-lg font-medium rounded-lg w-full sm:w-auto"
           >
             Book Consultation
           </Button>

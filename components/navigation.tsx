@@ -45,7 +45,7 @@ export function Navigation() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out ${
         isScrolled
           ? "bg-black/95 backdrop-blur-md shadow-lg border-b border-white/10 opacity-100"
-          : "bg-transparent opacity-0 pointer-events-none"
+          : "bg-transparent lg:opacity-0 lg:pointer-events-none opacity-100 bg-black/80 backdrop-blur-md"
       }`}
     >
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
@@ -83,7 +83,7 @@ export function Navigation() {
           </div>
 
           <button
-            className="lg:hidden p-3 rounded-lg transition-all duration-300 text-white hover:bg-white/10"
+            className="lg:hidden p-4 rounded-lg transition-all duration-300 text-white hover:bg-white/10"
             onClick={() => setIsOpen(!isOpen)}
             aria-label="Toggle menu"
           >
@@ -93,12 +93,12 @@ export function Navigation() {
 
         {isOpen && (
           <div className="lg:hidden bg-black/98 backdrop-blur-md border-t border-white/10">
-            <div className="px-6 py-8 space-y-6">
+            <div className="px-6 py-8 space-y-5">
               {navItems.map((item) => (
-                <Link
+                  <Link
                   key={item.href}
                   href={item.href}
-                  className={`block text-lg font-semibold tracking-[0.1em] uppercase transition-all duration-300 ${
+                  className={`px-4 py-4 block text-lg font-semibold tracking-[0.1em] uppercase transition-all duration-300 ${
                     activeSection === item.id
                       ? "text-white border-l-4 border-white pl-4"
                       : "text-white/70 hover:text-white hover:pl-2"
@@ -110,7 +110,7 @@ export function Navigation() {
               ))}
               <Button
                 asChild
-                className="w-full bg-white hover:bg-gray-100 text-black !text-black py-4 text-lg font-semibold tracking-[0.05em] uppercase shadow-xl mt-8"
+                className="w-full bg-white hover:bg-gray-100 text-black !text-black py-5 text-lg font-semibold tracking-[0.05em] uppercase shadow-xl mt-8"
               >
                 <Link href="/book" onClick={() => setIsOpen(false)}>
                   Book Now

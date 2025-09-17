@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
+import { ServicesMobileCarousel } from "@/components/services-mobile-carousel"
 
 const services = [
   {
@@ -200,55 +201,7 @@ export function ServicesSection() {
           </div>
         </div>
 
-        <div className="lg:hidden">
-          {services.map((service, index) => (
-            <div
-              key={index}
-              data-index={index}
-              className={`min-h-screen flex items-center justify-center p-8 transition-all duration-1000 ${
-                visibleItems.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
-              }`}
-              style={{ transitionDelay: `${index * 200}ms` }}
-            >
-              <div className="max-w-lg">
-                <div className="mb-6">
-                  <span className="text-sm font-medium tracking-widest text-white/60 uppercase">
-                    Service {String(index + 1).padStart(2, "0")}
-                  </span>
-                </div>
-
-                <h3 className="text-4xl lg:text-6xl font-bold tracking-tight mb-6 text-balance">
-                  {service.title.split(" ").map((word, i) => (
-                    <span key={i} className="block">
-                      {word}
-                    </span>
-                  ))}
-                </h3>
-
-                <div className="space-y-6 mb-8">
-                  <p className="text-lg text-white/80 leading-relaxed">{service.description}</p>
-
-                  <div className="space-y-2">
-                    {service.features.map((feature, idx) => (
-                      <p key={idx} className="text-white/70">
-                        • {feature}
-                      </p>
-                    ))}
-                  </div>
-
-                  <p className="text-2xl font-bold text-white">{service.price}</p>
-                </div>
-
-                <Button
-                  asChild
-                  className="bg-white text-black hover:bg-white/90 !text-black px-8 py-4 text-lg font-medium tracking-wide"
-                >
-                  <Link href="/book">BOOK NOW</Link>
-                </Button>
-              </div>
-            </div>
-          ))}
-        </div>
+        <ServicesMobileCarousel />
       </div>
     </section>
   )
