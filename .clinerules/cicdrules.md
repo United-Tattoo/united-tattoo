@@ -12,6 +12,6 @@
 ## Required Workflow
 - Run Context7 checks for new deps, upgrades, DS changes
 - Check shadcn registry before custom components
-- Use Supabase MCP for all DB ops (incl. migrations)
+- Use Cloudflare MCP for all DB ops (incl. migrations)
 - Plan & Act for complex features; reference existing patterns
 - Clarify ambiguous requirements early; provide confidence rating

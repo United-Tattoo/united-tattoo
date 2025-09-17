@@ -5,7 +5,7 @@
 - Tailwind + shadcn/ui (mandatory)
 - TypeScript only (.ts/.tsx)
 - State: Zustand (local UI) + React Query (server state)
-- DB: Postgres (Docker) **via Supabase MCP only**
+- DB: Postgres (Docker) **via Cloudflare MCP only**
 - VCS: Gitea
 - MCP: Supabase MCP (DB), Context7 MCP (patterns/updates)
 
