@@ -3,14 +3,16 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getDB } from '@/lib/db'
 
-export async function GET(request: NextRequest) {
+export const dynamic = "force-dynamic";
+
+export async function GET(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
     }
 
-    const db = getDB()
+    const db = getDB(context?.env)
 
     // Get artist statistics
     const artistStats = await db.prepare(`

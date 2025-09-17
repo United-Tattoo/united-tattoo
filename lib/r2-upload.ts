@@ -37,8 +37,8 @@ export class FileUploadManager {
   private bucket: R2Bucket
   private baseUrl: string
 
-  constructor() {
-    this.bucket = getR2Bucket()
+  constructor(env?: any) {
+    this.bucket = getR2Bucket(env)
     // R2 public URL format: https://<account-id>.r2.cloudflarestorage.com/<bucket-name>
     this.baseUrl = process.env.R2_PUBLIC_URL || ''
   }
@@ -229,9 +229,10 @@ export async function uploadToR2(
   options?: {
     contentType?: string
     metadata?: Record<string, string>
-  }
+  },
+  env?: any
 ): Promise<R2UploadResponse> {
-  const manager = new FileUploadManager()
+  const manager = new FileUploadManager(env)
   const uploadKey = key || manager.generateFileKey(file.name)
   
   return await manager.uploadFile(file, uploadKey, options)
@@ -239,14 +240,15 @@ export async function uploadToR2(
 
 export async function bulkUploadToR2(
   files: File[],
-  keyPrefix?: string
+  keyPrefix?: string,
+  env?: any
 ): Promise<BulkUploadResult> {
-  const manager = new FileUploadManager()
+  const manager = new FileUploadManager(env)
   return await manager.bulkUpload(files, keyPrefix)
 }
 
-export async function deleteFromR2(key: string): Promise<boolean> {
-  const manager = new FileUploadManager()
+export async function deleteFromR2(key: string, env?: any): Promise<boolean> {
+  const manager = new FileUploadManager(env)
   return await manager.deleteFile(key)
 }
 
@@ -255,9 +257,10 @@ export function validateUploadFile(
   options?: {
     maxSize?: number
     allowedTypes?: string[]
-  }
+  },
+  env?: any
 ): { valid: boolean; error?: string } {
-  const manager = new FileUploadManager()
+  const manager = new FileUploadManager(env)
   return manager.validateFile(file, options)
 }
 
@@ -271,9 +274,10 @@ export async function uploadPortfolioImage(
   options?: {
     caption?: string
     tags?: string[]
-  }
+  },
+  env?: any
 ): Promise<R2UploadResponse & { portfolioData?: any }> {
-  const manager = new FileUploadManager()
+  const manager = new FileUploadManager(env)
   
   // Validate image file
   const validation = manager.validateFile(file, {
@@ -323,9 +327,10 @@ export async function uploadPortfolioImage(
  */
 export async function uploadArtistProfileImage(
   file: File,
-  artistId: string
+  artistId: string,
+  env?: any
 ): Promise<R2UploadResponse> {
-  const manager = new FileUploadManager()
+  const manager = new FileUploadManager(env)
   
   // Validate image file
   const validation = manager.validateFile(file, {

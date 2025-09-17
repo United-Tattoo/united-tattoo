@@ -4,6 +4,8 @@ import { authOptions } from '@/lib/auth'
 import { getDB } from '@/lib/db'
 import { z } from 'zod'
 
+export const dynamic = "force-dynamic";
+
 const createAppointmentSchema = z.object({
   artistId: z.string().min(1),
   clientId: z.string().min(1),
@@ -21,7 +23,7 @@ const updateAppointmentSchema = createAppointmentSchema.partial().extend({
   status: z.enum(['PENDING', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']).optional(),
 })
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
@@ -34,7 +36,7 @@ export async function GET(request: NextRequest) {
     const artistId = searchParams.get('artistId')
     const status = searchParams.get('status')
 
-    const db = getDB()
+    const db = getDB(context?.env)
     let query = `
       SELECT 
         a.*,
@@ -83,7 +85,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
@@ -94,7 +96,7 @@ export async function POST(request: NextRequest) {
     const validatedData = createAppointmentSchema.parse(body)
 
     // Check for scheduling conflicts
-    const db = getDB()
+    const db = getDB(context?.env)
     const conflictCheck = db.prepare(`
       SELECT id FROM appointments 
       WHERE artist_id = ? 
@@ -172,7 +174,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function PUT(request: NextRequest) {
+export async function PUT(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
@@ -182,7 +184,7 @@ export async function PUT(request: NextRequest) {
     const body = await request.json()
     const validatedData = updateAppointmentSchema.parse(body)
 
-    const db = getDB()
+    const db = getDB(context?.env)
 
     // Check if appointment exists
     const existingStmt = db.prepare('SELECT * FROM appointments WHERE id = ?')
@@ -289,7 +291,7 @@ export async function PUT(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
@@ -306,11 +308,12 @@ export async function DELETE(request: NextRequest) {
       )
     }
 
-    const db = getDB()
+    const db = getDB(context?.env)
     const deleteStmt = db.prepare('DELETE FROM appointments WHERE id = ?')
     const result = await deleteStmt.bind(id).run()
 
-    if (result.changes === 0) {
+    const written = (result as any)?.meta?.changes ?? (result as any)?.meta?.rows_written ?? 0
+    if (written === 0) {
       return NextResponse.json(
         { error: 'Appointment not found' },
         { status: 404 }

@@ -4,13 +4,15 @@ import { authOptions } from '@/lib/auth'
 import { getDB } from '@/lib/db'
 import { z } from 'zod'
 
+export const dynamic = "force-dynamic";
+
 const createUserSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
   role: z.enum(['SUPER_ADMIN', 'SHOP_ADMIN', 'ARTIST', 'CLIENT']),
 })
 
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
@@ -20,7 +22,7 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url)
     const email = searchParams.get('email')
 
-    const db = getDB()
+    const db = getDB(context?.env)
 
     if (email) {
       // Find user by email
@@ -47,7 +49,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
     const session = await getServerSession(authOptions)
     if (!session?.user) {
@@ -57,7 +59,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validatedData = createUserSchema.parse(body)
 
-    const db = getDB()
+    const db = getDB(context?.env)
 
     // Check if user already exists
     const existingStmt = db.prepare('SELECT id FROM users WHERE email = ?')

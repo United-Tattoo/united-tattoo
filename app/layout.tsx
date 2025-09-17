@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Playfair_Display, Source_Sans_3 } from "next/font/google"
 import "./globals.css"
+import { Suspense } from "react"
 import ClientLayout from "./ClientLayout"
 
 const playfairDisplay = Playfair_Display({
@@ -22,6 +23,8 @@ export const metadata: Metadata = {
   generator: "v0.app",
 }
 
+export const dynamic = "force-dynamic";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -30,7 +33,9 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${playfairDisplay.variable} ${sourceSans.variable}`}>
       <body className="font-sans antialiased">
-        <ClientLayout>{children}</ClientLayout>
+        <Suspense fallback={null}>
+          <ClientLayout>{children}</ClientLayout>
+        </Suspense>
       </body>
     </html>
   )

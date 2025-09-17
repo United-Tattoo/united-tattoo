@@ -1,0 +1,3 @@
+CREATE TABLE IF NOT EXISTS tags (tag TEXT NOT NULL, path TEXT NOT NULL, UNIQUE(tag, path) ON CONFLICT REPLACE);
+     CREATE TABLE IF NOT EXISTS revalidations (tag TEXT NOT NULL, revalidatedAt INTEGER NOT NULL, UNIQUE(tag) ON CONFLICT REPLACE);
+INSERT INTO tags (tag, path) VALUES ("F6aO6BhuBPmj4J83dM9ke/_N_T_/layout", "F6aO6BhuBPmj4J83dM9ke/favicon.ico"), ("F6aO6BhuBPmj4J83dM9ke/_N_T_/favicon.ico/layout", "F6aO6BhuBPmj4J83dM9ke/favicon.ico"), ("F6aO6BhuBPmj4J83dM9ke/_N_T_/favicon.ico/route", "F6aO6BhuBPmj4J83dM9ke/favicon.ico"), ("F6aO6BhuBPmj4J83dM9ke/_N_T_/favicon.ico", "F6aO6BhuBPmj4J83dM9ke/favicon.ico");

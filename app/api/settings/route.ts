@@ -4,6 +4,8 @@ import { UserRole } from "@/types/database"
 import { updateSiteSettingsSchema } from "@/lib/validations"
 import { db } from "@/lib/db"
 
+export const dynamic = "force-dynamic";
+
 // GET /api/settings - Fetch site settings (public endpoint)
 export async function GET(request: NextRequest) {
   try {
@@ -35,6 +37,17 @@ export async function GET(request: NextRequest) {
       ],
       heroImage: "/united-studio-main.jpg",
       logoUrl: "/united-logo-website.jpg",
+      // Additional settings
+      emailNotifications: true,
+      smsNotifications: false,
+      bookingEnabled: true,
+      onlinePayments: true,
+      requireDeposit: true,
+      depositAmount: 100,
+      cancellationPolicy: "Cancellations must be made at least 24 hours in advance. Deposits are non-refundable.",
+      theme: "system",
+      language: "en",
+      timezone: "America/Denver",
       updatedAt: new Date(),
     }
 

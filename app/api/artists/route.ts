@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from "next/server"
 import { requireAuth } from "@/lib/auth"
 import { UserRole } from "@/types/database"
 import { createArtistSchema, paginationSchema, artistFiltersSchema } from "@/lib/validations"
-import { db } from "@/lib/db"
+import { getArtists, createArtist } from "@/lib/db"
+
+export const dynamic = "force-dynamic";
 
 // GET /api/artists - Fetch all artists with optional filtering and pagination
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
     const { searchParams } = new URL(request.url)
     
@@ -21,8 +23,8 @@ export async function GET(request: NextRequest) {
       search: searchParams.get("search"),
     })
 
-    // Fetch artists from database
-    const artists = await db.artists.findMany()
+    // Fetch artists from database with environment context
+    const artists = await getArtists(context?.env)
     
     // Apply filters
     let filteredArtists = artists
@@ -74,7 +76,7 @@ export async function GET(request: NextRequest) {
 }
 
 // POST /api/artists - Create a new artist (Admin only)
-export async function POST(request: NextRequest) {
+export async function POST(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
     // Require admin authentication
     const session = await requireAuth(UserRole.SHOP_ADMIN)
@@ -82,11 +84,11 @@ export async function POST(request: NextRequest) {
     const body = await request.json()
     const validatedData = createArtistSchema.parse(body)
 
-    // Create new artist in database
-    const newArtist = await db.artists.create({
+    // Create new artist in database with environment context
+    const newArtist = await createArtist({
       ...validatedData,
       userId: session.user.id,
-    })
+    }, context?.env)
 
     return NextResponse.json(newArtist, { status: 201 })
   } catch (error) {

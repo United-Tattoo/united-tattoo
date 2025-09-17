@@ -4,7 +4,9 @@ import { authOptions } from '@/lib/auth'
 import { uploadToR2, validateUploadFile } from '@/lib/r2-upload'
 import { addPortfolioImage } from '@/lib/db'
 
-export async function POST(request: NextRequest) {
+export const dynamic = "force-dynamic";
+
+export async function POST(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
     // Check authentication
     const session = await getServerSession(authOptions)
@@ -29,11 +31,11 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Validate file
+    // Validate file with environment context
     const validation = validateUploadFile(file, {
       maxSize: 10 * 1024 * 1024, // 10MB
       allowedTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/gif']
-    })
+    }, context?.env)
 
     if (!validation.valid) {
       return NextResponse.json(
@@ -42,7 +44,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    // Upload to R2
+    // Upload to R2 with environment context
     const uploadResult = await uploadToR2(file, key, {
       contentType: file.type,
       metadata: {
@@ -53,7 +55,7 @@ export async function POST(request: NextRequest) {
         caption: caption || '',
         tags: tags || '',
       }
-    })
+    }, context?.env)
 
     if (!uploadResult.success) {
       return NextResponse.json(
@@ -72,7 +74,7 @@ export async function POST(request: NextRequest) {
           tags: parsedTags,
           orderIndex: 0,
           isPublic: true
-        })
+        }, context?.env)
       } catch (dbError) {
         console.error('Failed to save portfolio image to database:', dbError)
         // Continue anyway - the file was uploaded successfully
@@ -96,7 +98,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
     // Check authentication
     const session = await getServerSession(authOptions)
@@ -121,7 +123,7 @@ export async function DELETE(request: NextRequest) {
     // For now, allow any authenticated user to delete
 
     const { deleteFromR2 } = await import('@/lib/r2-upload')
-    const success = await deleteFromR2(key)
+    const success = await deleteFromR2(key, context?.env)
 
     if (!success) {
       return NextResponse.json(
@@ -144,7 +146,7 @@ export async function DELETE(request: NextRequest) {
 }
 
 // GET /api/upload/presigned - Generate presigned upload URL (placeholder for future implementation)
-export async function GET(request: NextRequest) {
+export async function GET(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
     // Check authentication
     const session = await getServerSession(authOptions)

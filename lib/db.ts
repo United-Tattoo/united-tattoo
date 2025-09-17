@@ -17,19 +17,31 @@ interface Env {
 }
 
 // Get the database instance from the environment
-// In development, this will be available through the runtime
-// In production, this will be bound via wrangler.toml
-export function getDB(): D1Database {
-  // @ts-ignore - This will be available in the Cloudflare Workers runtime
-  return globalThis.DB || (globalThis as any).env?.DB;
+// In Next.js API routes, bindings are passed through the context parameter
+export function getDB(env?: any): D1Database {
+  if (env?.DB) return env.DB;
+
+  // OpenNext Cloudflare exposes bindings on a global symbol during dev/preview
+  const cf = (globalThis as any)[Symbol.for("__cloudflare-context__")];
+  const dbFromCf = cf?.env?.DB;
+
+  // Additional dev fallbacks (when globals are shimmed)
+  // @ts-ignore
+  const dbFromGlobal = (globalThis as any).DB || (globalThis as any).env?.DB;
+
+  const db = dbFromCf || dbFromGlobal;
+  if (!db) {
+    throw new Error("Cloudflare D1 binding (env.DB) is unavailable");
+  }
+  return db as D1Database;
 }
 
 /**
  * Artist Management Functions
  */
 
-export async function getArtists(): Promise<Artist[]> {
-  const db = getDB();
+export async function getArtists(env?: any): Promise<Artist[]> {
+  const db = getDB(env);
   const result = await db.prepare(`
     SELECT 
       a.*,
@@ -44,8 +56,8 @@ export async function getArtists(): Promise<Artist[]> {
   return result.results as Artist[];
 }
 
-export async function getArtist(id: string): Promise<Artist | null> {
-  const db = getDB();
+export async function getArtist(id: string, env?: any): Promise<Artist | null> {
+  const db = getDB(env);
   const result = await db.prepare(`
     SELECT 
       a.*,
@@ -59,8 +71,8 @@ export async function getArtist(id: string): Promise<Artist | null> {
   return result as Artist | null;
 }
 
-export async function createArtist(data: CreateArtistInput): Promise<Artist> {
-  const db = getDB();
+export async function createArtist(data: CreateArtistInput, env?: any): Promise<Artist> {
+  const db = getDB(env);
   const id = crypto.randomUUID();
   
   // First create or get the user
@@ -93,8 +105,8 @@ export async function createArtist(data: CreateArtistInput): Promise<Artist> {
   return result as Artist;
 }
 
-export async function updateArtist(id: string, data: UpdateArtistInput): Promise<Artist> {
-  const db = getDB();
+export async function updateArtist(id: string, data: UpdateArtistInput, env?: any): Promise<Artist> {
+  const db = getDB(env);
   
   const setParts: string[] = [];
   const values: any[] = [];
@@ -137,8 +149,8 @@ export async function updateArtist(id: string, data: UpdateArtistInput): Promise
   return result as Artist;
 }
 
-export async function deleteArtist(id: string): Promise<void> {
-  const db = getDB();
+export async function deleteArtist(id: string, env?: any): Promise<void> {
+  const db = getDB(env);
   await db.prepare('UPDATE artists SET is_active = 0 WHERE id = ?').bind(id).run();
 }
 
@@ -146,8 +158,8 @@ export async function deleteArtist(id: string): Promise<void> {
  * Portfolio Image Management Functions
  */
 
-export async function getPortfolioImages(artistId: string): Promise<PortfolioImage[]> {
-  const db = getDB();
+export async function getPortfolioImages(artistId: string, env?: any): Promise<PortfolioImage[]> {
+  const db = getDB(env);
   const result = await db.prepare(`
     SELECT * FROM portfolio_images 
     WHERE artist_id = ? AND is_public = 1
@@ -157,8 +169,8 @@ export async function getPortfolioImages(artistId: string): Promise<PortfolioIma
   return result.results as PortfolioImage[];
 }
 
-export async function addPortfolioImage(artistId: string, imageData: Omit<PortfolioImage, 'id' | 'artistId' | 'createdAt'>): Promise<PortfolioImage> {
-  const db = getDB();
+export async function addPortfolioImage(artistId: string, imageData: Omit<PortfolioImage, 'id' | 'artistId' | 'createdAt'>, env?: any): Promise<PortfolioImage> {
+  const db = getDB(env);
   const id = crypto.randomUUID();
   
   const result = await db.prepare(`
@@ -178,8 +190,8 @@ export async function addPortfolioImage(artistId: string, imageData: Omit<Portfo
   return result as PortfolioImage;
 }
 
-export async function updatePortfolioImage(id: string, data: Partial<PortfolioImage>): Promise<PortfolioImage> {
-  const db = getDB();
+export async function updatePortfolioImage(id: string, data: Partial<PortfolioImage>, env?: any): Promise<PortfolioImage> {
+  const db = getDB(env);
   
   const setParts: string[] = [];
   const values: any[] = [];
@@ -217,8 +229,8 @@ export async function updatePortfolioImage(id: string, data: Partial<PortfolioIm
   return result as PortfolioImage;
 }
 
-export async function deletePortfolioImage(id: string): Promise<void> {
-  const db = getDB();
+export async function deletePortfolioImage(id: string, env?: any): Promise<void> {
+  const db = getDB(env);
   await db.prepare('DELETE FROM portfolio_images WHERE id = ?').bind(id).run();
 }
 
@@ -226,8 +238,8 @@ export async function deletePortfolioImage(id: string): Promise<void> {
  * Appointment Management Functions
  */
 
-export async function getAppointments(filters?: AppointmentFilters): Promise<Appointment[]> {
-  const db = getDB();
+export async function getAppointments(filters?: AppointmentFilters, env?: any): Promise<Appointment[]> {
+  const db = getDB(env);
   let query = `
     SELECT 
       a.*,
@@ -268,8 +280,8 @@ export async function getAppointments(filters?: AppointmentFilters): Promise<App
   return result.results as Appointment[];
 }
 
-export async function createAppointment(data: CreateAppointmentInput): Promise<Appointment> {
-  const db = getDB();
+export async function createAppointment(data: CreateAppointmentInput, env?: any): Promise<Appointment> {
+  const db = getDB(env);
   const id = crypto.randomUUID();
   
   const result = await db.prepare(`
@@ -296,8 +308,8 @@ export async function createAppointment(data: CreateAppointmentInput): Promise<A
   return result as Appointment;
 }
 
-export async function updateAppointment(id: string, data: Partial<Appointment>): Promise<Appointment> {
-  const db = getDB();
+export async function updateAppointment(id: string, data: Partial<Appointment>, env?: any): Promise<Appointment> {
+  const db = getDB(env);
   
   const setParts: string[] = [];
   const values: any[] = [];
@@ -348,8 +360,8 @@ export async function updateAppointment(id: string, data: Partial<Appointment>):
   return result as Appointment;
 }
 
-export async function deleteAppointment(id: string): Promise<void> {
-  const db = getDB();
+export async function deleteAppointment(id: string, env?: any): Promise<void> {
+  const db = getDB(env);
   await db.prepare('DELETE FROM appointments WHERE id = ?').bind(id).run();
 }
 
@@ -357,14 +369,14 @@ export async function deleteAppointment(id: string): Promise<void> {
  * Site Settings Management Functions
  */
 
-export async function getSiteSettings(): Promise<SiteSettings | null> {
-  const db = getDB();
+export async function getSiteSettings(env?: any): Promise<SiteSettings | null> {
+  const db = getDB(env);
   const result = await db.prepare('SELECT * FROM site_settings WHERE id = ?').bind('default').first();
   return result as SiteSettings | null;
 }
 
-export async function updateSiteSettings(data: UpdateSiteSettingsInput): Promise<SiteSettings> {
-  const db = getDB();
+export async function updateSiteSettings(data: UpdateSiteSettingsInput, env?: any): Promise<SiteSettings> {
+  const db = getDB(env);
   
   const setParts: string[] = [];
   const values: any[] = [];
@@ -451,7 +463,20 @@ export const db = {
 }
 
 // Helper function to get R2 bucket for file uploads
-export function getR2Bucket(): R2Bucket {
-  // @ts-ignore - This will be available in the Cloudflare Workers runtime
-  return globalThis.R2_BUCKET || (globalThis as any).env?.R2_BUCKET;
+export function getR2Bucket(env?: any): R2Bucket {
+  if (env?.R2_BUCKET) return env.R2_BUCKET;
+
+  // OpenNext Cloudflare exposes bindings on a global symbol during dev/preview
+  const cf = (globalThis as any)[Symbol.for("__cloudflare-context__")];
+  const r2FromCf = cf?.env?.R2_BUCKET;
+
+  // Additional dev fallbacks (when globals are shimmed)
+  // @ts-ignore
+  const r2FromGlobal = (globalThis as any).R2_BUCKET || (globalThis as any).env?.R2_BUCKET;
+
+  const r2 = r2FromCf || r2FromGlobal;
+  if (!r2) {
+    throw new Error("Cloudflare R2 binding (env.R2_BUCKET) is unavailable");
+  }
+  return r2 as R2Bucket;
 }

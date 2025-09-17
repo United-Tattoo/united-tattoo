@@ -189,22 +189,22 @@ export const createFileUploadSchema = z.object({
 
 // Query parameter validation schemas
 export const paginationSchema = z.object({
-  page: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().int().min(1)).default("1"),
-  limit: z.string().regex(/^\d+$/).transform(Number).pipe(z.number().int().min(1).max(100)).default("10"),
+  page: z.string().nullable().transform(val => val || "1").pipe(z.string().regex(/^\d+$/).transform(Number).pipe(z.number().int().min(1))),
+  limit: z.string().nullable().transform(val => val || "10").pipe(z.string().regex(/^\d+$/).transform(Number).pipe(z.number().int().min(1).max(100))),
 })
 
 export const artistFiltersSchema = z.object({
-  isActive: z.string().transform(val => val === "true").optional(),
-  specialty: z.string().optional(),
-  search: z.string().optional(),
+  isActive: z.string().nullable().transform(val => val === "true" ? true : val === "false" ? false : undefined).optional(),
+  specialty: z.string().nullable().optional(),
+  search: z.string().nullable().optional(),
 })
 
 export const appointmentFiltersSchema = z.object({
-  artistId: z.string().uuid().optional(),
-  clientId: z.string().uuid().optional(),
-  status: z.nativeEnum(AppointmentStatus).optional(),
-  startDate: z.string().datetime().optional(),
-  endDate: z.string().datetime().optional(),
+  artistId: z.string().nullable().refine(val => !val || z.string().uuid().safeParse(val).success, "Invalid artist ID").optional(),
+  clientId: z.string().nullable().refine(val => !val || z.string().uuid().safeParse(val).success, "Invalid client ID").optional(),
+  status: z.string().nullable().refine(val => !val || Object.values(AppointmentStatus).includes(val as AppointmentStatus), "Invalid status").optional(),
+  startDate: z.string().nullable().refine(val => !val || z.string().datetime().safeParse(val).success, "Invalid start date").optional(),
+  endDate: z.string().nullable().refine(val => !val || z.string().datetime().safeParse(val).success, "Invalid end date").optional(),
 })
 
 // Form validation schemas (for react-hook-form)
