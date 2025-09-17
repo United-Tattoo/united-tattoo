@@ -23,7 +23,7 @@ export function ArtistsSection() {
           }
         })
       },
-      { threshold: 0.1, rootMargin: "0px 0px -50px 0px" },
+      { threshold: 0.2, rootMargin: "0px 0px 0px 0px" },
     )
 
     const cards = sectionRef.current?.querySelectorAll("[data-index]")
@@ -55,29 +55,30 @@ export function ArtistsSection() {
       const sectionTop = sectionRef.current?.offsetTop || 0
       const relativeScroll = scrollY - sectionTop
 
-      leftColumnRef.current.style.transform = `translateY(${relativeScroll * -0.05}px)`
+      leftColumnRef.current.style.transform = `translateY(${relativeScroll * -0.025}px)`
       centerColumnRef.current.style.transform = `translateY(0px)`
-      rightColumnRef.current.style.transform = `translateY(${relativeScroll * 0.05}px)`
+      rightColumnRef.current.style.transform = `translateY(${relativeScroll * 0.025}px)`
 
       const leftImages = leftColumnRef.current.querySelectorAll(".artist-image")
       const centerImages = centerColumnRef.current.querySelectorAll(".artist-image")
       const rightImages = rightColumnRef.current.querySelectorAll(".artist-image")
 
       leftImages.forEach((img) => {
-        ;(img as HTMLElement).style.transform = `translateY(${relativeScroll * -0.02}px)`
+        ;(img as HTMLElement).style.transform = `translateY(${relativeScroll * -0.01}px)`
       })
       centerImages.forEach((img) => {
-        ;(img as HTMLElement).style.transform = `translateY(${relativeScroll * -0.015}px)`
+        ;(img as HTMLElement).style.transform = `translateY(${relativeScroll * -0.0075}px)`
       })
       rightImages.forEach((img) => {
-        ;(img as HTMLElement).style.transform = `translateY(${relativeScroll * -0.01}px)`
+        ;(img as HTMLElement).style.transform = `translateY(${relativeScroll * -0.005}px)`
       })
     }
   }, [scrollY])
 
-  const leftColumn = artists.filter((_, index) => index % 3 === 0)
-  const centerColumn = artists.filter((_, index) => index % 3 === 1)
-  const rightColumn = artists.filter((_, index) => index % 3 === 2)
+  // Better distribution for visual balance
+  const leftColumn = [artists[0], artists[3], artists[6]] // Christy, Donovan, John
+  const centerColumn = [artists[1], artists[4], artists[7]] // Angel, EJ, Pako  
+  const rightColumn = [artists[2], artists[5], artists[8]] // Amari, Heather, Sole
 
   return (
     <section ref={sectionRef} id="artists" className="relative overflow-hidden bg-black">
@@ -112,7 +113,7 @@ export function ArtistsSection() {
         </div>
       </div>
 
-      <div className="relative z-10 px-8 lg:px-16 pb-20">
+      <div className="relative z-10 px-8 lg:px-16 pb-32">
         <div className="max-w-screen-2xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div ref={leftColumnRef} className="space-y-8">
@@ -126,24 +127,32 @@ export function ArtistsSection() {
                       : "opacity-0 translate-y-8"
                   }`}
                   style={{
-                    transitionDelay: `${artists.indexOf(artist) * 100}ms`,
+                    transitionDelay: `${artists.indexOf(artist) * 50}ms`,
                   }}
                 >
-                  <div className="relative h-[600px] overflow-hidden rounded-lg shadow-2xl">
+                  <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg shadow-2xl">
                     <div className="absolute inset-0 bg-black artist-image">
-                      <div className="absolute left-0 top-0 w-1/2 h-full">
-                        <img
-                          src={artist.faceImage || "/placeholder.svg"}
-                          alt={`${artist.name} portrait`}
-                          className="w-full h-full object-cover scale-110"
-                        />
-                      </div>
-
-                      <div className="absolute right-0 top-0 w-1/2 h-full">
+                      {/* Portfolio background - full width */}
+                      <div className="absolute inset-0">
                         <img
                           src={artist.workImages?.[0] || "/placeholder.svg"}
                           alt={`${artist.name} tattoo work`}
                           className="w-full h-full object-cover scale-110"
+                        />
+                        {/* Darkening overlay to push background further back */}
+                        <div className="absolute inset-0 bg-black/40"></div>
+                      </div>
+
+                      {/* Artist portrait - with proper feathered mask */}
+                      <div className="absolute left-0 top-0 w-3/5 h-full">
+                        <img
+                          src={artist.faceImage || "/placeholder.svg"}
+                          alt={`${artist.name} portrait`}
+                          className="w-full h-full object-cover scale-110"
+                          style={{
+                            maskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)',
+                            WebkitMaskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)'
+                          }}
                         />
                       </div>
                     </div>
@@ -155,7 +164,7 @@ export function ArtistsSection() {
                         </span>
                       </div>
 
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-500">
                         <h3 className="text-2xl font-bold tracking-tight mb-2 text-white">{artist.name}</h3>
                         <p className="text-sm font-medium text-white/90 mb-3">{artist.specialty}</p>
                         <p className="text-sm text-white/80 mb-4 leading-relaxed">{artist.bio}</p>
@@ -194,24 +203,32 @@ export function ArtistsSection() {
                       : "opacity-0 translate-y-8"
                   }`}
                   style={{
-                    transitionDelay: `${artists.indexOf(artist) * 100}ms`,
+                    transitionDelay: `${artists.indexOf(artist) * 50}ms`,
                   }}
                 >
-                  <div className="relative h-[600px] overflow-hidden rounded-lg shadow-2xl">
+                  <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg shadow-2xl">
                     <div className="absolute inset-0 bg-black artist-image">
-                      <div className="absolute left-0 top-0 w-1/2 h-full">
-                        <img
-                          src={artist.faceImage || "/placeholder.svg"}
-                          alt={`${artist.name} portrait`}
-                          className="w-full h-full object-cover scale-110"
-                        />
-                      </div>
-
-                      <div className="absolute right-0 top-0 w-1/2 h-full">
+                      {/* Portfolio background - full width */}
+                      <div className="absolute inset-0">
                         <img
                           src={artist.workImages?.[0] || "/placeholder.svg"}
                           alt={`${artist.name} tattoo work`}
                           className="w-full h-full object-cover scale-110"
+                        />
+                        {/* Darkening overlay to push background further back */}
+                        <div className="absolute inset-0 bg-black/40"></div>
+                      </div>
+
+                      {/* Artist portrait - with proper feathered mask */}
+                      <div className="absolute left-0 top-0 w-3/5 h-full">
+                        <img
+                          src={artist.faceImage || "/placeholder.svg"}
+                          alt={`${artist.name} portrait`}
+                          className="w-full h-full object-cover scale-110"
+                          style={{
+                            maskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)',
+                            WebkitMaskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)'
+                          }}
                         />
                       </div>
                     </div>
@@ -223,7 +240,7 @@ export function ArtistsSection() {
                         </span>
                       </div>
 
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-500">
                         <h3 className="text-2xl font-bold tracking-tight mb-2 text-white">{artist.name}</h3>
                         <p className="text-sm font-medium text-white/90 mb-3">{artist.specialty}</p>
                         <p className="text-sm text-white/80 mb-4 leading-relaxed">{artist.bio}</p>
@@ -262,24 +279,32 @@ export function ArtistsSection() {
                       : "opacity-0 translate-y-8"
                   }`}
                   style={{
-                    transitionDelay: `${artists.indexOf(artist) * 100}ms`,
+                    transitionDelay: `${artists.indexOf(artist) * 50}ms`,
                   }}
                 >
-                  <div className="relative h-[600px] overflow-hidden rounded-lg shadow-2xl">
+                  <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg shadow-2xl">
                     <div className="absolute inset-0 bg-black artist-image">
-                      <div className="absolute left-0 top-0 w-1/2 h-full">
-                        <img
-                          src={artist.faceImage || "/placeholder.svg"}
-                          alt={`${artist.name} portrait`}
-                          className="w-full h-full object-cover scale-110"
-                        />
-                      </div>
-
-                      <div className="absolute right-0 top-0 w-1/2 h-full">
+                      {/* Portfolio background - full width */}
+                      <div className="absolute inset-0">
                         <img
                           src={artist.workImages?.[0] || "/placeholder.svg"}
                           alt={`${artist.name} tattoo work`}
                           className="w-full h-full object-cover scale-110"
+                        />
+                        {/* Darkening overlay to push background further back */}
+                        <div className="absolute inset-0 bg-black/40"></div>
+                      </div>
+
+                      {/* Artist portrait - with proper feathered mask */}
+                      <div className="absolute left-0 top-0 w-3/5 h-full">
+                        <img
+                          src={artist.faceImage || "/placeholder.svg"}
+                          alt={`${artist.name} portrait`}
+                          className="w-full h-full object-cover scale-110"
+                          style={{
+                            maskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)',
+                            WebkitMaskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)'
+                          }}
                         />
                       </div>
                     </div>
@@ -291,7 +316,7 @@ export function ArtistsSection() {
                         </span>
                       </div>
 
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-full group-hover:translate-y-0 transition-transform duration-500">
+                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-500">
                         <h3 className="text-2xl font-bold tracking-tight mb-2 text-white">{artist.name}</h3>
                         <p className="text-sm font-medium text-white/90 mb-3">{artist.specialty}</p>
                         <p className="text-sm text-white/80 mb-4 leading-relaxed">{artist.bio}</p>
@@ -322,7 +347,7 @@ export function ArtistsSection() {
         </div>
       </div>
 
-      <div className="bg-black text-white py-20 px-8 lg:px-16">
+      <div className="relative z-20 bg-black text-white py-20 px-8 lg:px-16">
         <div className="max-w-screen-2xl mx-auto text-center">
           <h3 className="text-5xl lg:text-7xl font-bold tracking-tight mb-8">READY?</h3>
           <p className="text-xl text-white/70 mb-12 max-w-2xl mx-auto">

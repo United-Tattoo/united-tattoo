@@ -61,8 +61,8 @@ export function ServicesMobileCarousel() {
       >
         <CarouselContent className="-ml-2 md:-ml-4">
           {services.map((service, index) => (
-            <CarouselItem key={index} className="pl-2 md:pl-4 basis-[85%] sm:basis-[75%]">
-              <div className="min-h-[70vh] flex items-center justify-center p-6 relative">
+            <CarouselItem key={index} className="pl-2 md:pl-4 basis-[85%] sm:basis-[75%] md:basis-[70%]">
+              <div className="min-h-[50vh] flex items-center justify-center p-4 relative">
                 <div className="max-w-sm relative">
                   <div className="mb-6">
                     <span className="text-sm font-medium tracking-widest text-white/60 uppercase">

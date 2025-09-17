@@ -45,7 +45,7 @@ export function Navigation() {
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out ${
         isScrolled
           ? "bg-black/95 backdrop-blur-md shadow-lg border-b border-white/10 opacity-100"
-          : "bg-transparent lg:opacity-0 lg:pointer-events-none opacity-100 bg-black/80 backdrop-blur-md"
+          : "bg-black/80 backdrop-blur-md lg:bg-transparent lg:opacity-0 lg:pointer-events-none opacity-100"
       }`}
     >
       <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">

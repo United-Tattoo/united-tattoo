@@ -103,7 +103,9 @@ export function ContactModal({ children }: ContactModalProps) {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto bg-white border-0 shadow-2xl relative">
+        {/* Solid background overlay to block any background images */}
+        <div className="absolute inset-0 bg-white -z-10 rounded-lg"></div>
         <DialogHeader>
           <DialogTitle className="font-playfair text-2xl">Get In Touch</DialogTitle>
         </DialogHeader>

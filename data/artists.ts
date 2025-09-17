@@ -269,7 +269,7 @@ export const artists: Artist[] = [
     name: "Steven 'Sole' Cedre",
     title: "It has to have soul, Sole!",
     specialty: "Gritty Realism & Comic Art",
-    faceImage: "/artists/sole-cedre-portrait.jpg",
+    faceImage: "/artists/steven-sole-cedre.jpg",
     workImages: [
       "/artists/sole-cedre-work-1.jpg",
       "/artists/sole-cedre-work-2.jpg",

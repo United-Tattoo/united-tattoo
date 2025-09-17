@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import Link from "next/link"
-import { ServicesMobileCarousel } from "@/components/services-mobile-carousel"
+import { ServicesMobileOnly } from "@/components/services-mobile-only"
 
 const services = [
   {
@@ -101,10 +101,10 @@ export function ServicesSection() {
         </div>
       </div>
 
-      <div className="bg-black text-white relative z-10">
+      <div className="hidden lg:block bg-black text-white relative z-10">
         <div className="flex">
           {/* Left Side - Enhanced with split composition styling */}
-          <div className="hidden lg:block w-1/2 sticky top-0 h-screen bg-black relative">
+          <div className="w-1/2 sticky top-0 h-screen bg-black relative">
             <div className="absolute right-0 top-0 w-px h-full bg-white/10"></div>
             <div className="h-full flex flex-col justify-center p-16 relative">
               <div className="space-y-8">
@@ -201,8 +201,9 @@ export function ServicesSection() {
           </div>
         </div>
 
-        <ServicesMobileCarousel />
       </div>
+
+      <ServicesMobileOnly />
     </section>
   )
 }

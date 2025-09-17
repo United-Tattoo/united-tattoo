@@ -36,17 +36,23 @@ export function ContactSection() {
 
   return (
     <section id="contact" className="min-h-screen bg-black relative overflow-hidden">
+      {/* Background logo - desktop only */}
       <div
-        className="absolute inset-0 opacity-[0.03] bg-cover bg-center bg-no-repeat blur-sm"
+        className="absolute inset-0 opacity-[0.03] bg-cover bg-center bg-no-repeat blur-sm hidden lg:block"
         style={{
           backgroundImage: "url('/united-logo-full.jpg')",
           transform: `translateY(${scrollY * 0.2}px)`,
         }}
       />
+      
+      {/* Mobile solid background */}
+      <div className="absolute inset-0 bg-black lg:hidden"></div>
 
       <div className="flex flex-col lg:flex-row min-h-screen relative z-10">
-        <div className="w-full lg:w-1/2 bg-black flex items-center justify-center p-8 lg:p-12">
-          <div className="w-full max-w-md">
+        <div className="w-full lg:w-1/2 bg-black flex items-center justify-center p-8 lg:p-12 relative">
+          {/* Mobile background overlay to hide logo */}
+          <div className="absolute inset-0 bg-black lg:bg-transparent"></div>
+          <div className="w-full max-w-md relative z-10">
             <div className="mb-8">
               <h2 className="text-4xl font-bold text-white mb-2">Let's Talk</h2>
               <p className="text-gray-400">Ready to create something amazing?</p>
