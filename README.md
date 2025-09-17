@@ -123,3 +123,4 @@ Notes:
 Because Christy deserved a proper site — and because the previous one was, bluntly, not it. United Tattoo is more than a shop. It’s a community with real people and real art. This site tries to honor that.
 
 — Nicholai
+
