@@ -19,7 +19,10 @@
     "db:migrate": "wrangler d1 execute united-tattoo --file=./sql/schema.sql",
     "db:migrate:local": "wrangler d1 execute united-tattoo --local --file=./sql/schema.sql",
     "db:studio": "wrangler d1 execute united-tattoo --command=\"SELECT name FROM sqlite_master WHERE type='table';\"",
-    "db:studio:local": "wrangler d1 execute united-tattoo --local --command=\"SELECT name FROM sqlite_master WHERE type='table';\""
+    "db:studio:local": "wrangler d1 execute united-tattoo --local --command=\"SELECT name FROM sqlite_master WHERE type='table';\"",
+    "bmad:refresh": "bmad-method install -f -i codex",
+    "bmad:list": "bmad-method list:agents",
+    "bmad:validate": "bmad-method validate"
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.10.0",

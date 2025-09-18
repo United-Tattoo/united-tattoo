@@ -38,3 +38,6 @@ temp/**
 *.zip
 *.7z
 *.rar
+# BMAD (local only)
+.bmad-core/
+.bmad-*/
