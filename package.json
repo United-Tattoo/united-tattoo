@@ -41,7 +41,6 @@
     "@auth/supabase-adapter": "^1.10.0",
     "@aws-sdk/client-s3": "^3.890.0",
     "@aws-sdk/s3-request-presigner": "^3.890.0",
-    "@cloudflare/next-on-pages": "^1.13.16",
     "@hookform/resolvers": "^3.10.0",
     "@opennextjs/cloudflare": "^1.8.2",
     "@radix-ui/react-accordion": "latest",
