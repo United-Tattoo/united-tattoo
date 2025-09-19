@@ -33,6 +33,11 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Ensure CI dev deps present (fallback)
+        run: |
+          # Workaround when package-lock is stale vs package.json
+          npm i --no-save eslint@^8.57.0 eslint-config-next@14.2.16 @vitest/coverage-v8@^3.2.4 || true
+
       - name: Lint
         run: npm run ci:lint
 
