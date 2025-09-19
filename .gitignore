@@ -41,3 +41,6 @@ temp/**
 # BMAD (local only)
 .bmad-core/
 .bmad-*/
+
+# database backups (local exports)
+backups/

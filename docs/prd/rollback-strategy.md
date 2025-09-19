@@ -68,11 +68,13 @@ Implement a minimal runtime flag reader (server+client) backed by environment va
 
 1.5 D1 (Database) Backups & Rollback
 - Before applying any schema change:
-  - Export current DB: wrangler d1 export united-tattoo > backups/d1-backup-YYYYMMDD-HHMM.sql
+  - Export current DB: `npm run db:backup` (writes to `backups/d1-backup-YYYYMMDD-HHMM.sql`)
   - Dry-run migrations on preview DB.
 - Maintain up/down SQL migrations in sql/migrations/ with idempotent checks.
 - Rollback process:
-  - Apply “down” migration scripts aligned to the last applied “up”.
+  - Apply “down” migration scripts aligned to the last applied “up”:
+    - Preview: `npm run db:migrate:down:preview`
+    - Prod: `npm run db:migrate:down:prod`
   - If unavailable, restore from export (last resort) after change window approval.
 
 1.6 R2 (Object Storage) Considerations

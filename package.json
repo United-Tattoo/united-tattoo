@@ -18,11 +18,24 @@
     "db:create": "wrangler d1 create united-tattoo",
     "db:migrate": "wrangler d1 execute united-tattoo --file=./sql/schema.sql",
     "db:migrate:local": "wrangler d1 execute united-tattoo --local --file=./sql/schema.sql",
+    "db:backup": "mkdir -p backups && wrangler d1 export united-tattoo --output=backups/d1-backup-$(date +%Y%m%d-%H%M).sql",
+    "db:backup:local": "mkdir -p backups && wrangler d1 export united-tattoo --local --output=backups/d1-backup-$(date +%Y%m%d-%H%M).sql",
+    "db:migrate:up:preview": "wrangler d1 execute united-tattoo --file=sql/migrations/20250918_0001_initial.sql",
+    "db:migrate:down:preview": "wrangler d1 execute united-tattoo --file=sql/migrations/20250918_0001_initial_down.sql",
+    "db:migrate:up:prod": "wrangler d1 execute united-tattoo --remote --file=sql/migrations/20250918_0001_initial.sql",
+    "db:migrate:down:prod": "wrangler d1 execute united-tattoo --remote --file=sql/migrations/20250918_0001_initial_down.sql",
+    "db:migrate:latest:preview": "node scripts/migrate-latest.mjs",
+    "db:migrate:latest:prod": "node scripts/migrate-latest.mjs --remote",
     "db:studio": "wrangler d1 execute united-tattoo --command=\"SELECT name FROM sqlite_master WHERE type='table';\"",
     "db:studio:local": "wrangler d1 execute united-tattoo --local --command=\"SELECT name FROM sqlite_master WHERE type='table';\"",
     "bmad:refresh": "bmad-method install -f -i codex",
     "bmad:list": "bmad-method list:agents",
-    "bmad:validate": "bmad-method validate"
+    "bmad:validate": "bmad-method validate",
+    "ci:lint": "npm run lint",
+    "ci:typecheck": "npx tsc --noEmit",
+    "ci:test": "npm run test:coverage",
+    "ci:build": "npm run pages:build",
+    "ci:budgets": "node scripts/budgets.mjs"
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.10.0",
@@ -108,5 +121,9 @@
     "typescript": "^5",
     "vitest": "^3.2.4",
     "wrangler": "^4.37.1"
+  },
+  "budgets": {
+    "TOTAL_STATIC_MAX_BYTES": 3000000,
+    "MAX_ASSET_BYTES": 1500000
   }
 }
