@@ -44,3 +44,6 @@ temp/**
 
 # database backups (local exports)
 backups/
+
+# wrangler local state (do not commit)
+.wrangler/
