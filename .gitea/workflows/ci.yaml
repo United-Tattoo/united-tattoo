@@ -49,8 +49,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          # Start preview in background and verify it doesn't crash immediately
-          npx @opennextjs/cloudflare@latest preview > preview.log 2>&1 &
+          # Start preview via local CLI in background and verify it doesn't crash immediately
+          npm run preview > preview.log 2>&1 &
           PREVIEW_PID=$!
           # Give it a moment to start
           sleep 5
@@ -92,4 +92,3 @@ jobs:
           else
             echo "No sql/schema.sql found; skipping D1 dry-run."
           fi
-
