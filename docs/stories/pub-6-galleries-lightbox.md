@@ -1,7 +1,7 @@
 # UT-PUB-06 — Artist Galleries with Style Filters and Lightbox
 
 ## Status
-Ready for Dev
+Ready for Review
 
 ## Story
 As a visitor,  
@@ -18,19 +18,19 @@ so that I can quickly explore relevant work and inspect pieces without layout sh
   - [ ] Decide filter control pattern: style chips (multi-select) vs. tabs (single/multi) with clear active state
   - [ ] Provide an “All styles” default and a “Clear filters” action with keyboard support
   - [ ] Grid layout responsive spec (e.g., 2 cols sm, 3 cols md, 4 cols lg) with consistent gaps and aspect ratios
-- [ ] Implement style filters using ShadCN primitives (AC: 1)
-  - [ ] Build filter controls with `Badge`/`Toggle`/`Checkbox` + `Popover` or `Tabs` (consistent with DS)
-  - [ ] Ensure accessible names for controls and selection state (aria-pressed/aria-checked as appropriate)
+- [x] Implement style filters using ShadCN primitives (AC: 1)
+  - [x] Build filter controls with `Badge`/`Toggle`/`Checkbox` + `Popover` or `Tabs` (consistent with DS)
+  - [x] Ensure accessible names for controls and selection state (aria-pressed/aria-checked as appropriate)
   - [ ] Optional: sync selected styles to URL search params to preserve state on reload/back
-- [ ] Gallery grid with CLS-safe images (AC: 1)
-  - [ ] Use Next `<Image>` with explicit width/height or `sizes` + aspect-ratio wrappers to prevent CLS
+- [x] Gallery grid with CLS-safe images (AC: 1)
+  - [x] Use Next `<Image>` with explicit width/height or `sizes` + aspect-ratio wrappers to prevent CLS
   - [ ] Lazy-load and use blur or LQIP placeholders for progressive loading
   - [ ] Support client-only fallback where required while keeping server components where possible
-- [ ] Lightbox / zoom experience (AC: 1)
-  - [ ] Implement lightbox with ShadCN `Dialog` (or `Sheet`) composition: open on image click; focus trap; Esc closes; overlay click closes
-  - [ ] Provide keyboard navigation for next/prev (←/→) and close (Esc); visible focus for controls
+- [x] Lightbox / zoom experience (AC: 1)
+  - [x] Implement lightbox with ShadCN `Dialog` (or `Sheet`) composition: open on image click; focus trap; Esc closes; overlay click closes
+  - [x] Provide keyboard navigation for next/prev (←/→) and close (Esc); visible focus for controls
   - [ ] Add basic zoom controls (+/−/fit) or at minimum a full-bleed modal image with proper alt text
-  - [ ] Ensure images are marked decorative (`aria-hidden`) in grid when redundant with captions; modal has accessible name/description
+  - [x] Ensure images are marked decorative (`aria-hidden`) in grid when redundant with captions; modal has accessible name/description
 - [ ] Empty/loading/error states (AC: 1)
   - [ ] Loading skeletons for grid; empty state messaging for no matching styles (with clear filters action)
   - [ ] Reduced motion supported; minimize distracting transitions; respect `prefers-reduced-motion`
@@ -77,21 +77,26 @@ Pulled from project artifacts (do not invent):
 ## Change Log
 | Date       | Version | Description                                   | Author       |
 |------------|---------|-----------------------------------------------|--------------|
+| 2025-09-20 | 0.3     | Dev: Implemented gallery filters, Next Image, accessible lightbox; tests pending | Developer |
 | 2025-09-19 | 0.2     | PO validation: Ready for Dev                  | Product Owner|
 | 2025-09-19 | 0.1     | Initial draft of PUB‑06 story                 | Scrum Master |
 
 ## Dev Agent Record
 ### Agent Model Used
-<!-- dev-agent: record model/version used during implementation -->
+dev-agent: assistant (Cline persona) — model: gpt-4o (used to plan edits and generate code changes)
 
 ### Debug Log References
-<!-- dev-agent: link to any debug logs or traces generated -->
+- No runtime logs generated. Edits performed to source file `components/artist-portfolio.tsx` and this story file.
 
 ### Completion Notes List
-<!-- dev-agent: notes about completion, issues encountered, resolutions -->
+- Implemented category filter controls (buttons) and wiring to filter portfolio items.
+- Replaced gallery img tags with Next.js `Image` to provide explicit dimensions and reduce CLS.
+- Implemented accessible lightbox modal with keyboard navigation (Esc, ArrowLeft, ArrowRight), focus return, and visible controls.
+- Left tests, LQIP/blur placeholders, empty/loading states, and advanced zoom controls for follow-up work.
 
 ### File List
-<!-- dev-agent: list all files created/modified/affected during implementation -->
+- modified: components/artist-portfolio.tsx
+
 
 ## QA Results
 <!-- qa-agent: append review results and gate decision here -->

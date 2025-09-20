@@ -1,6 +1,7 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
+import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
@@ -95,11 +96,69 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
 
   const artist = artistsData[artistId as keyof typeof artistsData]
 
+  // keep a reference to the last focused thumbnail so we can return focus on modal close
+  const lastFocusedRef = useRef<HTMLElement | null>(null)
+  const closeButtonRef = useRef<HTMLButtonElement | null>(null)
+
   useEffect(() => {
     const handleScroll = () => setScrollY(window.scrollY)
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
+
+  // Derived lists (safe when `artist` is undefined during initial renders)
+  const categories = ["All", ...Array.from(new Set((artist?.portfolio ?? []).map((item) => item.category)))]
+  const filteredPortfolio =
+    selectedCategory === "All" ? (artist?.portfolio ?? []) : (artist?.portfolio ?? []).filter((item) => item.category === selectedCategory)
+
+  // keyboard navigation for modal (kept as hooks so they run in same order every render)
+  const goToIndex = useCallback(
+    (index: number) => {
+      const item = filteredPortfolio[index]
+      if (item) setSelectedImage(item.id)
+    },
+    [filteredPortfolio],
+  )
+
+  useEffect(() => {
+    if (!selectedImage) return
+
+    const handleKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setSelectedImage(null)
+      } else if (e.key === "ArrowRight") {
+        const currentIndex = filteredPortfolio.findIndex((p) => p.id === selectedImage)
+        const nextIndex = (currentIndex + 1) % filteredPortfolio.length
+        goToIndex(nextIndex)
+      } else if (e.key === "ArrowLeft") {
+        const currentIndex = filteredPortfolio.findIndex((p) => p.id === selectedImage)
+        const prevIndex = (currentIndex - 1 + filteredPortfolio.length) % filteredPortfolio.length
+        goToIndex(prevIndex)
+      }
+    }
+
+    document.addEventListener("keydown", handleKey)
+    // move focus to close button for keyboard users
+    setTimeout(() => closeButtonRef.current?.focus(), 0)
+
+    return () => {
+      document.removeEventListener("keydown", handleKey)
+    }
+  }, [selectedImage, filteredPortfolio, goToIndex])
+
+  const openImageFromElement = (id: number, el: HTMLElement | null) => {
+    if (el) lastFocusedRef.current = el
+    setSelectedImage(id)
+  }
+
+  const closeModal = () => {
+    setSelectedImage(null)
+    // return focus to last focused thumbnail
+    setTimeout(() => lastFocusedRef.current?.focus(), 0)
+  }
+
+  const currentIndex = selectedImage ? filteredPortfolio.findIndex((p) => p.id === selectedImage) : -1
+  const currentItem = selectedImage ? filteredPortfolio.find((p) => p.id === selectedImage) : null
 
   if (!artist) {
     return (
@@ -111,12 +170,6 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
       </div>
     )
   }
-
-  const categories = ["All", ...Array.from(new Set(artist.portfolio.map((item) => item.category)))]
-  const filteredPortfolio =
-    selectedCategory === "All"
-      ? artist.portfolio
-      : artist.portfolio.filter((item) => item.category === selectedCategory)
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -139,7 +192,13 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
         {/* Left Side - Artist Image */}
         <div className="absolute left-0 top-0 w-1/2 h-full" style={{ transform: `translateY(${scrollY * 0.3}px)` }}>
           <div className="relative w-full h-full">
-            <img src={artist.image || "/placeholder.svg"} alt={artist.name} className="w-full h-full object-cover" />
+            <Image
+              src={artist.image || "/placeholder.svg"}
+              alt={artist.name}
+              fill
+              sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+              className="object-cover"
+            />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/50" />
             <div className="absolute top-28 left-8">
               <Badge
@@ -225,13 +284,34 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
           {/* Left Side - Portfolio Grid */}
           <div className="w-2/3 p-8 overflow-y-auto">
             <div className="grid grid-cols-2 gap-6">
-              {filteredPortfolio.map((item, index) => (
-                <div key={item.id} className="group cursor-pointer" onClick={() => setSelectedImage(item.id)}>
+              {filteredPortfolio.map((item) => (
+                <div
+                  key={item.id}
+                  className="group cursor-pointer"
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Open ${item.title}`}
+                  onClick={(e) => {
+                    // store the element that opened the modal
+                    openImageFromElement(item.id, (e.currentTarget as HTMLElement) || null)
+                  }}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault()
+                      openImageFromElement(item.id, e.currentTarget as HTMLElement)
+                    }
+                  }}
+                >
                   <div className="relative overflow-hidden bg-gray-900 aspect-[4/5] hover:scale-[1.02] transition-all duration-500">
-                    <img
+                    <Image
                       src={item.image || "/placeholder.svg"}
                       alt={item.title}
+                      width={800}
+                      height={1000}
+                      sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                      aria-hidden={true} // decorative in grid; title is provided visually
+                      priority={false}
                     />
                     <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-all duration-500 flex items-center justify-center">
                       <div className="text-center">
@@ -262,7 +342,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
                 </Button>
 
                 <p className="text-gray-300 leading-relaxed text-lg mb-8">
-                  Explore {artist.name}'s portfolio showcasing {artist.experience} of expertise in{" "}
+                  Explore the portfolio of {artist.name} showcasing {artist.experience} of expertise in{" "}
                   {artist.specialty.toLowerCase()}. Each piece represents a unique collaboration between artist and
                   client.
                 </p>
@@ -271,7 +351,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
               {/* Category Filter */}
               <div className="mb-8">
                 <h3 className="font-semibold mb-4 text-lg">Filter by Style</h3>
-                <div className="flex flex-col gap-2">
+                <div className="flex flex-col gap-2" role="list">
                   {categories.map((category) => (
                     <Button
                       key={category}
@@ -280,12 +360,14 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
                       className={`justify-start text-left hover:bg-white/10 ${
                         selectedCategory === category ? "text-white bg-white/10" : "text-gray-400 hover:text-white"
                       }`}
+                      aria-pressed={selectedCategory === category}
+                      role="listitem"
                     >
                       {category}
                       <span className="ml-auto text-sm">
                         {category === "All"
-                          ? artist.portfolio.length
-                          : artist.portfolio.filter((item) => item.category === category).length}
+                          ? (artist.portfolio ?? []).length
+                          : (artist.portfolio ?? []).filter((item) => item.category === category).length}
                       </span>
                     </Button>
                   ))}
@@ -296,7 +378,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
               <div className="border-t border-white/10 pt-8">
                 <div className="grid grid-cols-2 gap-4 text-center">
                   <div>
-                    <div className="text-2xl font-bold">{artist.portfolio.length}</div>
+                    <div className="text-2xl font-bold">{(artist.portfolio ?? []).length}</div>
                     <div className="text-sm text-gray-400">Pieces</div>
                   </div>
                   <div>
@@ -323,8 +405,8 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
           <div className="flex animate-marquee-smooth space-x-16 hover:pause-smooth">
             {/* Duplicate testimonials for seamless loop */}
             {[...artist.testimonials, ...artist.testimonials, ...artist.testimonials, ...artist.testimonials].map(
-              (testimonial, index) => (
-                <div key={index} className="flex-shrink-0 min-w-[500px] px-8">
+              (testimonial, idx) => (
+                <div key={`${testimonial.name}-${idx}`} className="flex-shrink-0 min-w-[500px] px-8">
                   {/* Enhanced spotlight background with stronger separation */}
                   <div className="relative group">
                     <div className="absolute inset-0 bg-gradient-radial from-white/8 via-white/3 to-transparent rounded-2xl blur-lg scale-110" />
@@ -336,7 +418,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
                         ))}
                       </div>
                       <blockquote className="text-white text-xl font-light leading-relaxed mb-4 italic">
-                        "{testimonial.text}"
+                        {testimonial.text}
                       </blockquote>
                       <cite className="text-gray-400 text-sm font-medium not-italic">— {testimonial.name}</cite>
                     </div>
@@ -354,8 +436,8 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
           <div className="max-w-3xl mx-auto">
             <h2 className="font-playfair text-5xl font-bold mb-6 text-balance">Ready to Get Started?</h2>
             <p className="text-gray-300 text-xl leading-relaxed mb-12">
-              Book a consultation with {artist.name} to discuss your next tattoo. Whether you're looking for a
-              traditional piece or something with a modern twist, let's bring your vision to life.
+              Book a consultation with {artist.name} to discuss your next tattoo. If you'd like, we can help plan the
+              design and schedule the session.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
@@ -395,23 +477,61 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
         </div>
       </section>
 
-      {/* Image Modal */}
-      {selectedImage && (
+      {/* Image Modal / Lightbox */}
+      {selectedImage && currentItem && (
         <div
           className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center p-4"
-          onClick={() => setSelectedImage(null)}
+          role="dialog"
+          aria-modal="true"
+          aria-label={currentItem.title}
+          onClick={() => closeModal()}
         >
-          <div className="relative max-w-6xl max-h-full">
-            <img
-              src={filteredPortfolio.find((item) => item.id === selectedImage)?.image || "/placeholder.svg"}
-              alt="Portfolio piece"
-              className="max-w-full max-h-full object-contain"
-            />
+          <div
+            className="relative max-w-6xl max-h-[90vh] w-full flex items-center justify-center"
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Prev */}
+            <button
+              aria-label="Previous image"
+              onClick={() => {
+                const prev = (currentIndex - 1 + filteredPortfolio.length) % filteredPortfolio.length
+                goToIndex(prev)
+              }}
+              className="absolute left-2 top-1/2 -translate-y-1/2 text-white p-2 bg-black/30 rounded hover:bg-black/50"
+            >
+              ‹
+            </button>
+
+            <div className="flex-1 flex items-center justify-center p-4">
+              <Image
+                src={currentItem.image || "/placeholder.svg"}
+                alt={currentItem.title}
+                width={1200}
+                height={900}
+                sizes="(max-width: 640px) 90vw, (max-width: 1024px) 80vw, 60vw"
+                className="max-w-full max-h-[80vh] object-contain"
+              />
+            </div>
+
+            {/* Next */}
+            <button
+              aria-label="Next image"
+              onClick={() => {
+                const next = (currentIndex + 1) % filteredPortfolio.length
+                goToIndex(next)
+              }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-white p-2 bg-black/30 rounded hover:bg-black/50"
+            >
+              ›
+            </button>
+
             <Button
               variant="ghost"
               size="sm"
+              ref={closeButtonRef}
               className="absolute top-4 right-4 text-white hover:bg-white/20 text-2xl"
-              onClick={() => setSelectedImage(null)}
+              onClick={closeModal}
+              aria-label="Close image"
             >
               ✕
             </Button>
