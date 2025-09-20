@@ -1,11 +1,14 @@
 "use client"
 
 import { useEffect, useState } from "react"
+
+import { useFeatureFlag } from "@/components/feature-flags-provider"
 import { Button } from "@/components/ui/button"
 
 export function HeroSection() {
   const [isVisible, setIsVisible] = useState(false)
   const [scrollY, setScrollY] = useState(0)
+  const advancedNavAnimations = useFeatureFlag("ADVANCED_NAV_SCROLL_ANIMATIONS_ENABLED")
 
   useEffect(() => {
     const timer = setTimeout(() => setIsVisible(true), 300)
@@ -13,13 +16,13 @@ export function HeroSection() {
   }, [])
 
   useEffect(() => {
+    if (!advancedNavAnimations) return
     const handleScroll = () => {
       setScrollY(window.scrollY)
     }
-
     window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, [advancedNavAnimations])
 
   return (
     <section id="home" className="min-h-screen flex items-center justify-center relative overflow-hidden">
@@ -27,14 +30,14 @@ export function HeroSection() {
         className="absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: "url(/united-logo-full.jpg)",
-          transform: `translateY(${scrollY * 0.5}px)`,
+          transform: advancedNavAnimations ? `translateY(${scrollY * 0.5}px)` : undefined,
         }}
       />
       <div className="absolute inset-0 bg-black/70" />
 
       <div
         className="relative z-10 text-center max-w-4xl px-8"
-        style={{ transform: `translateY(${scrollY * -0.1}px)` }}
+        style={{ transform: advancedNavAnimations ? `translateY(${scrollY * -0.1}px)` : undefined }}
       >
         <div
           className={`transition-all duration-1000 ${

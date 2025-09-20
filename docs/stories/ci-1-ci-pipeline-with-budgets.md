@@ -110,15 +110,24 @@ Debug Log References
 - Fixed pre-existing TypeScript issues so `ci:typecheck` can gate properly:
   - gift-cards page boolean/string comparison; Lenis options typing; Tailwind darkMode typing.
  - Local build/preview smoke not executed here due to optional platform binary (@cloudflare/workerd-linux-64) constraint in this sandbox; CI runners with `npm ci` will install optional deps and run as configured.
+ - Pushed branch `ci-run-20250918-2021` and opened PR #1 (marked DRAFT) to trigger CI.
+ - Coordinated Gitea Actions runner setup (act_runner) with label `ubuntu-latest`.
+ - Resolved CI install failure: removed `@cloudflare/next-on-pages` peer conflict; switched CI to `npm install`; added fallback step to ensure ESLint and coverage deps present.
+ - Updated CI preview smoke to use local `opennextjs-cloudflare` CLI via `npm run preview`.
+ - CI now runs end-to-end on the runner and fails at the Lint stage as intended until lint issues are cleaned up.
 
 File List
 - Added: `.gitea/workflows/ci.yaml`
 - Added: `scripts/budgets.mjs`
 - Modified: `package.json`
 - Modified: `README.md`
+ - Modified: `.gitea/workflows/ci.yaml` (preview via local CLI; dev-deps fallback install)
+ - Modified: `package.json` (use local OpenNext CLI; add lint/coverage dev-deps; remove `@cloudflare/next-on-pages`)
 
 Change Log
 - Implemented CI pipeline (lint, typecheck, test, build, preview smoke, budgets, D1 dry-run best-effort) and budgets enforcement.
+ - Opened DRAFT PR to run CI; configured runner; fixed dependency conflicts and workflow to ensure steps execute on Gitea Actions.
+ - Current CI outcome: fails on Lint (expected gate) — proceed with lint fixes next.
 
 Status: Ready for Review
 

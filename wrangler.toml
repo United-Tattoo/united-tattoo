@@ -34,5 +34,10 @@ NODE_ENV = "production"
 
 # Environment variables for preview
 [env.preview.vars]
-NEXTAUTH_URL = "https://your-preview-domain.pages.dev"
+NEXTAUTH_URL = "https://development.united-tattoos.com"
 NODE_ENV = "development"
+
+[dev]
+ip = "0.0.0.0"
+port = 8787
+local_protocol = "http"

@@ -5,6 +5,9 @@ Version: v1.0
 Date: 2025-09-18  
 Owner: Product Manager (John) in collaboration with Architect, QA, DevOps
 
+Related Documents:
+- [Feature Flags Rollout Release Notes](../releases/2025-09-19-feature-flags-rollout.md)
+
 Purpose
 - Define explicit, actionable rollback procedures for each Epic (A: Admin, B: Booking, C: Public, D: Technical/Infra).
 - Establish global controls (feature flags, deploy reverts, DB/R2 backups), triggers, communications, and verification steps.
@@ -58,6 +61,8 @@ Implement a minimal runtime flag reader (server+client) backed by environment va
 - ADVANCED_NAV_SCROLL_ANIMATIONS_ENABLED (Epic C UX)
 - STRICT_CI_GATES_ENABLED (Epic D: TS/ESLint in CI)
 - ISR_CACHE_R2_ENABLED (Epic D cache behavior toggles)
+
+Operational defaults, dashboard workflows, and smoke procedures are documented in Section 6.
 
 1.4 Cloudflare Pages Revert (High-Level)
 - Use Cloudflare Pages Deployments list (dashboard) to “Promote” or restore previous good deployment for the production branch OR redeploy the last known good commit.
@@ -236,13 +241,119 @@ Implement a minimal runtime flag reader (server+client) backed by environment va
 
 ---
 
-6) Operational Runbooks (Quick Reference)
+6) Operational Runbooks (Feature Flags & Rollback)
 
-6.1 Feature Flag Change (Cloudflare Vars)
-- Update wrangler.toml [env.production.vars] for persistent changes OR set via dashboard.
-- For immediate action: Ship a small change that reads the new var; or have flags read from KV for instant toggles (future improvement).
+6.1 Feature Flag Catalog
+| Flag | Default (Prod / Preview) | Surfaces | Purpose / Off Effect |
+| --- | --- | --- | --- |
+| ADMIN_ENABLED | true / true | Admin UI (/admin), admin APIs | Master switch for admin experience. Off: hides admin entry points and returns 503 for admin APIs. |
+| ARTISTS_MODULE_ENABLED | true / true | Admin artists CRUD | Protects artist management. Off: hides CRUD controls and blocks writes to /api/artists*. |
+| UPLOADS_ADMIN_ENABLED | true / true | Admin uploads UI/APIs | Guards media uploads. Off: disables upload buttons and forces 503 from /api/files*. |
+| BOOKING_ENABLED | true / true | Booking form (/book), availability APIs | Controls booking flow. Off: renders fallback CTA to contact studio and blocks POST /api/appointments. |
+| PUBLIC_APPOINTMENT_REQUESTS_ENABLED | false / false | Public booking request endpoint | Exposes unauth booking request. Off: keeps endpoint hidden (404) and removes public form. |
+| REFERENCE_UPLOADS_PUBLIC_ENABLED | false / false | Public reference upload widget | Manages public file submissions. Off: hides widget and blocks /api/upload anonymous access. |
+| DEPOSITS_ENABLED | false / false | Deposit capture flows | Enables deposit checkout. Off: skips deposit step and instructs manual follow-up. |
+| PUBLIC_DB_ARTISTS_ENABLED | false / false | Public artists listing (DB) | Switches between DB-backed and static artist data. Off: serves static content only. |
+| ADVANCED_NAV_SCROLL_ANIMATIONS_ENABLED | true / true | Public navigation/scroll FX | Controls motion enhancements. Off: disables animations to improve stability/perf. |
+| STRICT_CI_GATES_ENABLED | true / true | CI pipeline gating | Enforces TS/Deno lint gates in CI. Off: allows emergency builds without strict checks (document rationale). |
+| ISR_CACHE_R2_ENABLED | true / true | ISR revalidation + R2 cache | Enables ISR artifacts in R2. Off: falls back to static render; purge cache to clear stale artifacts. |
 
-6.2 Revert to Last-Good Deployment
+- Keep the catalog in sync when new flags are introduced (update defaults and impacted surfaces).
+
+6.2 Cloudflare Dashboard Toggle Workflow
+1. Sign in to https://dash.cloudflare.com → Pages → **united-tattoo**.
+2. Select the target environment (Preview for drills, Production for live response) → **Settings** → **Environment Variables**.
+3. Click **Edit variables**, locate the flag, and set the value explicitly to `"true"` or `"false"`. Add the variable if it does not yet exist.
+4. Save changes; Cloudflare schedules a new deployment. Capture the deployment ID and reason in the incident log.
+5. Monitor the deployment until status is **Success**. If the change is production-facing, notify stakeholders that the smoke in 6.5 is starting.
+6. After verification, document the final state and timestamp in the ops channel/runbook.
+
+- Guardrails:
+  - Stage toggles in Preview first, complete the drill in 6.4, then mirror to Production.
+  - Change one flag per deployment unless incident response demands otherwise; note combined changes explicitly.
+  - Always pair toggles with the post-toggle smoke checklist (6.5) before declaring success.
+
+6.3 Persistent Environment Updates (wrangler.toml)
+- When a toggle becomes a new baseline, update `wrangler.toml` and open a PR documenting the change:
+```toml
+[env.preview.vars]
+ADMIN_ENABLED = "true"
+ARTISTS_MODULE_ENABLED = "true"
+UPLOADS_ADMIN_ENABLED = "true"
+BOOKING_ENABLED = "true"
+PUBLIC_APPOINTMENT_REQUESTS_ENABLED = "false"
+REFERENCE_UPLOADS_PUBLIC_ENABLED = "false"
+DEPOSITS_ENABLED = "false"
+PUBLIC_DB_ARTISTS_ENABLED = "false"
+ADVANCED_NAV_SCROLL_ANIMATIONS_ENABLED = "true"
+STRICT_CI_GATES_ENABLED = "true"
+ISR_CACHE_R2_ENABLED = "true"
+
+[env.production.vars]
+# copy defaults; override per incident during mitigation
+ADMIN_ENABLED = "true"
+ARTISTS_MODULE_ENABLED = "true"
+UPLOADS_ADMIN_ENABLED = "true"
+BOOKING_ENABLED = "true"
+PUBLIC_APPOINTMENT_REQUESTS_ENABLED = "false"
+REFERENCE_UPLOADS_PUBLIC_ENABLED = "false"
+DEPOSITS_ENABLED = "false"
+PUBLIC_DB_ARTISTS_ENABLED = "false"
+ADVANCED_NAV_SCROLL_ANIMATIONS_ENABLED = "true"
+STRICT_CI_GATES_ENABLED = "true"
+ISR_CACHE_R2_ENABLED = "true"
+```
+- Do not commit incident-specific overrides; rely on dashboard variables for temporary states and revert via follow-up PR if defaults change.
+
+6.4 Preview Simulation & Tabletop Drill
+1. Adjust `[env.preview.vars]` in `wrangler.toml` (or use the dashboard Preview environment) to represent the planned scenario.
+2. From repo root run:
+   - `npm install` (if dependencies changed)
+   - `npm run pages:build`
+   - `npm run preview`
+3. Hit http://localhost:8788 (OpenNext preview) and verify no build-time warnings about missing env vars.
+4. Exercise each surface while toggling relevant flags:
+   - **Admin (ADMIN_ENABLED, ARTISTS_MODULE_ENABLED, UPLOADS_ADMIN_ENABLED)**
+     - Flag `true`: `/admin` loads (200), CRUD flows succeed, uploads return 200.
+     - Flag `false`: `/admin` displays maintenance notice, CRUD attempts return 503, uploads blocked.
+   - **Booking (BOOKING_ENABLED, DEPOSITS_ENABLED, PUBLIC_APPOINTMENT_REQUESTS_ENABLED)**
+     - `BOOKING_ENABLED=true`: `/book` renders form, POST `/api/appointments` returns 200.
+     - `BOOKING_ENABLED=false`: `/book` shows fallback CTA, POST returns 503; confirm deposits/request endpoints stay disabled when their flags are `false`.
+   - **Public surfaces (PUBLIC_DB_ARTISTS_ENABLED, ADVANCED_NAV_SCROLL_ANIMATIONS_ENABLED)**
+     - DB flag `true`: `/artists` reads from DB (check console/logs for live data).
+     - DB flag `false`: `/artists` falls back to static data; ensure no stale DB calls.
+     - Animations flag `false`: scrolling shows simplified experience without console errors.
+   - **Technical toggles (STRICT_CI_GATES_ENABLED, ISR_CACHE_R2_ENABLED)**
+     - With CI flag `false`, confirm emergency builds succeed locally but capture justification.
+     - With ISR flag `false`, ensure preview serves static responses and note needed cache purges.
+5. Record findings, screenshots, and timings in the ops tabletop log (linked from the incident runbook).
+
+6.5 Post-Toggle Smoke Checklist (Production Or Preview)
+- Admin: `/admin` loads correctly when enabled; when disabled, navigation hides and `/api/admin/health` returns 503.
+- Booking: `/book` reflects flag state, CTA honours configuration, appointment API responds 200/503 as expected.
+- Public: Homepage and `/artists` render without errors; animations respond to flag state; cached content reflects latest toggle.
+- APIs: Deposits and uploads endpoints return the correct status codes for their flag values.
+- Observability: Confirm error rate and latency metrics stabilize (see 1.7) and update incident log with before/after snapshots.
+
+6.6 Incident Playbook
+1. Verify trigger thresholds from 1.7 to avoid accidental toggles.
+2. Identify impacted surface(s) and apply flags per the table below (one deployment per group when possible).
+
+| Scenario | Primary Flags | Notes |
+| --- | --- | --- |
+| Booking failures or payment risk | BOOKING_ENABLED, DEPOSITS_ENABLED, PUBLIC_APPOINTMENT_REQUESTS_ENABLED | Disable booking UI first, then deposits; broadcast banner via 7.2; purge `/book` cache. |
+| Admin regression or data integrity risk | ADMIN_ENABLED, UPLOADS_ADMIN_ENABLED, ARTISTS_MODULE_ENABLED | Lock admin access, freeze uploads, log manual follow-up tasks for data reconciliation. |
+| Public content/performance degradation | PUBLIC_DB_ARTISTS_ENABLED, ADVANCED_NAV_SCROLL_ANIMATIONS_ENABLED, ISR_CACHE_R2_ENABLED | Fall back to static data, disable animations, clear ISR cache, monitor LCP/TTFB. |
+| CI/build instability | STRICT_CI_GATES_ENABLED | Temporarily relax gates; document justification and plan to re-enable once green. |
+
+3. Cache handling:
+   - After flag changes, run targeted cache purge (Pages → Project → Caching → Purge by prefix) for affected routes.
+   - When ISR cache is disabled, clear R2 artifacts (`npm run cache:purge` when available) to prevent stale responses.
+4. Roll-forward:
+   - Investigate root cause, prepare corrective fix, rerun 6.4 in preview, then restore flags to defaults.
+   - Re-enable flags in reverse order once validation passes; document final state and lessons learned.
+
+6.7 Revert to Last-Good Deployment
 - Cloudflare Pages Dashboard → Project → Deployments → Promote previous successful deployment to Production.
 - Alternatively, check out last-good commit locally:
   - git checkout <last-good-commit>
@@ -250,13 +361,13 @@ Implement a minimal runtime flag reader (server+client) backed by environment va
   - wrangler pages deploy .vercel/output/static
 - Purge cache as needed (Dashboard) and revalidate ISR tags.
 
-6.3 D1 Backups & Migrations
+6.8 D1 Backups & Migrations
 - Backup before risk:
   - wrangler d1 export united-tattoo > backups/d1-backup-YYYYMMDD-HHMM.sql
 - Apply down migration (example):
   - wrangler d1 execute united-tattoo --remote --file=sql/migrations/20250918_down.sql
 
-6.4 R2 Object Management
+6.9 R2 Object Management
 - If versioning enabled: restore previous versions in dashboard.
 - If not: delete newly-added keys from recent manifest; restore any .prev originals.
 

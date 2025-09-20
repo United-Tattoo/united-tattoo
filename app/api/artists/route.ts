@@ -3,6 +3,7 @@ import { requireAuth } from "@/lib/auth"
 import { UserRole } from "@/types/database"
 import { createArtistSchema, paginationSchema, artistFiltersSchema } from "@/lib/validations"
 import { getArtists, createArtist } from "@/lib/db"
+import { Flags } from "@/lib/flags"
 
 export const dynamic = "force-dynamic";
 
@@ -78,6 +79,9 @@ export async function GET(request: NextRequest, { params }: { params?: any } = {
 // POST /api/artists - Create a new artist (Admin only)
 export async function POST(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
+    if (!Flags.ARTISTS_MODULE_ENABLED) {
+      return NextResponse.json({ error: 'Artists module disabled' }, { status: 503 })
+    }
     // Require admin authentication
     const session = await requireAuth(UserRole.SHOP_ADMIN)
     

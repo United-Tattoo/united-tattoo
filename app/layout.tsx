@@ -1,9 +1,12 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Playfair_Display, Source_Sans_3 } from "next/font/google"
-import "./globals.css"
 import { Suspense } from "react"
+
 import ClientLayout from "./ClientLayout"
+import { getFlags } from "@/lib/flags"
+
+import "./globals.css"
 
 const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
@@ -30,11 +33,13 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  const flags = getFlags({ refresh: true })
+
   return (
     <html lang="en" className={`${playfairDisplay.variable} ${sourceSans.variable}`}>
       <body className="font-sans antialiased">
         <Suspense fallback={null}>
-          <ClientLayout>{children}</ClientLayout>
+          <ClientLayout initialFlags={flags}>{children}</ClientLayout>
         </Suspense>
       </body>
     </html>

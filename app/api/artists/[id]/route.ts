@@ -3,6 +3,7 @@ import { requireAuth } from "@/lib/auth"
 import { UserRole } from "@/types/database"
 import { updateArtistSchema } from "@/lib/validations"
 import { db } from "@/lib/db"
+import { Flags } from "@/lib/flags"
 
 // GET /api/artists/[id] - Fetch a specific artist
 export async function GET(
@@ -65,6 +66,9 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    if (!Flags.ARTISTS_MODULE_ENABLED) {
+      return NextResponse.json({ error: 'Artists module disabled' }, { status: 503 })
+    }
     // Require admin authentication
     const session = await requireAuth(UserRole.SHOP_ADMIN)
     
@@ -123,6 +127,9 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    if (!Flags.ARTISTS_MODULE_ENABLED) {
+      return NextResponse.json({ error: 'Artists module disabled' }, { status: 503 })
+    }
     // Require admin authentication
     await requireAuth(UserRole.SHOP_ADMIN)
     

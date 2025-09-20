@@ -5,16 +5,17 @@ import type React from "react"
 import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Calendar } from "@/components/ui/calendar"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { CalendarIcon, DollarSign, User, MessageSquare } from "lucide-react"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Input } from "@/components/ui/input"
+import { Textarea } from "@/components/ui/textarea"
+import { useFeatureFlag } from "@/components/feature-flags-provider"
+import { artists } from "@/data/artists"
+import { CalendarIcon, DollarSign, MessageSquare, User } from "lucide-react"
 import { format } from "date-fns"
 import Link from "next/link"
-import { artists } from "@/data/artists"
 
 
 const timeSlots = ["10:00 AM", "11:00 AM", "12:00 PM", "1:00 PM", "2:00 PM", "3:00 PM", "4:00 PM", "5:00 PM", "6:00 PM"]
@@ -66,6 +67,7 @@ export function BookingForm({ artistId }: BookingFormProps) {
 
   const selectedArtist = artists.find((a) => String(a.id) === formData.artistId || a.slug === formData.artistId)
   const selectedSize = tattooSizes.find((size) => size.size === formData.tattooSize)
+  const bookingEnabled = useFeatureFlag("BOOKING_ENABLED")
 
   const handleInputChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -73,6 +75,10 @@ export function BookingForm({ artistId }: BookingFormProps) {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
+    if (!bookingEnabled) {
+      // Safety: no-op when disabled
+      return
+    }
     // Handle form submission
     console.log("Booking submitted:", formData)
     // In a real app, this would send data to your backend
@@ -111,6 +117,18 @@ export function BookingForm({ artistId }: BookingFormProps) {
             ))}
           </div>
         </div>
+
+        {/* Booking disabled notice */}
+        {!bookingEnabled && (
+          <div className="mb-6 text-center text-sm" role="status" aria-live="polite">
+            Online booking is temporarily unavailable. Please
+            {" "}
+            <Link href="/contact" className="underline">
+              contact the studio
+            </Link>
+            .
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           {/* Step 1: Personal Information */}
@@ -566,7 +584,7 @@ export function BookingForm({ artistId }: BookingFormProps) {
               <Button
                 type="submit"
                 className="bg-primary hover:bg-primary/90"
-                disabled={!formData.agreeToTerms || !formData.agreeToDeposit}
+                disabled={!formData.agreeToTerms || !formData.agreeToDeposit || !bookingEnabled}
               >
                 Submit Booking & Pay Deposit
               </Button>
