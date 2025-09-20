@@ -1,9 +1,8 @@
 "use client"
 
-import { useState } from "react"
+import { useState, type ComponentType } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import {
@@ -17,10 +16,11 @@ import {
   Heart,
 } from "lucide-react"
 import Link from "next/link"
+import { SectionWrapper } from "@/components/section-wrapper"
 
 type Phase = {
   phase: string
-  icon: any
+  icon: ComponentType<{ className?: string }>
   color: string
   bgColor: string
   steps: string[]
@@ -30,8 +30,8 @@ const generalAftercare: Record<string, Phase> = {
   immediate: {
     phase: "Immediate Aftercare",
     icon: Clock,
-    color: "text-red-400",
-    bgColor: "bg-red-950/20 border-red-900/30",
+    color: "text-primary",
+    bgColor: "bg-card",
     steps: [
       "Keep the bandage or dressing on for 1 to 4 hours to prevent exposure to airborne bacteria.",
       "Wash your hands thoroughly before removing the bandage.",
@@ -43,8 +43,8 @@ const generalAftercare: Record<string, Phase> = {
   general: {
     phase: "General Aftercare",
     icon: Shield,
-    color: "text-yellow-400",
-    bgColor: "bg-yellow-950/20 border-yellow-900/30",
+    color: "text-accent",
+    bgColor: "bg-card",
     steps: [
       "Cleanse your tattoo multiple times a day with lukewarm water and antibacterial soap.",
       "Apply a thin layer of ointment or lotion to keep your tattoo moisturized.",
@@ -58,8 +58,8 @@ const generalAftercare: Record<string, Phase> = {
   longterm: {
     phase: "Long-term Aftercare",
     icon: Heart,
-    color: "text-green-400",
-    bgColor: "bg-green-950/20 border-green-900/30",
+    color: "text-primary",
+    bgColor: "bg-card",
     steps: [
       "Always use a minimum of SPF 30 sunblock to protect your tattoo from UV rays.",
       "Keep your tattoos well-moisturized, especially in areas prone to fading (hands, feet, knees, elbows).",
@@ -74,8 +74,8 @@ const transparentBandage: Record<string, Phase> = {
   removal: {
     phase: "Bandage Removal",
     icon: Droplets,
-    color: "text-blue-400",
-    bgColor: "bg-blue-950/20 border-blue-900/30",
+    color: "text-primary",
+    bgColor: "bg-card",
     steps: [
       "Remove bandage in the shower for added comfort — running water helps adhesive detachment.",
       "Peel back in the direction of hair growth.",
@@ -88,8 +88,8 @@ const transparentBandage: Record<string, Phase> = {
   reapply: {
     phase: "Bandage Reapplication (If Advised)",
     icon: Shield,
-    color: "text-purple-400",
-    bgColor: "bg-purple-950/20 border-purple-900/30",
+    color: "text-accent",
+    bgColor: "bg-card",
     steps: [
       "DO NOT apply ointments or lotions unless directed by your artist.",
       "Apply the bandage only to the tattoo, avoiding surrounding skin.",
@@ -116,7 +116,7 @@ export function AftercarePage() {
   const [tab, setTab] = useState<"general" | "transparent">("general")
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-background text-foreground">
       {/* Hero / Header */}
       <section className="relative overflow-hidden">
         <div className="absolute inset-0 opacity-[0.03]">
@@ -132,7 +132,7 @@ export function AftercarePage() {
             <h1 className="font-playfair text-5xl lg:text-7xl font-bold mb-6 tracking-tight">
               Tattoo Aftercare
             </h1>
-            <p className="text-xl text-gray-300 leading-relaxed max-w-3xl mx-auto">
+            <p className="text-xl text-muted-foreground leading-relaxed max-w-3xl mx-auto">
               Proper aftercare is crucial for the healing and longevity of your new tattoo. Follow these
               instructions carefully to ensure the best results.
             </p>
@@ -141,33 +141,29 @@ export function AftercarePage() {
       </section>
 
       {/* Licensing Notice */}
-      <section className="px-8 lg:px-16">
+      <SectionWrapper>
         <div className="max-w-4xl mx-auto">
-          <Alert className="bg-white/5 border-white/10">
-            <Shield className="h-5 w-5 text-white" />
-            <AlertDescription className="text-gray-300">
+          <Alert className="animate-in fade-in-50 duration-300 motion-reduce:animate-none">
+            <Shield className="h-5 w-5" />
+            <AlertDescription>
               United Tattoo is proudly licensed by the El Paso County Health Department and fully supports
               health department regulations to protect the health of our customers.
             </AlertDescription>
           </Alert>
         </div>
-      </section>
+      </SectionWrapper>
 
       {/* Tabs: General vs Transparent Bandage */}
-      <section className="px-8 lg:px-16 mt-12">
+      <SectionWrapper className="mt-12">
         <div className="max-w-6xl mx-auto">
-          <Tabs value={tab} onValueChange={(v) => setTab(v as any)} className="w-full">
-            <TabsList className="grid w-full grid-cols-2 bg-white/5 border border-white/10">
+          <Tabs value={tab} onValueChange={(v: string) => setTab(v === "general" ? "general" : "transparent")} className="w-full">
+            <TabsList className="grid w-full grid-cols-2 bg-muted border">
               <TabsTrigger
-                value="general"
-                className="data-[state=active]:bg-white data-[state=active]:text-black text-white"
-              >
+                value="general">
                 General Tattoo Aftercare
               </TabsTrigger>
               <TabsTrigger
-                value="transparent"
-                className="data-[state=active]:bg-white data-[state=active]:text-black text-white"
-              >
+                value="transparent">
                 Transparent Bandage Aftercare
               </TabsTrigger>
             </TabsList>
@@ -178,7 +174,7 @@ export function AftercarePage() {
                 {Object.values(generalAftercare).map((phase, idx) => {
                   const Icon = phase.icon
                   return (
-                    <Card key={idx} className={`${phase.bgColor} border`}>
+                    <Card key={idx} className="animate-in fade-in-50 duration-300 motion-reduce:animate-none">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-3">
                           <Icon className={`w-5 h-5 ${phase.color}`} />
@@ -186,10 +182,10 @@ export function AftercarePage() {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <ul className="space-y-2 text-sm text-gray-200">
+                        <ul className="space-y-2 text-sm text-muted-foreground">
                           {phase.steps.map((s, i) => (
                             <li key={i} className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-white/70 mt-0.5 flex-shrink-0" />
+                              <CheckCircle className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                               <span>{s}</span>
                             </li>
                           ))}
@@ -207,7 +203,7 @@ export function AftercarePage() {
                 {Object.values(transparentBandage).map((phase, idx) => {
                   const Icon = phase.icon
                   return (
-                    <Card key={idx} className={`${phase.bgColor} border`}>
+                    <Card key={idx} className="animate-in fade-in-50 duration-300 motion-reduce:animate-none">
                       <CardHeader>
                         <CardTitle className="flex items-center gap-3">
                           <Icon className={`w-5 h-5 ${phase.color}`} />
@@ -215,10 +211,10 @@ export function AftercarePage() {
                         </CardTitle>
                       </CardHeader>
                       <CardContent>
-                        <ul className="space-y-2 text-sm text-gray-200">
+                        <ul className="space-y-2 text-sm text-muted-foreground">
                           {phase.steps.map((s, i) => (
                             <li key={i} className="flex items-start gap-2">
-                              <CheckCircle className="w-4 h-4 text-white/70 mt-0.5 flex-shrink-0" />
+                              <CheckCircle className="w-4 h-4 text-muted-foreground mt-0.5 flex-shrink-0" />
                               <span>{s}</span>
                             </li>
                           ))}
@@ -231,14 +227,15 @@ export function AftercarePage() {
             </TabsContent>
           </Tabs>
         </div>
-      </section>
+      </SectionWrapper>
 
       {/* Infection Warning */}
-      <section className="px-8 lg:px-16 mt-16">
+      {/* Infection Warning */}
+      <SectionWrapper className="mt-16">
         <div className="max-w-6xl mx-auto">
-          <Card className="bg-orange-950/20 border-orange-900/30">
-            <CardHeader className="bg-orange-900/10">
-              <CardTitle className="flex items-center gap-3 text-orange-200">
+          <Card className="bg-destructive/10 border-destructive/30 animate-in fade-in-50 duration-300 motion-reduce:animate-none">
+            <CardHeader className="bg-destructive/10">
+              <CardTitle className="flex items-center gap-3 text-destructive">
                 <AlertTriangle className="w-5 h-5" />
                 Signs of Infection — Seek Medical Attention
               </CardTitle>
@@ -246,17 +243,17 @@ export function AftercarePage() {
             <CardContent className="pt-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {infectionWarning.map((sign, i) => (
-                  <div key={i} className="flex items-start gap-2 text-sm text-gray-200">
-                    <AlertTriangle className="w-4 h-4 text-orange-300 mt-0.5 flex-shrink-0" />
+                  <div key={i} className="flex items-start gap-2 text-sm text-muted-foreground">
+                    <AlertTriangle className="w-4 h-4 text-destructive mt-0.5 flex-shrink-0" />
                     <span>{sign}</span>
                   </div>
                 ))}
               </div>
 
-              <Alert className="mt-6 bg-white/5 border-white/10">
-                <AlertTriangle className="h-4 w-4 text-white" />
+              <Alert className="mt-6 animate-in fade-in-50 duration-300 motion-reduce:animate-none">
+                <AlertTriangle className="h-4 w-4" />
                 <AlertTitle>Important</AlertTitle>
-                <AlertDescription className="text-gray-300">
+                <AlertDescription>
                   If you experience any of these symptoms, contact our studio immediately at{" "}
                   <Link href="tel:+17196989004" className="underline">
                     (719) 698-9004
@@ -267,64 +264,65 @@ export function AftercarePage() {
             </CardContent>
           </Card>
         </div>
-      </section>
+      </SectionWrapper>
 
       {/* Healing Timeline */}
-      <section className="px-8 lg:px-16 mt-16">
+      {/* Healing Timeline */}
+      <SectionWrapper className="mt-16">
         <div className="max-w-6xl mx-auto">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <Card className="bg-white/5 border-white/10">
+            <Card className="animate-in fade-in-50 duration-300 motion-reduce:animate-none">
               <CardHeader>
-                <CardTitle className="text-white/90">Surface Healing</CardTitle>
+                <CardTitle>Surface Healing</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-2xl font-bold mb-2">2–3 Weeks</p>
-                <p className="text-sm text-gray-300">
+                <p className="text-sm text-muted-foreground">
                   The outermost layer of skin typically heals in 2–3 weeks. Continue following aftercare during this time.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/5 border-white/10">
+            <Card className="animate-in fade-in-50 duration-300 motion-reduce:animate-none">
               <CardHeader>
-                <CardTitle className="text-white/90">Deep Healing</CardTitle>
+                <CardTitle>Deep Healing</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-2xl font-bold mb-2">2–4 Months</p>
-                <p className="text-sm text-gray-300">
+                <p className="text-sm text-muted-foreground">
                   Deeper layers of skin continue healing. Maintain a consistent moisturizing routine.
                 </p>
               </CardContent>
             </Card>
 
-            <Card className="bg-white/5 border-white/10">
+            <Card className="animate-in fade-in-50 duration-300 motion-reduce:animate-none">
               <CardHeader>
-                <CardTitle className="text-white/90">Complete Healing</CardTitle>
+                <CardTitle>Complete Healing</CardTitle>
               </CardHeader>
               <CardContent>
                 <p className="text-2xl font-bold mb-2">Up to 6 Months</p>
-                <p className="text-sm text-gray-300">
+                <p className="text-sm text-muted-foreground">
                   Full healing may take up to 6 months. Protect with SPF and keep moisturized.
                 </p>
               </CardContent>
             </Card>
           </div>
         </div>
-      </section>
+      </SectionWrapper>
 
       {/* Contact / Help */}
-      <section className="px-8 lg:px-16 my-16 pb-20">
+      {/* Contact / Help */}
+      <SectionWrapper className="my-16 pb-20">
         <div className="max-w-4xl mx-auto">
-          <Card className="bg-white/5 border-white/10">
+          <Card>
             <CardContent className="p-8 text-center">
               <h3 className="font-playfair text-3xl font-bold mb-2">Questions?</h3>
-              <p className="text-gray-300 mb-6">
+              <p className="text-muted-foreground mb-6">
                 Reach out if you have any aftercare questions or concerns. We’re here to help.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button
                   variant="outline"
-                  className="border-white/30 text-white hover:bg-white hover:text-black bg-transparent"
                   asChild
                 >
                   <Link href="tel:+17196989004" className="flex items-center gap-2">
@@ -334,7 +332,6 @@ export function AftercarePage() {
                 </Button>
                 <Button
                   variant="outline"
-                  className="border-white/30 text-white hover:bg-white hover:text-black bg-transparent"
                   asChild
                 >
                   <Link href="mailto:appts@united-tattoo.com" className="flex items-center gap-2">
@@ -346,7 +343,7 @@ export function AftercarePage() {
             </CardContent>
           </Card>
         </div>
-      </section>
+      </SectionWrapper>
     </div>
   )
 }

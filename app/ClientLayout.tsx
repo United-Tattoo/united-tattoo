@@ -9,6 +9,7 @@ import { Suspense, useState } from "react"
 import { FeatureFlagsProvider } from "@/components/feature-flags-provider"
 import { SmoothScrollProvider } from "@/components/smooth-scroll-provider"
 import { Toaster } from "@/components/ui/sonner"
+import { ThemeProvider } from "@/components/theme-provider"
 import type { FlagsSnapshot } from "@/lib/flags"
 
 import "./globals.css"
@@ -29,10 +30,13 @@ export default function ClientLayout({
             // With SSR, we usually want to set some default staleTime
             // above 0 to avoid refetching immediately on the client
             staleTime: 60 * 1000, // 1 minute
-            retry: (failureCount, error: any) => {
+            retry: (failureCount, error: unknown) => {
               // Don't retry on 4xx errors
-              if (error?.status >= 400 && error?.status < 500) {
-                return false
+              if (typeof error === "object" && error !== null && "status" in error) {
+                const status = (error as { status?: number }).status
+                if (typeof status === "number" && status >= 400 && status < 500) {
+                  return false
+                }
               }
               return failureCount < 3
             },
@@ -45,12 +49,14 @@ export default function ClientLayout({
     <SessionProvider>
       <QueryClientProvider client={queryClient}>
         <FeatureFlagsProvider value={initialFlags}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SmoothScrollProvider>
-              {children}
-              <Toaster />
-            </SmoothScrollProvider>
-          </Suspense>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+            <Suspense fallback={<div>Loading...</div>}>
+              <SmoothScrollProvider>
+                {children}
+                <Toaster />
+              </SmoothScrollProvider>
+            </Suspense>
+          </ThemeProvider>
         </FeatureFlagsProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>

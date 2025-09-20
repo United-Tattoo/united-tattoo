@@ -315,3 +315,31 @@ Quick Reference
 - File naming: kebab-case files, PascalCase components
 - Import patterns: "@/components/..", "@/lib/..", "@/hooks/.."
 - UI composition: Follow ShadCN examples and registry patterns before custom
+
+## Typography Ramp
+
+Authoritative site-wide type scale to enforce consistency across public pages:
+
+- Headings
+  - h1: font-playfair text-5xl lg:text-7xl tracking-tight
+  - h2: text-4xl md:text-5xl font-semibold
+  - h3: text-2xl md:text-3xl font-semibold
+- Body
+  - Base: text-base leading-relaxed
+  - Large: text-xl leading-relaxed (hero/intro copy)
+- Muted/Secondary: text-muted-foreground for supporting text and CardContent
+- Spacing Patterns:
+  - Paragraph stacks: space-y-3
+  - Grid gaps: gap-6 (default), escalate by breakpoint as needed (md:gap-8)
+  - Section padding: standardized via SectionWrapper (px-8 lg:px-16)
+
+Application
+- Apply to: /aftercare, /deposit, /terms, /privacy, /book, /artists (incl. nested)
+- Prefer ShadCN token classes over ad-hoc color utilities (e.g., bg-background, text-foreground)
+- Decorative icons should omit color overrides and include aria-hidden="true" when appropriate
+
+Audit
+- RTL tests should assert:
+  - Presence of heading/body classes defined above on representative pages
+  - Use of text-muted-foreground for secondary content
+  - Standard section paddings via SectionWrapper

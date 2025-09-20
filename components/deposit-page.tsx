@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { 
-  DollarSign, 
   Calendar, 
   CreditCard, 
   RefreshCw, 
@@ -15,7 +14,6 @@ import {
   CheckCircle, 
   ShoppingBag,
   Shield,
-  Clock,
   X
 } from "lucide-react"
 import Link from "next/link"
@@ -38,13 +36,13 @@ export function DepositPage() {
         <div className="relative z-10 pt-32 pb-20 px-8 lg:px-16">
           <div className="max-w-4xl mx-auto text-center">
             <h1 className="font-playfair text-5xl lg:text-7xl font-bold mb-6 tracking-tight">
-              LET'S MAKE IT OFFICIAL...
+              LET&apos;S MAKE IT OFFICIAL...
             </h1>
             <h2 className="text-2xl lg:text-3xl font-bold mb-8 text-gray-300">
               Make your appointment deposit now!
             </h2>
             <p className="text-xl text-gray-400 leading-relaxed max-w-3xl mx-auto">
-              Secure your tattoo appointment hassle-free with United Tattoo's deposit payment page. 
+              Secure your tattoo appointment hassle-free with United Tattoo&apos;s deposit payment page. 
               Pay conveniently via Square, accepting all major credit and debit cards, including 
               American Express and Discover, along with mobile payment options like Apple Pay and 
               Google Pay. You can even use Afterpay.
@@ -69,7 +67,7 @@ export function DepositPage() {
             <Card className="bg-white/5 border-white/10 hover:border-white/20 transition-all duration-300">
               <CardHeader className="text-center">
                 <div className="mx-auto w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mb-4">
-                  <ShoppingBag className="w-10 h-10 text-white" />
+                  <ShoppingBag className="w-10 h-10" aria-hidden="true" />
                 </div>
                 <CardTitle className="text-2xl font-playfair text-white">Pay with Afterpay</CardTitle>
               </CardHeader>
@@ -87,7 +85,7 @@ export function DepositPage() {
             <Card className="bg-white/5 border-white/10 hover:border-white/20 transition-all duration-300">
               <CardHeader className="text-center">
                 <div className="mx-auto w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mb-4">
-                  <CreditCard className="w-10 h-10 text-white" />
+                  <CreditCard className="w-10 h-10" aria-hidden="true" />
                 </div>
                 <CardTitle className="text-2xl font-playfair text-white">Credit/Debit Cards</CardTitle>
               </CardHeader>
@@ -128,7 +126,7 @@ export function DepositPage() {
                 appointments are upheld with care and consideration.
               </p>
               <Alert className="bg-black/50 border-white/20">
-                <AlertCircle className="h-4 w-4 text-white" />
+                <AlertCircle className="h-4 w-4" aria-hidden="true" />
                 <AlertDescription className="text-gray-300 text-sm">
                   All deposits and rescheduling requests are subject to review and approval by 
                   LW2 Investments, LLC, which oversees the financial and legal policies of United Tattoo.
@@ -179,7 +177,7 @@ export function DepositPage() {
                     <li className="flex items-start gap-3">
                       <CheckCircle className="w-5 h-5 text-red-400 mt-1 flex-shrink-0" />
                       <span className="text-gray-300">
-                        All deposits are non-refundable, no exception. This ensures that our artists' 
+                        All deposits are non-refundable, no exception. This ensures that our artists&apos; 
                         time, preparation, and custom artwork are fairly compensated.
                       </span>
                     </li>
@@ -245,7 +243,7 @@ export function DepositPage() {
                       <CheckCircle className="w-5 h-5 text-blue-400 mt-1 flex-shrink-0" />
                       <span className="text-gray-300">
                         A rescheduling fee of up to 25% of your deposit may apply to cover 
-                        administrative costs and ensure our artists' time is respected.
+                        administrative costs and ensure our artists&apos; time is respected.
                       </span>
                     </li>
                     <li className="flex items-start gap-3">
@@ -330,7 +328,7 @@ export function DepositPage() {
 
           {/* Final Note */}
           <Alert className="mt-12 bg-white/5 border-white/10">
-            <Shield className="h-5 w-5 text-white" />
+            <Shield className="h-5 w-5" aria-hidden="true" />
             <AlertDescription className="text-gray-300">
               <strong>FINAL DECISIONS & LEGAL OVERSIGHT:</strong> All deposit-related decisions, 
               refund requests, and disputes will be reviewed by LW2 Investments, LLC. United Tattoo 
