@@ -1,7 +1,7 @@
 # UT-PUB-02 — Parallax and Split-Screen Hero Sections
 
 ## Status
-Draft
+Ready for Dev
 
 ## Story
 As a visitor,  
@@ -61,6 +61,7 @@ Pulled from project artifacts (do not invent):
 ## Change Log
 | Date       | Version | Description                                   | Author       |
 |------------|---------|-----------------------------------------------|--------------|
+| 2025-09-19 | 0.2     | PO validation: Ready for Dev                  | Product Owner|
 | 2025-09-19 | 0.1     | Initial draft of PUB‑02 story                 | Scrum Master |
 
 ## Dev Agent Record
