@@ -1,0 +1,106 @@
+id: PUB-2
+title: Parallax and Split-Screen Hero Sections
+epic: PUB
+story: 2
+slug: parallax-split-hero
+story_file: docs/stories/pub-2-parallax-split-hero.md
+decision: FAIL
+decision_date: 2025-09-20
+reviewer: Quinn (QA)
+summary: |
+  Homepage hero parallax and Artist split hero exhibit incorrect baseline transforms at rest,
+  causing visible vertical drift/misalignment. Depth magnitudes are too aggressive, and
+  reduced-motion initialization is incorrect. Artist split hero also uses a negative margin
+  that compounds the offset. No other sections were brought up to blueprint parity.
+
+criteria:
+  initial_render_alignment: FAIL
+  scroll_behavior_0_300px: FAIL
+  reduced_motion_behavior: CONCERNS
+  performance_budget_main_thread: CONCERNS
+  accessibility_no_layout_shift: FAIL
+  blueprint_parity_other_sections: FAIL
+
+defects:
+  - id: PARALLAX-BASELINE
+    severity: high
+    location: hooks/use-parallax.ts
+    description: |
+      Baseline transform uses offsetTop/windowHeight math that applies a non-zero translation at rest
+      for absolutely positioned layers. Causes background to "drop" and split hero to misalign.
+    evidence: |
+      updateTransform(): relativeScrollY = scrollY - elementTop + windowHeight; transform set to
+      var(--parallax-offset) = relativeScrollY * depth.
+    fix: |
+      Compute from getBoundingClientRect().top and use offset = -rect.top * depth (clamped to section
+      bounds). Initialize CSS var to 0, update only when in view.
+
+  - id: REDUCED-MOTION-INIT
+    severity: medium
+    location: hooks/use-parallax.ts
+    description: useReducedMotion uses useState(prefersReducedMotion) instead of invoking the function.
+    fix: Change to `const [reducedMotion, setReducedMotion] = useState(prefersReducedMotion())`.
+
+  - id: DEPTH-TUNING
+    severity: medium
+    location: lib/parallax-config.ts
+    description: Depths are too aggressive for full-bleed absolute layers (bg 0.5, mid 0.2, fg -0.1).
+    fix: |
+      Suggested: background 0.12–0.16, mid 0.06–0.08, foreground -0.02––0.04; split left 0.04, right -0.04.
+
+  - id: ARTIST-HERO_NEG_MARGIN
+    severity: medium
+    location: components/artist-portfolio.tsx
+    description: Section uses `-mt-20`, compounding the initial parallax offset/misalignment.
+    fix: Remove negative margin; use header-aware padding (e.g., pt-20 md:pt-24).
+
+required_fixes:
+  - PARALLAX-BASELINE
+  - REDUCED-MOTION-INIT
+  - DEPTH-TUNING
+  - ARTIST-HERO_NEG_MARGIN
+
+retest_plan: |
+  Desktop and mobile:
+    1) Initial render at / and /artists/1 shows aligned layers, no drift at rest.
+    2) Scroll 0→300px shows subtle, smooth depth without detachment or CLS spikes.
+    3) Enable prefers-reduced-motion; verify no parallax transforms are applied.
+    4) Validate no long tasks > 50ms from parallax; monitor in Performance panel.
+    5) Confirm split hero stacks on small screens with correct initial alignment.
+
+acceptance_checklist:
+  - Initial transform defaults to 0 at mount (unit test).
+  - Transform updates only when in view (IO-gated).
+  - Reduced motion disables parallax (unit test).
+  - Depths tuned and clamped to section bounds.
+  - Artist split hero has no negative margins; uses header-aware spacing.
+  - No regression in LCP/CLS on hero sections.
+
+notes: |
+  Gate will move to PASS once fixes land with tests and visual verification in a preview build.
+
+recheck:
+  date: 2025-09-20
+  result: FAIL
+  summary: |
+    Homepage hero OK after fixes. Artist portfolio split hero still misaligned: left image panel is raised so high
+    that more than half is offscreen above the top of the page.
+  evidence:
+    - file: components/artist-portfolio.tsx
+      snippet: 'className="relative h-screen overflow-hidden -mt-20"'
+      issue: Negative top margin forces section upward; with parallax transforms this results in visible offscreen overflow.
+    - file: hooks/use-parallax.ts
+      issue: Baseline still computed with offsetTop/windowHeight; useReducedMotion initialized with function reference instead of boolean.
+  actions_required:
+    - Remove "-mt-20" from artist split hero; replace with header-aware padding (e.g., "pt-20 md:pt-24").
+    - Compute parallax offset from getBoundingClientRect().top; initialize "--parallax-offset" to "0px"; IO-gate updates to when in view.
+    - Clamp split-screen depths to left 0.04 and right -0.04 or temporarily disable split parallax until stable.
+  retest_expectations:
+    - Initial render shows aligned image/content (no offscreen overflow).
+    - Scroll 0–300px shows subtle depth without detachment or CLS.
+    - Reduced motion disables transforms for split hero.
+
+doc_status_mismatch: true
+doc_status_notes: |
+  Story file claims fixes landed (baseline, depth tuning, negative margin removed), but source code indicates otherwise.
+  Update the story after the code changes are actually applied and verified.
