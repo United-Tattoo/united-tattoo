@@ -24,7 +24,6 @@ const sourceSans = Source_Sans_3({
 export const metadata: Metadata = {
   title: "United Tattoo - Professional Tattoo Studio",
   description: "Book appointments with our talented artists and explore stunning tattoo portfolios at United Tattoo.",
-  generator: "v0.app",
 }
 
 export const dynamic = "force-dynamic";
