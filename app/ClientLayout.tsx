@@ -7,7 +7,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 import { Suspense, useState } from "react"
 
 import { FeatureFlagsProvider } from "@/components/feature-flags-provider"
-import { SmoothScrollProvider } from "@/components/smooth-scroll-provider"
+import { LenisProvider } from "@/components/smooth-scroll-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/components/theme-provider"
 import type { FlagsSnapshot } from "@/lib/flags"
@@ -51,10 +51,10 @@ export default function ClientLayout({
         <FeatureFlagsProvider value={initialFlags}>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
             <Suspense fallback={<div>Loading...</div>}>
-              <SmoothScrollProvider>
+              <LenisProvider>
                 {children}
                 <Toaster />
-              </SmoothScrollProvider>
+              </LenisProvider>
             </Suspense>
           </ThemeProvider>
         </FeatureFlagsProvider>

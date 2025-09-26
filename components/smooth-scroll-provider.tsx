@@ -1,23 +1,43 @@
 "use client"
 
-import type React from "react"
+import { createContext, useContext, useEffect, useState } from "react"
 
-import { useEffect } from "react"
+interface LenisInstance {
+  raf: (time: number) => void
+  destroy: () => void
+  scrollTo: (position: number) => void
+}
 
-export function SmoothScrollProvider({ children }: { children: React.ReactNode }) {
+interface LenisContextType {
+  lenis: LenisInstance | null
+}
+
+const LenisContext = createContext<LenisContextType | undefined>(undefined)
+
+export function useLenis() {
+  const context = useContext(LenisContext)
+  if (context === undefined) {
+    throw new Error("useLenis must be used within a LenisProvider")
+  }
+  return context.lenis
+}
+
+export function LenisProvider({ children }: { children: React.ReactNode }) {
+  const [lenis, setLenis] = useState<LenisInstance | null>(null)
+
   useEffect(() => {
-    let lenis: any
-
     const initLenis = async () => {
       const Lenis = (await import("@studio-freight/lenis")).default
 
-      lenis = new Lenis({
+      const newLenis = new Lenis({
         duration: 1.2,
         easing: (t: number) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      })
+      }) as LenisInstance
+
+      setLenis(newLenis)
 
       function raf(time: number) {
-        lenis.raf(time)
+        newLenis?.raf(time)
         requestAnimationFrame(raf)
       }
 
@@ -33,5 +53,5 @@ export function SmoothScrollProvider({ children }: { children: React.ReactNode }
     }
   }, [])
 
-  return <>{children}</>
+  return <LenisContext.Provider value={{ lenis }}>{children}</LenisContext.Provider>
 }
