@@ -53,7 +53,197 @@ export async function getArtists(env?: any): Promise<Artist[]> {
     ORDER BY a.created_at DESC
   `).all();
   
-  return result.results as Artist[];
+  // Parse JSON fields
+  return (result.results as any[]).map(artist => ({
+    ...artist,
+    specialties: artist.specialties ? JSON.parse(artist.specialties) : [],
+    portfolioImages: []
+  }));
+}
+
+export async function getPublicArtists(filters?: import('@/types/database').ArtistFilters, env?: any): Promise<import('@/types/database').PublicArtist[]> {
+  const db = getDB(env);
+  
+  let query = `
+    SELECT 
+      a.id,
+      a.slug,
+      a.name,
+      a.bio,
+      a.specialties,
+      a.instagram_handle,
+      a.is_active,
+      a.hourly_rate
+    FROM artists a
+    WHERE a.is_active = 1
+  `;
+  
+  const values: any[] = [];
+  
+  if (filters?.specialty) {
+    query += ` AND a.specialties LIKE ?`;
+    values.push(`%${filters.specialty}%`);
+  }
+  
+  if (filters?.search) {
+    query += ` AND (a.name LIKE ? OR a.bio LIKE ?)`;
+    values.push(`%${filters.search}%`, `%${filters.search}%`);
+  }
+  
+  query += ` ORDER BY a.created_at DESC`;
+  
+  if (filters?.limit) {
+    query += ` LIMIT ?`;
+    values.push(filters.limit);
+  }
+  
+  if (filters?.offset) {
+    query += ` OFFSET ?`;
+    values.push(filters.offset);
+  }
+  
+  const result = await db.prepare(query).bind(...values).all();
+  
+  // Fetch portfolio images for each artist
+  const artistsWithPortfolio = await Promise.all(
+    (result.results as any[]).map(async (artist) => {
+      const portfolioResult = await db.prepare(`
+        SELECT * FROM portfolio_images 
+        WHERE artist_id = ? AND is_public = 1
+        ORDER BY order_index ASC, created_at DESC
+      `).bind(artist.id).all();
+      
+      return {
+        id: artist.id,
+        slug: artist.slug,
+        name: artist.name,
+        bio: artist.bio,
+        specialties: artist.specialties ? JSON.parse(artist.specialties) : [],
+        instagramHandle: artist.instagram_handle,
+        isActive: Boolean(artist.is_active),
+        hourlyRate: artist.hourly_rate,
+        portfolioImages: (portfolioResult.results as any[]).map(img => ({
+          id: img.id,
+          artistId: img.artist_id,
+          url: img.url,
+          caption: img.caption,
+          tags: img.tags ? JSON.parse(img.tags) : [],
+          orderIndex: img.order_index,
+          isPublic: Boolean(img.is_public),
+          createdAt: new Date(img.created_at)
+        }))
+      };
+    })
+  );
+  
+  return artistsWithPortfolio;
+}
+
+export async function getArtistWithPortfolio(id: string, env?: any): Promise<import('@/types/database').ArtistWithPortfolio | null> {
+  const db = getDB(env);
+  
+  const artistResult = await db.prepare(`
+    SELECT 
+      a.*,
+      u.name as user_name,
+      u.email as user_email,
+      u.avatar as user_avatar
+    FROM artists a
+    LEFT JOIN users u ON a.user_id = u.id
+    WHERE a.id = ?
+  `).bind(id).first();
+  
+  if (!artistResult) return null;
+  
+  const portfolioResult = await db.prepare(`
+    SELECT * FROM portfolio_images 
+    WHERE artist_id = ?
+    ORDER BY order_index ASC, created_at DESC
+  `).bind(id).all();
+  
+  const artist = artistResult as any;
+  
+  return {
+    id: artist.id,
+    userId: artist.user_id,
+    slug: artist.slug,
+    name: artist.name,
+    bio: artist.bio,
+    specialties: artist.specialties ? JSON.parse(artist.specialties) : [],
+    instagramHandle: artist.instagram_handle,
+    isActive: Boolean(artist.is_active),
+    hourlyRate: artist.hourly_rate,
+    portfolioImages: (portfolioResult.results as any[]).map(img => ({
+      id: img.id,
+      artistId: img.artist_id,
+      url: img.url,
+      caption: img.caption,
+      tags: img.tags ? JSON.parse(img.tags) : [],
+      orderIndex: img.order_index,
+      isPublic: Boolean(img.is_public),
+      createdAt: new Date(img.created_at)
+    })),
+    availability: [],
+    createdAt: new Date(artist.created_at),
+    updatedAt: new Date(artist.updated_at),
+    user: {
+      name: artist.user_name,
+      email: artist.user_email,
+      avatar: artist.user_avatar
+    }
+  };
+}
+
+export async function getArtistBySlug(slug: string, env?: any): Promise<import('@/types/database').ArtistWithPortfolio | null> {
+  const db = getDB(env);
+  
+  const artistResult = await db.prepare(`
+    SELECT 
+      a.*,
+      u.name as user_name,
+      u.email as user_email,
+      u.avatar as user_avatar
+    FROM artists a
+    LEFT JOIN users u ON a.user_id = u.id
+    WHERE a.slug = ?
+  `).bind(slug).first();
+  
+  if (!artistResult) return null;
+  
+  const artist = artistResult as any;
+  return getArtistWithPortfolio(artist.id, env);
+}
+
+export async function getArtistByUserId(userId: string, env?: any): Promise<Artist | null> {
+  const db = getDB(env);
+  const result = await db.prepare(`
+    SELECT 
+      a.*,
+      u.name as user_name,
+      u.email as user_email
+    FROM artists a
+    LEFT JOIN users u ON a.user_id = u.id
+    WHERE a.user_id = ?
+  `).bind(userId).first();
+  
+  if (!result) return null;
+  
+  const artist = result as any;
+  return {
+    id: artist.id,
+    userId: artist.user_id,
+    slug: artist.slug,
+    name: artist.name,
+    bio: artist.bio,
+    specialties: artist.specialties ? JSON.parse(artist.specialties) : [],
+    instagramHandle: artist.instagram_handle,
+    isActive: Boolean(artist.is_active),
+    hourlyRate: artist.hourly_rate,
+    portfolioImages: [],
+    availability: [],
+    createdAt: new Date(artist.created_at),
+    updatedAt: new Date(artist.updated_at)
+  };
 }
 
 export async function getArtist(id: string, env?: any): Promise<Artist | null> {

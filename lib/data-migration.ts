@@ -81,16 +81,20 @@ export class DataMigrator {
     // Extract hourly rate from experience or set default
     const hourlyRate = this.extractHourlyRate(artist.experience);
     
+    // Generate slug from artist name or use existing slug
+    const slug = artist.slug || this.generateSlug(artist.name);
+    
     try {
       await this.db.prepare(`
         INSERT OR IGNORE INTO artists (
-          id, user_id, name, bio, specialties, instagram_handle, 
+          id, user_id, slug, name, bio, specialties, instagram_handle, 
           hourly_rate, is_active, created_at, updated_at
         )
-        VALUES (?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
       `).bind(
         artistId,
         userId,
+        slug,
         artist.name,
         artist.bio,
         JSON.stringify(specialties),
@@ -98,7 +102,7 @@ export class DataMigrator {
         hourlyRate,
       ).run();
       
-      console.log(`Created artist record: ${artist.name}`);
+      console.log(`Created artist record: ${artist.name} (slug: ${slug})`);
     } catch (error) {
       console.error(`Error creating artist record for ${artist.name}:`, error);
       throw error;
@@ -165,6 +169,17 @@ export class DataMigrator {
     }
     
     console.log(`Created portfolio images for: ${artist.name}`);
+  }
+
+  /**
+   * Generate URL-friendly slug from artist name
+   */
+  private generateSlug(name: string): string {
+    return name
+      .toLowerCase()
+      .replace(/['']/g, '') // Remove apostrophes
+      .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with hyphens
+      .replace(/^-+|-+$/g, ''); // Trim hyphens from ends
   }
 
   /**

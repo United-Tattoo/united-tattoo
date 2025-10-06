@@ -11,7 +11,7 @@ binding = "ASSETS"
 [[d1_databases]]
 binding = "DB"
 database_name = "united-tattoo"
-database_id = "5d133d3b-680f-4772-b4ea-594c55cd1bd5"
+database_id = "7191a4c4-e3b2-49c6-bd8d-9cc3394977ec"
 
 # R2 bucket binding
 [[r2_buckets]]
@@ -29,13 +29,13 @@ service = "united-tattoo"
 
 # Environment variables for production
 [env.production.vars]
-NEXTAUTH_URL = "https://your-domain.com"
+NEXTAUTH_URL = "https://united-tattoos.com"
 NODE_ENV = "production"
 
 # Environment variables for preview
 [env.preview.vars]
-NEXTAUTH_URL = "https://development.united-tattoos.com"
-NODE_ENV = "development"
+NEXTAUTH_URL = "https://united-tattoos.com"
+NODE_ENV = "production"
 
 [dev]
 ip = "0.0.0.0"

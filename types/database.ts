@@ -134,6 +134,7 @@ export enum UserRole {
 export interface Artist {
   id: string
   userId: string
+  slug: string
   name: string
   bio: string
   specialties: string[]
@@ -144,6 +145,42 @@ export interface Artist {
   availability: Availability[]
   createdAt: Date
   updatedAt: Date
+}
+
+export interface ArtistWithPortfolio extends Artist {
+  portfolioImages: PortfolioImage[]
+  user?: {
+    name: string
+    email: string
+    avatar?: string
+  }
+}
+
+export interface PublicArtist {
+  id: string
+  slug: string
+  name: string
+  bio: string
+  specialties: string[]
+  instagramHandle?: string
+  portfolioImages: PortfolioImage[]
+  isActive: boolean
+  hourlyRate?: number
+}
+
+export interface ArtistDashboardStats {
+  totalImages: number
+  activeImages: number
+  profileViews?: number
+  lastUpdated: Date
+}
+
+export interface ArtistFilters {
+  specialty?: string
+  search?: string
+  isActive?: boolean
+  limit?: number
+  offset?: number
 }
 
 export interface PortfolioImage {
