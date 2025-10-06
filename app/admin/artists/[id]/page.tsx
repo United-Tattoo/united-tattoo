@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import { ArtistForm } from '@/components/admin/artist-form'
+import { PortfolioManager } from '@/components/admin/portfolio-manager'
 import { useToast } from '@/hooks/use-toast'
 import type { Artist } from '@/types/database'
 
@@ -57,7 +58,7 @@ export default function EditArtistPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Edit Artist</h1>
         <p className="text-muted-foreground">
-          Update {artist.name}'s information and portfolio
+          Update {artist.name}&apos;s information and portfolio
         </p>
       </div>
       
@@ -69,6 +70,14 @@ export default function EditArtistPage() {
             description: 'Artist updated successfully',
           })
           fetchArtist() // Refresh the data
+        }}
+      />
+
+      {/* Portfolio Management */}
+      <PortfolioManager 
+        artistId={artist.id}
+        onImagesUpdate={() => {
+          fetchArtist() // Refresh artist data when images are updated
         }}
       />
     </div>
