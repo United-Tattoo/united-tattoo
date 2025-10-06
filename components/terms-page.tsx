@@ -37,7 +37,7 @@ export function TermsPage() {
       <section className="px-8 lg:px-16">
         <div className="max-w-4xl mx-auto">
           <Alert className="bg-white/5 border-white/10">
-            <Info className="h-5 w-5 text-white" />
+            <Info className="h-5 w-5" aria-hidden="true" />
             <AlertDescription className="text-gray-300">
               By booking an appointment or placing a deposit with United Tattoo, you agree to the terms outlined below.
               If anything is unclear, please reach out at{" "}
@@ -66,7 +66,7 @@ export function TermsPage() {
             <CardContent className="text-gray-300 space-y-3">
               <p>• Consultations may be required for larger or custom pieces.</p>
               <p>• We review requests and match you with the best available artist for your style and timeline.</p>
-              <p>• Pricing depends on size, detail, placement, and the artist's rate.</p>
+              <p>• Pricing depends on size, detail, placement, and the artist&apos;s rate.</p>
               <p>
                 • Walk-ins are welcome based on availability—call ahead for current openings:
                 {" "}
@@ -123,7 +123,7 @@ export function TermsPage() {
             </CardHeader>
             <CardContent className="text-gray-300 space-y-3">
               <p>• All custom artwork remains the intellectual property of the artist.</p>
-              <p>• Reference images help guide your piece, but we do not copy other artists' work.</p>
+              <p>• Reference images help guide your piece, but we do not copy other artists&apos; work.</p>
               <p>• Minor revisions to design are typically included; extensive changes may incur extra charges.</p>
               <p>• We reserve the right to refuse service for inappropriate or unsafe requests.</p>
             </CardContent>

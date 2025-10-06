@@ -1,8 +1,10 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
-import { Button } from "@/components/ui/button"
+import { useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
+
+import { useFeatureFlag } from "@/components/feature-flags-provider"
+import { Button } from "@/components/ui/button"
 import { artists } from "@/data/artists"
 
 export function ArtistsSection() {
@@ -12,8 +14,30 @@ export function ArtistsSection() {
   const leftColumnRef = useRef<HTMLDivElement>(null)
   const centerColumnRef = useRef<HTMLDivElement>(null)
   const rightColumnRef = useRef<HTMLDivElement>(null)
+  const advancedNavAnimations = useFeatureFlag("ADVANCED_NAV_SCROLL_ANIMATIONS_ENABLED")
+  const allArtistIndices = useMemo(() => Array.from({ length: artists.length }, (_, idx) => idx), [])
 
   useEffect(() => {
+    if (!advancedNavAnimations) {
+      setVisibleCards(allArtistIndices)
+      setScrollY(0)
+
+      const columns = [leftColumnRef.current, centerColumnRef.current, rightColumnRef.current]
+      columns.forEach((column) => {
+        if (!column) return
+        column.style.transform = ""
+        column.querySelectorAll(".artist-image").forEach((img) => {
+          ;(img as HTMLElement).style.transform = ""
+        })
+      })
+      return
+    }
+
+    setVisibleCards([])
+  }, [advancedNavAnimations, allArtistIndices])
+
+  useEffect(() => {
+    if (!advancedNavAnimations) return
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -25,16 +49,14 @@ export function ArtistsSection() {
       },
       { threshold: 0.2, rootMargin: "0px 0px 0px 0px" },
     )
-
     const cards = sectionRef.current?.querySelectorAll("[data-index]")
     cards?.forEach((card) => observer.observe(card))
-
     return () => observer.disconnect()
-  }, [])
+  }, [advancedNavAnimations])
 
   useEffect(() => {
+    if (!advancedNavAnimations) return
     let ticking = false
-
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
@@ -45,12 +67,12 @@ export function ArtistsSection() {
         ticking = true
       }
     }
-
     window.addEventListener("scroll", handleScroll, { passive: true })
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, [advancedNavAnimations])
 
   useEffect(() => {
+    if (!advancedNavAnimations) return
     if (leftColumnRef.current && centerColumnRef.current && rightColumnRef.current) {
       const sectionTop = sectionRef.current?.offsetTop || 0
       const relativeScroll = scrollY - sectionTop
@@ -73,7 +95,21 @@ export function ArtistsSection() {
         ;(img as HTMLElement).style.transform = `translateY(${relativeScroll * -0.005}px)`
       })
     }
-  }, [scrollY])
+  }, [advancedNavAnimations, scrollY])
+
+  const cardVisibilityClass = (index: number) => {
+    if (!advancedNavAnimations) {
+      return "opacity-100 translate-y-0"
+    }
+    return visibleCards.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+  }
+
+  const cardTransitionDelay = (index: number) => {
+    if (!advancedNavAnimations) {
+      return undefined
+    }
+    return `${index * 50}ms`
+  }
 
   // Better distribution for visual balance
   const leftColumn = [artists[0], artists[3], artists[6]] // Christy, Donovan, John
@@ -117,231 +153,243 @@ export function ArtistsSection() {
         <div className="max-w-screen-2xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             <div ref={leftColumnRef} className="space-y-8">
-              {leftColumn.map((artist, index) => (
-                <div
-                  key={artist.id}
-                  data-index={artists.indexOf(artist)}
-                  className={`group transition-all duration-700 ${
-                    visibleCards.includes(artists.indexOf(artist))
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-8"
-                  }`}
-                  style={{
-                    transitionDelay: `${artists.indexOf(artist) * 50}ms`,
-                  }}
-                >
-                  <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg shadow-2xl">
-                    <div className="absolute inset-0 bg-black artist-image">
-                      {/* Portfolio background - full width */}
-                      <div className="absolute inset-0">
-                        <img
-                          src={artist.workImages?.[0] || "/placeholder.svg"}
-                          alt={`${artist.name} tattoo work`}
-                          className="w-full h-full object-cover scale-110"
-                        />
-                        {/* Darkening overlay to push background further back */}
-                        <div className="absolute inset-0 bg-black/40"></div>
+              {leftColumn.map((artist) => {
+                const globalIndex = artists.indexOf(artist)
+                const transitionDelay = cardTransitionDelay(globalIndex)
+                return (
+                  <div
+                    key={artist.id}
+                    data-index={globalIndex}
+                    className={`group transition-all duration-700 ${cardVisibilityClass(globalIndex)}`}
+                    style={
+                      transitionDelay
+                        ? {
+                            transitionDelay,
+                          }
+                        : undefined
+                    }
+                  >
+                    <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg shadow-2xl">
+                      <div className="absolute inset-0 bg-black artist-image">
+                        {/* Portfolio background - full width */}
+                        <div className="absolute inset-0">
+                          <img
+                            src={artist.workImages?.[0] || "/placeholder.svg"}
+                            alt={`${artist.name} tattoo work`}
+                            className="w-full h-full object-cover scale-110"
+                          />
+                          {/* Darkening overlay to push background further back */}
+                          <div className="absolute inset-0 bg-black/40"></div>
+                        </div>
+
+                        {/* Artist portrait - with proper feathered mask */}
+                        <div className="absolute left-0 top-0 w-3/5 h-full">
+                          <img
+                            src={artist.faceImage || "/placeholder.svg"}
+                            alt={`${artist.name} portrait`}
+                            className="w-full h-full object-cover scale-110"
+                            style={{
+                              maskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)',
+                              WebkitMaskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)'
+                            }}
+                          />
+                        </div>
                       </div>
 
-                      {/* Artist portrait - with proper feathered mask */}
-                      <div className="absolute left-0 top-0 w-3/5 h-full">
-                        <img
-                          src={artist.faceImage || "/placeholder.svg"}
-                          alt={`${artist.name} portrait`}
-                          className="w-full h-full object-cover scale-110"
-                          style={{
-                            maskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)',
-                            WebkitMaskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)'
-                          }}
-                        />
-                      </div>
-                    </div>
+                      <div className="absolute inset-0 z-20 group-hover:bg-black/20 transition-all duration-500">
+                        <div className="absolute top-4 left-4">
+                          <span className="text-xs font-medium tracking-widest text-white uppercase bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full">
+                            {artist.experience}
+                          </span>
+                        </div>
 
-                    <div className="absolute inset-0 z-20 group-hover:bg-black/20 transition-all duration-500">
-                      <div className="absolute top-4 left-4">
-                        <span className="text-xs font-medium tracking-widest text-white uppercase bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full">
-                          {artist.experience}
-                        </span>
-                      </div>
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-500">
+                          <h3 className="text-2xl font-bold tracking-tight mb-2 text-white">{artist.name}</h3>
+                          <p className="text-sm font-medium text-white/90 mb-3">{artist.specialty}</p>
+                          <p className="text-sm text-white/80 mb-4 leading-relaxed">{artist.bio}</p>
 
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-500">
-                        <h3 className="text-2xl font-bold tracking-tight mb-2 text-white">{artist.name}</h3>
-                        <p className="text-sm font-medium text-white/90 mb-3">{artist.specialty}</p>
-                        <p className="text-sm text-white/80 mb-4 leading-relaxed">{artist.bio}</p>
-
-                        <div className="flex gap-2">
-                          <Button
-                            asChild
-                            size="sm"
-                            className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
-                          >
-                            <Link href={`/artists/${artist.id}`}>PORTFOLIO</Link>
-                          </Button>
-                          <Button
-                            asChild
-                            size="sm"
-                            className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
-                          >
-                            <Link href="/book">BOOK</Link>
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              asChild
+                              size="sm"
+                              className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
+                            >
+                              <Link href={`/artists/${artist.id}`}>PORTFOLIO</Link>
+                            </Button>
+                            <Button
+                              asChild
+                              size="sm"
+                              className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
+                            >
+                              <Link href="/book">BOOK</Link>
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
 
             <div ref={centerColumnRef} className="space-y-8">
-              {centerColumn.map((artist, index) => (
-                <div
-                  key={artist.id}
-                  data-index={artists.indexOf(artist)}
-                  className={`group transition-all duration-700 ${
-                    visibleCards.includes(artists.indexOf(artist))
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-8"
-                  }`}
-                  style={{
-                    transitionDelay: `${artists.indexOf(artist) * 50}ms`,
-                  }}
-                >
-                  <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg shadow-2xl">
-                    <div className="absolute inset-0 bg-black artist-image">
-                      {/* Portfolio background - full width */}
-                      <div className="absolute inset-0">
-                        <img
-                          src={artist.workImages?.[0] || "/placeholder.svg"}
-                          alt={`${artist.name} tattoo work`}
-                          className="w-full h-full object-cover scale-110"
-                        />
-                        {/* Darkening overlay to push background further back */}
-                        <div className="absolute inset-0 bg-black/40"></div>
+              {centerColumn.map((artist) => {
+                const globalIndex = artists.indexOf(artist)
+                const transitionDelay = cardTransitionDelay(globalIndex)
+                return (
+                  <div
+                    key={artist.id}
+                    data-index={globalIndex}
+                    className={`group transition-all duration-700 ${cardVisibilityClass(globalIndex)}`}
+                    style={
+                      transitionDelay
+                        ? {
+                            transitionDelay,
+                          }
+                        : undefined
+                    }
+                  >
+                    <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg shadow-2xl">
+                      <div className="absolute inset-0 bg-black artist-image">
+                        {/* Portfolio background - full width */}
+                        <div className="absolute inset-0">
+                          <img
+                            src={artist.workImages?.[0] || "/placeholder.svg"}
+                            alt={`${artist.name} tattoo work`}
+                            className="w-full h-full object-cover scale-110"
+                          />
+                          {/* Darkening overlay to push background further back */}
+                          <div className="absolute inset-0 bg-black/40"></div>
+                        </div>
+
+                        {/* Artist portrait - with proper feathered mask */}
+                        <div className="absolute left-0 top-0 w-3/5 h-full">
+                          <img
+                            src={artist.faceImage || "/placeholder.svg"}
+                            alt={`${artist.name} portrait`}
+                            className="w-full h-full object-cover scale-110"
+                            style={{
+                              maskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)',
+                              WebkitMaskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)'
+                            }}
+                          />
+                        </div>
                       </div>
 
-                      {/* Artist portrait - with proper feathered mask */}
-                      <div className="absolute left-0 top-0 w-3/5 h-full">
-                        <img
-                          src={artist.faceImage || "/placeholder.svg"}
-                          alt={`${artist.name} portrait`}
-                          className="w-full h-full object-cover scale-110"
-                          style={{
-                            maskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)',
-                            WebkitMaskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)'
-                          }}
-                        />
-                      </div>
-                    </div>
+                      <div className="absolute inset-0 z-20 group-hover:bg-black/20 transition-all duration-500">
+                        <div className="absolute top-4 left-4">
+                          <span className="text-xs font-medium tracking-widest text-white uppercase bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full">
+                            {artist.experience}
+                          </span>
+                        </div>
 
-                    <div className="absolute inset-0 z-20 group-hover:bg-black/20 transition-all duration-500">
-                      <div className="absolute top-4 left-4">
-                        <span className="text-xs font-medium tracking-widest text-white uppercase bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full">
-                          {artist.experience}
-                        </span>
-                      </div>
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-500">
+                          <h3 className="text-2xl font-bold tracking-tight mb-2 text-white">{artist.name}</h3>
+                          <p className="text-sm font-medium text-white/90 mb-3">{artist.specialty}</p>
+                          <p className="text-sm text-white/80 mb-4 leading-relaxed">{artist.bio}</p>
 
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-500">
-                        <h3 className="text-2xl font-bold tracking-tight mb-2 text-white">{artist.name}</h3>
-                        <p className="text-sm font-medium text-white/90 mb-3">{artist.specialty}</p>
-                        <p className="text-sm text-white/80 mb-4 leading-relaxed">{artist.bio}</p>
-
-                        <div className="flex gap-2">
-                          <Button
-                            asChild
-                            size="sm"
-                            className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
-                          >
-                            <Link href={`/artists/${artist.id}`}>PORTFOLIO</Link>
-                          </Button>
-                          <Button
-                            asChild
-                            size="sm"
-                            className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
-                          >
-                            <Link href="/book">BOOK</Link>
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              asChild
+                              size="sm"
+                              className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
+                            >
+                              <Link href={`/artists/${artist.id}`}>PORTFOLIO</Link>
+                            </Button>
+                            <Button
+                              asChild
+                              size="sm"
+                              className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
+                            >
+                              <Link href="/book">BOOK</Link>
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
 
             <div ref={rightColumnRef} className="space-y-8">
-              {rightColumn.map((artist, index) => (
-                <div
-                  key={artist.id}
-                  data-index={artists.indexOf(artist)}
-                  className={`group transition-all duration-700 ${
-                    visibleCards.includes(artists.indexOf(artist))
-                      ? "opacity-100 translate-y-0"
-                      : "opacity-0 translate-y-8"
-                  }`}
-                  style={{
-                    transitionDelay: `${artists.indexOf(artist) * 50}ms`,
-                  }}
-                >
-                  <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg shadow-2xl">
-                    <div className="absolute inset-0 bg-black artist-image">
-                      {/* Portfolio background - full width */}
-                      <div className="absolute inset-0">
-                        <img
-                          src={artist.workImages?.[0] || "/placeholder.svg"}
-                          alt={`${artist.name} tattoo work`}
-                          className="w-full h-full object-cover scale-110"
-                        />
-                        {/* Darkening overlay to push background further back */}
-                        <div className="absolute inset-0 bg-black/40"></div>
+              {rightColumn.map((artist) => {
+                const globalIndex = artists.indexOf(artist)
+                const transitionDelay = cardTransitionDelay(globalIndex)
+                return (
+                  <div
+                    key={artist.id}
+                    data-index={globalIndex}
+                    className={`group transition-all duration-700 ${cardVisibilityClass(globalIndex)}`}
+                    style={
+                      transitionDelay
+                        ? {
+                            transitionDelay,
+                          }
+                        : undefined
+                    }
+                  >
+                    <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg shadow-2xl">
+                      <div className="absolute inset-0 bg-black artist-image">
+                        {/* Portfolio background - full width */}
+                        <div className="absolute inset-0">
+                          <img
+                            src={artist.workImages?.[0] || "/placeholder.svg"}
+                            alt={`${artist.name} tattoo work`}
+                            className="w-full h-full object-cover scale-110"
+                          />
+                          {/* Darkening overlay to push background further back */}
+                          <div className="absolute inset-0 bg-black/40"></div>
+                        </div>
+
+                        {/* Artist portrait - with proper feathered mask */}
+                        <div className="absolute left-0 top-0 w-3/5 h-full">
+                          <img
+                            src={artist.faceImage || "/placeholder.svg"}
+                            alt={`${artist.name} portrait`}
+                            className="w-full h-full object-cover scale-110"
+                            style={{
+                              maskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)',
+                              WebkitMaskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)'
+                            }}
+                          />
+                        </div>
                       </div>
 
-                      {/* Artist portrait - with proper feathered mask */}
-                      <div className="absolute left-0 top-0 w-3/5 h-full">
-                        <img
-                          src={artist.faceImage || "/placeholder.svg"}
-                          alt={`${artist.name} portrait`}
-                          className="w-full h-full object-cover scale-110"
-                          style={{
-                            maskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)',
-                            WebkitMaskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)'
-                          }}
-                        />
-                      </div>
-                    </div>
+                      <div className="absolute inset-0 z-20 group-hover:bg-black/20 transition-all duration-500">
+                        <div className="absolute top-4 left-4">
+                          <span className="text-xs font-medium tracking-widest text-white uppercase bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full">
+                            {artist.experience}
+                          </span>
+                        </div>
 
-                    <div className="absolute inset-0 z-20 group-hover:bg-black/20 transition-all duration-500">
-                      <div className="absolute top-4 left-4">
-                        <span className="text-xs font-medium tracking-widest text-white uppercase bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full">
-                          {artist.experience}
-                        </span>
-                      </div>
+                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-500">
+                          <h3 className="text-2xl font-bold tracking-tight mb-2 text-white">{artist.name}</h3>
+                          <p className="text-sm font-medium text-white/90 mb-3">{artist.specialty}</p>
+                          <p className="text-sm text-white/80 mb-4 leading-relaxed">{artist.bio}</p>
 
-                      <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-500">
-                        <h3 className="text-2xl font-bold tracking-tight mb-2 text-white">{artist.name}</h3>
-                        <p className="text-sm font-medium text-white/90 mb-3">{artist.specialty}</p>
-                        <p className="text-sm text-white/80 mb-4 leading-relaxed">{artist.bio}</p>
-
-                        <div className="flex gap-2">
-                          <Button
-                            asChild
-                            size="sm"
-                            className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
-                          >
-                            <Link href={`/artists/${artist.id}`}>PORTFOLIO</Link>
-                          </Button>
-                          <Button
-                            asChild
-                            size="sm"
-                            className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
-                          >
-                            <Link href="/book">BOOK</Link>
-                          </Button>
+                          <div className="flex gap-2">
+                            <Button
+                              asChild
+                              size="sm"
+                              className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
+                            >
+                              <Link href={`/artists/${artist.id}`}>PORTFOLIO</Link>
+                            </Button>
+                            <Button
+                              asChild
+                              size="sm"
+                              className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
+                            >
+                              <Link href="/book">BOOK</Link>
+                            </Button>
+                          </div>
                         </div>
                       </div>
                     </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
             </div>
           </div>
         </div>

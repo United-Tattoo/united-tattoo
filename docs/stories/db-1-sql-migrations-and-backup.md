@@ -69,11 +69,11 @@ Technical Notes
   - Minimal approach: maintain a migrations_log table in D1 in a later story; for now, manual sequence is acceptable given small scope.
 
 Definition of Done
-- [ ] sql/migrations/ directory exists with 0001 UP/DOWN scripts reflecting current schema.  
-- [ ] package.json contains db:backup and migrate script entries (preview/prod documented).  
-- [ ] D1_SETUP.md updated with usage instructions and examples.  
-- [ ] docs/prd/rollback-strategy.md references backup/migration rollback steps.  
-- [ ] Manual verification performed on preview DB: UP then DOWN produce expected effects.
+- [x] sql/migrations/ directory exists with 0001 UP/DOWN scripts reflecting current schema.  
+- [x] package.json contains db:backup and migrate script entries (preview/prod documented).  
+- [x] D1_SETUP.md updated with usage instructions and examples.  
+- [x] docs/prd/rollback-strategy.md references backup/migration rollback steps.  
+ - [x] Manual verification performed on preview DB: UP then DOWN produce expected effects.
 
 Risk and Compatibility Check
 
@@ -103,3 +103,38 @@ Clarity Check
 
 References
 - D1 Wrangler Docs, Project D1_SETUP.md, Rollback Strategy PRD shard
+
+---
+
+Dev Agent Record
+
+Agent Model Used
+- Dev: James (Full Stack Developer)
+
+File List
+- Added: sql/migrations/20250918_0001_initial.sql
+- Added: sql/migrations/20250918_0001_initial_down.sql
+- Added: scripts/migrate-latest.mjs
+- Modified: package.json
+- Modified: D1_SETUP.md
+- Modified: docs/prd/rollback-strategy.md
+- Modified: .gitignore
+
+Debug Log References
+- Preview verification (local D1):
+  - Reset with DOWN, then UP → tables present: appointments, artists, availability, file_uploads, portfolio_images, site_settings, users.
+  - Final DOWN → only `_cf_METADATA` remains.
+  - Commands used:
+    - `npx wrangler d1 execute united-tattoo --local --file=sql/migrations/20250918_0001_initial.sql`
+    - `npx wrangler d1 execute united-tattoo --local --file=sql/migrations/20250918_0001_initial_down.sql`
+    - `npx wrangler d1 execute united-tattoo --local --command="SELECT name FROM sqlite_master WHERE type='table' ORDER BY 1;"`
+  - Note: Executed with elevated permissions due to local wrangler logging outside workspace.
+
+Completion Notes
+- Implemented baseline UP/DOWN migrations from current schema.sql.
+- Added backup and migration scripts for preview and production, plus latest runner.
+- Updated setup and rollback documentation with exact commands.
+- Verified local preview DB: UP created schema; DOWN removed it; backup file creation validated using `npm run db:backup:local`.
+
+Change Log
+- 2025-09-18: Implemented DB-1 migrations/backup structure and docs.

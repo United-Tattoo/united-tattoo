@@ -1,0 +1,48 @@
+schema: 1
+story: "FF-3"
+story_title: "Feature Flags Operations & Verification — Brownfield Addition"
+gate: "PASS"
+status_reason: "Feature flag ops runbook now includes Cloudflare dashboard steps, incident playbook details, and preview simulation guidance required by ACs."
+reviewer: "Quinn (Test Architect)"
+updated: "2025-09-19T23:30:00Z"
+
+waiver:
+  active: false
+
+top_issues: []
+
+risk_summary:
+  totals: { critical: 0, high: 0, medium: 0, low: 0 }
+  recommendations:
+    must_fix: []
+    monitor: []
+
+quality_score: 90
+expires: "2025-10-03T23:30:00Z"
+
+evidence:
+  tests_reviewed: 4
+  risks_identified: 0
+  trace:
+    ac_covered: [1, 2, 3, 4, 5, 6, 7, 8]
+    ac_gaps: []
+
+nfr_validation:
+  security:
+    status: PASS
+    notes: "Documentation-only change; no new security exposure."
+  performance:
+    status: PASS
+    notes: "Preview drill guidance enables operators to confirm perf impact before toggling."
+  reliability:
+    status: PASS
+    notes: "Incident playbook and preview simulation steps enhance operational reliability."
+  maintainability:
+    status: PASS
+    notes: "Comprehensive procedural documentation reduces tribal knowledge and enables sustainable ops."
+
+recommendations:
+  immediate: []
+  future:
+    - action: "Add automated tabletop checklist to QA tooling once manual workflow is finalized."
+      refs: ["docs/prd/rollback-strategy.md"]

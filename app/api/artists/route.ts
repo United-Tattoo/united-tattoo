@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from "next/server"
 import { requireAuth } from "@/lib/auth"
-import { UserRole } from "@/types/database"
+import { UserRole, ArtistFilters } from "@/types/database"
 import { createArtistSchema, paginationSchema, artistFiltersSchema } from "@/lib/validations"
-import { getArtists, createArtist } from "@/lib/db"
+import { getPublicArtists, createArtist } from "@/lib/db"
+import { Flags } from "@/lib/flags"
 
 export const dynamic = "force-dynamic";
 
@@ -14,7 +15,7 @@ export async function GET(request: NextRequest, { params }: { params?: any } = {
     // Parse and validate query parameters
     const pagination = paginationSchema.parse({
       page: searchParams.get("page") || "1",
-      limit: searchParams.get("limit") || "10",
+      limit: searchParams.get("limit") || "50", // Increased default for artists grid
     })
     
     const filters = artistFiltersSchema.parse({
@@ -23,46 +24,28 @@ export async function GET(request: NextRequest, { params }: { params?: any } = {
       search: searchParams.get("search"),
     })
 
-    // Fetch artists from database with environment context
-    const artists = await getArtists(context?.env)
-    
-    // Apply filters
-    let filteredArtists = artists
-    
-    if (filters.isActive !== undefined) {
-      filteredArtists = filteredArtists.filter(artist => 
-        artist.isActive === filters.isActive
-      )
+    // Build filters for database query
+    const dbFilters: ArtistFilters = {
+      specialty: filters.specialty || undefined,
+      search: filters.search || undefined,
+      isActive: filters.isActive !== undefined ? filters.isActive : true,
+      limit: pagination.limit,
+      offset: (pagination.page - 1) * pagination.limit,
     }
+
+    // Fetch artists from database with portfolio images
+    const artists = await getPublicArtists(dbFilters, context?.env)
     
-    if (filters.specialty) {
-      filteredArtists = filteredArtists.filter(artist =>
-        artist.specialties.some(specialty => 
-          specialty.toLowerCase().includes(filters.specialty!.toLowerCase())
-        )
-      )
-    }
-    
-    if (filters.search) {
-      const searchTerm = filters.search.toLowerCase()
-      filteredArtists = filteredArtists.filter(artist =>
-        artist.name.toLowerCase().includes(searchTerm) ||
-        artist.bio.toLowerCase().includes(searchTerm)
-      )
-    }
-    
-    // Apply pagination
-    const startIndex = (pagination.page - 1) * pagination.limit
-    const endIndex = startIndex + pagination.limit
-    const paginatedArtists = filteredArtists.slice(startIndex, endIndex)
+    // Get total count for pagination (this is a simplified approach)
+    // In production, you'd want a separate count query
+    const hasMore = artists.length === pagination.limit
 
     return NextResponse.json({
-      artists: paginatedArtists,
+      artists,
       pagination: {
         page: pagination.page,
         limit: pagination.limit,
-        total: filteredArtists.length,
-        totalPages: Math.ceil(filteredArtists.length / pagination.limit),
+        hasMore,
       },
       filters,
     })
@@ -78,6 +61,9 @@ export async function GET(request: NextRequest, { params }: { params?: any } = {
 // POST /api/artists - Create a new artist (Admin only)
 export async function POST(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
+    if (!Flags.ARTISTS_MODULE_ENABLED) {
+      return NextResponse.json({ error: 'Artists module disabled' }, { status: 503 })
+    }
     // Require admin authentication
     const session = await requireAuth(UserRole.SHOP_ADMIN)
     

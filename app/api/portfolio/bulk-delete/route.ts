@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getDB } from '@/lib/db'
 import { z } from 'zod'
+import { Flags } from '@/lib/flags'
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,9 @@ const bulkDeleteSchema = z.object({
 
 export async function POST(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
+    if (!Flags.UPLOADS_ADMIN_ENABLED) {
+      return NextResponse.json({ error: 'Admin uploads disabled' }, { status: 503 })
+    }
     const session = await getServerSession(authOptions)
     if (!session) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

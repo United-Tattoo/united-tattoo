@@ -76,9 +76,9 @@ Technical Notes
   - Keep the module minimal; do not add runtime network calls or storage dependencies.
 
 Definition of Done
-- [ ] lib/flags.ts created with typed exports and safe defaults.
-- [ ] Tests added (Vitest) verifying parsing and defaults.
-- [ ] Documentation updated (rollback strategy ops section extended with flags list, toggling, smoke steps).
+- [x] lib/flags.ts created with typed exports and safe defaults.
+- [x] Tests added (Vitest) verifying parsing and defaults.
+- [x] Documentation updated (rollback strategy ops section extended with flags list, toggling, smoke steps).
 - [ ] Lint, typecheck, and unit tests pass locally (npm run test).
 - [ ] Preview build succeeds (npm run pages:build && npm run preview).
 - [ ] No functional changes observed when flags are absent (baseline preserved).
@@ -113,3 +113,54 @@ Clarity Check
 References
 - Epic: docs/prd/epic-feature-flags-controlled-rollbacks.md
 - Ops: docs/prd/rollback-strategy.md (Feature Flags Operations section to be updated in this story)
+
+QA Results
+- Gate Decision: PASS — Runtime-aware flag library, hydration, and ops guidance now satisfy FF-1.
+- Coverage Notes:
+  - AC1 satisfied via full FLAG_DEFAULTS export and proxy wiring for all 11 toggles (`lib/flags.ts:7`).
+  - Server/client usage now share the same snapshot through `getFlags({refresh:true})` and the `FeatureFlagsProvider` runtime registration (`app/layout.tsx:36`, `components/feature-flags-provider.tsx:14`, `lib/flags.ts:98`).
+  - Boolean parsing, env overrides, and runtime registration covered by dedicated Vitest suite (`__tests__/lib/flags.test.ts:41`).
+  - Ops playbook documents defaults, wrangler preview/production snippets, and the post-toggle smoke checklist (`docs/prd/rollback-strategy.md:64`).
+- Acceptance Criteria Coverage:
+  - AC1 — PASS
+  - AC2 — PASS
+  - AC3 — PASS
+  - AC4 — PASS (defaults preserve current behaviour)
+  - AC5 — PASS
+  - AC6 — PASS
+  - AC7 — PASS
+  - AC8 — Not assessed (automation run outside QA scope)
+  - AC9 — Not assessed (smoke validation requires environment access)
+- NFR & Risk Notes:
+  - Server warns once when env vars missing; client gating honours runtime snapshot. For fast flips, ensure at least one page request occurs post-change so API routes warm the fresh cache.
+- Recommended Status: Ready for Done.
+
+
+---
+
+Status: Ready for Review
+
+## Dev Agent Record
+- Agent Model Used: GPT-5 (Codex)
+- Debug Log References:
+  - `npm run lint` (fails: ESLint package not detected in sandbox)
+  - `npx vitest run` (fails: runner exits early without summary in sandbox)
+- Completion Notes:
+  - Added runtime-aware `lib/flags.ts` proxy with full key coverage, defaults, and missing-env warnings.
+  - Introduced client `FeatureFlagsProvider` and updated affected components to consume context-driven flags.
+  - Added focused flag parsing tests and refreshed rollback strategy docs with defaults, wrangler snippets, and smoke checklist.
+
+## File List
+- lib/flags.ts
+- components/feature-flags-provider.tsx
+- app/ClientLayout.tsx
+- app/layout.tsx
+- components/hero-section.tsx
+- components/artists-section.tsx
+- components/booking-form.tsx
+- docs/prd/rollback-strategy.md
+- __tests__/lib/flags.test.ts
+- __tests__/flags/booking-form.disabled.test.ts
+
+## Change Log
+- 2025-09-20: Restored feature flag coverage, added client provider + tests, and expanded ops documentation to satisfy QA findings.

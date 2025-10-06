@@ -4,19 +4,23 @@ import type React from "react"
 import { SessionProvider } from "next-auth/react"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
-import { SmoothScrollProvider } from "@/components/smooth-scroll-provider"
-import { Toaster } from "@/components/ui/sonner"
-import { useSearchParams } from "next/navigation"
 import { Suspense, useState } from "react"
+
+import { FeatureFlagsProvider } from "@/components/feature-flags-provider"
+import { LenisProvider } from "@/components/smooth-scroll-provider"
+import { Toaster } from "@/components/ui/sonner"
+import { ThemeProvider } from "@/components/theme-provider"
+import type { FlagsSnapshot } from "@/lib/flags"
+
 import "./globals.css"
 
 export default function ClientLayout({
   children,
+  initialFlags,
 }: Readonly<{
   children: React.ReactNode
+  initialFlags: FlagsSnapshot
 }>) {
-  const searchParams = useSearchParams()
-  
   // Create a new QueryClient instance for each component tree
   const [queryClient] = useState(
     () =>
@@ -26,10 +30,13 @@ export default function ClientLayout({
             // With SSR, we usually want to set some default staleTime
             // above 0 to avoid refetching immediately on the client
             staleTime: 60 * 1000, // 1 minute
-            retry: (failureCount, error: any) => {
+            retry: (failureCount, error: unknown) => {
               // Don't retry on 4xx errors
-              if (error?.status >= 400 && error?.status < 500) {
-                return false
+              if (typeof error === "object" && error !== null && "status" in error) {
+                const status = (error as { status?: number }).status
+                if (typeof status === "number" && status >= 400 && status < 500) {
+                  return false
+                }
               }
               return failureCount < 3
             },
@@ -41,12 +48,16 @@ export default function ClientLayout({
   return (
     <SessionProvider>
       <QueryClientProvider client={queryClient}>
-        <Suspense fallback={<div>Loading...</div>}>
-          <SmoothScrollProvider>
-            {children}
-            <Toaster />
-          </SmoothScrollProvider>
-        </Suspense>
+        <FeatureFlagsProvider value={initialFlags}>
+          <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+            <Suspense fallback={<div>Loading...</div>}>
+              <LenisProvider>
+                {children}
+                <Toaster />
+              </LenisProvider>
+            </Suspense>
+          </ThemeProvider>
+        </FeatureFlagsProvider>
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
     </SessionProvider>

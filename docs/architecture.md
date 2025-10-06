@@ -1,4 +1,4 @@
-# United Tattoo – Backend Architecture Document
+# United Tattoo – Fullstack Architecture Document
 
 Version: 1.0  
 Date: 2025-09-17  
@@ -7,10 +7,9 @@ Basis: docs/PRD.md, repo config (wrangler.toml, open-next.config.ts, next.config
 
 Introduction
 
-This document outlines the backend architecture for United Tattoo, including platform/runtime, data, integrations, security, operations, and non‑UI concerns. It is the blueprint for AI-driven and human development to implement the PRD.
+This document outlines the complete fullstack architecture for United Tattoo, including backend systems, frontend implementation, and their integration. It serves as the single source of truth for AI-driven development, ensuring consistency across the entire technology stack.
 
-Relationship to Frontend Architecture:
-A separate Frontend Architecture document should cover UI state, routing, component patterns, and UX specifics. Core technology selections herein (Cloudflare, Next.js App Router, D1/R2, Auth.js, Zod) apply project-wide.
+This unified approach combines what would traditionally be separate backend and frontend architecture documents, streamlining the development process for modern fullstack applications where these concerns are increasingly intertwined.
 
 Starter Template or Existing Project
 
@@ -23,13 +22,13 @@ Change Log
 
 | Date       | Version | Description                                 | Author   |
 |------------|---------|---------------------------------------------|----------|
-| 2025-09-17 | 1.0     | Initial backend architecture document       | Architect |
+| 2025-09-17 | 1.0     | Initial fullstack architecture document     | Architect |
 
 High Level Architecture
 
 Technical Summary
 
-United Tattoo runs as a serverless, modular monolith on Cloudflare Pages + Workers using the OpenNext adapter. Next.js App Router handles SSR/ISR and routing; Cloudflare D1 stores structured data (users, artists, appointments, settings) and R2 stores media plus incremental cache. Back-end concerns (auth, RBAC, validations, uploads, booking, payments, notifications, calendar sync) are implemented via Next.js route handlers and server actions with strict Zod validation and middleware-based RBAC. The architecture prioritizes image-forward delivery performance, reliability, and maintainability aligned to the PRD.
+United Tattoo runs as a serverless, modular monolith on Cloudflare Pages + Workers using the OpenNext adapter. Next.js App Router handles SSR/ISR and routing; Cloudflare D1 stores structured data (users, artists, appointments, settings) and R2 stores media plus incremental cache. The fullstack architecture implements both frontend UI components and backend services (auth, RBAC, validations, uploads, booking, payments, notifications, calendar sync) via Next.js route handlers, server actions, and React components with strict Zod validation and middleware-based RBAC. The architecture prioritizes image-forward delivery performance, reliability, and maintainability aligned to the PRD.
 
 High Level Overview
 
@@ -446,7 +445,114 @@ Backend Customization Choices (Confirmed)
 
 Next Steps
 
-- Frontend Architecture Mode: Generate a separate frontend architecture doc leveraging this backend document and PRD UI requirements (ShadCN, search/filters, parallax/split).
+## Frontend Component Architecture
+
+### Component Organization
+
+- **App Router Structure**: Next.js App Router with layout hierarchy
+  - Root layout: `app/layout.tsx` - Global providers, fonts, metadata
+  - Client layout: `app/ClientLayout.tsx` - Main site navigation, footer
+  - Admin layout: `app/admin/layout.tsx` - Admin dashboard structure
+  - Nested layouts per section (artists, booking, etc.)
+
+- **UI Components**: ShadCN-based component library with custom extensions
+  - Base components: `components/ui/` - Button, Card, Input, Dialog, etc.
+  - Domain components: `components/admin/`, `components/booking/`, etc.
+  - Layout components: Navigation, Footer, Section wrappers
+  - Form components: Booking forms, contact forms, payment forms
+
+- **State Management**: React hooks + Zustand for global state
+  - Local state: useState/useReducer for component-specific state
+  - Form state: React Hook Form with Zod validation integration
+  - Global state: Zustand stores for auth, booking, UI preferences
+  - Server state: React Query for data fetching and caching
+
+### Payment Form Components
+
+**Stripe Embedded Elements Integration**:
+- Payment form: `components/payment/StripePaymentForm.tsx`
+- Card element: Stripe CardElement with custom styling
+- Mobile optimization: Responsive design for 70% mobile usage
+- Error handling: Validation errors and payment status feedback
+- Loading states: Processing indicators and success confirmation
+
+**Deposit Payment Flow**:
+1. Booking form completion with service selection
+2. Deposit amount calculation based on service pricing
+3. Stripe PaymentIntent creation via server action
+4. Embedded payment form rendering with client secret
+5. Payment confirmation and status updates
+
+### State Management for Payment Processing
+
+- **Payment State Machine**:
+  - `IDLE` → Initial state
+  - `PROCESSING` → Payment submission
+  - `SUCCESS` → Payment completed
+  - `ERROR` → Payment failed
+  - `CANCELLED` → User cancelled
+
+- **Error Recovery**:
+  - Retry mechanism for failed payments
+  - Clear error messages with actionable steps
+  - Session preservation during payment flow
+
+### Mobile Optimization (70% Mobile Usage)
+
+- **Responsive Design Principles**:
+  - Mobile-first CSS approach
+  - Touch-friendly interfaces (44px+ touch targets)
+  - Simplified navigation for mobile
+  - Optimized image loading and performance
+
+- **Mobile-Specific Components**:
+  - Mobile booking bar: `components/MobileBookingBar.tsx`
+  - Touch-optimized forms and buttons
+  - Swipeable carousels for artist portfolios
+  - Simplified payment flow for mobile devices
+
+### Error Handling and User Feedback
+
+- **Frontend Error Boundaries**:
+  - Global error boundary for uncaught exceptions
+  - Component-level error handling
+  - Graceful degradation for failed features
+
+- **User Feedback Patterns**:
+  - Toast notifications: `hooks/use-toast.ts`
+  - Loading spinners and skeletons
+  - Success/error modals for critical actions
+  - Form validation feedback with Zod integration
+
+## Testing Strategy (Frontend)
+
+### Component Testing
+- **Unit Tests**: Vitest + React Testing Library
+  - Component rendering and interaction tests
+  - Hook testing for custom React hooks
+  - Form validation and state management tests
+
+- **Integration Tests**:
+  - Component composition testing
+  - Form submission and validation flows
+  - Payment form integration with mock Stripe
+
+### E2E Testing
+- **Playwright Tests**:
+  - Booking flow from start to payment completion
+  - Admin dashboard functionality
+  - Mobile responsiveness testing
+  - Cross-browser compatibility
+
+### Payment Testing
+- **Stripe Test Mode**:
+  - Test card numbers for various scenarios
+  - Webhook testing with local tunnel
+  - Error scenario simulation
+  - Mobile payment flow testing
+
+## Next Steps
+
 - Product Owner Review: Validate scope and sequencing (Phases 1–4).
 - Dev Agent: Implement stories for Phase 1 (Admin invites, onboarding wizard stub, artist CRUD/portfolio upload MVP, D1/R2 confirmations).
 - DevOps: Add CI pipeline, lock exact versions from lockfile into doc, add .env.example listing required secrets (NEXTAUTH_URL, NEXTAUTH_SECRET, R2_PUBLIC_URL, STRIPE_KEYS, RESEND_API_KEY, TWILIO_KEYS, GOOGLE_OAUTH, UPSTASH).

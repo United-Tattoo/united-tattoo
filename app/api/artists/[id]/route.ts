@@ -2,54 +2,34 @@ import { NextRequest, NextResponse } from "next/server"
 import { requireAuth } from "@/lib/auth"
 import { UserRole } from "@/types/database"
 import { updateArtistSchema } from "@/lib/validations"
-import { db } from "@/lib/db"
+import { getArtistWithPortfolio, getArtistBySlug, updateArtist, deleteArtist } from "@/lib/db"
 
-// GET /api/artists/[id] - Fetch a specific artist
+export const dynamic = "force-dynamic";
+
+// GET /api/artists/[id] - Fetch single artist with portfolio
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
+  context?: any
 ) {
   try {
     const { id } = params
-
-    // TODO: Implement via Supabase MCP
-    // const artist = await db.artists.findUnique(id)
     
-    // Mock response for now
-    const mockArtist = {
-      id,
-      userId: "user-1",
-      name: "Alex Rivera",
-      bio: "Specializing in traditional and neo-traditional tattoos with over 8 years of experience.",
-      specialties: ["Traditional", "Neo-Traditional", "Color Work"],
-      instagramHandle: "alexrivera_tattoo",
-      isActive: true,
-      hourlyRate: 150,
-      portfolioImages: [
-        {
-          id: "img-1",
-          artistId: id,
-          url: "/artists/alex-rivera-traditional-rose.jpg",
-          caption: "Traditional rose tattoo",
-          tags: ["traditional", "rose", "color"],
-          order: 1,
-          isPublic: true,
-          createdAt: new Date(),
-        },
-      ],
-      availability: [],
-      createdAt: new Date(),
-      updatedAt: new Date(),
+    // Try to fetch by ID first, then by slug
+    let artist = await getArtistWithPortfolio(id, context?.env)
+    
+    if (!artist) {
+      artist = await getArtistBySlug(id, context?.env)
     }
-
-    if (!mockArtist) {
+    
+    if (!artist) {
       return NextResponse.json(
         { error: "Artist not found" },
         { status: 404 }
       )
     }
 
-    return NextResponse.json(mockArtist)
+    return NextResponse.json(artist)
   } catch (error) {
     console.error("Error fetching artist:", error)
     return NextResponse.json(
@@ -59,39 +39,50 @@ export async function GET(
   }
 }
 
-// PUT /api/artists/[id] - Update a specific artist (Admin only)
+// PUT /api/artists/[id] - Update artist (admin or artist themselves)
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
+  context?: any
 ) {
   try {
-    // Require admin authentication
-    const session = await requireAuth(UserRole.SHOP_ADMIN)
-    
     const { id } = params
-    const body = await request.json()
-    const validatedData = updateArtistSchema.parse({ ...body, id })
-
-    // TODO: Implement via Supabase MCP
-    // const updatedArtist = await db.artists.update(id, validatedData)
+    const session = await requireAuth()
     
-    // Mock response for now
-    const mockUpdatedArtist = {
-      id,
-      userId: "user-1",
-      name: validatedData.name || "Alex Rivera",
-      bio: validatedData.bio || "Updated bio",
-      specialties: validatedData.specialties || ["Traditional"],
-      instagramHandle: validatedData.instagramHandle,
-      isActive: validatedData.isActive ?? true,
-      hourlyRate: validatedData.hourlyRate,
-      portfolioImages: [],
-      availability: [],
-      createdAt: new Date("2024-01-01"),
-      updatedAt: new Date(),
+    // Get the artist to check ownership
+    const artist = await getArtistWithPortfolio(id, context?.env)
+    if (!artist) {
+      return NextResponse.json(
+        { error: "Artist not found" },
+        { status: 404 }
+      )
+    }
+    
+    // Check authorization: must be the artist themselves or an admin
+    const isOwner = artist.userId === session.user.id
+    const isAdmin = [UserRole.SUPER_ADMIN, UserRole.SHOP_ADMIN].includes(session.user.role)
+    
+    if (!isOwner && !isAdmin) {
+      return NextResponse.json(
+        { error: "Insufficient permissions" },
+        { status: 403 }
+      )
+    }
+    
+    const body = await request.json()
+    const validatedData = updateArtistSchema.parse(body)
+    
+    // If artist is updating themselves (not admin), restrict what they can change
+    let updateData = validatedData
+    if (isOwner && !isAdmin) {
+      // Artists can only update: bio, specialties, instagramHandle, hourlyRate
+      const { bio, specialties, instagramHandle, hourlyRate } = validatedData
+      updateData = { bio, specialties, instagramHandle, hourlyRate }
     }
 
-    return NextResponse.json(mockUpdatedArtist)
+    const updatedArtist = await updateArtist(id, updateData, context?.env)
+
+    return NextResponse.json(updatedArtist)
   } catch (error) {
     console.error("Error updating artist:", error)
     
@@ -100,12 +91,6 @@ export async function PUT(
         return NextResponse.json(
           { error: "Authentication required" },
           { status: 401 }
-        )
-      }
-      if (error.message.includes("Insufficient permissions")) {
-        return NextResponse.json(
-          { error: "Insufficient permissions" },
-          { status: 403 }
         )
       }
     }
@@ -117,27 +102,21 @@ export async function PUT(
   }
 }
 
-// DELETE /api/artists/[id] - Delete a specific artist (Admin only)
+// DELETE /api/artists/[id] - Soft delete artist (admin only)
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
+  context?: any
 ) {
   try {
+    const { id } = params
+    
     // Require admin authentication
     await requireAuth(UserRole.SHOP_ADMIN)
     
-    const { id } = params
+    await deleteArtist(id, context?.env)
 
-    // TODO: Implement via Supabase MCP
-    // await db.artists.delete(id)
-    
-    // Mock response for now
-    console.log(`Artist ${id} would be deleted`)
-
-    return NextResponse.json(
-      { message: "Artist deleted successfully" },
-      { status: 200 }
-    )
+    return NextResponse.json({ success: true })
   } catch (error) {
     console.error("Error deleting artist:", error)
     

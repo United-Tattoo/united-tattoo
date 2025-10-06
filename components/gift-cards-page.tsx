@@ -66,7 +66,7 @@ export function GiftCardsPage() {
 
   const [isProcessing, setIsProcessing] = useState(false)
 
-  const handleInputChange = (field: string, value: string) => {
+  const handleInputChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
   }
 
@@ -87,7 +87,7 @@ export function GiftCardsPage() {
     setIsProcessing(false)
 
     alert(
-      `Gift card purchase successful! A ${finalAmount >= 200 ? `$${finalAmount + 25}` : `$${finalAmount}`} gift card will be ${deliveryMethod === "email" ? "emailed" : "mailed"} ${formData.isGift === "true" ? `to ${formData.recipientName}` : "to you"}.`,
+      `Gift card purchase successful! A ${finalAmount >= 200 ? `$${finalAmount + 25}` : `$${finalAmount}`} gift card will be ${deliveryMethod === "email" ? "emailed" : "mailed"} ${formData.isGift ? `to ${formData.recipientName}` : "to you"}.`,
     )
   }
 
@@ -226,7 +226,7 @@ export function GiftCardsPage() {
                     type="checkbox"
                     id="isGift"
                     checked={formData.isGift}
-                    onChange={(e) => handleInputChange("isGift", e.target.checked.toString())}
+                    onChange={(e) => handleInputChange("isGift", e.target.checked)}
                     className="rounded"
                   />
                   <label htmlFor="isGift" className="text-sm">
@@ -234,7 +234,7 @@ export function GiftCardsPage() {
                   </label>
                 </div>
 
-                {formData.isGift === "true" ? (
+                {formData.isGift ? (
                   <>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                       <div>

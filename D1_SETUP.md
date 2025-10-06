@@ -37,17 +37,56 @@ database_id = "your-actual-database-id-here"  # Replace with the ID from step 1
 
 ## Step 3: Run Database Migrations
 
-### For Local Development:
+### Baseline (schema.sql)
+The legacy baseline remains available for convenience during development:
 ```bash
-# Create tables in local D1 database
+# Create tables in local D1 database using schema.sql (legacy baseline)
 npm run db:migrate:local
 ```
 
-### For Production:
+### For Production (schema.sql):
 ```bash
-# Create tables in production D1 database
+# Create tables in production D1 database using schema.sql (legacy baseline)
 npm run db:migrate
 ```
+
+### New: Versioned SQL Migrations (UP/DOWN)
+Migrations live in `sql/migrations/` using the pattern `YYYYMMDD_NNNN_description.sql` and a matching `*_down.sql`.
+
+Initial baseline (derived from `sql/schema.sql`):
+- `sql/migrations/20250918_0001_initial.sql` (UP)
+- `sql/migrations/20250918_0001_initial_down.sql` (DOWN)
+
+Run on Preview (default binding):
+```bash
+# Apply the initial UP migration
+npm run db:migrate:up:preview
+
+# Rollback the initial migration
+npm run db:migrate:down:preview
+```
+
+Run on Production (remote):
+```bash
+# Apply the initial UP migration to prod
+npm run db:migrate:up:prod
+
+# Rollback the initial migration on prod
+npm run db:migrate:down:prod
+```
+
+Apply all UP migrations in order:
+```bash
+# Preview
+npm run db:migrate:latest:preview
+
+# Production (remote)
+npm run db:migrate:latest:prod
+```
+
+Notes:
+- Latest simply runs all `*.sql` files excluding `*_down.sql` in lexicographic order.
+- A migrations_log table will be added in a later story for precise tracking.
 
 ## Step 4: Verify Database Setup
 
@@ -115,9 +154,17 @@ Environment variables are managed through:
 
 ```bash
 # Database Management
-npm run db:create          # Create new D1 database
-npm run db:migrate         # Run migrations on production DB
-npm run db:migrate:local   # Run migrations on local DB
+npm run db:create            # Create new D1 database
+npm run db:migrate           # Run migrations on production DB
+npm run db:migrate:local     # Run migrations on local DB
+npm run db:backup            # Export remote DB to backups/d1-backup-YYYYMMDD-HHMM.sql (uses --output)
+npm run db:backup:local      # Export local DB to backups/d1-backup-YYYYMMDD-HHMM.sql (uses --local --output)
+npm run db:migrate:up:preview    # Apply UP migration on preview
+npm run db:migrate:down:preview  # Apply DOWN migration on preview
+npm run db:migrate:up:prod       # Apply UP migration on production (remote)
+npm run db:migrate:down:prod     # Apply DOWN migration on production (remote)
+npm run db:migrate:latest:preview # Apply all UP migrations (preview)
+npm run db:migrate:latest:prod    # Apply all UP migrations (prod)
 npm run db:studio          # Query production database
 npm run db:studio:local    # Query local database
 

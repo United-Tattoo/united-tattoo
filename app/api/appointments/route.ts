@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getDB } from '@/lib/db'
+import { Flags } from '@/lib/flags'
 import { z } from 'zod'
 
 export const dynamic = "force-dynamic";
@@ -22,6 +23,10 @@ const updateAppointmentSchema = createAppointmentSchema.partial().extend({
   id: z.string().min(1),
   status: z.enum(['PENDING', 'CONFIRMED', 'IN_PROGRESS', 'COMPLETED', 'CANCELLED']).optional(),
 })
+
+function bookingDisabledResponse() {
+  return NextResponse.json({ error: 'Booking disabled' }, { status: 503 })
+}
 
 export async function GET(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
@@ -87,6 +92,9 @@ export async function GET(request: NextRequest, { params }: { params?: any } = {
 
 export async function POST(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
+    if (!Flags.BOOKING_ENABLED) {
+      return bookingDisabledResponse()
+    }
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -176,6 +184,9 @@ export async function POST(request: NextRequest, { params }: { params?: any } = 
 
 export async function PUT(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
+    if (!Flags.BOOKING_ENABLED) {
+      return bookingDisabledResponse()
+    }
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
@@ -293,6 +304,9 @@ export async function PUT(request: NextRequest, { params }: { params?: any } = {
 
 export async function DELETE(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
+    if (!Flags.BOOKING_ENABLED) {
+      return bookingDisabledResponse()
+    }
     const session = await getServerSession(authOptions)
     if (!session?.user) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })

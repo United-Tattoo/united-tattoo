@@ -3,12 +3,25 @@ import { getServerSession } from "next-auth/next"
 import { authOptions } from "@/lib/auth"
 import { UserRole } from "@/types/database"
 import { AdminSidebar } from "@/components/admin/sidebar"
+import { Flags } from "@/lib/flags"
 
 export default async function AdminLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
+  if (!Flags.ADMIN_ENABLED) {
+    return (
+      <div className="min-h-screen flex items-center justify-center p-8">
+        <div className="max-w-md text-center space-y-4">
+          <h1 className="text-2xl font-semibold">Admin temporarily unavailable</h1>
+          <p className="text-muted-foreground">
+            We’re performing maintenance or addressing an incident. Please try again later.
+          </p>
+        </div>
+      </div>
+    )
+  }
   // Check authentication and authorization
   const session = await getServerSession(authOptions)
   

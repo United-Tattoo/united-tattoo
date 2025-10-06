@@ -1,9 +1,8 @@
 version: 4.43.1
-installed_at: '2025-09-18T19:13:04.573Z'
+installed_at: '2025-09-19T11:16:24.551Z'
 install_type: full
 agent: null
 ides_setup:
-  - qwen-code
   - codex
 expansion_packs: []
 files:

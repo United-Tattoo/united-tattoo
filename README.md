@@ -69,6 +69,40 @@ Build:
 - npm start
 
 
+## Continuous Integration (CI)
+
+This repo includes a CI workflow that enforces linting, type safety, unit tests, build/preview, and bundle size budgets.
+
+- Workflow file: `.gitea/workflows/ci.yaml`
+- Triggers: Push and PR against `main`/`master`
+- Node: 20.x with `npm ci`
+
+Stages
+- Lint: `npm run ci:lint` (ESLint)
+- Typecheck: `npm run ci:typecheck` (TypeScript noEmit)
+- Unit tests: `npm run ci:test` (Vitest with coverage)
+- Build: `npm run ci:build` (OpenNext build to `.vercel/output/static`)
+- Preview smoke: start OpenNext preview briefly to ensure no immediate crash
+- Budgets: `npm run ci:budgets` (analyzes `.vercel/output/static`)
+
+Bundle Size Budgets
+- Defaults are defined in `package.json` under the `budgets` key:
+  - `TOTAL_STATIC_MAX_BYTES`: 3,000,000 (≈3 MB)
+  - `MAX_ASSET_BYTES`: 1,500,000 (≈1.5 MB)
+- Override via environment variables in CI:
+  - `TOTAL_STATIC_MAX_BYTES`
+  - `MAX_ASSET_BYTES`
+
+Artifacts
+- A budgets report is written to `.vercel/output/static-budgets-report.txt` and uploaded as a CI artifact.
+
+Migration Dry-Run (D1)
+- The workflow attempts a best‑effort local dry‑run: `wrangler d1 execute united-tattoo --local --file=./sql/schema.sql`.
+- If local bindings are unavailable in CI, the step is skipped with a note; wire it up later when CI bindings are configured.
+
+Rollback Strategy
+- This story does not deploy. To disable CI temporarily, remove or rename the workflow file or adjust failing stages. For full rollback strategy see `docs/prd/rollback-strategy.md`.
+
 ## Docker
 
 This repo is docker-ready. We build a standalone Next.js app for a smaller runtime image.
@@ -123,4 +157,3 @@ Notes:
 Because Christy deserved a proper site — and because the previous one was, bluntly, not it. United Tattoo is more than a shop. It’s a community with real people and real art. This site tries to honor that.
 
 — Nicholai
-
