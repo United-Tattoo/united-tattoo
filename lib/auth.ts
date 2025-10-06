@@ -172,6 +172,74 @@ export function isSuperAdmin(role: UserRole): boolean {
   return role === UserRole.SUPER_ADMIN
 }
 
+/**
+ * Get current artist session
+ * Returns the artist record and user data if the logged-in user is an artist
+ */
+export async function getArtistSession() {
+  const session = await getServerSession()
+  
+  if (!session?.user) {
+    return null
+  }
+  
+  // Check if user has ARTIST role
+  const userRole = session.user.role
+  if (userRole !== UserRole.ARTIST && !isAdmin(userRole)) {
+    return null
+  }
+  
+  // Import db function dynamically to avoid circular dependencies
+  const { getArtistByUserId } = await import('@/lib/db')
+  const artist = await getArtistByUserId(session.user.id)
+  
+  if (!artist) {
+    return null
+  }
+  
+  return {
+    artist,
+    user: session.user
+  }
+}
+
+/**
+ * Require artist authentication
+ * Throws error if user is not an artist, otherwise returns artist and user data
+ */
+export async function requireArtistAuth() {
+  const artistSession = await getArtistSession()
+  
+  if (!artistSession) {
+    throw new Error("Artist authentication required")
+  }
+  
+  return artistSession
+}
+
+/**
+ * Check if a user can edit a specific artist profile
+ * Returns true if the user is the artist themselves, or has admin privileges
+ */
+export async function canEditArtist(userId: string, artistId: string): Promise<boolean> {
+  const session = await getServerSession()
+  
+  if (!session?.user) {
+    return false
+  }
+  
+  // Admins can edit any artist
+  if (isAdmin(session.user.role)) {
+    return true
+  }
+  
+  // Check if this user owns the artist profile
+  const { getArtistByUserId } = await import('@/lib/db')
+  const artist = await getArtistByUserId(userId)
+  
+  return artist?.id === artistId
+}
+
 // Extend NextAuth types
 declare module "next-auth" {
   interface Session {

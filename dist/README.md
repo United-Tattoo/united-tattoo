@@ -1,1 +1,0 @@
-This folder contains the built output assets for the worker "united-tattoo" generated at 2025-10-06T09:30:19.755Z.

@@ -12,8 +12,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useFeatureFlag } from "@/components/feature-flags-provider"
-import { artists } from "@/data/artists"
-import { CalendarIcon, DollarSign, MessageSquare, User } from "lucide-react"
+import { useArtists } from "@/hooks/use-artist-data"
+import { CalendarIcon, DollarSign, MessageSquare, User, Loader2 } from "lucide-react"
 import { format } from "date-fns"
 import Link from "next/link"
 
@@ -34,6 +34,10 @@ interface BookingFormProps {
 export function BookingForm({ artistId }: BookingFormProps) {
   const [step, setStep] = useState(1)
   const [selectedDate, setSelectedDate] = useState<Date>()
+  
+  // Fetch artists from API
+  const { data: artists, isLoading: artistsLoading } = useArtists({ limit: 50 })
+  
   const [formData, setFormData] = useState({
     // Personal Info
     firstName: "",
@@ -65,7 +69,7 @@ export function BookingForm({ artistId }: BookingFormProps) {
     agreeToDeposit: false,
   })
 
-  const selectedArtist = artists.find((a) => String(a.id) === formData.artistId || a.slug === formData.artistId)
+  const selectedArtist = artists?.find((a) => a.slug === formData.artistId)
   const selectedSize = tattooSizes.find((size) => size.size === formData.tattooSize)
   const bookingEnabled = useFeatureFlag("BOOKING_ENABLED")
 
@@ -245,21 +249,36 @@ export function BookingForm({ artistId }: BookingFormProps) {
               <CardContent className="space-y-6">
                 <div>
                   <label className="block text-sm font-medium mb-2">Select Artist *</label>
-                  <Select value={formData.artistId} onValueChange={(value) => handleInputChange("artistId", value)}>
+                  <Select 
+                    value={formData.artistId} 
+                    onValueChange={(value) => handleInputChange("artistId", value)}
+                    disabled={artistsLoading}
+                  >
                     <SelectTrigger>
-                      <SelectValue placeholder="Choose your preferred artist" />
+                      <SelectValue placeholder={artistsLoading ? "Loading artists..." : "Choose your preferred artist"} />
                     </SelectTrigger>
                     <SelectContent>
-                      {artists.map((artist) => (
-                        <SelectItem key={artist.slug} value={artist.slug}>
-                          <div className="flex items-center justify-between w-full">
-                            <div>
-                              <p className="font-medium">{artist.name}</p>
-                              <p className="text-sm text-muted-foreground">{artist.specialty}</p>
+                      {artistsLoading ? (
+                        <div className="flex items-center justify-center p-4">
+                          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                          <span className="text-sm text-muted-foreground">Loading...</span>
+                        </div>
+                      ) : artists && artists.length > 0 ? (
+                        artists.map((artist) => (
+                          <SelectItem key={artist.slug} value={artist.slug}>
+                            <div className="flex items-center justify-between w-full">
+                              <div>
+                                <p className="font-medium">{artist.name}</p>
+                                <p className="text-sm text-muted-foreground">{artist.specialties.join(", ")}</p>
+                              </div>
                             </div>
-                          </div>
-                        </SelectItem>
-                      ))}
+                          </SelectItem>
+                        ))
+                      ) : (
+                        <div className="p-4 text-sm text-muted-foreground text-center">
+                          No artists available
+                        </div>
+                      )}
                     </SelectContent>
                   </Select>
                 </div>
@@ -267,10 +286,12 @@ export function BookingForm({ artistId }: BookingFormProps) {
                 {selectedArtist && (
                   <div className="p-4 bg-muted/50 rounded-lg">
                     <h4 className="font-medium mb-2">{selectedArtist.name}</h4>
-                    <p className="text-sm text-muted-foreground mb-2">{selectedArtist.specialty}</p>
-                    <p className="text-sm">
-                      Experience: <span className="font-medium">{selectedArtist.experience}</span>
-                    </p>
+                    <p className="text-sm text-muted-foreground mb-2">{selectedArtist.specialties.join(", ")}</p>
+                    {selectedArtist.hourlyRate && (
+                      <p className="text-sm">
+                        Starting rate: <span className="font-medium">${selectedArtist.hourlyRate}/hr</span>
+                      </p>
+                    )}
                   </div>
                 )}
 

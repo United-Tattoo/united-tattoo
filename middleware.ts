@@ -20,8 +20,20 @@ export default withAuth(
       }
     }
 
-    // Artist-specific routes
-    if (pathname.startsWith("/artist")) {
+    // Artist dashboard routes
+    if (pathname.startsWith("/artist-dashboard")) {
+      if (!token) {
+        return NextResponse.redirect(new URL("/auth/signin", req.url))
+      }
+
+      const userRole = token.role as UserRole
+      if (userRole !== UserRole.ARTIST && userRole !== UserRole.SHOP_ADMIN && userRole !== UserRole.SUPER_ADMIN) {
+        return NextResponse.redirect(new URL("/unauthorized", req.url))
+      }
+    }
+
+    // Legacy artist-specific routes (if any)
+    if (pathname.startsWith("/artist") && !pathname.startsWith("/artists")) {
       if (!token) {
         return NextResponse.redirect(new URL("/auth/signin", req.url))
       }
