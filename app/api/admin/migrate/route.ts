@@ -5,9 +5,14 @@ import { migrateArtistData, getMigrationStats, clearMigratedData } from '@/lib/d
 
 export async function POST(request: NextRequest) {
   try {
-    // Check authentication and admin role
+    // Check authentication and admin role (allow token bypass)
+    const token = request.headers.get('x-migrate-token') || new URL(request.url).searchParams.get('token')
+    const bypass = token && token === process.env.MIGRATE_TOKEN
+
     const session = await getServerSession(authOptions)
-    if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
+    const isAdmin = session?.user?.role === 'SUPER_ADMIN'
+
+    if (!bypass && !isAdmin) {
       return NextResponse.json(
         { error: 'Unauthorized. Admin access required.' },
         { status: 401 }
@@ -53,9 +58,14 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    // Check authentication and admin role
+    // Check authentication and admin role (allow token bypass)
+    const token = request.headers.get('x-migrate-token') || new URL(request.url).searchParams.get('token')
+    const bypass = token && token === process.env.MIGRATE_TOKEN
+
     const session = await getServerSession(authOptions)
-    if (!session?.user || session.user.role !== 'SUPER_ADMIN') {
+    const isAdmin = session?.user?.role === 'SUPER_ADMIN'
+
+    if (!bypass && !isAdmin) {
       return NextResponse.json(
         { error: 'Unauthorized. Admin access required.' },
         { status: 401 }

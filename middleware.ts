@@ -7,6 +7,14 @@ export default withAuth(
     const token = req.nextauth.token
     const { pathname } = req.nextUrl
 
+    // Allow token-based bypass for admin migrate endpoint (non-interactive deployments)
+    const migrateToken = process.env.MIGRATE_TOKEN
+    const headerToken = req.headers.get("x-migrate-token")
+    const urlToken = req.nextUrl.searchParams.get("token")
+    const hasMigrateBypass =
+      pathname.startsWith("/api/admin/migrate") &&
+      ((headerToken && headerToken === migrateToken) || (urlToken && urlToken === migrateToken))
+
     // Admin routes protection
     if (pathname.startsWith("/admin")) {
       if (!token) {
@@ -46,6 +54,11 @@ export default withAuth(
 
     // API routes protection
     if (pathname.startsWith("/api/admin")) {
+      // Bypass for migration endpoint with valid token (used for automated deploys)
+      if (hasMigrateBypass) {
+        return NextResponse.next()
+      }
+
       if (!token) {
         return NextResponse.json({ error: "Authentication required" }, { status: 401 })
       }
@@ -62,6 +75,17 @@ export default withAuth(
     callbacks: {
       authorized: ({ token, req }) => {
         const { pathname } = req.nextUrl
+
+        // Token-based bypass for migration endpoint (before auth checks)
+        const migrateToken = process.env.MIGRATE_TOKEN
+        const headerToken = req.headers.get("x-migrate-token")
+        const urlToken = req.nextUrl.searchParams.get("token")
+        if (
+          pathname.startsWith("/api/admin/migrate") &&
+          ((headerToken && headerToken === migrateToken) || (urlToken && urlToken === migrateToken))
+        ) {
+          return true
+        }
 
         // Public routes that don't require authentication
         const publicRoutes = [

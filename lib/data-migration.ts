@@ -1,16 +1,7 @@
 import { artists } from '@/data/artists'
 import type { CreateArtistInput } from '@/types/database'
+import { getDB as getCloudflareDB } from '@/lib/db'
 
-// Type for Cloudflare D1 database binding
-interface Env {
-  DB: D1Database;
-}
-
-// Get the database instance from the environment
-function getDB(): D1Database {
-  // @ts-ignore - This will be available in the Cloudflare Workers runtime
-  return globalThis.DB || (globalThis as any).env?.DB;
-}
 
 /**
  * Migration utility to populate D1 database with existing artist data
@@ -19,7 +10,7 @@ export class DataMigrator {
   private db: D1Database;
 
   constructor() {
-    this.db = getDB();
+    this.db = getCloudflareDB();
   }
 
   /**
