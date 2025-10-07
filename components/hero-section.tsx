@@ -69,7 +69,7 @@ export function HeroSection() {
           )}
         >
           <p className="text-xl lg:text-2xl text-gray-200 mb-12 font-light leading-relaxed">
-            Where artistry meets precision
+            Custom Tattoos in Fountain, Colorado
           </p>
         </div>
 
