@@ -73,7 +73,8 @@ export async function getPublicArtists(filters?: import('@/types/database').Arti
       a.specialties,
       a.instagram_handle,
       a.is_active,
-      a.hourly_rate
+      a.hourly_rate,
+      a.created_at
     FROM artists a
     WHERE a.is_active = 1
   `;
@@ -122,6 +123,7 @@ export async function getPublicArtists(filters?: import('@/types/database').Arti
         instagramHandle: artist.instagram_handle,
         isActive: Boolean(artist.is_active),
         hourlyRate: artist.hourly_rate,
+        createdAt: artist.created_at ? new Date(artist.created_at) : undefined,
         portfolioImages: (portfolioResult.results as any[]).map(img => ({
           id: img.id,
           artistId: img.artist_id,
@@ -264,6 +266,28 @@ export async function getArtist(id: string, env?: any): Promise<Artist | null> {
 export async function createArtist(data: CreateArtistInput, env?: any): Promise<Artist> {
   const db = getDB(env);
   const id = crypto.randomUUID();
+
+  // Helper to generate a URL-friendly slug
+  const generateSlug = (name: string) =>
+    name
+      .toLowerCase()
+      .replace(/['']/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+
+  // Ensure slug is unique in DB
+  const ensureUniqueSlug = async (slugBase: string): Promise<string> => {
+    let candidate = slugBase;
+    let i = 1;
+    while (true) {
+      const existing = await db.prepare('SELECT slug FROM artists WHERE slug = ? LIMIT 1').bind(candidate).first();
+      if (!existing) return candidate;
+      candidate = `${slugBase}-${i++}`;
+    }
+  };
+
+  const slugBase = data.name ? generateSlug(data.name) : generateSlug(crypto.randomUUID());
+  const slug = await ensureUniqueSlug(slugBase);
   
   // First create or get the user
   let userId = data.userId;
@@ -272,27 +296,52 @@ export async function createArtist(data: CreateArtistInput, env?: any): Promise<
       INSERT INTO users (id, email, name, role)
       VALUES (?, ?, ?, 'ARTIST')
       RETURNING id
-    `).bind(crypto.randomUUID(), data.email || `${data.name.toLowerCase().replace(/\s+/g, '.')}@unitedtattoo.com`, data.name).first();
-    
-    userId = (userResult as any)?.id;
+    `)
+      .bind(
+        crypto.randomUUID(),
+        data.email || `${data.name.toLowerCase().replace(/\s+/g, '.')}@unitedtattoo.com`,
+        data.name
+      )
+      .first();
+
+    userId = (userResult as { id: string } | null)?.id;
   }
-  
-  const result = await db.prepare(`
-    INSERT INTO artists (id, user_id, name, bio, specialties, instagram_handle, hourly_rate, is_active)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?)
+
+  const inserted = await db.prepare(`
+    INSERT INTO artists (id, user_id, slug, name, bio, specialties, instagram_handle, hourly_rate, is_active)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     RETURNING *
-  `).bind(
-    id,
-    userId,
-    data.name,
-    data.bio,
-    JSON.stringify(data.specialties),
-    data.instagramHandle || null,
-    data.hourlyRate || null,
-    data.isActive !== false
-  ).first();
-  
-  return result as Artist;
+  `)
+    .bind(
+      id,
+      userId,
+      slug,
+      data.name,
+      data.bio,
+      JSON.stringify(data.specialties),
+      data.instagramHandle || null,
+      data.hourlyRate || null,
+      data.isActive !== false
+    )
+    .first();
+
+  // Parse JSON fields and normalize to match our Artist type
+  const row = inserted as any;
+  return {
+    id: row.id,
+    userId: row.user_id,
+    slug: row.slug,
+    name: row.name,
+    bio: row.bio,
+    specialties: row.specialties ? JSON.parse(row.specialties) : [],
+    instagramHandle: row.instagram_handle ?? undefined,
+    portfolioImages: [],
+    isActive: Boolean(row.is_active),
+    hourlyRate: row.hourly_rate ?? undefined,
+    availability: [],
+    createdAt: new Date(row.created_at),
+    updatedAt: new Date(row.updated_at),
+  } satisfies Artist;
 }
 
 export async function updateArtist(id: string, data: UpdateArtistInput, env?: any): Promise<Artist> {

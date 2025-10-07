@@ -73,8 +73,13 @@ export default function ArtistsPage() {
       accessorKey: "specialties",
       header: "Specialties",
       cell: ({ row }) => {
-        const specialties = row.getValue("specialties") as string
-        const specialtiesArray = specialties ? JSON.parse(specialties) : []
+        const specialties = row.getValue("specialties") as string[] | string
+        const specialtiesArray: string[] =
+          Array.isArray(specialties)
+            ? specialties
+            : typeof specialties === "string" && specialties.trim().startsWith("[")
+              ? JSON.parse(specialties)
+              : []
         return (
           <div className="flex flex-wrap gap-1">
             {specialtiesArray.slice(0, 2).map((specialty: string) => (

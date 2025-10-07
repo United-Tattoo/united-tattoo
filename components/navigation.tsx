@@ -4,7 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import type { MouseEvent } from "react"
 import Link from "next/link"
 import { usePathname, useRouter } from "next/navigation"
-import { Menu, X } from "lucide-react"
+import { ArrowUpRight, Menu, X } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -132,56 +132,60 @@ export function Navigation() {
         <div className="flex items-center justify-between h-20">
           <Link
             href="/"
-            className="font-bold text-xl lg:text-2xl tracking-[0.2em] transition-all duration-500 drop-shadow-lg text-white"
+            className="flex flex-col items-start transition-all duration-500 text-white group"
           >
-            UNITED TATTOO
+            <span className="font-bold text-2xl lg:text-3xl tracking-[0.15em] leading-none">
+              UNITED
+            </span>
+            <div className="flex items-center gap-2 mt-1">
+              <span className="h-px w-10 bg-white"></span>
+              <span className="text-xs lg:text-sm font-medium tracking-[0.2em] uppercase">
+                TATTOO
+              </span>
+            </div>
           </Link>
 
-          <div className="hidden lg:flex items-center">
+          <div className="hidden lg:flex items-center flex-1 justify-between ml-16">
             <NavigationMenu viewport={false} className="flex-initial items-center bg-transparent text-white">
-              <NavigationMenuList className="flex items-center gap-12">
-                {navItems.map((item) => {
-                  const isActive = !item.isButton && activeSection === item.id
+              <NavigationMenuList className="flex items-center gap-8">
+                {navItems
+                  .filter((item) => !item.isButton)
+                  .map((item) => {
+                    const isActive = activeSection === item.id
 
-                  if (item.isButton) {
                     return (
                       <NavigationMenuItem key={item.id} className="min-w-max">
-                        <Button
+                        <NavigationMenuLink
                           asChild
+                          data-active={isActive || undefined}
                           className={cn(
-                            "px-8 py-3 text-sm font-semibold tracking-[0.05em] uppercase transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-0 hover:scale-105",
-                            isScrolled
-                              ? "bg-white text-black hover:bg-gray-100 shadow-xl hover:shadow-2xl"
-                              : "border border-white/80 bg-transparent text-white shadow-none hover:bg-white/10",
+                            "group relative inline-flex h-auto bg-transparent px-0 py-1 text-sm font-semibold tracking-[0.15em] uppercase transition-all duration-300",
+                            "text-white/70 hover:bg-transparent hover:text-white focus:bg-transparent focus:text-white",
+                            isActive && "text-white",
                           )}
                         >
-                          <Link href={item.href} onClick={(event) => handleNavClick(event, item)}>
-                            {item.label}
-                          </Link>
-                        </Button>
+                          <Link href={item.href}>{item.label}</Link>
+                        </NavigationMenuLink>
                       </NavigationMenuItem>
                     )
-                  }
-
-                  return (
-                    <NavigationMenuItem key={item.id} className="min-w-max">
-                      <NavigationMenuLink
-                        asChild
-                        data-active={isActive || undefined}
-                        className={cn(
-                          "group relative inline-flex h-auto bg-transparent px-0 py-1 text-xs font-semibold tracking-[0.1em] uppercase transition-all duration-300",
-                          "text-white/80 hover:bg-transparent hover:text-white focus:bg-transparent focus:text-white",
-                          "after:absolute after:left-0 after:-bottom-1 after:h-0.5 after:w-0 after:bg-white after:transition-all after:duration-300 hover:after:w-full focus-visible:after:w-full",
-                          isActive && "text-white after:w-full",
-                        )}
-                      >
-                        <Link href={item.href}>{item.label}</Link>
-                      </NavigationMenuLink>
-                    </NavigationMenuItem>
-                  )
-                })}
+                  })}
               </NavigationMenuList>
             </NavigationMenu>
+
+            <Button
+              asChild
+              className={cn(
+                "px-8 py-3 text-sm font-semibold tracking-[0.1em] uppercase transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-0 hover:scale-105 group",
+                isScrolled
+                  ? "bg-white text-black hover:bg-gray-100 shadow-xl hover:shadow-2xl"
+                  : "border border-white/80 bg-transparent text-white shadow-none hover:bg-white/10",
+              )}
+            >
+              <Link href="/book" className="flex items-center gap-2">
+                <span>Book Now</span>
+                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+              </Link>
+            </Button>
           </div>
 
           <button
