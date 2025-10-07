@@ -160,7 +160,7 @@ export function Navigation() {
                           data-active={isActive || undefined}
                           className={cn(
                             "group relative inline-flex h-auto bg-transparent px-0 py-1 text-sm font-semibold tracking-[0.15em] uppercase transition-all duration-300",
-                            "text-white/70 hover:bg-transparent hover:text-white focus:bg-transparent focus:text-white",
+                            "text-white/90 hover:bg-transparent hover:text-white focus:bg-transparent focus:text-white",
                             isActive && "text-white",
                           )}
                         >
