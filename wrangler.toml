@@ -46,5 +46,5 @@ MIGRATE_TOKEN = "ut_migrate_20251006_rotated_1a2b3c"
 
 [dev]
 ip = "0.0.0.0"
-port = 8787
+port = 8897
 local_protocol = "http"

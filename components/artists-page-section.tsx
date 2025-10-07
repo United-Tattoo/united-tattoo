@@ -226,14 +226,14 @@ export function ArtistsPageSection() {
                             size="sm"
                             className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
                           >
-                            <Link href={`/artists/${artist.id}`}>PORTFOLIO</Link>
+                            <Link href={`/artists/${artist.slug}`}>PORTFOLIO</Link>
                           </Button>
                           <Button
                             asChild
                             size="sm"
                             className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
                           >
-                            <Link href="/book">BOOK</Link>
+                            <Link href={`/book?artist=${artist.slug}`}>BOOK</Link>
                           </Button>
                         </div>
                       </div>
@@ -309,14 +309,14 @@ export function ArtistsPageSection() {
                             size="sm"
                             className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
                           >
-                            <Link href={`/artists/${artist.id}`}>PORTFOLIO</Link>
+                            <Link href={`/artists/${artist.slug}`}>PORTFOLIO</Link>
                           </Button>
                           <Button
                             asChild
                             size="sm"
                             className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
                           >
-                            <Link href="/book">BOOK</Link>
+                            <Link href={`/book?artist=${artist.slug}`}>BOOK</Link>
                           </Button>
                         </div>
                       </div>
@@ -392,14 +392,14 @@ export function ArtistsPageSection() {
                             size="sm"
                             className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
                           >
-                            <Link href={`/artists/${artist.id}`}>PORTFOLIO</Link>
+                            <Link href={`/artists/${artist.slug}`}>PORTFOLIO</Link>
                           </Button>
                           <Button
                             asChild
                             size="sm"
                             className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
                           >
-                            <Link href="/book">BOOK</Link>
+                            <Link href={`/book?artist=${artist.slug}`}>BOOK</Link>
                           </Button>
                         </div>
                       </div>

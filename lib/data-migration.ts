@@ -1,5 +1,5 @@
 import { artists } from '@/data/artists'
-import type { CreateArtistInput } from '@/types/database'
+import type { Artist as StaticArtist } from '@/data/artists'
 import { getDB as getCloudflareDB } from '@/lib/db'
 
 
@@ -8,9 +8,13 @@ import { getDB as getCloudflareDB } from '@/lib/db'
  */
 export class DataMigrator {
   private db: D1Database;
+  private userIdMap: Map<number, string>;
+  private artistIdMap: Map<number, string>;
 
   constructor() {
     this.db = getCloudflareDB();
+    this.userIdMap = new Map();
+    this.artistIdMap = new Map();
   }
 
   /**
@@ -42,9 +46,10 @@ export class DataMigrator {
   /**
    * Create a user record for an artist
    */
-  private async createUserForArtist(artist: any): Promise<void> {
-    const userId = `user-${artist.id}`;
-    const email = artist.email || `${artist.name.toLowerCase().replace(/\s+/g, '.')}@unitedtattoo.com`;
+  private async createUserForArtist(artist: StaticArtist): Promise<void> {
+    const userId = crypto.randomUUID();
+    this.userIdMap.set(artist.id, userId);
+    const email = `${artist.name.toLowerCase().replace(/\s+/g, '.')}@unitedtattoo.com`;
     
     try {
       await this.db.prepare(`
@@ -62,9 +67,13 @@ export class DataMigrator {
   /**
    * Create an artist record
    */
-  private async createArtistRecord(artist: any): Promise<void> {
-    const artistId = `artist-${artist.id}`;
-    const userId = `user-${artist.id}`;
+  private async createArtistRecord(artist: StaticArtist): Promise<void> {
+    const artistId = crypto.randomUUID();
+    const userId = this.userIdMap.get(artist.id);
+    
+    if (!userId) {
+      throw new Error(`Missing user mapping for artist ${artist.name} (${artist.id})`);
+    }
     
     // Convert styles array to specialties
     const specialties = artist.styles || [];
@@ -72,8 +81,9 @@ export class DataMigrator {
     // Extract hourly rate from experience or set default
     const hourlyRate = this.extractHourlyRate(artist.experience);
     
-    // Generate slug from artist name or use existing slug
-    const slug = artist.slug || this.generateSlug(artist.name);
+    // Generate slug from artist name or use existing slug and ensure uniqueness
+    const baseSlug = artist.slug || this.generateSlug(artist.name);
+    const slug = await this.ensureUniqueSlug(baseSlug);
     
     try {
       await this.db.prepare(`
@@ -92,6 +102,8 @@ export class DataMigrator {
         artist.instagram ? this.extractInstagramHandle(artist.instagram) : null,
         hourlyRate,
       ).run();
+
+      this.artistIdMap.set(artist.id, artistId);
       
       console.log(`Created artist record: ${artist.name} (slug: ${slug})`);
     } catch (error) {
@@ -103,14 +115,19 @@ export class DataMigrator {
   /**
    * Create portfolio images for an artist
    */
-  private async createPortfolioImages(artist: any): Promise<void> {
-    const artistId = `artist-${artist.id}`;
+  private async createPortfolioImages(artist: StaticArtist): Promise<void> {
+    const artistId = this.artistIdMap.get(artist.id);
+    
+    if (!artistId) {
+      console.warn(`Skipping portfolio images for ${artist.name}: missing artistId mapping`);
+      return;
+    }
     
     // Create portfolio images from workImages array
     if (artist.workImages && Array.isArray(artist.workImages)) {
       for (let i = 0; i < artist.workImages.length; i++) {
         const imageUrl = artist.workImages[i];
-        const imageId = `portfolio-${artist.id}-${i + 1}`;
+        const imageId = crypto.randomUUID();
         
         try {
           await this.db.prepare(`
@@ -136,7 +153,7 @@ export class DataMigrator {
     
     // Also add the face image as a portfolio image
     if (artist.faceImage) {
-      const faceImageId = `portfolio-${artist.id}-face`;
+      const faceImageId = crypto.randomUUID();
       
       try {
         await this.db.prepare(`
@@ -171,6 +188,23 @@ export class DataMigrator {
       .replace(/['']/g, '') // Remove apostrophes
       .replace(/[^a-z0-9]+/g, '-') // Replace non-alphanumeric with hyphens
       .replace(/^-+|-+$/g, ''); // Trim hyphens from ends
+  }
+
+  /**
+   * Ensure slug is unique in the database by appending a counter if needed
+   */
+  private async ensureUniqueSlug(slug: string): Promise<string> {
+    let candidate = slug;
+    let i = 1;
+    // Check for existence and increment suffix until unique
+    while (true) {
+      const existing = await this.db
+        .prepare('SELECT slug FROM artists WHERE slug = ? LIMIT 1')
+        .bind(candidate)
+        .first();
+      if (!existing) return candidate;
+      candidate = `${slug}-${i++}`;
+    }
   }
 
   /**
@@ -228,7 +262,8 @@ export class DataMigrator {
   async isMigrationCompleted(): Promise<boolean> {
     try {
       const result = await this.db.prepare('SELECT COUNT(*) as count FROM artists').first();
-      return (result as any)?.count > 0;
+      const count = (result as { count: number } | null)?.count ?? 0;
+      return count > 0;
     } catch (error) {
       console.error('Error checking migration status:', error);
       return false;
@@ -263,16 +298,20 @@ export class DataMigrator {
     totalPortfolioImages: number;
   }> {
     try {
-      const [usersResult, artistsResult, imagesResult] = await Promise.all([
+      type CountRow = { count: number };
+      const [usersResult, artistsResult, imagesResult]: unknown[] = await Promise.all([
         this.db.prepare('SELECT COUNT(*) as count FROM users WHERE role = "ARTIST"').first(),
         this.db.prepare('SELECT COUNT(*) as count FROM artists').first(),
         this.db.prepare('SELECT COUNT(*) as count FROM portfolio_images').first(),
       ]);
 
+      const isCountRow = (row: unknown): row is CountRow =>
+        typeof (row as CountRow)?.count === 'number';
+
       return {
-        totalUsers: (usersResult as any)?.count || 0,
-        totalArtists: (artistsResult as any)?.count || 0,
-        totalPortfolioImages: (imagesResult as any)?.count || 0,
+        totalUsers: isCountRow(usersResult) ? usersResult.count : 0,
+        totalArtists: isCountRow(artistsResult) ? artistsResult.count : 0,
+        totalPortfolioImages: isCountRow(imagesResult) ? imagesResult.count : 0,
       };
     } catch (error) {
       console.error('Error getting migration stats:', error);
