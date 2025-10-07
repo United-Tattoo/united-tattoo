@@ -5,15 +5,23 @@ node_modules/
 /node_modules
 /.pnp
 .pnp.js
+.yarn/install-state.gz
 
 # testing
 /coverage
+coverage/
+.nyc_output/
 
 # next.js
 /.next/
 /out/
 .next/
+next-env.d.ts
+*.tsbuildinfo
+
+# vercel
 .vercel/
+.vercel
 
 # production
 /build
@@ -40,13 +48,9 @@ lerna-debug.log*
 .env.development.local
 .env.test.local
 .env.production.local
-
-# vercel
-.vercel
+.env.production
 
 # typescript
-*.tsbuildinfo
-next-env.d.ts
 *.log
 
 # IDEs
@@ -88,18 +92,21 @@ backups/
 *.sql.bak
 *.db-backup
 
-# wrangler local state (do not commit)
+# wrangler/cloudflare local state (do not commit)
 .wrangler/
 .dev.vars
+.mf/
 
 # opennext build files
 .open-next/
 .open next/
+.vercel/output/
 
 # Cache directories
 .cache/
 .parcel-cache/
 .turbo/
+.swc/
 
 # Lock files (keep only one)
 # Uncomment the ones you don't use
@@ -107,9 +114,8 @@ backups/
 # yarn.lock
 # pnpm-lock.yaml
 
-# Test coverage
-coverage/
-.nyc_output/
+# Vitest
+.vitest/
 
 # Logs
 logs/
@@ -132,3 +138,13 @@ pids/
 
 # Sentry
 .sentryclirc
+
+# React Query
+.react-query/
+
+# Supabase
+.supabase/
+supabase/.temp/
+
+# Tanstack Query Devtools
+.tanstack/
