@@ -94,13 +94,16 @@ backups/
 
 # wrangler/cloudflare local state (do not commit)
 .wrangler/
+.wrangler/**
 .dev.vars
 .mf/
 
-# opennext build files
+# opennext build files (NEVER commit these - they are build artifacts)
 .open-next/
+.open-next/**
 .open next/
 .vercel/output/
+.vercel/output/**
 
 # Cache directories
 .cache/
