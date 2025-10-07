@@ -128,7 +128,7 @@ export function Navigation() {
           : "bg-transparent backdrop-blur-none opacity-100",
       )}
     >
-      <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
+      <div className="max-w-[1800px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-20">
           <Link
             href="/"
