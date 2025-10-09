@@ -7,31 +7,38 @@ This document outlines the comprehensive SEO and performance optimizations imple
 
 ## 🚀 Performance Improvements
 
-### 1. Next.js Image Optimization Enabled
+### 1. Image Optimization (Cloudflare Workers Compatible)
+
+**Important Note:**
+Next.js `<Image>` component is **NOT compatible** with Cloudflare Workers runtime because it requires Node.js APIs that aren't available in the Workers environment.
 
 **What Changed:**
-- Enabled Next.js automatic image optimization in `next.config.mjs`
-- Added support for modern formats (AVIF, WebP)
-- Configured responsive device sizes and image sizes
-- Set up remote pattern matching for external images
+- Used native `<img>` tags with `loading="lazy"` attribute
+- Native browser lazy loading for below-the-fold images
+- Kept `images.unoptimized: true` in `next.config.mjs`
+- Background images for hero section (CSS-based)
 
 **Benefits:**
-- Automatic format conversion to WebP/AVIF (up to 50% smaller file size)
-- Lazy loading by default for off-screen images
-- Responsive images with srcset generation
-- Automatic blur placeholder generation
-- CDN optimization ready
+- Native lazy loading (supported by all modern browsers)
+- No runtime JavaScript overhead
+- Cloudflare Workers compatible
+- Fast initial page load
+
+**Alternative for Advanced Optimization:**
+For WebP/AVIF conversion and advanced image optimization on Cloudflare:
+- Use [Cloudflare Images](https://www.cloudflare.com/products/cloudflare-images/) service
+- Use [Cloudflare Transform API](https://developers.cloudflare.com/images/transform-images/)
+- Pre-optimize images before uploading to R2
 
 **Files Modified:**
 - `next.config.mjs`
+- `components/hero-section.tsx`
+- `components/artists-section.tsx`
 
 ```javascript
 images: {
-  unoptimized: false,
-  formats: ['image/avif', 'image/webp'],
-  deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
-  imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-  minimumCacheTTL: 60,
+  // Must be unoptimized for Cloudflare Workers compatibility
+  unoptimized: true,
 }
 ```
 
@@ -40,54 +47,61 @@ images: {
 ### 2. Hero Section Image Optimization
 
 **What Changed:**
-- Converted background `div` with inline style to Next.js `<Image>` component
-- Added `priority` flag for above-the-fold loading
-- Configured proper sizes and quality settings
+- Uses CSS `background-image` for hero background
+- Optimized for Cloudflare Workers compatibility
+- No JavaScript overhead for image loading
 
 **Benefits:**
-- Prioritized loading of hero image (LCP improvement)
-- Automatic format selection based on browser support
-- Reduced initial page load time
-- Better Core Web Vitals scores
+- Fast initial render
+- Works in Cloudflare Workers runtime
+- Browser-native rendering
+- No hydration issues
 
 **Files Modified:**
 - `components/hero-section.tsx`
 
-**Before:**
+**Implementation:**
 ```tsx
-<div style={{ backgroundImage: "url(/united-logo-full.jpg)" }} />
-```
-
-**After:**
-```tsx
-<Image
-  src="/united-logo-full.jpg"
-  alt=""
-  fill
-  priority
-  quality={90}
-  sizes="100vw"
-  className="object-cover"
+<div
+  className="absolute inset-0 bg-cover bg-center bg-no-repeat"
+  style={{ backgroundImage: "url(/united-logo-full.jpg)" }}
+  aria-hidden="true"
 />
 ```
+
+**Note:** For production, consider pre-optimizing the hero image to WebP/AVIF format using tools like:
+- [Squoosh](https://squoosh.app/)
+- ImageMagick
+- Sharp
+- Cloudflare Image Resizing API
 
 ---
 
 ### 3. Artists Section Image Optimization
 
 **What Changed:**
-- Converted all `<img>` tags to Next.js `<Image>` components
-- Added responsive `sizes` attributes
-- Implemented lazy loading for below-the-fold images
+- Uses native `<img>` tags with `loading="lazy"` attribute
+- Browser-native lazy loading for all artist images
+- Cloudflare Workers compatible
 
 **Benefits:**
-- Reduced bandwidth usage by 40-60%
-- Faster page render times
-- Better mobile performance
-- Responsive image loading based on viewport
+- Native lazy loading (no JavaScript required)
+- Fast and reliable
+- Works in Cloudflare Workers
+- Supported by 95%+ of browsers
 
 **Files Modified:**
 - `components/artists-section.tsx`
+
+**Implementation:**
+```tsx
+<img
+  src={artist.workImages?.[0]}
+  alt={`${artist.name} tattoo work`}
+  className="w-full h-full object-cover"
+  loading="lazy"
+/>
+```
 
 ---
 
