@@ -108,23 +108,29 @@ export function ArtistsSection() {
                   <div className={`relative w-full ${aspectFor(i)} overflow-hidden rounded-md border border-white/10 bg-black`}>
                     {/* Imagery */}
                     <div className="absolute inset-0 artist-image">
-                      <img
+                      <Image
                         src={artist.workImages?.[0] || "/placeholder.svg"}
                         alt={`${artist.name} tattoo work`}
-                        className="w-full h-full object-cover"
+                        fill
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                        className="object-cover"
+                        loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-black/30"></div>
+                      <div className="absolute inset-0 bg-black/30 z-10"></div>
 
                       {/* Portrait with feathered mask */}
-                      <div className="absolute left-0 top-0 w-3/5 h-full pointer-events-none">
-                        <img
+                      <div className="absolute left-0 top-0 w-3/5 h-full pointer-events-none z-20">
+                        <Image
                           src={artist.faceImage || "/placeholder.svg"}
                           alt={`${artist.name} portrait`}
-                          className="w-full h-full object-cover"
+                          fill
+                          sizes="(max-width: 640px) 60vw, (max-width: 1024px) 30vw, 20vw"
+                          className="object-cover"
                           style={{
                             maskImage: "linear-gradient(to right, black 0%, black 70%, transparent 100%)",
                             WebkitMaskImage: "linear-gradient(to right, black 0%, black 70%, transparent 100%)",
                           }}
+                          loading="lazy"
                         />
                       </div>
                     </div>

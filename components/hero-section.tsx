@@ -1,6 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import Image from "next/image"
 
 import { useFeatureFlag } from "@/components/feature-flags-provider"
 import { Button } from "@/components/ui/button"
@@ -29,13 +30,20 @@ export function HeroSection() {
       {/* Background Layer - Slowest parallax */}
       <div
         ref={parallax.background.ref}
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat will-change-transform"
-        style={{
-          backgroundImage: "url(/united-logo-full.jpg)",
-          ...parallax.background.style,
-        }}
+        className="absolute inset-0 will-change-transform"
+        style={parallax.background.style}
         aria-hidden="true"
-      />
+      >
+        <Image
+          src="/united-logo-full.jpg"
+          alt=""
+          fill
+          priority
+          quality={90}
+          sizes="100vw"
+          className="object-cover object-center"
+        />
+      </div>
       
       {/* Midground Layer - Overlay with subtle parallax */}
       <div
