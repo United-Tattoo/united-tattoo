@@ -7,6 +7,8 @@ const nextConfig = {
     ignoreBuildErrors: true,
   },
   images: {
+    // Must be unoptimized for Cloudflare Workers compatibility
+    // Next.js Image component requires Node.js APIs not available in Workers runtime
     unoptimized: true,
   },
   output: "standalone",

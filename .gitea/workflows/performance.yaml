@@ -1,0 +1,267 @@
+name: Performance Monitoring
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  pull_request:
+    branches:
+      - main
+      - master
+  schedule:
+    # Run performance check daily at 4 AM UTC
+    - cron: '0 4 * * *'
+  workflow_dispatch:
+
+env:
+  NODE_VERSION: '20'
+  SITE_URL: 'https://united-tattoo.christyl116.workers.dev'
+
+jobs:
+  lighthouse-audit:
+    name: Lighthouse Performance Audit
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.12.x
+
+      - name: Run Lighthouse CI
+        run: |
+          echo "Running Lighthouse performance audit..."
+          
+          # Create lighthouse config
+          cat > lighthouserc.js << EOF
+          module.exports = {
+            ci: {
+              collect: {
+                url: ['${{ env.SITE_URL }}'],
+                numberOfRuns: 3,
+                settings: {
+                  chromeFlags: '--no-sandbox --headless',
+                },
+              },
+              assert: {
+                assertions: {
+                  'categories:performance': ['warn', {minScore: 0.8}],
+                  'categories:accessibility': ['error', {minScore: 0.9}],
+                  'categories:best-practices': ['warn', {minScore: 0.8}],
+                  'categories:seo': ['error', {minScore: 0.9}],
+                },
+              },
+              upload: {
+                target: 'filesystem',
+                outputDir: './lighthouse-results',
+              },
+            },
+          };
+          EOF
+          
+          # Run Lighthouse
+          lhci autorun
+
+      - name: Upload Lighthouse results
+        uses: actions/upload-artifact@v4
+        with:
+          name: lighthouse-results
+          path: lighthouse-results/
+          retention-days: 30
+
+  bundle-analysis:
+    name: Bundle Size Analysis
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build application
+        run: npm run ci:build
+
+      - name: Analyze bundle size
+        run: |
+          echo "Analyzing bundle sizes..."
+          
+          # Check total build size
+          BUILD_SIZE=$(du -sh .vercel/output/static | cut -f1)
+          echo "Total build size: $BUILD_SIZE"
+          
+          # Check individual chunk sizes
+          echo "Largest chunks:"
+          find .vercel/output/static/_next/static/chunks -name "*.js" -exec du -h {} \; | sort -hr | head -10
+          
+          # Check for large files
+          echo "Large files (>500KB):"
+          find .vercel/output/static -type f -size +500k -exec ls -lh {} \;
+
+      - name: Run budget check
+        run: npm run ci:budgets
+        env:
+          TOTAL_STATIC_MAX_BYTES: ${{ vars.TOTAL_STATIC_MAX_BYTES || '3000000' }}
+          MAX_ASSET_BYTES: ${{ vars.MAX_ASSET_BYTES || '1500000' }}
+
+      - name: Upload bundle analysis
+        uses: actions/upload-artifact@v4
+        with:
+          name: bundle-analysis
+          path: |
+            .vercel/output/static-budgets-report.txt
+            .vercel/output/static/
+          retention-days: 30
+
+  core-web-vitals:
+    name: Core Web Vitals Check
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Check Core Web Vitals
+        run: |
+          echo "Checking Core Web Vitals..."
+          
+          # Basic performance check
+          RESPONSE_TIME=$(curl -o /dev/null -s -w '%{time_total}' ${{ env.SITE_URL }})
+          echo "Response time: ${RESPONSE_TIME}s"
+          
+          # Check if response time is acceptable
+          if (( $(echo "$RESPONSE_TIME < 2.0" | bc -l) )); then
+            echo "✅ Response time is good (< 2s)"
+          else
+            echo "⚠️ Response time is slow (> 2s)"
+          fi
+          
+          # Check for gzip compression
+          COMPRESSED_SIZE=$(curl -H "Accept-Encoding: gzip" -s -w '%{size_download}' -o /dev/null ${{ env.SITE_URL }})
+          UNCOMPRESSED_SIZE=$(curl -s -w '%{size_download}' -o /dev/null ${{ env.SITE_URL }})
+          
+          if [ "$COMPRESSED_SIZE" -lt "$UNCOMPRESSED_SIZE" ]; then
+            echo "✅ Gzip compression is working"
+          else
+            echo "⚠️ Gzip compression may not be working"
+          fi
+
+      - name: Check SEO performance
+        run: |
+          echo "Checking SEO performance..."
+          
+          # Check for meta tags
+          curl -s ${{ env.SITE_URL }} | grep -q "og:title" && echo "✅ Open Graph tags present" || echo "❌ Open Graph tags missing"
+          curl -s ${{ env.SITE_URL }} | grep -q "twitter:card" && echo "✅ Twitter Card tags present" || echo "❌ Twitter Card tags missing"
+          curl -s ${{ env.SITE_URL }} | grep -q "application/ld+json" && echo "✅ JSON-LD structured data present" || echo "❌ JSON-LD structured data missing"
+          
+          # Check for canonical URL
+          curl -s ${{ env.SITE_URL }} | grep -q "canonical" && echo "✅ Canonical URL present" || echo "❌ Canonical URL missing"
+
+      - name: Check security headers
+        run: |
+          echo "Checking security headers..."
+          
+          # Check for security headers
+          curl -I ${{ env.SITE_URL }} | grep -q "X-Frame-Options" && echo "✅ X-Frame-Options present" || echo "⚠️ X-Frame-Options missing"
+          curl -I ${{ env.SITE_URL }} | grep -q "X-Content-Type-Options" && echo "✅ X-Content-Type-Options present" || echo "⚠️ X-Content-Type-Options missing"
+          curl -I ${{ env.SITE_URL }} | grep -q "X-XSS-Protection" && echo "✅ X-XSS-Protection present" || echo "⚠️ X-XSS-Protection missing"
+
+  performance-report:
+    name: Generate Performance Report
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs: [lighthouse-audit, bundle-analysis, core-web-vitals]
+    if: always()
+    steps:
+      - name: Download performance results
+        uses: actions/download-artifact@v4
+        with:
+          name: lighthouse-results
+          path: lighthouse-results/
+
+      - name: Generate performance report
+        run: |
+          echo "# Performance Report" > performance-report.md
+          echo "Generated: $(date -u)" >> performance-report.md
+          echo "Site URL: ${{ env.SITE_URL }}" >> performance-report.md
+          echo "" >> performance-report.md
+          
+          # Add Lighthouse results
+          if [ -d "lighthouse-results" ]; then
+            echo "## Lighthouse Scores" >> performance-report.md
+            echo "" >> performance-report.md
+            
+            # Extract scores from Lighthouse results
+            if [ -f "lighthouse-results/manifest.json" ]; then
+              echo "Lighthouse audit completed successfully" >> performance-report.md
+            else
+              echo "Lighthouse audit results not found" >> performance-report.md
+            fi
+            echo "" >> performance-report.md
+          fi
+          
+          echo "## Performance Checks" >> performance-report.md
+          echo "" >> performance-report.md
+          echo "- Lighthouse Audit: ${{ needs.lighthouse-audit.result }}" >> performance-report.md
+          echo "- Bundle Analysis: ${{ needs.bundle-analysis.result }}" >> performance-report.md
+          echo "- Core Web Vitals: ${{ needs.core-web-vitals.result }}" >> performance-report.md
+          echo "" >> performance-report.md
+          
+          echo "## Recommendations" >> performance-report.md
+          echo "" >> performance-report.md
+          echo "1. Monitor Core Web Vitals regularly" >> performance-report.md
+          echo "2. Keep bundle sizes under budget limits" >> performance-report.md
+          echo "3. Ensure Lighthouse scores remain above thresholds" >> performance-report.md
+          echo "4. Check for performance regressions in PRs" >> performance-report.md
+
+      - name: Upload performance report
+        uses: actions/upload-artifact@v4
+        with:
+          name: performance-report
+          path: performance-report.md
+          retention-days: 90
+
+      - name: Comment on PR
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = fs.readFileSync('performance-report.md', 'utf8');
+            
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: `## 📊 Performance Report
+              
+              ${report}`
+            });

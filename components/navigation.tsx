@@ -128,7 +128,7 @@ export function Navigation() {
           : "bg-transparent backdrop-blur-none opacity-100",
       )}
     >
-      <div className="max-w-screen-2xl mx-auto px-6 lg:px-12">
+      <div className="max-w-[1800px] mx-auto px-6 lg:px-10">
         <div className="flex items-center justify-between h-20">
           <Link
             href="/"
@@ -160,7 +160,7 @@ export function Navigation() {
                           data-active={isActive || undefined}
                           className={cn(
                             "group relative inline-flex h-auto bg-transparent px-0 py-1 text-sm font-semibold tracking-[0.15em] uppercase transition-all duration-300",
-                            "text-white/70 hover:bg-transparent hover:text-white focus:bg-transparent focus:text-white",
+                            "text-white/90 hover:bg-transparent hover:text-white focus:bg-transparent focus:text-white",
                             isActive && "text-white",
                           )}
                         >

@@ -79,10 +79,10 @@ export function ServicesSection() {
             <div className="relative">
               <div className="absolute -left-4 top-0 w-1 h-32 bg-black/10"></div>
               <div className="mb-8">
-                <span className="text-sm font-medium tracking-widest text-black/60 uppercase">What We Offer</span>
+                <span className="text-sm font-medium tracking-widest text-black/90 uppercase">What We Offer</span>
               </div>
-              <h2 className="text-6xl lg:text-8xl font-bold tracking-tight mb-8 text-balance">SERVICES</h2>
-              <p className="text-xl text-black/70 leading-relaxed max-w-lg">
+              <h2 className="text-6xl lg:text-8xl font-bold tracking-tight mb-8 text-balance text-black">SERVICES</h2>
+              <p className="text-xl text-black/90 leading-relaxed max-w-lg">
                 From custom designs to cover-ups, we offer comprehensive tattoo services with the highest standards of
                 quality and safety.
               </p>

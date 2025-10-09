@@ -1,0 +1,201 @@
+name: Deployment Pipeline
+
+on:
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: 'Target environment'
+        required: true
+        default: 'preview'
+        type: choice
+        options:
+          - preview
+          - production
+      skip_tests:
+        description: 'Skip tests (emergency deployment)'
+        required: false
+        default: false
+        type: boolean
+      force_deploy:
+        description: 'Force deployment even if checks fail'
+        required: false
+        default: false
+        type: boolean
+  schedule:
+    # Deploy to preview every Sunday at 2 AM UTC
+    - cron: '0 2 * * 0'
+
+env:
+  NODE_VERSION: '20'
+  CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+jobs:
+  pre-deployment-checks:
+    name: Pre-Deployment Checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    if: ${{ !inputs.skip_tests }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Quick lint check
+        run: npm run ci:lint
+
+      - name: TypeScript check
+        run: npm run ci:typecheck
+
+      - name: Run tests
+        run: npm run ci:test
+
+  build-and-deploy:
+    name: Build and Deploy
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    needs: [pre-deployment-checks]
+    if: always() && (needs.pre-deployment-checks.result == 'success' || inputs.skip_tests || inputs.force_deploy)
+    environment: ${{ inputs.environment || 'preview' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci --no-audit --no-fund
+
+      - name: Build application
+        run: |
+          echo "Building application for ${{ inputs.environment || 'preview' }} environment..."
+          npm run ci:build
+          
+          # Generate deployment ID
+          DEPLOY_ID=$(date +%Y%m%d-%H%M%S)-${GITHUB_SHA::8}
+          echo "DEPLOY_ID=$DEPLOY_ID" >> $GITHUB_ENV
+          echo "Deployment ID: $DEPLOY_ID"
+
+      - name: Database migration (Production only)
+        if: inputs.environment == 'production'
+        run: |
+          echo "Running database migrations for production..."
+          # In a real scenario, this would run actual migrations
+          echo "Database migrations completed (simulated)"
+
+      - name: Deploy to Cloudflare
+        run: |
+          echo "Deploying to Cloudflare ${{ inputs.environment || 'preview' }} environment..."
+          CLOUDFLARE_ACCOUNT_ID=${{ env.CLOUDFLARE_ACCOUNT_ID }} npx @opennextjs/cloudflare deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+
+      - name: Wait for deployment
+        run: |
+          echo "Waiting for deployment to propagate..."
+          sleep 15
+
+      - name: Health check
+        run: |
+          echo "Performing health check..."
+          MAX_RETRIES=5
+          RETRY_COUNT=0
+          
+          while [ $RETRY_COUNT -lt $MAX_RETRIES ]; do
+            if curl -f -s https://united-tattoo.christyl116.workers.dev > /dev/null; then
+              echo "✅ Health check passed!"
+              break
+            else
+              RETRY_COUNT=$((RETRY_COUNT + 1))
+              echo "Health check failed, retrying... ($RETRY_COUNT/$MAX_RETRIES)"
+              sleep 10
+            fi
+          done
+          
+          if [ $RETRY_COUNT -eq $MAX_RETRIES ]; then
+            echo "❌ Health check failed after $MAX_RETRIES attempts"
+            exit 1
+          fi
+
+      - name: Performance check
+        run: |
+          echo "Running performance check..."
+          # Basic performance check
+          RESPONSE_TIME=$(curl -o /dev/null -s -w '%{time_total}' https://united-tattoo.christyl116.workers.dev)
+          echo "Response time: ${RESPONSE_TIME}s"
+          
+          # Check if response time is acceptable (less than 2 seconds)
+          if (( $(echo "$RESPONSE_TIME < 2.0" | bc -l) )); then
+            echo "✅ Performance check passed"
+          else
+            echo "⚠️ Performance check warning: Response time is ${RESPONSE_TIME}s"
+          fi
+
+      - name: SEO check
+        run: |
+          echo "Checking SEO metadata..."
+          curl -s https://united-tattoo.christyl116.workers.dev | grep -q "application/ld+json" && echo "✅ JSON-LD found" || echo "⚠️ JSON-LD not found"
+          curl -s https://united-tattoo.christyl116.workers.dev | grep -q "og:title" && echo "✅ Open Graph tags found" || echo "⚠️ Open Graph tags not found"
+
+      - name: Create deployment record
+        run: |
+          echo "Creating deployment record..."
+          # In a real scenario, this would create a record in your database or logging system
+          echo "Deployment ID: $DEPLOY_ID" > deployment-info.txt
+          echo "Environment: ${{ inputs.environment || 'preview' }}" >> deployment-info.txt
+          echo "Commit: $GITHUB_SHA" >> deployment-info.txt
+          echo "Timestamp: $(date -u)" >> deployment-info.txt
+          echo "URL: https://united-tattoo.christyl116.workers.dev" >> deployment-info.txt
+
+      - name: Upload deployment info
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-info-${{ inputs.environment || 'preview' }}-${{ env.DEPLOY_ID }}
+          path: deployment-info.txt
+          retention-days: 90
+
+      - name: Notify success
+        if: success()
+        run: |
+          echo "🎉 Deployment to ${{ inputs.environment || 'preview' }} completed successfully!"
+          echo "Deployment ID: $DEPLOY_ID"
+          echo "URL: https://united-tattoo.christyl116.workers.dev"
+
+      - name: Notify failure
+        if: failure()
+        run: |
+          echo "❌ Deployment to ${{ inputs.environment || 'preview' }} failed!"
+          echo "Deployment ID: $DEPLOY_ID"
+          echo "Please check the logs for details."
+
+  rollback:
+    name: Rollback (if needed)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    needs: [build-and-deploy]
+    if: failure() && inputs.environment == 'production'
+    environment: production
+    steps:
+      - name: Rollback deployment
+        run: |
+          echo "Rolling back production deployment..."
+          # In a real scenario, this would implement actual rollback logic
+          echo "Rollback completed (simulated)"
+          
+      - name: Verify rollback
+        run: |
+          echo "Verifying rollback..."
+          curl -f https://united-tattoo.christyl116.workers.dev || exit 1
+          echo "✅ Rollback verification successful"

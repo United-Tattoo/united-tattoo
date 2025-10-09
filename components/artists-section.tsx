@@ -8,31 +8,17 @@ import { Button } from "@/components/ui/button"
 import { artists } from "@/data/artists"
 
 export function ArtistsSection() {
+  // Minimal animation: fade-in only (no parallax)
   const [visibleCards, setVisibleCards] = useState<number[]>([])
-  const [scrollY, setScrollY] = useState(0)
   const sectionRef = useRef<HTMLElement>(null)
-  const leftColumnRef = useRef<HTMLDivElement>(null)
-  const centerColumnRef = useRef<HTMLDivElement>(null)
-  const rightColumnRef = useRef<HTMLDivElement>(null)
   const advancedNavAnimations = useFeatureFlag("ADVANCED_NAV_SCROLL_ANIMATIONS_ENABLED")
   const allArtistIndices = useMemo(() => Array.from({ length: artists.length }, (_, idx) => idx), [])
 
   useEffect(() => {
     if (!advancedNavAnimations) {
       setVisibleCards(allArtistIndices)
-      setScrollY(0)
-
-      const columns = [leftColumnRef.current, centerColumnRef.current, rightColumnRef.current]
-      columns.forEach((column) => {
-        if (!column) return
-        column.style.transform = ""
-        column.querySelectorAll(".artist-image").forEach((img) => {
-          ;(img as HTMLElement).style.transform = ""
-        })
-      })
       return
     }
-
     setVisibleCards([])
   }, [advancedNavAnimations, allArtistIndices])
 
@@ -47,77 +33,32 @@ export function ArtistsSection() {
           }
         })
       },
-      { threshold: 0.2, rootMargin: "0px 0px 0px 0px" },
+      { threshold: 0.2, rootMargin: "0px 0px -10% 0px" },
     )
     const cards = sectionRef.current?.querySelectorAll("[data-index]")
     cards?.forEach((card) => observer.observe(card))
     return () => observer.disconnect()
   }, [advancedNavAnimations])
 
-  useEffect(() => {
-    if (!advancedNavAnimations) return
-    let ticking = false
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const scrollTop = window.pageYOffset
-          setScrollY(scrollTop)
-          ticking = false
-        })
-        ticking = true
-      }
-    }
-    window.addEventListener("scroll", handleScroll, { passive: true })
-    return () => window.removeEventListener("scroll", handleScroll)
-  }, [advancedNavAnimations])
-
-  useEffect(() => {
-    if (!advancedNavAnimations) return
-    if (leftColumnRef.current && centerColumnRef.current && rightColumnRef.current) {
-      const sectionTop = sectionRef.current?.offsetTop || 0
-      const relativeScroll = scrollY - sectionTop
-
-      leftColumnRef.current.style.transform = `translateY(${relativeScroll * -0.025}px)`
-      centerColumnRef.current.style.transform = `translateY(0px)`
-      rightColumnRef.current.style.transform = `translateY(${relativeScroll * 0.025}px)`
-
-      const leftImages = leftColumnRef.current.querySelectorAll(".artist-image")
-      const centerImages = centerColumnRef.current.querySelectorAll(".artist-image")
-      const rightImages = rightColumnRef.current.querySelectorAll(".artist-image")
-
-      leftImages.forEach((img) => {
-        ;(img as HTMLElement).style.transform = `translateY(${relativeScroll * -0.01}px)`
-      })
-      centerImages.forEach((img) => {
-        ;(img as HTMLElement).style.transform = `translateY(${relativeScroll * -0.0075}px)`
-      })
-      rightImages.forEach((img) => {
-        ;(img as HTMLElement).style.transform = `translateY(${relativeScroll * -0.005}px)`
-      })
-    }
-  }, [advancedNavAnimations, scrollY])
-
   const cardVisibilityClass = (index: number) => {
-    if (!advancedNavAnimations) {
-      return "opacity-100 translate-y-0"
-    }
-    return visibleCards.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+    if (!advancedNavAnimations) return "opacity-100 translate-y-0"
+    return visibleCards.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
   }
 
   const cardTransitionDelay = (index: number) => {
-    if (!advancedNavAnimations) {
-      return undefined
-    }
-    return `${index * 50}ms`
+    if (!advancedNavAnimations) return undefined
+    return `${index * 40}ms`
   }
 
-  // Better distribution for visual balance
-  const leftColumn = [artists[0], artists[3], artists[6]] // Christy, Donovan, John
-  const centerColumn = [artists[1], artists[4], artists[7]] // Angel, EJ, Pako  
-  const rightColumn = [artists[2], artists[5], artists[8]] // Amari, Heather, Sole
+  // Vary aspect ratio to create a subtle masonry rhythm
+  const aspectFor = (i: number) => {
+    const variants = ["aspect-[3/4]", "aspect-[4/5]", "aspect-square"]
+    return variants[i % variants.length]
+  }
 
   return (
     <section ref={sectionRef} id="artists" className="relative overflow-hidden bg-black">
+      {/* Faint logo texture */}
       <div className="absolute inset-0 opacity-[0.03]">
         <img
           src="/united-logo-full.jpg"
@@ -127,12 +68,13 @@ export function ArtistsSection() {
         <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
       </div>
 
-      <div className="relative z-10 py-16 px-8 lg:px-16">
-        <div className="max-w-screen-2xl mx-auto">
-          <div className="grid lg:grid-cols-3 gap-12 items-end mb-16">
+      {/* Header */}
+      <div className="relative z-10 py-14 px-6 lg:px-10">
+        <div className="max-w-[1800px] mx-auto">
+          <div className="grid lg:grid-cols-3 gap-10 items-end mb-10">
             <div className="lg:col-span-2">
-              <h2 className="text-6xl lg:text-8xl font-bold tracking-tight mb-6 text-white">ARTISTS</h2>
-              <p className="text-xl text-gray-200 leading-relaxed max-w-2xl">
+              <h2 className="text-6xl lg:text-8xl font-bold tracking-tight mb-4 text-white">ARTISTS</h2>
+              <p className="text-lg lg:text-xl text-gray-200/90 leading-relaxed max-w-2xl">
                 Our exceptional team of tattoo artists, each bringing unique expertise and artistic vision to create your perfect
                 tattoo.
               </p>
@@ -140,7 +82,7 @@ export function ArtistsSection() {
             <div className="text-right">
               <Button
                 asChild
-                className="bg-white text-black hover:bg-gray-100 px-8 py-4 text-lg font-medium tracking-wide shadow-lg"
+                className="bg-white text-black hover:bg-gray-100 px-7 py-3 text-base font-medium tracking-wide shadow-sm rounded-md"
               >
                 <Link href="/book">BOOK CONSULTATION</Link>
               </Button>
@@ -149,261 +91,96 @@ export function ArtistsSection() {
         </div>
       </div>
 
-      <div className="relative z-10 px-8 lg:px-16 pb-32">
-        <div className="max-w-screen-2xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div ref={leftColumnRef} className="space-y-8">
-              {leftColumn.map((artist) => {
-                const globalIndex = artists.indexOf(artist)
-                const transitionDelay = cardTransitionDelay(globalIndex)
-                return (
-                  <div
-                    key={artist.id}
-                    data-index={globalIndex}
-                    className={`group transition-all duration-700 ${cardVisibilityClass(globalIndex)}`}
-                    style={
-                      transitionDelay
-                        ? {
-                            transitionDelay,
-                          }
-                        : undefined
-                    }
-                  >
-                    <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg shadow-2xl">
-                      <div className="absolute inset-0 bg-black artist-image">
-                        {/* Portfolio background - full width */}
-                        <div className="absolute inset-0">
-                          <img
-                            src={artist.workImages?.[0] || "/placeholder.svg"}
-                            alt={`${artist.name} tattoo work`}
-                            className="w-full h-full object-cover scale-110"
-                          />
-                          {/* Darkening overlay to push background further back */}
-                          <div className="absolute inset-0 bg-black/40"></div>
-                        </div>
+      {/* Masonry grid */}
+      <div className="relative z-10 px-6 lg:px-10 pb-24">
+        <div className="max-w-[1800px] mx-auto">
+          {/* columns-based masonry; tighter spacing and wider section */}
+          <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 lg:gap-5 [column-fill:_balance]">
+            {artists.map((artist, i) => {
+              const transitionDelay = cardTransitionDelay(i)
+              return (
+                <article
+                  key={artist.id}
+                  data-index={i}
+                  className={`group mb-4 break-inside-avoid transition-all duration-700 ${cardVisibilityClass(i)}`}
+                  style={transitionDelay ? { transitionDelay } : undefined}
+                >
+                  <div className={`relative w-full ${aspectFor(i)} overflow-hidden rounded-md border border-white/10 bg-black`}>
+                    {/* Imagery */}
+                    <div className="absolute inset-0 artist-image">
+                      <img
+                        src={artist.workImages?.[0] || "/placeholder.svg"}
+                        alt={`${artist.name} tattoo work`}
+                        className="w-full h-full object-cover"
+                        loading="lazy"
+                      />
+                      <div className="absolute inset-0 bg-black/30"></div>
 
-                        {/* Artist portrait - with proper feathered mask */}
-                        <div className="absolute left-0 top-0 w-3/5 h-full">
-                          <img
-                            src={artist.faceImage || "/placeholder.svg"}
-                            alt={`${artist.name} portrait`}
-                            className="w-full h-full object-cover scale-110"
-                            style={{
-                              maskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)',
-                              WebkitMaskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)'
-                            }}
-                          />
-                        </div>
+                      {/* Portrait with feathered mask */}
+                      <div className="absolute left-0 top-0 w-3/5 h-full pointer-events-none">
+                        <img
+                          src={artist.faceImage || "/placeholder.svg"}
+                          alt={`${artist.name} portrait`}
+                          className="w-full h-full object-cover"
+                          style={{
+                            maskImage: "linear-gradient(to right, black 0%, black 70%, transparent 100%)",
+                            WebkitMaskImage: "linear-gradient(to right, black 0%, black 70%, transparent 100%)",
+                          }}
+                          loading="lazy"
+                        />
                       </div>
+                    </div>
 
-                      <div className="absolute inset-0 z-20 group-hover:bg-black/20 transition-all duration-500">
-                        <div className="absolute top-4 left-4">
-                          <span className="text-xs font-medium tracking-widest text-white uppercase bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full">
-                            {artist.experience}
-                          </span>
-                        </div>
+                    {/* Softer hover wash (replaces heavy overlay) */}
+                    <div className="absolute inset-0 z-10 transition-colors duration-300 group-hover:bg-black/10" />
 
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-500">
-                          <h3 className="text-2xl font-bold tracking-tight mb-2 text-white">{artist.name}</h3>
-                          <p className="text-sm font-medium text-white/90 mb-3">{artist.specialty}</p>
-                          <p className="text-sm text-white/80 mb-4 leading-relaxed">{artist.bio}</p>
+                    {/* Top-left experience pill */}
+                    <div className="absolute top-3 left-3 z-20">
+                      <span className="text-[10px] font-medium tracking-widest text-white uppercase bg-black/70 backdrop-blur-sm px-2.5 py-0.5 rounded-full">
+                        {artist.experience}
+                      </span>
+                    </div>
 
-                          <div className="flex gap-2">
-                            <Button
-                              asChild
-                              size="sm"
-                              className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
-                            >
-                              <Link href={`/artists/${artist.slug}`}>PORTFOLIO</Link>
-                            </Button>
-                            <Button
-                              asChild
-                              size="sm"
-                              className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
-                            >
-                              <Link href={`/book?artist=${artist.slug}`}>BOOK</Link>
-                            </Button>
-                          </div>
-                        </div>
+                    {/* Minimal footer */}
+                    <div className="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-4">
+                      <h3 className="text-xl font-semibold tracking-tight text-white">{artist.name}</h3>
+                      <p className="text-xs font-medium text-white/80 mb-3">{artist.specialty}</p>
+
+                      <div className="flex gap-2">
+                        <Button
+                          asChild
+                          size="sm"
+                          className="h-8 rounded-md px-3 bg-white/90 text-black hover:bg-white text-xs font-medium tracking-wide"
+                        >
+                          <Link href={`/artists/${artist.slug}`}>PORTFOLIO</Link>
+                        </Button>
+                        <Button
+                          asChild
+                          size="sm"
+                          className="h-8 rounded-md px-3 bg-transparent text-white border border-white/25 hover:bg-white/10 text-xs font-medium tracking-wide"
+                        >
+                          <Link href={`/book?artist=${artist.slug}`}>BOOK</Link>
+                        </Button>
                       </div>
                     </div>
                   </div>
-                )
-              })}
-            </div>
-
-            <div ref={centerColumnRef} className="space-y-8">
-              {centerColumn.map((artist) => {
-                const globalIndex = artists.indexOf(artist)
-                const transitionDelay = cardTransitionDelay(globalIndex)
-                return (
-                  <div
-                    key={artist.id}
-                    data-index={globalIndex}
-                    className={`group transition-all duration-700 ${cardVisibilityClass(globalIndex)}`}
-                    style={
-                      transitionDelay
-                        ? {
-                            transitionDelay,
-                          }
-                        : undefined
-                    }
-                  >
-                    <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg shadow-2xl">
-                      <div className="absolute inset-0 bg-black artist-image">
-                        {/* Portfolio background - full width */}
-                        <div className="absolute inset-0">
-                          <img
-                            src={artist.workImages?.[0] || "/placeholder.svg"}
-                            alt={`${artist.name} tattoo work`}
-                            className="w-full h-full object-cover scale-110"
-                          />
-                          {/* Darkening overlay to push background further back */}
-                          <div className="absolute inset-0 bg-black/40"></div>
-                        </div>
-
-                        {/* Artist portrait - with proper feathered mask */}
-                        <div className="absolute left-0 top-0 w-3/5 h-full">
-                          <img
-                            src={artist.faceImage || "/placeholder.svg"}
-                            alt={`${artist.name} portrait`}
-                            className="w-full h-full object-cover scale-110"
-                            style={{
-                              maskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)',
-                              WebkitMaskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)'
-                            }}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="absolute inset-0 z-20 group-hover:bg-black/20 transition-all duration-500">
-                        <div className="absolute top-4 left-4">
-                          <span className="text-xs font-medium tracking-widest text-white uppercase bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full">
-                            {artist.experience}
-                          </span>
-                        </div>
-
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-500">
-                          <h3 className="text-2xl font-bold tracking-tight mb-2 text-white">{artist.name}</h3>
-                          <p className="text-sm font-medium text-white/90 mb-3">{artist.specialty}</p>
-                          <p className="text-sm text-white/80 mb-4 leading-relaxed">{artist.bio}</p>
-
-                          <div className="flex gap-2">
-                            <Button
-                              asChild
-                              size="sm"
-                              className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
-                            >
-                              <Link href={`/artists/${artist.slug}`}>PORTFOLIO</Link>
-                            </Button>
-                            <Button
-                              asChild
-                              size="sm"
-                              className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
-                            >
-                              <Link href={`/book?artist=${artist.slug}`}>BOOK</Link>
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
-
-            <div ref={rightColumnRef} className="space-y-8">
-              {rightColumn.map((artist) => {
-                const globalIndex = artists.indexOf(artist)
-                const transitionDelay = cardTransitionDelay(globalIndex)
-                return (
-                  <div
-                    key={artist.id}
-                    data-index={globalIndex}
-                    className={`group transition-all duration-700 ${cardVisibilityClass(globalIndex)}`}
-                    style={
-                      transitionDelay
-                        ? {
-                            transitionDelay,
-                          }
-                        : undefined
-                    }
-                  >
-                    <div className="relative w-full aspect-[4/5] overflow-hidden rounded-lg shadow-2xl">
-                      <div className="absolute inset-0 bg-black artist-image">
-                        {/* Portfolio background - full width */}
-                        <div className="absolute inset-0">
-                          <img
-                            src={artist.workImages?.[0] || "/placeholder.svg"}
-                            alt={`${artist.name} tattoo work`}
-                            className="w-full h-full object-cover scale-110"
-                          />
-                          {/* Darkening overlay to push background further back */}
-                          <div className="absolute inset-0 bg-black/40"></div>
-                        </div>
-
-                        {/* Artist portrait - with proper feathered mask */}
-                        <div className="absolute left-0 top-0 w-3/5 h-full">
-                          <img
-                            src={artist.faceImage || "/placeholder.svg"}
-                            alt={`${artist.name} portrait`}
-                            className="w-full h-full object-cover scale-110"
-                            style={{
-                              maskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)',
-                              WebkitMaskImage: 'linear-gradient(to right, black 0%, black 70%, transparent 100%)'
-                            }}
-                          />
-                        </div>
-                      </div>
-
-                      <div className="absolute inset-0 z-20 group-hover:bg-black/20 transition-all duration-500">
-                        <div className="absolute top-4 left-4">
-                          <span className="text-xs font-medium tracking-widest text-white uppercase bg-black/80 backdrop-blur-sm px-3 py-1 rounded-full">
-                            {artist.experience}
-                          </span>
-                        </div>
-
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent p-6 translate-y-0 lg:translate-y-full lg:group-hover:translate-y-0 transition-transform duration-500">
-                          <h3 className="text-2xl font-bold tracking-tight mb-2 text-white">{artist.name}</h3>
-                          <p className="text-sm font-medium text-white/90 mb-3">{artist.specialty}</p>
-                          <p className="text-sm text-white/80 mb-4 leading-relaxed">{artist.bio}</p>
-
-                          <div className="flex gap-2">
-                            <Button
-                              asChild
-                              size="sm"
-                              className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
-                            >
-                              <Link href={`/artists/${artist.slug}`}>PORTFOLIO</Link>
-                            </Button>
-                            <Button
-                              asChild
-                              size="sm"
-                              className="bg-white text-black hover:bg-gray-100 text-xs font-medium tracking-wide flex-1"
-                            >
-                              <Link href={`/book?artist=${artist.slug}`}>BOOK</Link>
-                            </Button>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+                </article>
+              )
+            })}
           </div>
         </div>
       </div>
 
-      <div className="relative z-20 bg-black text-white py-20 px-8 lg:px-16">
-        <div className="max-w-screen-2xl mx-auto text-center">
+      {/* CTA Footer */}
+      <div className="relative z-20 bg-black text-white py-20 px-6 lg:px-10">
+        <div className="max-w-[1800px] mx-auto text-center">
           <h3 className="text-5xl lg:text-7xl font-bold tracking-tight mb-8">READY?</h3>
           <p className="text-xl text-white/70 mb-12 max-w-2xl mx-auto">
             Choose your artist and start your tattoo journey with United Tattoo.
           </p>
           <Button
             asChild
-            className="bg-white text-black hover:bg-gray-100 hover:text-black px-12 py-6 text-xl font-medium tracking-wide shadow-lg border border-white"
+            className="bg-white text-black hover:bg-gray-100 hover:text-black px-12 py-6 text-xl font-medium tracking-wide shadow-lg border border-white rounded-md"
           >
             <Link href="/book">START NOW</Link>
           </Button>

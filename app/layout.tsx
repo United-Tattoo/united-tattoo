@@ -6,6 +6,7 @@ import Script from "next/script"
 
 import ClientLayout from "./ClientLayout"
 import { getFlags } from "@/lib/flags"
+import { generateMetadata as createMetadata, generateLocalBusinessJsonLd, generateOrganizationJsonLd } from "@/lib/metadata"
 
 import "./globals.css"
 
@@ -13,18 +14,22 @@ const playfairDisplay = Playfair_Display({
   subsets: ["latin"],
   variable: "--font-playfair",
   display: "swap",
+  preload: true,
 })
 
 const sourceSans = Source_Sans_3({
   subsets: ["latin"],
   variable: "--font-source-sans",
   display: "swap",
+  preload: true,
 })
 
-export const metadata: Metadata = {
-  title: "United Tattoo - Professional Tattoo Studio",
-  description: "Book appointments with our talented artists and explore stunning tattoo portfolios at United Tattoo.",
-}
+export const metadata: Metadata = createMetadata({
+  title: "United Tattoo - Professional Tattoo Studio in Fountain, Colorado",
+  description: "Custom tattoos by talented artists in Fountain, CO. Book your appointment with our award-winning tattoo studio. Specializing in custom designs, portraits, and traditional ink.",
+  path: "/",
+  keywords: ["tattoo", "tattoo studio", "fountain colorado", "custom tattoos", "tattoo artists", "ink", "body art"],
+})
 
 export const dynamic = "force-dynamic";
 
@@ -34,6 +39,8 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   const flags = getFlags({ refresh: true })
+  const localBusinessData = generateLocalBusinessJsonLd()
+  const organizationData = generateOrganizationJsonLd()
 
   return (
     <html lang="en" className={`${playfairDisplay.variable} ${sourceSans.variable}`}>
@@ -56,6 +63,26 @@ export default function RootLayout({
           :   ████ ████ ████ ████ ████ ████ ████ ████ ████ ████ ████ ████ ████ ████ ████   :
           ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         */}
+        
+        {/* JSON-LD Structured Data for SEO */}
+        <Script
+          id="local-business-jsonld"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(localBusinessData),
+          }}
+        />
+        <Script
+          id="organization-jsonld"
+          type="application/ld+json"
+          strategy="beforeInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationData),
+          }}
+        />
+        
+        {/* Design Credit Console Message */}
         <Script id="design-credit" strategy="afterInteractive">
           {`(function(){
     if (typeof window !== 'undefined' && window.console && !window.__UNITED_TATTOO_CREDIT_DONE) {
