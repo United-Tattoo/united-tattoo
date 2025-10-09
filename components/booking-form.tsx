@@ -2,7 +2,7 @@
 
 import type React from "react"
 
-import { useState } from "react"
+import { useState, useMemo } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
@@ -13,7 +13,8 @@ import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import { useFeatureFlag } from "@/components/feature-flags-provider"
 import { useArtists } from "@/hooks/use-artist-data"
-import { CalendarIcon, DollarSign, MessageSquare, User, Loader2 } from "lucide-react"
+import { useAvailability } from "@/hooks/use-availability"
+import { CalendarIcon, DollarSign, MessageSquare, User, Loader2, CheckCircle2, XCircle, AlertCircle } from "lucide-react"
 import { format } from "date-fns"
 import Link from "next/link"
 
@@ -72,6 +73,44 @@ export function BookingForm({ artistId }: BookingFormProps) {
   const selectedArtist = artists?.find((a) => a.slug === formData.artistId)
   const selectedSize = tattooSizes.find((size) => size.size === formData.tattooSize)
   const bookingEnabled = useFeatureFlag("BOOKING_ENABLED")
+
+  // Calculate appointment start and end times for availability checking
+  const { appointmentStart, appointmentEnd } = useMemo(() => {
+    if (!selectedDate || !formData.preferredTime || !selectedSize) {
+      return { appointmentStart: null, appointmentEnd: null }
+    }
+
+    // Parse time slot (e.g., "2:00 PM")
+    const timeParts = formData.preferredTime.match(/(\d+):(\d+)\s*(AM|PM)/i)
+    if (!timeParts) return { appointmentStart: null, appointmentEnd: null }
+
+    let hours = parseInt(timeParts[1])
+    const minutes = parseInt(timeParts[2])
+    const meridiem = timeParts[3].toUpperCase()
+
+    if (meridiem === 'PM' && hours !== 12) hours += 12
+    if (meridiem === 'AM' && hours === 12) hours = 0
+
+    const start = new Date(selectedDate)
+    start.setHours(hours, minutes, 0, 0)
+
+    // Estimate duration from tattoo size (use max hours)
+    const durationHours = parseInt(selectedSize.duration.split('-')[1] || selectedSize.duration.split('-')[0])
+    const end = new Date(start.getTime() + durationHours * 60 * 60 * 1000)
+
+    return {
+      appointmentStart: start.toISOString(),
+      appointmentEnd: end.toISOString(),
+    }
+  }, [selectedDate, formData.preferredTime, selectedSize])
+
+  // Check availability in real-time
+  const availability = useAvailability({
+    artistId: selectedArtist?.id || null,
+    startTime: appointmentStart,
+    endTime: appointmentEnd,
+    enabled: !!selectedArtist && !!appointmentStart && !!appointmentEnd && step === 2,
+  })
 
   const handleInputChange = (field: string, value: any) => {
     setFormData((prev) => ({ ...prev, [field]: value }))
@@ -337,6 +376,46 @@ export function BookingForm({ artistId }: BookingFormProps) {
                   </div>
                 </div>
 
+                {/* Availability Indicator */}
+                {selectedArtist && selectedDate && formData.preferredTime && selectedSize && (
+                  <div className={`p-4 rounded-lg border-2 ${
+                    availability.checking 
+                      ? 'bg-gray-50 border-gray-300' 
+                      : availability.available 
+                      ? 'bg-green-50 border-green-300'
+                      : 'bg-red-50 border-red-300'
+                  }`}>
+                    <div className="flex items-center space-x-2">
+                      {availability.checking ? (
+                        <>
+                          <Loader2 className="w-5 h-5 animate-spin text-gray-600" />
+                          <span className="font-medium text-gray-700">Checking availability...</span>
+                        </>
+                      ) : availability.available ? (
+                        <>
+                          <CheckCircle2 className="w-5 h-5 text-green-600" />
+                          <span className="font-medium text-green-700">Time slot available!</span>
+                        </>
+                      ) : (
+                        <>
+                          <XCircle className="w-5 h-5 text-red-600" />
+                          <div>
+                            <span className="font-medium text-red-700 block">Time slot not available</span>
+                            {availability.reason && (
+                              <span className="text-sm text-red-600">{availability.reason}</span>
+                            )}
+                          </div>
+                        </>
+                      )}
+                    </div>
+                    {!availability.available && !availability.checking && (
+                      <p className="mt-2 text-sm text-red-600">
+                        Please select a different date or time, or provide an alternative below.
+                      </p>
+                    )}
+                  </div>
+                )}
+
                 <div className="p-4 bg-blue-50 rounded-lg">
                   <h4 className="font-medium mb-2 text-blue-900">Alternative Date & Time</h4>
                   <p className="text-sm text-blue-700 mb-4">
@@ -598,8 +677,15 @@ export function BookingForm({ artistId }: BookingFormProps) {
             </Button>
 
             {step < 4 ? (
-              <Button type="button" onClick={nextStep}>
-                Next Step
+              <Button 
+                type="button" 
+                onClick={nextStep}
+                disabled={
+                  // Disable if on step 2 and slot is not available or still checking
+                  step === 2 && (availability.checking || !availability.available)
+                }
+              >
+                {step === 2 && availability.checking ? 'Checking...' : 'Next Step'}
               </Button>
             ) : (
               <Button
