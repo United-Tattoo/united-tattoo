@@ -35,7 +35,17 @@
     "ci:typecheck": "npx tsc --noEmit",
     "ci:test": "npm run test:coverage",
     "ci:build": "npm run pages:build",
-    "ci:budgets": "node scripts/budgets.mjs"
+    "ci:budgets": "node scripts/budgets.mjs",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "format:staged": "prettier --write --staged",
+    "security:audit": "npm audit --audit-level=moderate",
+    "security:fix": "npm audit fix",
+    "security:outdated": "npm outdated",
+    "performance:lighthouse": "lhci autorun",
+    "performance:bundle": "npm run ci:build && npm run ci:budgets",
+    "deploy:preview": "CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID npx @opennextjs/cloudflare deploy",
+    "deploy:production": "CLOUDFLARE_ACCOUNT_ID=$CLOUDFLARE_ACCOUNT_ID npx @opennextjs/cloudflare deploy"
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.10.0",
