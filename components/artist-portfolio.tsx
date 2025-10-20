@@ -7,6 +7,10 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { ArrowLeft, Instagram, ExternalLink, Loader2, DollarSign } from "lucide-react"
 import { useArtist } from "@/hooks/use-artist-data"
+import { useIsMobile } from "@/hooks/use-mobile"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
+import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 interface ArtistPortfolioProps {
   artistId: string
@@ -16,6 +20,8 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [scrollY, setScrollY] = useState(0)
+  const [mobileView, setMobileView] = useState<"grid" | "carousel">("grid")
+  const isMobile = useIsMobile()
 
   // Fetch artist data from API
   const { data: artist, isLoading, error } = useArtist(artistId)
@@ -25,10 +31,12 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
   const closeButtonRef = useRef<HTMLButtonElement | null>(null)
 
   useEffect(() => {
+    // Enable parallax only on desktop to avoid jank on mobile
+    if (isMobile) return
     const handleScroll = () => setScrollY(window.scrollY)
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, [isMobile])
 
   // Derived lists (safe when `artist` is undefined during initial renders)
   const portfolioImages = artist?.portfolioImages || []
@@ -135,22 +143,10 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Back Button */}
-      <div className="fixed top-6 right-8 z-40">
-        <Button
-          asChild
-          variant="ghost"
-          className="text-white hover:bg-white/20 border border-white/30 backdrop-blur-sm bg-black/40 hover:text-white"
-        >
-          <Link href="/artists">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Artists
-          </Link>
-        </Button>
-      </div>
+      {/* Removed Back to Artists button per request */}
 
-      {/* Hero Section with Split Screen */}
-      <section className="relative h-screen overflow-hidden -mt-20">
+      {/* Hero Section with Split Screen (Desktop only) */}
+      <section className="relative h-screen overflow-hidden -mt-20 hidden md:block">
         {/* Left Side - Artist Image */}
         <div className="absolute left-0 top-0 w-1/2 h-full" style={{ transform: `translateY(${scrollY * 0.3}px)` }}>
           <div className="relative w-full h-full">
@@ -242,8 +238,49 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
         </div>
       </section>
 
-      {/* Portfolio Section with Split Screen Layout */}
-      <section className="relative bg-black">
+      {/* Hero Section - Mobile stacked */}
+      <section className="md:hidden -mt-16">
+        <div className="relative w-full h-[55vh]">
+          <Image
+            src={profileImage}
+            alt={artist.name}
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        </div>
+        <div className="px-6 py-8">
+          <div className="mb-4 flex items-center gap-3">
+            <Badge
+              variant={artist.isActive ? "default" : "secondary"}
+              className="bg-white/20 backdrop-blur-sm text-white border-white/30"
+            >
+              {artist.isActive ? "Available" : "Unavailable"}
+            </Badge>
+            {artist.hourlyRate && (
+              <div className="flex items-center gap-2 text-white/80">
+                <DollarSign className="w-4 h-4" />
+                <span>Starting at ${artist.hourlyRate}/hr</span>
+              </div>
+            )}
+          </div>
+          <h1 className="font-playfair text-4xl font-bold mb-2 text-balance">{artist.name}</h1>
+          <p className="text-white/80 mb-4">{artist.specialties.join(", ")}</p>
+          <p className="text-white/70 leading-relaxed mb-6">{artist.bio}</p>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button asChild size="lg" className="bg-white text-black hover:bg-gray-100 !text-black hover:!text-black">
+              <Link href={`/book?artist=${artist.slug}`}>Book Appointment</Link>
+            </Button>
+            <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white hover:text-black bg-transparent">
+              Get Consultation
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Portfolio Section with Split Screen Layout (Desktop only) */}
+      <section className="relative bg-black hidden md:block">
         <div className="flex min-h-screen">
           {/* Left Side - Portfolio Grid */}
           <div className="w-2/3 p-8 overflow-y-auto">
@@ -355,6 +392,124 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
               </div>
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Mobile Portfolio: Tabs + Filters */}
+      <section className="md:hidden bg-black">
+        <div className="px-4 pt-6">
+          {/* Category Filter - horizontal pills */}
+          {categories.length > 1 && (
+            <div className="mb-4">
+              <ScrollArea className="w-full whitespace-nowrap">
+                <div className="flex items-center gap-2">
+                  {categories.map((category) => {
+                    const count = category === "All"
+                      ? portfolioImages.length
+                      : portfolioImages.filter((img) => img.tags.includes(category)).length
+                    const isActive = selectedCategory === category
+                    return (
+                      <button
+                        key={category}
+                        onClick={() => setSelectedCategory(category)}
+                        className={`rounded-full px-3 py-1 text-xs border transition-colors ${
+                          isActive ? "bg-white text-black border-white" : "text-white/80 border-white/20"
+                        }`}
+                        aria-pressed={isActive}
+                      >
+                        {category}
+                        <span className="ml-2 text-[10px] opacity-70">{count}</span>
+                      </button>
+                    )
+                  })}
+                </div>
+                <ScrollBar orientation="horizontal" />
+              </ScrollArea>
+            </div>
+          )}
+        </div>
+
+        {/* Tabs: Grid | Carousel */}
+        <div className="px-2 pb-10">
+          <Tabs value={mobileView} onValueChange={(v) => setMobileView(v as any)} className="w-full">
+            <TabsList className="mx-2">
+              <TabsTrigger value="grid">Grid</TabsTrigger>
+              <TabsTrigger value="carousel">Carousel</TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="grid" className="mt-4">
+              {filteredPortfolio.length === 0 ? (
+                <div className="flex items-center justify-center h-64">
+                  <p className="text-gray-400">No portfolio images available</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-1 gap-4 px-2">
+                  {filteredPortfolio.map((item) => (
+                    <div
+                      key={item.id}
+                      className="group cursor-pointer"
+                      role="button"
+                      tabIndex={0}
+                      aria-label={`Open ${item.caption || 'portfolio image'}`}
+                      onClick={(e) => {
+                        openImageFromElement(item.id, (e.currentTarget as HTMLElement) || null)
+                      }}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter" || e.key === " ") {
+                          e.preventDefault()
+                          openImageFromElement(item.id, e.currentTarget as HTMLElement)
+                        }
+                      }}
+                    >
+                      <div className="relative overflow-hidden bg-gray-900 aspect-[4/5] rounded-md">
+                        <Image
+                          src={item.url || "/placeholder.svg"}
+                          alt={item.caption || `${artist.name} portfolio image`}
+                          width={800}
+                          height={1000}
+                          sizes="100vw"
+                          className="w-full h-full object-cover"
+                          aria-hidden={true}
+                          priority={false}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </TabsContent>
+
+            <TabsContent value="carousel" className="mt-4">
+              {filteredPortfolio.length === 0 ? (
+                <div className="flex items-center justify-center h-64">
+                  <p className="text-gray-400">No portfolio images available</p>
+                </div>
+              ) : (
+                <div className="relative">
+                  <Carousel opts={{ align: "start", loop: true }} className="w-full">
+                    <CarouselContent>
+                      {filteredPortfolio.map((item) => (
+                        <CarouselItem key={item.id} className="basis-full">
+                          <div className="w-full h-[70vh] relative">
+                            <Image
+                              src={item.url || "/placeholder.svg"}
+                              alt={item.caption || `${artist.name} portfolio image`}
+                              fill
+                              sizes="100vw"
+                              className="object-contain bg-black"
+                            />
+                          </div>
+                        </CarouselItem>)
+                      )}
+                    </CarouselContent>
+                  </Carousel>
+                  <div className="pointer-events-none absolute top-2 right-3 rounded-full bg-white/10 backdrop-blur px-2 py-1 text-xs text-white">
+                    {filteredPortfolio.length} pieces
+                  </div>
+                </div>
+              )}
+            </TabsContent>
+          </Tabs>
         </div>
       </section>
 
