@@ -3,19 +3,9 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* Construction banner spacing */
-body:has(.construction-banner) nav {
-  top: 60px !important;
-}
-
-/* Ensure navigation content stays properly aligned when banner is present */
-body:has(.construction-banner) nav .max-w-\[1800px\] {
-  height: 80px; /* h-20 equivalent */
-}
-
-body:has(.construction-banner) nav .flex.items-center {
-  height: 100%;
-  align-items: center;
+/* Construction banner spacing - push content down instead of nav */
+body:has(.construction-banner) {
+  padding-top: 60px;
 }
 
 :root {
