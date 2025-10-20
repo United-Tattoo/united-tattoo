@@ -8,6 +8,16 @@ body:has(.construction-banner) nav {
   top: 60px !important;
 }
 
+/* Ensure navigation content stays properly aligned when banner is present */
+body:has(.construction-banner) nav .max-w-\[1800px\] {
+  height: 80px; /* h-20 equivalent */
+}
+
+body:has(.construction-banner) nav .flex.items-center {
+  height: 100%;
+  align-items: center;
+}
+
 :root {
   /* Updated color tokens to match United Tattoo design brief */
   --background: oklch(1 0 0); /* White */
