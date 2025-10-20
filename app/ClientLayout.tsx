@@ -10,6 +10,7 @@ import { FeatureFlagsProvider } from "@/components/feature-flags-provider"
 import { LenisProvider } from "@/components/smooth-scroll-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/components/theme-provider"
+import { ConstructionBanner } from "@/components/construction-banner"
 import type { FlagsSnapshot } from "@/lib/flags"
 
 import "./globals.css"
@@ -50,6 +51,7 @@ export default function ClientLayout({
       <QueryClientProvider client={queryClient}>
         <FeatureFlagsProvider value={initialFlags}>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
+            <ConstructionBanner />
             <Suspense fallback={<div>Loading...</div>}>
               <LenisProvider>
                 {children}
