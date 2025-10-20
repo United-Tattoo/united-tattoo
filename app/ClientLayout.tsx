@@ -10,10 +10,10 @@ import { FeatureFlagsProvider } from "@/components/feature-flags-provider"
 import { LenisProvider } from "@/components/smooth-scroll-provider"
 import { Toaster } from "@/components/ui/sonner"
 import { ThemeProvider } from "@/components/theme-provider"
-import { ConstructionBanner } from "@/components/construction-banner"
 import type { FlagsSnapshot } from "@/lib/flags"
 
 import "./globals.css"
+import ConstructionBanner from "@/components/construction-banner"
 
 export default function ClientLayout({
   children,
@@ -51,10 +51,14 @@ export default function ClientLayout({
       <QueryClientProvider client={queryClient}>
         <FeatureFlagsProvider value={initialFlags}>
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
-            <ConstructionBanner />
             <Suspense fallback={<div>Loading...</div>}>
               <LenisProvider>
-                {children}
+                {/* Global construction banner */}
+                <ConstructionBanner />
+                {/* Push fixed nav down when banner visible */}
+                <style>{`html.has-site-banner nav.fixed{top:var(--site-banner-height,0)!important}`}</style>
+                {/* Offset page content by banner height */}
+                <div style={{ paddingTop: "var(--site-banner-height, 0px)" }}>{children}</div>
                 <Toaster />
               </LenisProvider>
             </Suspense>
