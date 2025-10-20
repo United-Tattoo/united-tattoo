@@ -31,8 +31,8 @@ export function ConstructionBanner() {
 
   return (
     <div className="construction-banner fixed top-0 left-0 right-0 bg-amber-500/10 border-b border-amber-500/20 backdrop-blur-sm z-[60]">
-      <div className="container mx-auto px-4 py-3">
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-amber-200/90">
+      <div className="container mx-auto px-4 h-full flex items-center">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-4 text-amber-200/90 w-full">
           <div className="flex items-center gap-2 text-center sm:text-left">
             <AlertTriangle className="h-5 w-5 text-amber-400 flex-shrink-0" />
             <p className="text-sm font-medium">
