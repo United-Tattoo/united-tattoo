@@ -20,7 +20,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [scrollY, setScrollY] = useState(0)
-  const [mobileView, setMobileView] = useState<"grid" | "carousel">("grid")
+  const [mobileView, setMobileView] = useState<"grid" | "carousel">("carousel")
   const isMobile = useIsMobile()
   // carousel indicator state (mobile)
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null)
@@ -542,6 +542,10 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
                   </Carousel>
                   <div className="pointer-events-none absolute top-2 right-3 rounded-full bg-white/10 backdrop-blur px-2 py-1 text-xs text-white">
                     {filteredPortfolio.length} pieces
+                  </div>
+                  {/* Swipe hint */}
+                  <div className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-white/10 backdrop-blur px-3 py-1 text-xs text-white">
+                    Swipe left or right
                   </div>
                   {/* Dots indicators */}
                   <div className="mt-3 flex items-center justify-center gap-2" role="tablist" aria-label="Carousel indicators">
