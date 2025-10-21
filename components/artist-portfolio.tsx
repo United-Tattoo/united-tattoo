@@ -26,6 +26,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
   const [carouselCurrent, setCarouselCurrent] = useState(0)
   const [showSwipeHint, setShowSwipeHint] = useState(true)
   const [showFullBio, setShowFullBio] = useState(false)
+  const [flashApi, setFlashApi] = useState<CarouselApi | null>(null)
 
   // Fetch artist data from API
   const { data: artist, isLoading, error } = useArtist(artistId)
@@ -81,6 +82,34 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
       carouselApi.off("select", onSelect)
     }
   }, [carouselApi])
+
+  // Flash carousel scale effect based on position (desktop emphasis)
+  useEffect(() => {
+    if (!flashApi) return
+    const updateScales = () => {
+      const root = flashApi.rootNode() as HTMLElement | null
+      const slides = flashApi.slideNodes() as HTMLElement[]
+      if (!root || !slides?.length) return
+      const rect = root.getBoundingClientRect()
+      const centerX = rect.left + rect.width / 2
+      slides.forEach((slide) => {
+        const sRect = slide.getBoundingClientRect()
+        const sCenter = sRect.left + sRect.width / 2
+        const dist = Math.abs(sCenter - centerX)
+        const norm = Math.min(dist / (rect.width / 2), 1) // 0 at center, 1 at edge
+        const scale = 0.92 + (1 - norm) * 0.08 // 0.92 at edge → 1.0 center
+        slide.style.transition = 'transform 200ms ease'
+        slide.style.transform = `scale(${scale})`
+      })
+    }
+    updateScales()
+    flashApi.on('scroll', updateScales)
+    flashApi.on('reInit', updateScales)
+    return () => {
+      flashApi.off('scroll', updateScales)
+      flashApi.off('reInit', updateScales)
+    }
+  }, [flashApi])
 
   // Derived lists (safe when `artist` is undefined during initial renders)
   const portfolioImages = artist?.portfolioImages || []
@@ -468,9 +497,10 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
       {/* Available Flash (carousel) */}
       {flashItems && flashItems.length > 0 && (
         <section className="bg-black border-t border-white/10 py-10">
-          <div className="px-4 md:px-12 max-w-6xl mx-auto">
+          <div className="px-4 md:px-0 md:max-w-none md:w-screen">
             <h3 className="font-playfair text-3xl md:text-4xl font-bold mb-6">Available Flash</h3>
-            <Carousel opts={{ align: "start", loop: true, skipSnaps: false, dragFree: true }} className="w-full relative">
+            <div className="relative">
+            <Carousel opts={{ align: "start", loop: true, skipSnaps: false, dragFree: true }} className="w-full relative" setApi={setFlashApi}>
               <CarouselContent>
                 {flashItems.map((item) => (
                   <CarouselItem key={item.id} className="basis-full md:basis-1/2 lg:basis-1/3">
@@ -489,6 +519,10 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
               <CarouselPrevious className="left-2 top-1/2 -translate-y-1/2 bg-white/10 text-white border-white/20 hover:bg-white/20" aria-label="Previous flash" />
               <CarouselNext className="right-2 top-1/2 -translate-y-1/2 bg-white/10 text-white border-white/20 hover:bg-white/20" aria-label="Next flash" />
             </Carousel>
+            {/* Edge fade gradients (desktop) */}
+            <div className="pointer-events-none hidden md:block absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-black to-transparent" />
+            <div className="pointer-events-none hidden md:block absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-black to-transparent" />
+            </div>
             {showSwipeHint && (
               <div className="pointer-events-none mt-3 text-center text-xs text-white/70">Swipe or use ◀ ▶</div>
             )}
