@@ -302,12 +302,6 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
             >
               {artist.isActive ? "Available" : "Unavailable"}
             </Badge>
-            {artist.hourlyRate && (
-              <div className="flex items-center gap-2 text-white/80">
-                <DollarSign className="w-4 h-4" />
-                <span>Starting at ${artist.hourlyRate}/hr</span>
-              </div>
-            )}
           </div>
           <h1 className="font-playfair text-4xl font-bold mb-2 text-balance">{artist.name}</h1>
           <p className="text-white/80 mb-4 text-base">{artist.specialties.join(", ")}</p>
@@ -448,37 +442,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
 
       {/* Mobile Portfolio: Carousel + Filters (simplified) */}
       <section className="md:hidden bg-black">
-        <div className="px-4 pt-6">
-          {/* Category Filter - horizontal pills */}
-          {categories.length > 1 && (
-            <div className="mb-4">
-              <ScrollArea className="w-full whitespace-nowrap" aria-label="Filter by style">
-                <div className="flex items-center gap-2" role="list">
-                  {categories.map((category) => {
-                    const count = category === "All"
-                      ? portfolioImages.length
-                      : portfolioImages.filter((img) => img.tags.includes(category)).length
-                    const isActive = selectedCategory === category
-                    return (
-                      <button
-                        key={category}
-                        onClick={() => setSelectedCategory(category)}
-                        className={`rounded-full px-3 py-1 text-xs border transition-all duration-200 ${
-                          isActive ? "bg-white text-black border-white scale-95" : "text-white/80 border-white/20 hover:border-white/40"
-                        }`}
-                        aria-pressed={isActive}
-                      >
-                        {category}
-                        <span className="ml-2 text-[10px] opacity-70">{count}</span>
-                      </button>
-                    )
-                  })}
-                </div>
-                <ScrollBar orientation="horizontal" />
-              </ScrollArea>
-            </div>
-          )}
-        </div>
+        {/* Removed mobile category filters for simplicity */}
 
         {/* Carousel only */}
         <div className="px-2 pb-10">
@@ -568,7 +532,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
                   <div className="text-3xl font-bold mb-2">{portfolioImages.length}</div>
                   <div className="text-gray-400">Portfolio Pieces</div>
                 </div>
-                <div>
+                <div className="hidden md:block">
                   <div className="text-3xl font-bold mb-2">{artist.hourlyRate ? `$${artist.hourlyRate}` : "Contact"}</div>
                   <div className="text-gray-400">Starting Rate</div>
                 </div>
