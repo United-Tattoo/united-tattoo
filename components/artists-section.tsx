@@ -106,29 +106,14 @@ export function ArtistsSection() {
                   style={transitionDelay ? { transitionDelay } : undefined}
                 >
                   <div className={`relative w-full ${aspectFor(i)} overflow-hidden rounded-md border border-white/10 bg-black`}>
-                    {/* Imagery */}
+                    {/* Imagery: use only the artist portrait */}
                     <div className="absolute inset-0 artist-image">
                       <img
-                        src={artist.workImages?.[0] || "/placeholder.svg"}
-                        alt={`${artist.name} tattoo work`}
+                        src={artist.faceImage || "/placeholder.svg"}
+                        alt={`${artist.name} portrait`}
                         className="w-full h-full object-cover"
                         loading="lazy"
                       />
-                      <div className="absolute inset-0 bg-black/30"></div>
-
-                      {/* Portrait with feathered mask */}
-                      <div className="absolute left-0 top-0 w-3/5 h-full pointer-events-none">
-                        <img
-                          src={artist.faceImage || "/placeholder.svg"}
-                          alt={`${artist.name} portrait`}
-                          className="w-full h-full object-cover"
-                          style={{
-                            maskImage: "linear-gradient(to right, black 0%, black 70%, transparent 100%)",
-                            WebkitMaskImage: "linear-gradient(to right, black 0%, black 70%, transparent 100%)",
-                          }}
-                          loading="lazy"
-                        />
-                      </div>
                     </div>
 
                     {/* Softer hover wash (replaces heavy overlay) */}
