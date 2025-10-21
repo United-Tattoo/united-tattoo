@@ -164,12 +164,19 @@ export async function getArtistWithPortfolio(id: string, env?: any): Promise<imp
     ORDER BY order_index ASC, created_at DESC
   `).bind(id).all();
   
-  // Fetch flash items (public only)
-  const flashResult = await db.prepare(`
-    SELECT * FROM flash_items
-    WHERE artist_id = ? AND is_available = 1
-    ORDER BY order_index ASC, created_at DESC
-  `).bind(id).all();
+  // Fetch flash items (public only) - tolerate missing table in older DBs
+  let flashRows: any[] = []
+  try {
+    const flashResult = await db.prepare(`
+      SELECT * FROM flash_items
+      WHERE artist_id = ? AND is_available = 1
+      ORDER BY order_index ASC, created_at DESC
+    `).bind(id).all();
+    flashRows = flashResult.results as any[]
+  } catch (_err) {
+    // Table may not exist yet; treat as empty
+    flashRows = []
+  }
   
   const artist = artistResult as any;
   
@@ -194,7 +201,7 @@ export async function getArtistWithPortfolio(id: string, env?: any): Promise<imp
       createdAt: new Date(img.created_at)
     })),
     // Attach as non-breaking field (not in Artist type but useful to callers)
-    flashItems: (flashResult.results as any[]).map(row => ({
+    flashItems: flashRows.map(row => ({
       id: row.id,
       artistId: row.artist_id,
       url: row.url,
