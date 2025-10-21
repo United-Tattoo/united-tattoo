@@ -8,7 +8,6 @@ import { Instagram, ExternalLink, Loader2 } from "lucide-react"
 import { useArtist } from "@/hooks/use-artist-data"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { type CarouselApi, Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
-import { Card } from "@/components/ui/card"
 import { useFlash } from "@/hooks/use-flash"
 // Removed mobile filter scroll area
 
@@ -466,29 +465,31 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
         </div>
       </section>
 
-      {/* Available Flash (both desktop and mobile if items exist) */}
+      {/* Available Flash (carousel) */}
       {flashItems && flashItems.length > 0 && (
         <section className="bg-black border-t border-white/10 py-10">
           <div className="px-4 md:px-12 max-w-6xl mx-auto">
             <h3 className="font-playfair text-3xl md:text-4xl font-bold mb-6">Available Flash</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-              {flashItems.map((item) => (
-                <Card key={item.id} className="bg-white/5 border-white/10 overflow-hidden">
-                  <div className="relative w-full aspect-[4/5] bg-black">
-                    <Image src={item.url} alt={item.title || `${artist?.name} flash`} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" />
-                  </div>
-                  <div className="p-4 flex items-center justify-between">
-                    <div>
-                      <div className="font-medium">{item.title || 'Flash piece'}</div>
-                      {item.sizeHint && <div className="text-sm text-white/60">{item.sizeHint}</div>}
+            <Carousel opts={{ align: "start", loop: true }} className="w-full">
+              <CarouselContent>
+                {flashItems.map((item) => (
+                  <CarouselItem key={item.id} className="basis-full md:basis-1/2 lg:basis-1/3">
+                    <div className="relative w-full aspect-[4/5] bg-black rounded-md overflow-hidden">
+                      <Image src={item.url} alt={item.title || `${artist?.name} flash`} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" />
                     </div>
-                    <Button asChild size="sm" className="bg-white text-black hover:bg-gray-100 !text-black">
-                      <Link href={`/book?artist=${artist?.slug}&flashId=${item.id}`}>Book this</Link>
-                    </Button>
-                  </div>
-                </Card>
-              ))}
-            </div>
+                    <div className="flex items-center justify-between mt-3">
+                      <div>
+                        <div className="font-medium">{item.title || 'Flash piece'}</div>
+                        {item.sizeHint && <div className="text-sm text-white/60">{item.sizeHint}</div>}
+                      </div>
+                      <Button asChild size="sm" className="bg-white text-black hover:bg-gray-100 !text-black">
+                        <Link href={`/book?artist=${artist?.slug}&flashId=${item.id}`}>Book this</Link>
+                      </Button>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+            </Carousel>
           </div>
         </section>
       )}
