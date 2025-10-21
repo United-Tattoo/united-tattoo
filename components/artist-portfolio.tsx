@@ -470,18 +470,14 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
         <section className="bg-black border-t border-white/10 py-10">
           <div className="px-4 md:px-12 max-w-6xl mx-auto">
             <h3 className="font-playfair text-3xl md:text-4xl font-bold mb-6">Available Flash</h3>
-            <Carousel opts={{ align: "start", loop: true }} className="w-full">
+            <Carousel opts={{ align: "start", loop: true, skipSnaps: false, dragFree: true }} className="w-full">
               <CarouselContent>
                 {flashItems.map((item) => (
                   <CarouselItem key={item.id} className="basis-full md:basis-1/2 lg:basis-1/3">
                     <div className="relative w-full aspect-[4/5] bg-black rounded-md overflow-hidden">
                       <Image src={item.url} alt={item.title || `${artist?.name} flash`} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" />
                     </div>
-                    <div className="flex items-center justify-between mt-3">
-                      <div>
-                        <div className="font-medium">{item.title || 'Flash piece'}</div>
-                        {item.sizeHint && <div className="text-sm text-white/60">{item.sizeHint}</div>}
-                      </div>
+                    <div className="flex items-center justify-end mt-3">
                       <Button asChild size="sm" className="bg-white text-black hover:bg-gray-100 !text-black">
                         <Link href={`/book?artist=${artist?.slug}&flashId=${item.id}`}>Book this</Link>
                       </Button>
