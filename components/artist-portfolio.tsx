@@ -30,7 +30,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
 
   // Fetch artist data from API
   const { data: artist, isLoading, error } = useArtist(artistId)
-  const { data: flashItems = [] } = useFlash(artistId)
+  const { data: flashItems = [] } = useFlash(artist?.id)
 
   // keep a reference to the last focused thumbnail so we can return focus on modal close
   const lastFocusedRef = useRef<HTMLElement | null>(null)
