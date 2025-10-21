@@ -7,7 +7,7 @@ import Link from "next/link"
 import { Instagram, ExternalLink, Loader2 } from "lucide-react"
 import { useArtist } from "@/hooks/use-artist-data"
 import { useIsMobile } from "@/hooks/use-mobile"
-import { type CarouselApi, Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
+import { type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel"
 import { useFlash } from "@/hooks/use-flash"
 // Removed mobile filter scroll area
 
@@ -470,7 +470,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
         <section className="bg-black border-t border-white/10 py-10">
           <div className="px-4 md:px-12 max-w-6xl mx-auto">
             <h3 className="font-playfair text-3xl md:text-4xl font-bold mb-6">Available Flash</h3>
-            <Carousel opts={{ align: "start", loop: true, skipSnaps: false, dragFree: true }} className="w-full">
+            <Carousel opts={{ align: "start", loop: true, skipSnaps: false, dragFree: true }} className="w-full relative">
               <CarouselContent>
                 {flashItems.map((item) => (
                   <CarouselItem key={item.id} className="basis-full md:basis-1/2 lg:basis-1/3">
@@ -485,7 +485,13 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
                   </CarouselItem>
                 ))}
               </CarouselContent>
+              {/* Minimal nav controls */}
+              <CarouselPrevious className="left-2 top-1/2 -translate-y-1/2 bg-white/10 text-white border-white/20 hover:bg-white/20" aria-label="Previous flash" />
+              <CarouselNext className="right-2 top-1/2 -translate-y-1/2 bg-white/10 text-white border-white/20 hover:bg-white/20" aria-label="Next flash" />
             </Carousel>
+            {showSwipeHint && (
+              <div className="pointer-events-none mt-3 text-center text-xs text-white/70">Swipe or use ◀ ▶</div>
+            )}
           </div>
         </section>
       )}
