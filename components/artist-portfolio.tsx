@@ -5,7 +5,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { Instagram, ExternalLink, Loader2, DollarSign } from "lucide-react"
+import { Instagram, ExternalLink, Loader2 } from "lucide-react"
 import { useArtist } from "@/hooks/use-artist-data"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { type CarouselApi, Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
@@ -221,7 +221,6 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
           <div className="px-16 py-20">
             <div className="mb-8">
               <h1 className="font-playfair text-6xl font-bold mb-4 text-balance leading-tight">{artist.name}</h1>
-              <p className="text-2xl text-gray-300 mb-6">{artist.specialties.join(", ")}</p>
             </div>
 
             <p className="text-gray-300 mb-8 leading-relaxed text-lg max-w-lg">{artist.bio}</p>
@@ -240,24 +239,9 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
                   </a>
                 </div>
               )}
-              {artist.hourlyRate && (
-                <div className="flex items-center space-x-3">
-                  <DollarSign className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-300">Starting at ${artist.hourlyRate}/hr</span>
-                </div>
-              )}
             </div>
 
-            <div className="mb-8">
-              <h3 className="font-semibold mb-4 text-lg">Specializes in:</h3>
-              <div className="flex flex-wrap gap-2">
-                {artist.specialties.map((style) => (
-                  <Badge key={style} variant="outline" className="border-white/30 text-white">
-                    {style}
-                  </Badge>
-                ))}
-              </div>
-            </div>
+            {/* Specialties and pricing hidden on desktop per request */}
 
             <div className="flex space-x-4">
               <Button asChild size="lg" className="bg-white text-black hover:bg-gray-100 !text-black hover:!text-black">
