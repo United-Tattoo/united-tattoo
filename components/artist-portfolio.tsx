@@ -3,13 +3,12 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { Instagram, ExternalLink, Loader2 } from "lucide-react"
 import { useArtist } from "@/hooks/use-artist-data"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { type CarouselApi, Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
-import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
+// Removed mobile filter scroll area
 
 interface ArtistPortfolioProps {
   artistId: string
@@ -202,14 +201,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
               className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/50" />
-            <div className="absolute top-28 left-8">
-              <Badge
-                variant={artist.isActive ? "default" : "secondary"}
-                className="bg-white/20 backdrop-blur-sm text-white border-white/30"
-              >
-                {artist.isActive ? "Available" : "Unavailable"}
-              </Badge>
-            </div>
+            {/* Availability badge removed */}
           </div>
         </div>
 
@@ -268,7 +260,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
 
       {/* Hero Section - Mobile stacked */}
       <section className="md:hidden -mt-16">
-        <div className="relative w-full h-[55vh]">
+          <div className="relative w-full h-[55vh]">
           <Image
             src={profileImage}
             alt={artist.name}
@@ -279,14 +271,6 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
         </div>
         <div className="px-6 py-8">
-          <div className="mb-4 flex items-center gap-3">
-            <Badge
-              variant={artist.isActive ? "default" : "secondary"}
-              className="bg-white/20 backdrop-blur-sm text-white border-white/30"
-            >
-              {artist.isActive ? "Available" : "Unavailable"}
-            </Badge>
-          </div>
           <h1 className="font-playfair text-4xl font-bold mb-2 text-balance">{artist.name}</h1>
           <p className="text-white/80 mb-4 text-base">{artist.specialties.join(", ")}</p>
           <p className="text-white/80 leading-relaxed mb-2 text-[17px]">
