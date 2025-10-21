@@ -523,7 +523,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
             </div>
 
             <div className="mt-16 pt-16 border-t border-white/10">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+              <div className="hidden md:grid md:grid-cols-3 gap-8 text-center">
                 <div>
                   <div className="text-3xl font-bold mb-2">{artist.specialties.length}+</div>
                   <div className="text-gray-400">Specialties</div>
@@ -532,7 +532,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
                   <div className="text-3xl font-bold mb-2">{portfolioImages.length}</div>
                   <div className="text-gray-400">Portfolio Pieces</div>
                 </div>
-                <div className="hidden md:block">
+                <div>
                   <div className="text-3xl font-bold mb-2">{artist.hourlyRate ? `$${artist.hourlyRate}` : "Contact"}</div>
                   <div className="text-gray-400">Starting Rate</div>
                 </div>
