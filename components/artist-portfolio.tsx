@@ -5,11 +5,11 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { ArrowLeft, Instagram, ExternalLink, Loader2, DollarSign } from "lucide-react"
+import { Instagram, ExternalLink, Loader2, DollarSign } from "lucide-react"
 import { useArtist } from "@/hooks/use-artist-data"
 import { useIsMobile } from "@/hooks/use-mobile"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
+import { type CarouselApi, Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
 interface ArtistPortfolioProps {
@@ -22,6 +22,10 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
   const [scrollY, setScrollY] = useState(0)
   const [mobileView, setMobileView] = useState<"grid" | "carousel">("grid")
   const isMobile = useIsMobile()
+  // carousel indicator state (mobile)
+  const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null)
+  const [carouselCount, setCarouselCount] = useState(0)
+  const [carouselCurrent, setCarouselCurrent] = useState(0)
 
   // Fetch artist data from API
   const { data: artist, isLoading, error } = useArtist(artistId)
@@ -29,6 +33,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
   // keep a reference to the last focused thumbnail so we can return focus on modal close
   const lastFocusedRef = useRef<HTMLElement | null>(null)
   const closeButtonRef = useRef<HTMLButtonElement | null>(null)
+  const touchStartX = useRef<number | null>(null)
 
   useEffect(() => {
     // Enable parallax only on desktop to avoid jank on mobile
@@ -37,6 +42,38 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [isMobile])
+
+  // Preserve scroll position when modal opens/closes
+  useEffect(() => {
+    if (!selectedImage) return
+    const y = window.scrollY
+    const { body } = document
+    body.style.position = "fixed"
+    body.style.top = `-${y}px`
+    body.style.left = "0"
+    body.style.right = "0"
+    return () => {
+      const top = body.style.top
+      body.style.position = ""
+      body.style.top = ""
+      body.style.left = ""
+      body.style.right = ""
+      const restoreY = Math.abs(parseInt(top || "0", 10))
+      window.scrollTo(0, restoreY)
+    }
+  }, [selectedImage])
+
+  // Carousel indicators state wiring
+  useEffect(() => {
+    if (!carouselApi) return
+    setCarouselCount(carouselApi.scrollSnapList().length)
+    setCarouselCurrent(carouselApi.selectedScrollSnap())
+    const onSelect = () => setCarouselCurrent(carouselApi.selectedScrollSnap())
+    carouselApi.on("select", onSelect)
+    return () => {
+      carouselApi.off("select", onSelect)
+    }
+  }, [carouselApi])
 
   // Derived lists (safe when `artist` is undefined during initial renders)
   const portfolioImages = artist?.portfolioImages || []
@@ -401,8 +438,8 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
           {/* Category Filter - horizontal pills */}
           {categories.length > 1 && (
             <div className="mb-4">
-              <ScrollArea className="w-full whitespace-nowrap">
-                <div className="flex items-center gap-2">
+              <ScrollArea className="w-full whitespace-nowrap" aria-label="Filter by style">
+                <div className="flex items-center gap-2" role="list">
                   {categories.map((category) => {
                     const count = category === "All"
                       ? portfolioImages.length
@@ -412,8 +449,8 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
                       <button
                         key={category}
                         onClick={() => setSelectedCategory(category)}
-                        className={`rounded-full px-3 py-1 text-xs border transition-colors ${
-                          isActive ? "bg-white text-black border-white" : "text-white/80 border-white/20"
+                        className={`rounded-full px-3 py-1 text-xs border transition-all duration-200 ${
+                          isActive ? "bg-white text-black border-white scale-95" : "text-white/80 border-white/20 hover:border-white/40"
                         }`}
                         aria-pressed={isActive}
                       >
@@ -485,8 +522,8 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
                   <p className="text-gray-400">No portfolio images available</p>
                 </div>
               ) : (
-                <div className="relative">
-                  <Carousel opts={{ align: "start", loop: true }} className="w-full">
+                <div className="relative" aria-label="Portfolio carousel">
+                  <Carousel opts={{ align: "start", loop: true }} className="w-full" setApi={setCarouselApi}>
                     <CarouselContent>
                       {filteredPortfolio.map((item) => (
                         <CarouselItem key={item.id} className="basis-full">
@@ -505,6 +542,18 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
                   </Carousel>
                   <div className="pointer-events-none absolute top-2 right-3 rounded-full bg-white/10 backdrop-blur px-2 py-1 text-xs text-white">
                     {filteredPortfolio.length} pieces
+                  </div>
+                  {/* Dots indicators */}
+                  <div className="mt-3 flex items-center justify-center gap-2" role="tablist" aria-label="Carousel indicators">
+                    {Array.from({ length: carouselCount }).map((_, i) => (
+                      <button
+                        key={i}
+                        onClick={() => carouselApi?.scrollTo(i)}
+                        aria-current={carouselCurrent === i}
+                        aria-label={`Go to slide ${i + 1}`}
+                        className={`h-1.5 w-1.5 rounded-full ${carouselCurrent === i ? "bg-white" : "bg-white/40"}`}
+                      />
+                    ))}
                   </div>
                 </div>
               )}
@@ -572,6 +621,24 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
           <div
             className="relative max-w-6xl max-h-[90vh] w-full flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={(e) => {
+              touchStartX.current = e.touches[0].clientX
+            }}
+            onTouchEnd={(e) => {
+              if (touchStartX.current == null) return
+              const dx = e.changedTouches[0].clientX - touchStartX.current
+              const threshold = 40
+              if (Math.abs(dx) > threshold) {
+                if (dx < 0) {
+                  const next = (currentIndex + 1) % filteredPortfolio.length
+                  goToIndex(next)
+                } else {
+                  const prev = (currentIndex - 1 + filteredPortfolio.length) % filteredPortfolio.length
+                  goToIndex(prev)
+                }
+              }
+              touchStartX.current = null
+            }}
           >
             {/* Prev */}
             <button
