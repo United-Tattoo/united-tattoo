@@ -8,7 +8,6 @@ import Link from "next/link"
 import { Instagram, ExternalLink, Loader2, DollarSign } from "lucide-react"
 import { useArtist } from "@/hooks/use-artist-data"
 import { useIsMobile } from "@/hooks/use-mobile"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { type CarouselApi, Carousel, CarouselContent, CarouselItem } from "@/components/ui/carousel"
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area"
 
@@ -20,12 +19,13 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [scrollY, setScrollY] = useState(0)
-  const [mobileView, setMobileView] = useState<"grid" | "carousel">("carousel")
   const isMobile = useIsMobile()
   // carousel indicator state (mobile)
   const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null)
   const [carouselCount, setCarouselCount] = useState(0)
   const [carouselCurrent, setCarouselCurrent] = useState(0)
+  const [showSwipeHint, setShowSwipeHint] = useState(true)
+  const [showFullBio, setShowFullBio] = useState(false)
 
   // Fetch artist data from API
   const { data: artist, isLoading, error } = useArtist(artistId)
@@ -42,6 +42,12 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [isMobile])
+
+  // Fade swipe hint after a short delay
+  useEffect(() => {
+    const t = setTimeout(() => setShowSwipeHint(false), 2500)
+    return () => clearTimeout(t)
+  }, [])
 
   // Preserve scroll position when modal opens/closes
   useEffect(() => {
@@ -177,6 +183,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
   const profileImage = portfolioImages.find(img => img.tags.includes('profile'))?.url || 
                       portfolioImages[0]?.url || 
                       "/placeholder.svg"
+  const bioText = artist.bio || ""
 
   return (
     <div className="min-h-screen bg-black text-white">
@@ -303,8 +310,15 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
             )}
           </div>
           <h1 className="font-playfair text-4xl font-bold mb-2 text-balance">{artist.name}</h1>
-          <p className="text-white/80 mb-4">{artist.specialties.join(", ")}</p>
-          <p className="text-white/70 leading-relaxed mb-6">{artist.bio}</p>
+          <p className="text-white/80 mb-4 text-base">{artist.specialties.join(", ")}</p>
+          <p className="text-white/80 leading-relaxed mb-2 text-[17px]">
+            {showFullBio ? bioText : bioText.slice(0, 180)}{bioText.length > 180 && !showFullBio ? "…" : ""}
+          </p>
+          {bioText.length > 180 && (
+            <button onClick={() => setShowFullBio((v) => !v)} className="text-white/70 text-sm underline">
+              {showFullBio ? "Show less" : "Read more"}
+            </button>
+          )}
           <div className="flex flex-col sm:flex-row gap-3">
             <Button asChild size="lg" className="bg-white text-black hover:bg-gray-100 !text-black hover:!text-black">
               <Link href={`/book?artist=${artist.slug}`}>Book Appointment</Link>
@@ -432,7 +446,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
         </div>
       </section>
 
-      {/* Mobile Portfolio: Tabs + Filters */}
+      {/* Mobile Portfolio: Carousel + Filters (simplified) */}
       <section className="md:hidden bg-black">
         <div className="px-4 pt-6">
           {/* Category Filter - horizontal pills */}
@@ -466,103 +480,54 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
           )}
         </div>
 
-        {/* Tabs: Grid | Carousel */}
+        {/* Carousel only */}
         <div className="px-2 pb-10">
-          <Tabs value={mobileView} onValueChange={(v) => setMobileView(v as any)} className="w-full">
-            <TabsList className="mx-2">
-              <TabsTrigger value="grid">Grid</TabsTrigger>
-              <TabsTrigger value="carousel">Carousel</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="grid" className="mt-4">
-              {filteredPortfolio.length === 0 ? (
-                <div className="flex items-center justify-center h-64">
-                  <p className="text-gray-400">No portfolio images available</p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-1 gap-4 px-2">
+          {filteredPortfolio.length === 0 ? (
+            <div className="flex items-center justify-center h-64">
+              <p className="text-gray-400">No portfolio images available</p>
+            </div>
+          ) : (
+            <div className="relative" aria-label="Portfolio carousel">
+              <Carousel opts={{ align: "start", loop: true }} className="w-full" setApi={setCarouselApi}>
+                <CarouselContent>
                   {filteredPortfolio.map((item) => (
-                    <div
-                      key={item.id}
-                      className="group cursor-pointer"
-                      role="button"
-                      tabIndex={0}
-                      aria-label={`Open ${item.caption || 'portfolio image'}`}
-                      onClick={(e) => {
-                        openImageFromElement(item.id, (e.currentTarget as HTMLElement) || null)
-                      }}
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter" || e.key === " ") {
-                          e.preventDefault()
-                          openImageFromElement(item.id, e.currentTarget as HTMLElement)
-                        }
-                      }}
-                    >
-                      <div className="relative overflow-hidden bg-gray-900 aspect-[4/5] rounded-md">
+                    <CarouselItem key={item.id} className="basis-full">
+                      <div className="w-full h-[70vh] relative">
                         <Image
                           src={item.url || "/placeholder.svg"}
                           alt={item.caption || `${artist.name} portfolio image`}
-                          width={800}
-                          height={1000}
+                          fill
                           sizes="100vw"
-                          className="w-full h-full object-cover"
-                          aria-hidden={true}
-                          priority={false}
+                          className="object-contain bg-black"
                         />
                       </div>
-                    </div>
-                  ))}
+                    </CarouselItem>)
+                  )}
+                </CarouselContent>
+              </Carousel>
+              <div className="pointer-events-none absolute top-2 right-3 rounded-full bg-white/10 backdrop-blur px-2 py-1 text-xs text-white">
+                {filteredPortfolio.length} pieces
+              </div>
+              {/* Swipe hint */}
+              {showSwipeHint && (
+                <div className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-white/10 backdrop-blur px-3 py-1 text-xs text-white">
+                  Swipe left or right
                 </div>
               )}
-            </TabsContent>
-
-            <TabsContent value="carousel" className="mt-4">
-              {filteredPortfolio.length === 0 ? (
-                <div className="flex items-center justify-center h-64">
-                  <p className="text-gray-400">No portfolio images available</p>
-                </div>
-              ) : (
-                <div className="relative" aria-label="Portfolio carousel">
-                  <Carousel opts={{ align: "start", loop: true }} className="w-full" setApi={setCarouselApi}>
-                    <CarouselContent>
-                      {filteredPortfolio.map((item) => (
-                        <CarouselItem key={item.id} className="basis-full">
-                          <div className="w-full h-[70vh] relative">
-                            <Image
-                              src={item.url || "/placeholder.svg"}
-                              alt={item.caption || `${artist.name} portfolio image`}
-                              fill
-                              sizes="100vw"
-                              className="object-contain bg-black"
-                            />
-                          </div>
-                        </CarouselItem>)
-                      )}
-                    </CarouselContent>
-                  </Carousel>
-                  <div className="pointer-events-none absolute top-2 right-3 rounded-full bg-white/10 backdrop-blur px-2 py-1 text-xs text-white">
-                    {filteredPortfolio.length} pieces
-                  </div>
-                  {/* Swipe hint */}
-                  <div className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-white/10 backdrop-blur px-3 py-1 text-xs text-white">
-                    Swipe left or right
-                  </div>
-                  {/* Dots indicators */}
-                  <div className="mt-3 flex items-center justify-center gap-2" role="tablist" aria-label="Carousel indicators">
-                    {Array.from({ length: carouselCount }).map((_, i) => (
-                      <button
-                        key={i}
-                        onClick={() => carouselApi?.scrollTo(i)}
-                        aria-current={carouselCurrent === i}
-                        aria-label={`Go to slide ${i + 1}`}
-                        className={`h-1.5 w-1.5 rounded-full ${carouselCurrent === i ? "bg-white" : "bg-white/40"}`}
-                      />
-                    ))}
-                  </div>
-                </div>
-              )}
-            </TabsContent>
-          </Tabs>
+              {/* Dots indicators */}
+              <div className="mt-3 flex items-center justify-center gap-2" role="tablist" aria-label="Carousel indicators">
+                {Array.from({ length: carouselCount }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => carouselApi?.scrollTo(i)}
+                    aria-current={carouselCurrent === i}
+                    aria-label={`Go to slide ${i + 1}`}
+                    className={`h-2 w-2 rounded-full ${carouselCurrent === i ? "bg-white" : "bg-white/40"}`}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
       </section>
 
