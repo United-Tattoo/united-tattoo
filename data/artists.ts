@@ -108,7 +108,7 @@ export const artists: Artist[] = [
   {
     id: 3,
     slug: "amari-rodriguez",
-    name: "Amari Rodriguez",
+    name: "Amari Kyss",
     title: "",
     specialty: "Apprentice Artist",
     faceImage: "/artists/amari-rodriguez-portrait.jpg",
