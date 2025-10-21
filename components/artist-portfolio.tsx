@@ -113,14 +113,16 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
 
   // Derived lists (safe when `artist` is undefined during initial renders)
   const portfolioImages = artist?.portfolioImages || []
+  // Exclude profile/non-public images from the displayed gallery
+  const galleryImages = portfolioImages.filter((img) => img.isPublic !== false && !img.tags.includes('profile'))
   
-  // Get unique categories from tags
-  const allTags = portfolioImages.flatMap(img => img.tags)
+  // Get unique categories from tags (use gallery images only)
+  const allTags = galleryImages.flatMap(img => img.tags)
   const categories = ["All", ...Array.from(new Set(allTags))]
   
   const filteredPortfolio = selectedCategory === "All" 
-    ? portfolioImages 
-    : portfolioImages.filter(img => img.tags.includes(selectedCategory))
+    ? galleryImages 
+    : galleryImages.filter(img => img.tags.includes(selectedCategory))
 
   // keyboard navigation for modal (kept as hooks so they run in same order every render)
   const goToIndex = useCallback(
@@ -516,8 +518,8 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
                 ))}
               </CarouselContent>
               {/* Minimal nav controls */}
-              <CarouselPrevious className="left-2 top-1/2 -translate-y-1/2 bg-white/10 text-white border-white/20 hover:bg-white/20" aria-label="Previous flash" />
-              <CarouselNext className="right-2 top-1/2 -translate-y-1/2 bg-white/10 text-white border-white/20 hover:bg-white/20" aria-label="Next flash" />
+              <CarouselPrevious className="left-4 top-1/2 -translate-y-1/2 size-12 md:size-14 z-10 bg-black/85 text-white shadow-xl border border-white/30 hover:bg-black rounded-full" aria-label="Previous flash" />
+              <CarouselNext className="right-4 top-1/2 -translate-y-1/2 size-12 md:size-14 z-10 bg-black/85 text-white shadow-xl border border-white/30 hover:bg-black rounded-full" aria-label="Next flash" />
             </Carousel>
             {/* Edge fade gradients (desktop) */}
             <div className="pointer-events-none hidden md:block absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-black to-transparent" />
