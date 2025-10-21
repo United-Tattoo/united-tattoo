@@ -1,6 +1,9 @@
 "use client"
 
 import type React from "react"
+import { useSearchParams } from "next/navigation"
+import { useEffect } from "react"
+import { fetchFlashItem } from "@/hooks/use-flash"
 
 import { useState, useMemo } from "react"
 import { Button } from "@/components/ui/button"
@@ -33,6 +36,8 @@ interface BookingFormProps {
 }
 
 export function BookingForm({ artistId }: BookingFormProps) {
+  const search = useSearchParams()
+  const flashIdParam = search?.get('flashId') || undefined
   const [step, setStep] = useState(1)
   const [selectedDate, setSelectedDate] = useState<Date>()
   
@@ -68,11 +73,25 @@ export function BookingForm({ artistId }: BookingFormProps) {
     depositAmount: 100,
     agreeToTerms: false,
     agreeToDeposit: false,
+    flashId: flashIdParam || "",
   })
 
   const selectedArtist = artists?.find((a) => a.slug === formData.artistId)
   const selectedSize = tattooSizes.find((size) => size.size === formData.tattooSize)
   const bookingEnabled = useFeatureFlag("BOOKING_ENABLED")
+  // Prefill from flash piece if provided
+  useEffect(() => {
+    const load = async () => {
+      if (!flashIdParam) return
+      const item = await fetchFlashItem(flashIdParam)
+      if (!item) return
+      setFormData((prev) => ({
+        ...prev,
+        tattooDescription: [item.title, item.description].filter(Boolean).join(' - '),
+      }))
+    }
+    load()
+  }, [flashIdParam])
 
   // Calculate appointment start and end times for availability checking
   const { appointmentStart, appointmentEnd } = useMemo(() => {

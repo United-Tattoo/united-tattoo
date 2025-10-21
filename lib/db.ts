@@ -7,7 +7,8 @@ import type {
   UpdateArtistInput, 
   CreateAppointmentInput, 
   UpdateSiteSettingsInput,
-  AppointmentFilters 
+  AppointmentFilters,
+  FlashItem
 } from '@/types/database'
 
 // Type for Cloudflare D1 database binding
@@ -163,6 +164,13 @@ export async function getArtistWithPortfolio(id: string, env?: any): Promise<imp
     ORDER BY order_index ASC, created_at DESC
   `).bind(id).all();
   
+  // Fetch flash items (public only)
+  const flashResult = await db.prepare(`
+    SELECT * FROM flash_items
+    WHERE artist_id = ? AND is_available = 1
+    ORDER BY order_index ASC, created_at DESC
+  `).bind(id).all();
+  
   const artist = artistResult as any;
   
   return {
@@ -185,6 +193,20 @@ export async function getArtistWithPortfolio(id: string, env?: any): Promise<imp
       isPublic: Boolean(img.is_public),
       createdAt: new Date(img.created_at)
     })),
+    // Attach as non-breaking field (not in Artist type but useful to callers)
+    flashItems: (flashResult.results as any[]).map(row => ({
+      id: row.id,
+      artistId: row.artist_id,
+      url: row.url,
+      title: row.title || undefined,
+      description: row.description || undefined,
+      price: row.price ?? undefined,
+      sizeHint: row.size_hint || undefined,
+      tags: row.tags ? JSON.parse(row.tags) : undefined,
+      orderIndex: row.order_index || 0,
+      isAvailable: Boolean(row.is_available),
+      createdAt: new Date(row.created_at)
+    })) as FlashItem[],
     availability: [],
     createdAt: new Date(artist.created_at),
     updatedAt: new Date(artist.updated_at),

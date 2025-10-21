@@ -194,6 +194,20 @@ export interface PortfolioImage {
   createdAt: Date
 }
 
+export interface FlashItem {
+  id: string
+  artistId: string
+  url: string
+  title?: string
+  description?: string
+  price?: number // cents
+  sizeHint?: string
+  tags?: string[]
+  orderIndex: number
+  isAvailable: boolean
+  createdAt: Date
+}
+
 // Calendar & Booking Types
 export interface Appointment {
   id: string
