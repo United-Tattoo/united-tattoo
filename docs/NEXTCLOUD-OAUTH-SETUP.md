@@ -260,35 +260,46 @@ United Tattoo Studio Team
 ### Issue: Duplicate artist profiles created
 
 **Possible causes:**
+
 - Email mismatch between Nextcloud and database
 - User signed in before email was matched
 
 **Solution:**
+
 1. Identify duplicate records:
+
    ```sql
    SELECT * FROM artists WHERE user_id IN (
      SELECT user_id FROM artists GROUP BY user_id HAVING COUNT(*) > 1
    );
    ```
+
 2. Manually merge duplicates by updating portfolio images to point to the correct artist
 3. Delete the duplicate artist profile
 
 ### Issue: Artist can't access dashboard after sign-in
 
 **Possible causes:**
+
 - Artist profile not created during auto-provisioning
 - Database transaction failed
 
 **Solution:**
+
 1. Check if user exists:
+
    ```sql
    SELECT * FROM users WHERE email = 'artist@example.com';
    ```
+
 2. Check if artist profile exists:
+
    ```sql
    SELECT * FROM artists WHERE user_id = 'user-id-from-above';
    ```
+
 3. If user exists but artist doesn't, manually create artist:
+
    ```sql
    INSERT INTO artists (id, user_id, name, bio, specialties, is_active, slug)
    VALUES ('uuid', 'user-id', 'Artist Name', '', '[]', 1, 'artist-name');
