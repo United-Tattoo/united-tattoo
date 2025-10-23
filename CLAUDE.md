@@ -100,12 +100,34 @@ Main tables:
 
 ### Authentication (`lib/auth.ts`)
 
-NextAuth.js setup with role-based access control:
+NextAuth.js setup with role-based access control and Nextcloud OAuth integration:
 
-- **Providers**: Credentials (email/password), optional Google/GitHub OAuth
-- **Dev mode**: Any email/password combo creates a SUPER_ADMIN user for testing
-- **Seed admin**: `nicholai@biohazardvfx.com` is hardcoded as admin
+- **Primary Provider**: Nextcloud OAuth (recommended for all users)
+  - Artists and admins sign in via their Nextcloud credentials
+  - Auto-provisioning: Users in 'artists' or 'shop_admins' Nextcloud groups are automatically created
+  - Group-based role assignment:
+    - `admin` or `admins` group → SUPER_ADMIN
+    - `shop_admins` group (configurable) → SHOP_ADMIN
+    - `artists` group (configurable) → ARTIST (with auto-created artist profile)
+    - Users not in authorized groups are denied access
+  - Requires: `NEXTCLOUD_OAUTH_CLIENT_ID`, `NEXTCLOUD_OAUTH_CLIENT_SECRET`, `NEXTCLOUD_BASE_URL`
+
+- **Fallback Provider**: Credentials (email/password)
+  - Available only via `/auth/signin?admin=true` query parameter
+  - Admin emergency access only
+  - Dev mode: Any email/password combo creates a SUPER_ADMIN user for testing
+  - Seed admin: `nicholai@biohazardvfx.com` is hardcoded as admin
+
+- **Deprecated Providers**: Google/GitHub OAuth (still configured but not actively used)
+
 - **Session strategy**: JWT (no database adapter currently)
+
+- **Nextcloud Integration** (`lib/nextcloud-client.ts`):
+  - `getNextcloudUserProfile(userId)` - Fetch user details from Nextcloud OCS API
+  - `getNextcloudUserGroups(userId)` - Get user's group memberships
+  - `determineUserRole(userId)` - Auto-assign role based on Nextcloud groups
+  - Uses service account credentials (NEXTCLOUD_USERNAME/PASSWORD) for API access
+
 - **Helper functions**:
   - `requireAuth(role?)` - Protect routes, throws if unauthorized
   - `getArtistSession()` - Get artist profile for logged-in artist users
@@ -140,7 +162,16 @@ Validates required environment variables at boot using Zod. Critical vars:
 - Database: `DATABASE_URL`, `DIRECT_URL` (Supabase URLs, though using D1)
 - Auth: `NEXTAUTH_URL`, `NEXTAUTH_SECRET`
 - Storage: AWS/R2 credentials (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_BUCKET_NAME`, `AWS_ENDPOINT_URL`)
-- CalDAV: Nextcloud credentials (optional)
+- Nextcloud OAuth (required for artist authentication):
+  - `NEXTCLOUD_BASE_URL` - Nextcloud instance URL (e.g., https://portal.united-tattoos.com)
+  - `NEXTCLOUD_OAUTH_CLIENT_ID` - OAuth app client ID from Nextcloud
+  - `NEXTCLOUD_OAUTH_CLIENT_SECRET` - OAuth app client secret from Nextcloud
+  - `NEXTCLOUD_ARTISTS_GROUP` - Group name for artists (default: "artists")
+  - `NEXTCLOUD_ADMINS_GROUP` - Group name for admins (default: "shop_admins")
+- Nextcloud CalDAV (optional, for calendar sync):
+  - `NEXTCLOUD_USERNAME` - Service account username
+  - `NEXTCLOUD_PASSWORD` - Service account password or app-specific password
+  - `NEXTCLOUD_CALENDAR_BASE_PATH` - CalDAV path (default: "/remote.php/dav/calendars")
 
 Note: The env validation expects Supabase URLs but actual runtime uses Cloudflare D1 via bindings.
 

@@ -4,21 +4,76 @@ import GitHubProvider from "next-auth/providers/github"
 import CredentialsProvider from "next-auth/providers/credentials"
 import { env } from "./env"
 import { UserRole } from "@/types/database"
+import {
+  getNextcloudUserProfile,
+  getNextcloudUserGroups,
+  determineUserRole
+} from "./nextcloud-client"
 
 export const authOptions: NextAuthOptions = {
   // Note: Database adapter will be configured via Supabase MCP
   // For now, using JWT strategy without database adapter
   providers: [
-    // Credentials provider for email/password login
+    // Credentials provider for email/password login (admin fallback) and Nextcloud OAuth completion
     CredentialsProvider({
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
-        password: { label: "Password", type: "password" }
+        password: { label: "Password", type: "password" },
+        nextcloud_token: { label: "Nextcloud Token", type: "text" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, req) {
         console.log("Authorize called with:", credentials)
-        
+
+        // Handle Nextcloud OAuth completion
+        if (credentials?.nextcloud_token) {
+          console.log("Nextcloud OAuth completion with token")
+
+          // Get cookies from request
+          const cookies = req.headers?.cookie
+          if (!cookies) {
+            console.error("No cookies found")
+            return null
+          }
+
+          // Parse cookies manually
+          const cookieMap = new Map(
+            cookies.split(';').map(c => {
+              const [key, ...values] = c.trim().split('=')
+              return [key, values.join('=')]
+            })
+          )
+
+          const storedToken = cookieMap.get('nextcloud_one_time_token')
+          const userId = cookieMap.get('nextcloud_user_id')
+
+          console.log("Stored token:", storedToken ? "present" : "missing")
+          console.log("User ID:", userId ? userId : "missing")
+
+          if (!storedToken || !userId || storedToken !== credentials.nextcloud_token) {
+            console.error("Token validation failed")
+            return null
+          }
+
+          // Fetch user from database
+          const { getUserById } = await import('@/lib/db')
+          const user = await getUserById(userId)
+
+          if (!user) {
+            console.error("User not found")
+            return null
+          }
+
+          console.log("Nextcloud user authenticated:", user.email)
+          return {
+            id: user.id,
+            email: user.email,
+            name: user.name,
+            role: user.role,
+          }
+        }
+
+        // Handle regular credentials login
         if (!credentials?.email || !credentials?.password) {
           console.log("Missing email or password")
           return null
@@ -46,7 +101,7 @@ export const authOptions: NextAuthOptions = {
           name: credentials.email.split("@")[0],
           role: UserRole.SUPER_ADMIN, // Give admin access for testing
         }
-        
+
         console.log("Created user:", user)
         return user
       }
@@ -92,6 +147,7 @@ export const authOptions: NextAuthOptions = {
     },
     async signIn({ user, account, profile }) {
       // Custom sign-in logic
+      // Note: Nextcloud OAuth auto-provisioning happens in custom callback handler
       return true
     },
     async redirect({ url, baseUrl }) {

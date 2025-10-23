@@ -1,14 +1,16 @@
-import type { 
-  Artist, 
-  PortfolioImage, 
-  Appointment, 
-  SiteSettings, 
-  CreateArtistInput, 
-  UpdateArtistInput, 
-  CreateAppointmentInput, 
+import type {
+  Artist,
+  PortfolioImage,
+  Appointment,
+  SiteSettings,
+  CreateArtistInput,
+  UpdateArtistInput,
+  CreateAppointmentInput,
   UpdateSiteSettingsInput,
   AppointmentFilters,
-  FlashItem
+  FlashItem,
+  User,
+  UserRole
 } from '@/types/database'
 
 // Type for Cloudflare D1 database binding
@@ -35,6 +37,127 @@ export function getDB(env?: any): D1Database {
     throw new Error("Cloudflare D1 binding (env.DB) is unavailable");
   }
   return db as D1Database;
+}
+
+/**
+ * User Management Functions
+ */
+
+export async function getUserByEmail(email: string, env?: any): Promise<User | null> {
+  const db = getDB(env);
+  const result = await db.prepare(`
+    SELECT * FROM users WHERE email = ?
+  `).bind(email).first();
+
+  if (!result) return null;
+
+  return {
+    id: result.id as string,
+    email: result.email as string,
+    name: result.name as string,
+    role: result.role as UserRole,
+    avatar: result.avatar as string | undefined,
+    createdAt: new Date(result.created_at as string),
+    updatedAt: new Date(result.updated_at as string),
+  };
+}
+
+export async function getUserById(id: string, env?: any): Promise<User | null> {
+  const db = getDB(env);
+  const result = await db.prepare(`
+    SELECT * FROM users WHERE id = ?
+  `).bind(id).first();
+
+  if (!result) return null;
+
+  return {
+    id: result.id as string,
+    email: result.email as string,
+    name: result.name as string,
+    role: result.role as UserRole,
+    avatar: result.avatar as string | undefined,
+    createdAt: new Date(result.created_at as string),
+    updatedAt: new Date(result.updated_at as string),
+  };
+}
+
+export async function createUser(data: {
+  email: string
+  name: string
+  role: UserRole
+  avatar?: string
+}, env?: any): Promise<User> {
+  const db = getDB(env);
+  const id = crypto.randomUUID();
+  const now = new Date().toISOString();
+
+  await db.prepare(`
+    INSERT INTO users (id, email, name, role, avatar, created_at, updated_at)
+    VALUES (?, ?, ?, ?, ?, ?, ?)
+  `).bind(
+    id,
+    data.email,
+    data.name,
+    data.role,
+    data.avatar || null,
+    now,
+    now
+  ).run();
+
+  return {
+    id,
+    email: data.email,
+    name: data.name,
+    role: data.role,
+    avatar: data.avatar,
+    createdAt: new Date(now),
+    updatedAt: new Date(now),
+  };
+}
+
+export async function updateUser(id: string, data: {
+  email?: string
+  name?: string
+  role?: UserRole
+  avatar?: string
+}, env?: any): Promise<User> {
+  const db = getDB(env);
+  const now = new Date().toISOString();
+
+  const updates: string[] = [];
+  const values: any[] = [];
+
+  if (data.email !== undefined) {
+    updates.push('email = ?');
+    values.push(data.email);
+  }
+  if (data.name !== undefined) {
+    updates.push('name = ?');
+    values.push(data.name);
+  }
+  if (data.role !== undefined) {
+    updates.push('role = ?');
+    values.push(data.role);
+  }
+  if (data.avatar !== undefined) {
+    updates.push('avatar = ?');
+    values.push(data.avatar);
+  }
+
+  updates.push('updated_at = ?');
+  values.push(now);
+  values.push(id);
+
+  await db.prepare(`
+    UPDATE users SET ${updates.join(', ')} WHERE id = ?
+  `).bind(...values).run();
+
+  const updated = await getUserById(id, env);
+  if (!updated) {
+    throw new Error(`Failed to update user ${id}`);
+  }
+
+  return updated;
 }
 
 /**
@@ -705,6 +828,12 @@ export async function updateSiteSettings(data: UpdateSiteSettingsInput, env?: an
 
 // Type-safe query builder helpers
 export const db = {
+  users: {
+    findByEmail: getUserByEmail,
+    findById: getUserById,
+    create: createUser,
+    update: updateUser,
+  },
   artists: {
     findMany: getArtists,
     findUnique: getArtist,
