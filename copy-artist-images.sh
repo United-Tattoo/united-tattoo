@@ -2,7 +2,6 @@
 
 # Copy artist portraits
 cp "united-tattoo/temp/img/christylumbergportrait1.avif" "united-tattoo/public/artists/christy-lumberg-portrait.jpg" 2>/dev/null
-cp "united-tattoo/temp/artist-pages/Angel Andrade/2 - Pictures & Bio/IMG_4856-.jpg" "united-tattoo/public/artists/angel-andrade-portrait.jpg" 2>/dev/null
 cp "united-tattoo/temp/artist-pages/Donovan Lankford/2 - Pictures & Bio/DL (SQUARE).jpg" "united-tattoo/public/artists/donovan-lankford-portrait.jpg" 2>/dev/null
 cp "united-tattoo/temp/artist-pages/Heather Santistevan/2 - Pictures & Bio/Photoleap_12_12_2024_10_33_15_WCJy6.jpg" "united-tattoo/public/artists/heather-santistevan-portrait.jpg" 2>/dev/null
 cp "united-tattoo/temp/artist-pages/John Lapides/2 - Pictures & Bio/IMG_9058.jpg" "united-tattoo/public/artists/john-lapides-portrait.jpg" 2>/dev/null
@@ -12,12 +11,6 @@ cp "united-tattoo/temp/artist-pages/Steven _Sole_ Cedre/2 - Pictures & Bio/sole.
 cp "united-tattoo/public/placeholder-user.jpg" "united-tattoo/public/artists/amari-rodriguez-portrait.jpg" 2>/dev/null
 cp "united-tattoo/public/placeholder-user.jpg" "united-tattoo/public/artists/ej-segoviano-portrait.jpg" 2>/dev/null
 cp "united-tattoo/public/placeholder-user.jpg" "united-tattoo/public/artists/pako-martinez-portrait.jpg" 2>/dev/null
-
-# Copy some tattoo work samples from Angel Andrade
-cp "united-tattoo/temp/artist-pages/Angel Andrade/Screenshot_20241219_155220_Instagram.jpg" "united-tattoo/public/artists/angel-andrade-work-1.jpg" 2>/dev/null
-cp "united-tattoo/temp/artist-pages/Angel Andrade/Screenshot_20241219_155515_Instagram.jpg" "united-tattoo/public/artists/angel-andrade-work-2.jpg" 2>/dev/null
-cp "united-tattoo/temp/artist-pages/Angel Andrade/Screenshot_20241219_155729_Instagram.jpg" "united-tattoo/public/artists/angel-andrade-work-3.jpg" 2>/dev/null
-cp "united-tattoo/temp/artist-pages/Angel Andrade/Screenshot_20241219_155746_Instagram.jpg" "united-tattoo/public/artists/angel-andrade-work-4.jpg" 2>/dev/null
 
 # Copy Donovan's work
 cp "united-tattoo/temp/artist-pages/Donovan Lankford/3 - Tattoo Portfolio/Screenshot_20241217_150344_Instagram.jpg" "united-tattoo/public/artists/donovan-lankford-work-1.jpg" 2>/dev/null

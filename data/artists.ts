@@ -79,33 +79,6 @@ export const artists: Artist[] = [
         twitter: ""
     },
     {
-        id: 2,
-        slug: "angel-andrade",
-        name: "Angel Andrade",
-        title: "",
-        specialty: "Precision in the details",
-        faceImage: "",
-        workImages: [
-            "/artists/angel-andrade-work-1.jpg",
-            "/artists/angel-andrade-work-2.jpg",
-            "/artists/angel-andrade-work-3.jpg",
-            "/artists/angel-andrade-work-4.jpg"
-        ],
-        bio: "From lifelike micro designs to clean, modern aesthetics, Angel's tattoos are proof that big impact comes in small packages.",
-        experience: "5 years",
-        rating: 4.8,
-        reviews: 89,
-        availability: "Available",
-        styles: ["Fine Line", "Micro Realism", "Black & Grey", "Minimalist", "Geometric"],
-        description1: {
-            text: "Precision in the details",
-            details: [
-                "From lifelike micro designs to clean, modern aesthetics, Angel's tattoos are proof that big impact comes in small packages.",
-                "Angel specializes in fine line work and micro realism, creating intricate designs that showcase exceptional attention to detail."
-            ]
-        }
-    },
-    {
         id: 3,
         slug: "amari-rodriguez",
         name: "Amari Kyss",

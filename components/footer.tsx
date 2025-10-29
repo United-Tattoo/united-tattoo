@@ -72,7 +72,6 @@ export function Footer() {
               <ul className="space-y-3 text-base">
                 {[
                   { name: "CHRISTY_LUMBERG", count: "" },
-                  { name: "ANGEL_ANDRADE", count: "" },
                   { name: "STEVEN_SOLE", count: "" },
                   { name: "DONOVAN_L", count: "" },
                   { name: "VIEW_ALL", count: "" },
