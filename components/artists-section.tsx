@@ -1,257 +1,311 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
 import Link from "next/link"
-import { motion, AnimatePresence, useMotionValue, useTransform } from "framer-motion"
 
-import { useFeatureFlag } from "@/components/feature-flags-provider"
 import { Button } from "@/components/ui/button"
 import { artists as staticArtists } from "@/data/artists"
 import { useActiveArtists } from "@/hooks/use-artists"
 import type { PublicArtist } from "@/types/database"
+import { cn } from "@/lib/utils"
+
+type ArtistGridSet = {
+  key: string
+  items: PublicArtist[]
+}
+
+const GRID_SIZE = 16
+const GRID_INTERVAL = 12000
 
 export function ArtistsSection() {
-    // Fetch artists from database
-    const { data: dbArtistsData, isLoading, error } = useActiveArtists()
+  const { data: dbArtistsData, isLoading, error } = useActiveArtists()
 
-    // Merge static and database data
-    const artists = useMemo(() => {
-        // If still loading or error, use static data
-        if (isLoading || error || !dbArtistsData) {
-            return staticArtists
+  const artists = useMemo(() => {
+    if (isLoading || error || !dbArtistsData) {
+      return staticArtists
+    }
+
+    return staticArtists.map((staticArtist) => {
+      const dbArtist = dbArtistsData.artists.find(
+        (db) => db.slug === staticArtist.slug || db.name === staticArtist.name
+      )
+
+      if (dbArtist && dbArtist.portfolioImages.length > 0) {
+        return {
+          ...staticArtist,
+          workImages: dbArtist.portfolioImages.map((img) => img.url),
         }
+      }
 
-        // Merge: use database portfolio images, keep static metadata
-        return staticArtists.map(staticArtist => {
-            const dbArtist = dbArtistsData.artists.find(
-                (db) => db.slug === staticArtist.slug || db.name === staticArtist.name
-            )
+      return staticArtist
+    })
+  }, [dbArtistsData, error, isLoading])
 
-            // If found in database, use its portfolio images
-            if (dbArtist && dbArtist.portfolioImages.length > 0) {
-                return {
-                    ...staticArtist,
-                    workImages: dbArtist.portfolioImages.map(img => img.url)
+  const artistsRef = useRef(artists)
+  const gridSetsRef = useRef<ArtistGridSet[]>([])
+  const activeSetRef = useRef(0)
+
+  const [gridSets, setGridSets] = useState<ArtistGridSet[]>([])
+  const [activeSetIndex, setActiveSetIndex] = useState(0)
+  const [previousSetIndex, setPreviousSetIndex] = useState<number | null>(null)
+
+  artistsRef.current = artists
+  gridSetsRef.current = gridSets
+  activeSetRef.current = activeSetIndex
+
+  const shuffleArtists = useCallback((input: PublicArtist[]) => {
+    const array = [...input]
+    for (let i = array.length - 1; i > 0; i -= 1) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[array[i], array[j]] = [array[j], array[i]]
+    }
+    return array
+  }, [])
+
+  const ensureGridCount = useCallback(
+    (pool: PublicArtist[], chunk: PublicArtist[]) => {
+      if (chunk.length >= GRID_SIZE) {
+        return chunk.slice(0, GRID_SIZE)
+      }
+      const topUpSource = shuffleArtists(pool)
+      const needed = GRID_SIZE - chunk.length
+      return [...chunk, ...topUpSource.slice(0, needed)]
+    },
+    [shuffleArtists]
+  )
+
+  const createKey = () => Math.random().toString(36).slice(2)
+
+  const regenerateSets = useCallback(() => {
+    const pool = artistsRef.current
+    if (pool.length === 0) {
+      setGridSets([])
+      setActiveSetIndex(0)
+      setPreviousSetIndex(null)
+      return
+    }
+
+    const shuffled = shuffleArtists(pool)
+    const batches: ArtistGridSet[] = []
+
+    for (let i = 0; i < shuffled.length; i += GRID_SIZE) {
+      const slice = ensureGridCount(pool, shuffled.slice(i, i + GRID_SIZE))
+      batches.push({ key: `${createKey()}-${i}`, items: slice })
+    }
+
+    if (batches.length === 1) {
+      const alternate = ensureGridCount(pool, shuffleArtists(pool))
+      batches.push({ key: `${createKey()}-alt`, items: alternate })
+    }
+
+    setGridSets(batches)
+    setActiveSetIndex(0)
+    setPreviousSetIndex(null)
+  }, [ensureGridCount, shuffleArtists])
+
+  useEffect(() => {
+    regenerateSets()
+  }, [artists, regenerateSets])
+
+  const advanceSet = useCallback(() => {
+    if (gridSetsRef.current.length === 0) {
+      return
+    }
+
+    setPreviousSetIndex(activeSetRef.current)
+    setActiveSetIndex((prev) => {
+      const next = prev + 1
+      if (next >= gridSetsRef.current.length) {
+        regenerateSets()
+        return 0
+      }
+      return next
+    })
+  }, [regenerateSets])
+
+  useEffect(() => {
+    if (gridSets.length === 0) {
+      return
+    }
+
+    const interval = window.setInterval(() => {
+      advanceSet()
+    }, GRID_INTERVAL)
+
+    return () => window.clearInterval(interval)
+  }, [advanceSet, gridSets.length])
+
+  const displayIndices = useMemo(() => {
+    const indices = new Set<number>()
+    indices.add(activeSetIndex)
+    if (previousSetIndex !== null && previousSetIndex !== activeSetIndex) {
+      indices.add(previousSetIndex)
+    }
+    return Array.from(indices)
+  }, [activeSetIndex, previousSetIndex])
+
+  const getArtistImage = (artist: PublicArtist) => {
+    const candidate = (artist as any).faceImage || artist.workImages?.[0]
+    if (candidate) {
+      return candidate
+    }
+    return "/placeholder.svg"
+  }
+
+  return (
+    <section id="artists" className="relative isolate overflow-hidden pb-24 pt-24">
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(14,11,9,0)_0%,rgba(14,11,9,0.85)_20%,rgba(14,11,9,0.92)_55%,rgba(14,11,9,0.98)_100%)]" />
+        <div
+          className="absolute -left-16 top-[8%] h-[480px] w-[420px] rotate-[-8deg] rounded-[36px] opacity-40 blur-[1px]"
+          style={{
+            backgroundImage:
+              "image-set(url('/assets/liberty/mural-portrait-sun.avif') type('image/avif'), url('/assets/liberty/mural-portrait-sun.webp') type('image/webp'))",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+        <div
+          className="absolute -right-24 top-[35%] hidden h-[540px] w-[420px] rotate-[6deg] rounded-[36px] opacity-30 lg:block"
+          style={{
+            backgroundImage:
+              "image-set(url('/assets/liberty/mural-orange-wall.avif') type('image/avif'), url('/assets/liberty/mural-orange-wall.webp') type('image/webp'))",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+          }}
+        />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,255,255,0.08),transparent_55%)]" />
+      </div>
+
+      <div className="relative mx-auto flex max-w-6xl flex-col gap-16 px-6 lg:px-10 xl:flex-row">
+        <div className="flex-1 space-y-10 text-white">
+          <div className="space-y-4">
+            <span className="inline-flex items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-[0.55em] text-white/55">
+              <span className="h-px w-8 bg-white/35" /> Resident & Guest Artists
+            </span>
+            <h2 className="font-playfair text-4xl leading-[1.1] tracking-tight sm:text-5xl lg:text-[3.6rem]">
+              A Collective of Story-Driven Tattoo Artists
+            </h2>
+            <p className="max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">
+              United Tattoo is home to cover-up virtuosos, illustrative explorers, anime specialists, and fine line minimalists.
+              Every artist curates their chair with intention—offering custom narratives, flash experiments, and collaborative pieces
+              that evolve with you.
+            </p>
+          </div>
+
+          <div className="grid gap-5 text-xs uppercase tracking-[0.32em] text-white/60 sm:grid-cols-2">
+            <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.05)] p-6">
+              <p className="text-[0.65rem] font-semibold text-white/55">What to Expect</p>
+              <p className="mt-3 text-sm tracking-[0.28em] text-white">Consultation-first Process</p>
+              <p className="mt-3 text-[0.68rem] leading-relaxed tracking-[0.26em] text-white/45">
+                Artist pairing • Mood-boards • Aftercare guides • CalDAV-synced scheduling
+              </p>
+            </div>
+            <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-6">
+              <p className="text-[0.65rem] font-semibold text-white/55">Specialties</p>
+              <p className="mt-3 text-sm tracking-[0.28em] text-white">Layered Stylescapes</p>
+              <p className="mt-3 text-[0.68rem] leading-relaxed tracking-[0.26em] text-white/45">
+                Black & grey realism • Neo-traditional color • Bold cover-ups • Fine line botanicals
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-col gap-6 pt-2 sm:flex-row sm:items-center">
+            <Button
+              asChild
+              className="group relative w-full overflow-hidden rounded-full bg-white/90 px-8 py-4 text-xs font-semibold uppercase tracking-[0.38em] text-[#1c1713] transition-all duration-300 hover:bg-white sm:w-auto"
+            >
+              <Link href="/book">
+                Reserve with an Artist
+                <span className="ml-3 inline-flex h-[1px] w-6 bg-[#1c1713] transition-all duration-300 group-hover:w-10" />
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              asChild
+              className="w-full justify-start rounded-full border border-white/15 bg-white/5 px-6 py-4 text-xs font-semibold uppercase tracking-[0.32em] text-white/80 backdrop-blur sm:w-auto"
+            >
+              <Link href="/artists">View full roster</Link>
+            </Button>
+          </div>
+        </div>
+
+        <div className="relative flex-1">
+          <div className="relative overflow-hidden rounded-[36px] border border-white/12 bg-[rgba(12,10,8,0.82)] p-6 shadow-[0_45px_90px_-35px_rgba(0,0,0,0.75)]">
+            <div className="pointer-events-none absolute inset-0 rounded-[36px] border border-white/[0.05]" aria-hidden="true" />
+            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.12),transparent_55%)]" aria-hidden="true" />
+
+            <div className="relative min-h-[520px]">
+              {displayIndices.map((index) => {
+                const set = gridSets[index]
+                if (!set) {
+                  return null
                 }
-            }
+                const isActive = index === activeSetIndex
 
-            // Fall back to static data
-            return staticArtist
-        })
-    }, [dbArtistsData, isLoading, error])
-
-    // Minimal animation: fade-in only (no parallax)
-    const [visibleCards, setVisibleCards] = useState<number[]>([])
-    const [hoveredCard, setHoveredCard] = useState<number | null>(null)
-    const [portfolioIndices, setPortfolioIndices] = useState<Record<number, number>>({})
-    const sectionRef = useRef<HTMLElement>(null)
-    const advancedNavAnimations = useFeatureFlag("ADVANCED_NAV_SCROLL_ANIMATIONS_ENABLED")
-    const allArtistIndices = useMemo(() => Array.from({ length: artists.length }, (_, idx) => idx), [artists.length])
-
-    useEffect(() => {
-        if (!advancedNavAnimations) {
-            setVisibleCards(allArtistIndices)
-            return
-        }
-        setVisibleCards([])
-    }, [advancedNavAnimations, allArtistIndices])
-
-    useEffect(() => {
-        if (!advancedNavAnimations) return
-        const observer = new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        const cardIndex = Number.parseInt(entry.target.getAttribute("data-index") || "0")
-                        setVisibleCards((prev) => [...new Set([...prev, cardIndex])])
-                    }
-                })
-            },
-            { threshold: 0.2, rootMargin: "0px 0px -10% 0px" },
-        )
-        const cards = sectionRef.current?.querySelectorAll("[data-index]")
-        cards?.forEach((card) => observer.observe(card))
-        return () => observer.disconnect()
-    }, [advancedNavAnimations])
-
-    const cardVisibilityClass = (index: number) => {
-        if (!advancedNavAnimations) return "opacity-100 translate-y-0"
-        return visibleCards.includes(index) ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
-    }
-
-    const cardTransitionDelay = (index: number) => {
-        if (!advancedNavAnimations) return undefined
-        return `${index * 40}ms`
-    }
-
-    // Vary aspect ratio to create a subtle masonry rhythm
-    const aspectFor = (i: number) => {
-        const variants = ["aspect-[3/4]", "aspect-[4/5]", "aspect-square"]
-        return variants[i % variants.length]
-    }
-
-    // Handle hover to cycle through portfolio images
-    const handleHoverStart = (artistIndex: number) => {
-        setHoveredCard(artistIndex)
-        const artist = artists[artistIndex]
-        if (artist.workImages.length > 0) {
-            setPortfolioIndices((prev) => {
-                const currentIndex = prev[artistIndex] ?? 0
-                const nextIndex = (currentIndex + 1) % artist.workImages.length
-                return { ...prev, [artistIndex]: nextIndex }
-            })
-        }
-    }
-
-    const handleHoverEnd = () => {
-        setHoveredCard(null)
-    }
-
-    const getPortfolioImage = (artistIndex: number) => {
-        const artist = artists[artistIndex]
-        if (artist.workImages.length === 0) return null
-        const imageIndex = portfolioIndices[artistIndex] ?? 0
-        return artist.workImages[imageIndex]
-    }
-
-    return (
-        <section ref={sectionRef} id="artists" className="relative overflow-hidden bg-black">
-            {/* Faint logo texture */}
-            <div className="absolute inset-0 opacity-[0.03]">
-                <img
-                    src="/united-logo-full.jpg"
-                    alt=""
-                    className="w-full h-full object-cover object-center scale-150 blur-[2px]"
-                />
-                <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
-            </div>
-
-            {/* Header */}
-            <div className="relative z-10 py-14 px-6 lg:px-10">
-                <div className="max-w-[1800px] mx-auto">
-                    <div className="grid lg:grid-cols-3 gap-10 items-end mb-10">
-                        <div className="lg:col-span-2">
-                            <h2 className="text-6xl lg:text-8xl font-bold tracking-tight mb-4 text-white">ARTISTS</h2>
-                            <p className="text-lg lg:text-xl text-gray-200/90 leading-relaxed max-w-2xl">
-                                Our exceptional team of tattoo artists, each bringing unique expertise and artistic vision to create your perfect
-                                tattoo.
+                return (
+                  <div
+                    key={set.key}
+                    className={cn(
+                      "absolute inset-0 grid grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:grid-cols-4",
+                      "transition-opacity duration-[1300ms] ease-out",
+                      isActive ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
+                    )}
+                  >
+                    {set.items.map((artist) => {
+                      const href = `/artists/${artist.slug}`
+                      const image = getArtistImage(artist)
+                      return (
+                        <Link
+                          key={`${set.key}-${artist.id}-${artist.slug}`}
+                          href={href}
+                          className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/12 bg-white/[0.06] p-3 text-left transition-all duration-500 hover:-translate-y-1 hover:border-white/25 hover:bg-white/[0.1]"
+                        >
+                          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
+                            <img
+                              src={image}
+                              alt={`${artist.name} portfolio sample`}
+                              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
+                              loading="lazy"
+                            />
+                            <div className="absolute inset-0 bg-gradient-to-t from-[#0b0907] via-transparent to-transparent" />
+                            <div className="absolute right-4 top-4 h-10 w-10 rounded-full border border-white/20 bg-white/10 backdrop-blur">
+                              <span className="absolute inset-2 rounded-full border border-white/15" />
+                            </div>
+                          </div>
+                          <div className="mt-4 space-y-1">
+                            <p className="text-sm font-semibold uppercase tracking-[0.35em] text-white">
+                              {artist.name}
                             </p>
-                        </div>
-                        <div className="text-right">
-                            <Button
-                                asChild
-                                className="bg-white text-black hover:bg-gray-100 px-7 py-3 text-base font-medium tracking-wide shadow-sm rounded-md"
-                            >
-                                <Link href="/book">BOOK CONSULTATION</Link>
-                            </Button>
-                        </div>
-                    </div>
-                </div>
+                            <p className="text-[0.65rem] uppercase tracking-[0.32em] text-white/55">
+                              {(artist as any).specialty || "Tattoo Artist"}
+                            </p>
+                          </div>
+                        </Link>
+                      )
+                    })}
+                  </div>
+                )
+              })}
             </div>
+          </div>
+        </div>
+      </div>
 
-            {/* Masonry grid */}
-            <div className="relative z-10 px-6 lg:px-10 pb-24">
-                <div className="max-w-[1800px] mx-auto">
-                    {/* columns-based masonry; tighter spacing and wider section */}
-                    <div className="columns-1 sm:columns-2 lg:columns-3 gap-4 lg:gap-5 [column-fill:_balance]">
-                        {artists.map((artist, i) => {
-                            const transitionDelay = cardTransitionDelay(i)
-                            const portfolioImage = getPortfolioImage(i)
-                            const isHovered = hoveredCard === i
-
-                            return (
-                                <article
-                                    key={artist.id}
-                                    data-index={i}
-                                    className={`group mb-4 break-inside-avoid transition-all duration-700 ${cardVisibilityClass(i)}`}
-                                    style={transitionDelay ? { transitionDelay } : undefined}
-                                >
-                                    <Link href={`/artists/${artist.slug}`}>
-                                        <motion.div
-                                            className={`relative w-full ${aspectFor(i)} overflow-hidden rounded-md border border-white/10 bg-black cursor-pointer`}
-                                            onHoverStart={() => handleHoverStart(i)}
-                                            onHoverEnd={handleHoverEnd}
-                                        >
-                                            {/* Base layer: artist portrait */}
-                                            <div className="absolute inset-0 artist-image">
-                                                <img
-                                                    src={artist.faceImage || "/placeholder.svg"}
-                                                    alt={`${artist.name} portrait`}
-                                                    className="w-full h-full object-cover"
-                                                    loading="lazy"
-                                                />
-                                            </div>
-
-                                            {/* Wipe overlay: portfolio image with curved boundary */}
-                                            <AnimatePresence>
-                                                {isHovered && portfolioImage && (
-                                                    <>
-                                                        {/* SVG clipPath with pronounced wave */}
-                                                        <svg className="absolute w-0 h-0">
-                                                            <defs>
-                                                                <clipPath id={`wipe-curve-${i}`} clipPathUnits="objectBoundingBox">
-                                                                    <motion.path
-                                                                        initial={{
-                                                                            d: "M 0,0 L 1,0 L 1,0 Q 0.75,0 0.5,0 Q 0.25,0 0,0 Z"
-                                                                        }}
-                                                                        animate={{
-                                                                            d: "M 0,0 L 1,0 L 1,1.1 Q 0.75,1.02 0.5,1.1 Q 0.25,1.18 0,1.1 Z"
-                                                                        }}
-                                                                        exit={{
-                                                                            d: "M 0,0 L 1,0 L 1,0 Q 0.75,0 0.5,0 Q 0.25,0 0,0 Z"
-                                                                        }}
-                                                                        transition={{ duration: 0.5, ease: "easeInOut" }}
-                                                                    />
-                                                                </clipPath>
-                                                            </defs>
-                                                        </svg>
-
-                                                        {/* Portfolio image with curved clip */}
-                                                        <div
-                                                            className="absolute inset-0 z-10"
-                                                            style={{
-                                                                clipPath: `url(#wipe-curve-${i})`,
-                                                            }}
-                                                        >
-                                                            <img
-                                                                src={portfolioImage}
-                                                                alt={`${artist.name} work`}
-                                                                className="w-full h-full object-cover"
-                                                            />
-                                                        </div>
-                                                    </>
-                                                )}
-                                            </AnimatePresence>
-
-                                            {/* Minimal footer - only name */}
-                                            <div className="absolute bottom-0 left-0 right-0 z-20 bg-gradient-to-t from-black/80 via-black/20 to-transparent p-4">
-                                                <h3 className="text-xl font-semibold tracking-tight text-white">{artist.name}</h3>
-                                                <p className="text-xs font-medium text-white/80">{artist.specialty}</p>
-                                            </div>
-                                        </motion.div>
-                                    </Link>
-                                </article>
-                            )
-                        })}
-                    </div>
-                </div>
-            </div>
-
-            {/* CTA Footer */}
-            <div className="relative z-20 bg-black text-white py-20 px-6 lg:px-10">
-                <div className="max-w-[1800px] mx-auto text-center">
-                    <h3 className="text-5xl lg:text-7xl font-bold tracking-tight mb-8">READY?</h3>
-                    <p className="text-xl text-white/70 mb-12 max-w-2xl mx-auto">
-                        Choose your artist and start your tattoo journey with United Tattoo.
-                    </p>
-                    <Button
-                        asChild
-                        className="bg-white text-black hover:bg-gray-100 hover:text-black px-12 py-6 text-xl font-medium tracking-wide shadow-lg border border-white rounded-md"
-                    >
-                        <Link href="/book">START NOW</Link>
-                    </Button>
-                </div>
-            </div>
-        </section>
-    )
+      <div className="relative z-10 mt-24 flex flex-col items-center gap-6 px-6 text-center text-white lg:px-10">
+        <p className="uppercase tracking-[0.4em] text-white/45">Let's Plan Your Piece</p>
+        <h3 className="font-playfair text-3xl leading-tight sm:text-4xl">
+          Choose your artist, share your story, and build a tattoo ritual around intentional ink.
+        </h3>
+        <Button
+          asChild
+          className="rounded-full border border-white/20 bg-white text-sm font-semibold uppercase tracking-[0.32em] text-[#1c1713] shadow-[0_30px_60px_-35px_rgba(255,255,255,0.65)] transition-transform duration-300 hover:scale-[1.03]"
+        >
+          <Link href="/book" className="px-10 py-4">
+            Start A Consultation
+          </Link>
+        </Button>
+      </div>
+    </section>
+  )
 }

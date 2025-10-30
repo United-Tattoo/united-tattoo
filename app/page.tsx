@@ -7,10 +7,12 @@ import { ArtistsSection } from "@/components/artists-section"
 import { ServicesSection } from "@/components/services-section"
 import { ContactSection } from "@/components/contact-section"
 import { Footer } from "@/components/footer"
+import { BackgroundStrata } from "@/components/background-strata"
 export default function HomePage() {
   return (
     <LenisProvider>
-      <main className="min-h-screen">
+      <main className="relative min-h-screen bg-[#0c0907]">
+        <BackgroundStrata />
         <ScrollProgress />
         <ScrollToSection />
         <Navigation />

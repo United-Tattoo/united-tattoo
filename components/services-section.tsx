@@ -69,55 +69,58 @@ export function ServicesSection() {
   }, [])
 
   return (
-    <section ref={sectionRef} id="services" className="min-h-screen relative">
-      <div className="absolute inset-x-0 top-0 h-16 bg-black rounded-b-[100px]"></div>
-      <div className="absolute inset-x-0 bottom-0 h-16 bg-black rounded-t-[100px]"></div>
+    <section ref={sectionRef} id="services" className="relative min-h-screen bg-[#0c0907]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-24 bg-[linear-gradient(180deg,rgba(12,9,7,0)_0%,rgba(12,9,7,0.85)_45%,rgba(12,9,7,1)_100%)]" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-32 bg-[linear-gradient(0deg,rgba(12,9,7,0)_0%,rgba(12,9,7,0.92)_70%,rgba(12,9,7,1)_100%)]" />
 
-      <div className="bg-white py-20 px-8 lg:px-16 relative z-10">
-        <div className="max-w-screen-2xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+      <div className="relative z-10 bg-[#f4efe6] px-8 py-20 shadow-[0_45px_90px_-40px_rgba(0,0,0,0.55)] lg:px-16">
+        <div className="mx-auto max-w-screen-2xl">
+          <div className="grid gap-16 lg:grid-cols-2 lg:items-center">
             <div className="relative">
-              <div className="absolute -left-4 top-0 w-1 h-32 bg-black/10"></div>
-              <div className="mb-8">
-                <span className="text-sm font-medium tracking-widest text-black/90 uppercase">What We Offer</span>
+              <div className="absolute -left-6 top-0 hidden h-32 w-1 bg-[#b9a18d]/40 lg:block" />
+              <div className="mb-6">
+                <span className="text-xs font-semibold uppercase tracking-[0.6em] text-[#6d5b4a]">What We Offer</span>
               </div>
-              <h2 className="text-6xl lg:text-8xl font-bold tracking-tight mb-8 text-balance text-black">SERVICES</h2>
-              <p className="text-xl text-black/90 leading-relaxed max-w-lg">
-                From custom designs to cover-ups, we offer comprehensive tattoo services with the highest standards of
-                quality and safety.
+              <h2 className="font-playfair text-5xl tracking-tight text-[#1f1814] sm:text-6xl lg:text-[4.5rem]">
+                Services
+              </h2>
+              <p className="mt-6 max-w-xl text-lg leading-relaxed text-[#3b3027]">
+                From restorative cover-ups to experimental flash, each booking is curated with layered planning, precise
+                execution, and a studio experience that keeps you grounded.
               </p>
             </div>
             <div className="relative">
-              <div className="bg-black/5 h-96 rounded-2xl overflow-hidden shadow-2xl">
+              <div className="h-96 overflow-hidden rounded-3xl border border-[#d3c2b2]/40 bg-[#241c17] shadow-[0_50px_90px_-40px_rgba(0,0,0,0.5)]">
                 <img
                   src="/tattoo-equipment-and-tools.jpg"
                   alt="Tattoo Equipment"
-                  className="w-full h-full object-cover"
+                  className="h-full w-full object-cover opacity-90"
                 />
+                <div className="absolute inset-0 bg-[linear-gradient(120deg,rgba(20,15,12,0.75)_10%,rgba(20,15,12,0.2)_85%)]" />
               </div>
-              <div className="absolute -bottom-4 -right-4 w-24 h-24 bg-black/5 rounded-full"></div>
+              <div className="absolute -bottom-6 -right-8 hidden h-24 w-24 rounded-full border border-[#d3c2b2]/60 bg-[#f4efe6] shadow-[0_25px_45px_-30px_rgba(0,0,0,0.6)] md:block" />
             </div>
           </div>
         </div>
       </div>
 
-      <div className="hidden lg:block bg-black text-white relative z-10">
-        <div className="flex">
+      <div className="relative z-10 hidden bg-[#13100d] text-white lg:block">
+        <div className="flex items-start">
           {/* Left Side - Enhanced with split composition styling */}
-          <div className="w-1/2 sticky top-0 h-screen bg-black relative">
-            <div className="absolute right-0 top-0 w-px h-full bg-white/10"></div>
-            <div className="h-full flex flex-col justify-center p-16 relative">
+          <div className="sticky top-0 h-screen w-1/2 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.1),transparent_60%),linear-gradient(180deg,#1d1713_0%,#110d0a_100%)]">
+            <div className="absolute right-0 top-0 h-full w-px bg-white/10" />
+            <div className="relative flex h-full flex-col justify-center p-16">
               <div className="space-y-8">
                 <div className="mb-12">
-                  <div className="w-12 h-px bg-white/40 mb-6"></div>
-                  <span className="text-sm font-medium tracking-widest text-white/60 uppercase">Our Services</span>
-                  <h3 className="text-4xl font-bold tracking-tight mt-4 text-balance">Choose Your Style</h3>
+                  <div className="mb-6 h-px w-12 bg-white/35" />
+                  <span className="text-sm font-semibold uppercase tracking-[0.5em] text-white/55">Our Services</span>
+                  <h3 className="mt-4 font-playfair text-4xl tracking-tight text-white">Choose Your Style</h3>
                 </div>
 
                 {services.map((service, index) => (
                   <div
                     key={index}
-                    className={`transition-all duration-500 cursor-pointer group ${
+                    className={`group cursor-pointer transition-all duration-500 ${
                       activeService === index ? "opacity-100" : "opacity-50 hover:opacity-75"
                     }`}
                     onClick={() => {
@@ -126,12 +129,12 @@ export function ServicesSection() {
                     }}
                   >
                     <div
-                      className={`border-l-2 pl-6 py-4 transition-all duration-300 ${
-                        activeService === index ? "border-white" : "border-white/20 group-hover:border-white/40"
+                      className={`border-l-[3px] py-4 pl-6 transition-all duration-300 ${
+                        activeService === index ? "border-white" : "border-white/15 group-hover:border-white/30"
                       }`}
                     >
-                      <h4 className="text-2xl font-bold mb-2">{service.title}</h4>
-                      <p className="text-white/70 text-sm">{service.price}</p>
+                      <h4 className="mb-2 text-2xl font-semibold tracking-wide">{service.title}</h4>
+                      <p className="text-sm text-white/60">{service.price}</p>
                     </div>
                   </div>
                 ))}
@@ -140,22 +143,22 @@ export function ServicesSection() {
           </div>
 
           {/* Right Side - Enhanced with split composition styling */}
-          <div className="w-full lg:w-1/2 bg-gradient-to-b from-black to-gray-900">
+          <div className="w-1/2 bg-gradient-to-b from-[#15110d] via-[#110d0a] to-[#0c0907]">
             {services.map((service, index) => (
               <div
                 key={index}
                 data-service-index={index}
-                className="min-h-screen flex items-center justify-center p-8 lg:p-16 relative"
+                className="relative flex min-h-screen items-center justify-center p-12"
               >
-                <div className="absolute left-0 top-1/2 w-px h-32 bg-white/10 -translate-y-1/2"></div>
-                <div className="max-w-lg relative">
+                <div className="absolute left-0 top-1/2 h-32 w-px -translate-y-1/2 bg-white/10" />
+                <div className="relative max-w-lg">
                   <div className="mb-6">
-                    <span className="text-sm font-medium tracking-widest text-white/60 uppercase">
+                    <span className="text-xs font-semibold uppercase tracking-[0.6em] text-white/55">
                       Service {String(index + 1).padStart(2, "0")}
                     </span>
                   </div>
 
-                  <h3 className="text-4xl lg:text-6xl font-bold tracking-tight mb-6 text-balance">
+                  <h3 className="mb-6 font-playfair text-4xl tracking-tight lg:text-5xl">
                     {service.title.split(" ").map((word, i) => (
                       <span key={i} className="block">
                         {word}
@@ -163,26 +166,28 @@ export function ServicesSection() {
                     ))}
                   </h3>
 
-                  <div className="space-y-6 mb-8">
-                    <p className="text-lg text-white/80 leading-relaxed">{service.description}</p>
+                  <div className="mb-8 space-y-6">
+                    <p className="text-base leading-relaxed text-white/75">{service.description}</p>
 
                     <div className="space-y-2">
                       {service.features.map((feature, idx) => (
-                        <p key={idx} className="text-white/70 flex items-center">
-                          <span className="w-1 h-1 bg-white/40 rounded-full mr-3"></span>
+                        <p key={idx} className="flex items-center text-white/60">
+                          <span className="mr-3 h-[2px] w-6 bg-white/30" />
                           {feature}
                         </p>
                       ))}
                     </div>
 
-                    <p className="text-2xl font-bold text-white">{service.price}</p>
+                    <p className="text-xl font-semibold uppercase tracking-[0.4em] text-white/70">
+                      {service.price}
+                    </p>
                   </div>
 
                   <Button
                     asChild
-                    className="bg-white text-black hover:bg-white/90 !text-black px-8 py-4 text-lg font-medium tracking-wide transition-all duration-300 hover:scale-105"
+                    className="rounded-full border border-white/15 bg-white/90 px-8 py-4 text-xs font-semibold uppercase tracking-[0.36em] text-[#1c1713] transition-transform duration-300 hover:scale-[1.04] hover:bg-white"
                   >
-                    <Link href="/book">BOOK NOW</Link>
+                    <Link href="/book">Book Now</Link>
                   </Button>
 
                   <div className="mt-12">
@@ -190,9 +195,9 @@ export function ServicesSection() {
                       <img
                         src={`/abstract-geometric-shapes.png?height=300&width=400&query=${service.title.toLowerCase()} tattoo example`}
                         alt={service.title}
-                        className="w-full max-w-sm h-auto object-cover rounded-lg shadow-2xl"
+                        className="h-auto w-full max-w-sm rounded-3xl border border-white/10 object-cover shadow-[0_35px_65px_-40px_rgba(0,0,0,0.8)]"
                       />
-                      <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-white/5 rounded-lg"></div>
+                      <div className="absolute -bottom-3 -right-3 h-16 w-16 rounded-2xl border border-white/15 bg-white/10" />
                     </div>
                   </div>
                 </div>

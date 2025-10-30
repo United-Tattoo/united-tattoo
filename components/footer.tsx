@@ -28,23 +28,22 @@ export function Footer() {
     <>
       <Button
         onClick={scrollToTop}
-        className={`fixed bottom-8 right-8 z-50 rounded-full w-12 h-12 p-0 bg-white text-black hover:bg-gray-100 shadow-lg transition-all duration-300 ${
-          showScrollTop ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4 pointer-events-none"
+        className={`fixed bottom-8 right-8 z-50 h-12 w-12 rounded-full border border-white/15 bg-white/90 p-0 text-[#1c1713] shadow-[0_30px_60px_-35px_rgba(255,255,255,0.65)] transition-all duration-300 hover:scale-[1.05] hover:bg-white ${
+          showScrollTop ? "translate-y-0 opacity-100" : "pointer-events-none translate-y-4 opacity-0"
         }`}
         aria-label="Scroll to top"
       >
         <ArrowUp size={20} />
       </Button>
 
-      <footer className="bg-black text-white py-16 font-mono">
+      <footer className="bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.09),transparent_55%),linear-gradient(180deg,#15100d_0%,#0c0907_100%)] py-16 text-white">
         <div className="container mx-auto px-8">
-          <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-start">
+          <div className="grid grid-cols-1 items-start gap-10 md:grid-cols-12">
             <div className="md:col-span-3">
-              <div className="flex items-center gap-2 mb-6">
-                <span className="text-white">↳</span>
-                <h4 className="text-white font-medium tracking-wide text-lg">SERVICES</h4>
+              <div className="mb-6 flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-white/55">
+                <span className="inline-flex h-2 w-2 rounded-full bg-white/40" /> Services
               </div>
-              <ul className="space-y-3 text-base">
+              <ul className="space-y-3 text-sm text-white/65">
                 {[
                   { name: "TRADITIONAL", count: "" },
                   { name: "REALISM", count: "" },
@@ -55,7 +54,7 @@ export function Footer() {
                   { name: "ANIME", count: "" },
                 ].map((service, index) => (
                   <li key={index}>
-                    <Link href="/book" className="text-gray-400 hover:text-white transition-colors duration-200">
+                    <Link href="/book" className="transition-colors duration-200 hover:text-white">
                       {service.name}
                       {service.count && <span className="text-white ml-2">{service.count}</span>}
                     </Link>
@@ -65,11 +64,10 @@ export function Footer() {
             </div>
 
             <div className="md:col-span-3">
-              <div className="flex items-center gap-2 mb-6">
-                <span className="text-white">↳</span>
-                <h4 className="text-white font-medium tracking-wide text-lg">ARTISTS</h4>
+              <div className="mb-6 flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-white/55">
+                <span className="inline-flex h-2 w-2 rounded-full bg-white/40" /> Artists
               </div>
-              <ul className="space-y-3 text-base">
+              <ul className="space-y-3 text-sm text-white/65">
                 {[
                   { name: "CHRISTY_LUMBERG", count: "" },
                   { name: "STEVEN_SOLE", count: "" },
@@ -77,7 +75,7 @@ export function Footer() {
                   { name: "VIEW_ALL", count: "" },
                 ].map((artist, index) => (
                   <li key={index}>
-                    <Link href="/artists" className="text-gray-400 hover:text-white transition-colors duration-200">
+                    <Link href="/artists" className="transition-colors duration-200 hover:text-white">
                       {artist.name}
                       {artist.count && <span className="text-white ml-2">{artist.count}</span>}
                     </Link>
@@ -87,17 +85,13 @@ export function Footer() {
             </div>
 
             <div className="md:col-span-3">
-              <div className="text-gray-500 text-sm leading-relaxed mb-4">
-                © <span className="text-white underline">UNITED.TATTOO</span> LLC 2025
-                <br />
-                ALL RIGHTS RESERVED.
+              <div className="mb-4 text-xs uppercase tracking-[0.4em] text-white/40">
+                © <span className="text-white/80">UNITED.TATTOO</span> LLC 2025 — All Rights Reserved
               </div>
-              <div className="text-gray-400 text-sm">
-                5160 FONTAINE BLVD
-                <br />
-                FOUNTAIN, CO 80817
-                <br />
-                <Link href="tel:+17196989004" className="hover:text-white transition-colors">
+              <div className="space-y-2 text-sm text-white/60">
+                <p>5160 Fontaine Blvd</p>
+                <p>Fountain, CO 80817</p>
+                <Link href="tel:+17196989004" className="transition-colors duration-200 hover:text-white">
                   (719) 698-9004
                 </Link>
               </div>
@@ -106,15 +100,14 @@ export function Footer() {
             <div className="md:col-span-3 space-y-8">
               {/* Legal */}
               <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-white">↳</span>
-                  <h4 className="text-white font-medium tracking-wide text-lg">LEGAL</h4>
+                <div className="mb-4 flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-white/55">
+                  <span className="inline-flex h-2 w-2 rounded-full bg-white/40" /> Legal
                 </div>
-                <ul className="space-y-2 text-base">
+                <ul className="space-y-2 text-sm text-white/65">
                   <li>
                     <Link
                       href="/aftercare"
-                      className="text-gray-400 hover:text-white transition-colors duration-200 underline"
+                      className="transition-colors duration-200 hover:text-white underline"
                     >
                       AFTERCARE
                     </Link>
@@ -122,7 +115,7 @@ export function Footer() {
                   <li>
                     <Link
                       href="/deposit"
-                      className="text-gray-400 hover:text-white transition-colors duration-200 underline"
+                      className="transition-colors duration-200 hover:text-white underline"
                     >
                       DEPOSIT POLICY
                     </Link>
@@ -130,7 +123,7 @@ export function Footer() {
                   <li>
                     <Link
                       href="/terms"
-                      className="text-gray-400 hover:text-white transition-colors duration-200 underline"
+                      className="transition-colors duration-200 hover:text-white underline"
                     >
                       TERMS OF SERVICE
                     </Link>
@@ -138,7 +131,7 @@ export function Footer() {
                   <li>
                     <Link
                       href="/privacy"
-                      className="text-gray-400 hover:text-white transition-colors duration-200 underline"
+                      className="transition-colors duration-200 hover:text-white underline"
                     >
                       PRIVACY POLICY
                     </Link>
@@ -146,7 +139,7 @@ export function Footer() {
                   <li>
                     <Link
                       href="#"
-                      className="text-gray-400 hover:text-white transition-colors duration-200 underline"
+                      className="transition-colors duration-200 hover:text-white underline"
                     >
                       WAIVER
                     </Link>
@@ -156,23 +149,37 @@ export function Footer() {
 
               {/* Social */}
               <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-white">↳</span>
-                  <h4 className="text-white font-medium tracking-wide text-lg">SOCIAL</h4>
+                <div className="mb-4 flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-white/55">
+                  <span className="inline-flex h-2 w-2 rounded-full bg-white/40" /> Social
                 </div>
-                <ul className="space-y-2 text-base">
+                <ul className="space-y-2 text-sm text-white/65">
                   <li>
-                    <Link href="https://www.instagram.com/unitedtattoo719" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors duration-200 underline">
+                    <Link
+                      href="https://www.instagram.com/unitedtattoo719"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white/65 underline transition-colors duration-200 hover:text-white"
+                    >
                       INSTAGRAM
                     </Link>
                   </li>
                   <li>
-                    <Link href="https://www.facebook.com/unitedtattoo719" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors duration-200 underline">
+                    <Link
+                      href="https://www.facebook.com/unitedtattoo719"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white/65 underline transition-colors duration-200 hover:text-white"
+                    >
                       FACEBOOK
                     </Link>
                   </li>
                   <li>
-                    <Link href="https://www.tiktok.com/@united.tattoo" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-white transition-colors duration-200 underline">
+                    <Link
+                      href="https://www.tiktok.com/@united.tattoo"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="text-white/65 underline transition-colors duration-200 hover:text-white"
+                    >
                       TIKTOK
                     </Link>
                   </li>
@@ -181,13 +188,12 @@ export function Footer() {
 
               {/* Contact */}
               <div>
-                <div className="flex items-center gap-2 mb-4">
-                  <span className="text-white">↳</span>
-                  <h4 className="text-white font-medium tracking-wide text-lg">CONTACT</h4>
+                <div className="mb-4 flex items-center gap-2 text-xs uppercase tracking-[0.4em] text-white/55">
+                  <span className="inline-flex h-2 w-2 rounded-full bg-white/40" /> Contact
                 </div>
                 <Link
                   href="mailto:info@united-tattoo.com"
-                  className="text-gray-400 hover:text-white transition-colors duration-200 underline text-base"
+                  className="text-sm text-white/65 underline transition-colors duration-200 hover:text-white"
                 >
                   INFO@UNITED-TATTOO.COM
                 </Link>
@@ -195,9 +201,9 @@ export function Footer() {
             </div>
           </div>
 
-          <div className="flex justify-end mt-8 gap-2">
-            <div className="w-3 h-3 rounded-full bg-gray-400"></div>
-            <div className="w-3 h-3 rounded-full bg-white"></div>
+          <div className="mt-10 flex justify-end gap-2">
+            <div className="h-2 w-2 rounded-full bg-white/25" />
+            <div className="h-2 w-2 rounded-full bg-white/60" />
           </div>
         </div>
       </footer>

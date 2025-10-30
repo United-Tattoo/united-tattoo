@@ -35,10 +35,10 @@ export function ContactSection() {
   }
 
   return (
-    <section id="contact" className="min-h-screen bg-black relative overflow-hidden">
+    <section id="contact" className="relative min-h-screen overflow-hidden bg-[#0c0907]">
       {/* Background logo - desktop only */}
       <div
-        className="absolute inset-0 opacity-[0.03] bg-cover bg-center bg-no-repeat blur-sm hidden lg:block"
+        className="hidden opacity-[0.05] blur-sm lg:block absolute inset-0 bg-cover bg-center bg-no-repeat"
         style={{
           backgroundImage: "url('/united-logo-full.jpg')",
           transform: `translateY(${scrollY * 0.2}px)`,
@@ -46,22 +46,22 @@ export function ContactSection() {
       />
       
       {/* Mobile solid background */}
-      <div className="absolute inset-0 bg-black lg:hidden"></div>
+      <div className="absolute inset-0 bg-[#0c0907] lg:hidden"></div>
 
-      <div className="flex flex-col lg:flex-row min-h-screen relative z-10">
-        <div className="w-full lg:w-1/2 bg-black flex items-center justify-center p-8 lg:p-12 relative">
+      <div className="relative z-10 flex min-h-screen flex-col lg:flex-row">
+        <div className="relative flex w-full items-center justify-center bg-[#0f0b09] p-8 lg:w-1/2 lg:p-12">
           {/* Mobile background overlay to hide logo */}
-          <div className="absolute inset-0 bg-black lg:bg-transparent"></div>
-          <div className="w-full max-w-md relative z-10">
+          <div className="absolute inset-0 bg-[#0f0b09]/95 lg:bg-transparent" />
+          <div className="relative z-10 w-full max-w-md">
             <div className="mb-8">
-              <h2 className="text-4xl font-bold text-white mb-2">Let's Talk</h2>
-              <p className="text-gray-400">Ready to create something amazing?</p>
+              <h2 className="mb-2 font-playfair text-4xl text-white">Let's Talk</h2>
+              <p className="text-white/55">Ready to create something amazing?</p>
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-6">
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="name" className="block text-sm font-medium text-white mb-2">
+                  <label htmlFor="name" className="mb-2 block text-sm font-medium uppercase tracking-[0.3em] text-white/70">
                     Name
                   </label>
                   <Input
@@ -70,12 +70,12 @@ export function ContactSection() {
                     value={formData.name}
                     onChange={handleChange}
                     required
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-white focus:bg-white/15 transition-all"
+                    className="border-white/15 bg-white/10 text-white placeholder:text-white/40 transition-all focus:border-white focus:bg-white/15"
                     placeholder="Your name"
                   />
                 </div>
                 <div>
-                  <label htmlFor="phone" className="block text-sm font-medium text-white mb-2">
+                  <label htmlFor="phone" className="mb-2 block text-sm font-medium uppercase tracking-[0.3em] text-white/70">
                     Phone
                   </label>
                   <Input
@@ -84,14 +84,14 @@ export function ContactSection() {
                     type="tel"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-white focus:bg-white/15 transition-all"
+                    className="border-white/15 bg-white/10 text-white placeholder:text-white/40 transition-all focus:border-white focus:bg-white/15"
                     placeholder="(555) 123-4567"
                   />
                 </div>
               </div>
 
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-white mb-2">
+                <label htmlFor="email" className="mb-2 block text-sm font-medium uppercase tracking-[0.3em] text-white/70">
                   Email
                 </label>
                 <Input
@@ -101,13 +101,13 @@ export function ContactSection() {
                   value={formData.email}
                   onChange={handleChange}
                   required
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-white focus:bg-white/15 transition-all"
+                  className="border-white/15 bg-white/10 text-white placeholder:text-white/40 transition-all focus:border-white focus:bg-white/15"
                   placeholder="your@email.com"
                 />
               </div>
 
               <div>
-                <label htmlFor="message" className="block text-sm font-medium text-white mb-2">
+                <label htmlFor="message" className="mb-2 block text-sm font-medium uppercase tracking-[0.3em] text-white/70">
                   Message
                 </label>
                 <Textarea
@@ -118,13 +118,13 @@ export function ContactSection() {
                   onChange={handleChange}
                   placeholder="Tell us about your tattoo idea..."
                   required
-                  className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-white focus:bg-white/15 transition-all resize-none"
+                  className="resize-none border-white/15 bg-white/10 text-white placeholder:text-white/40 transition-all focus:border-white focus:bg-white/15"
                 />
               </div>
 
               <Button
                 type="submit"
-                className="w-full bg-white text-black hover:bg-gray-100 py-3 text-base font-medium transition-all"
+                className="w-full rounded-full border border-white/15 bg-white/90 py-3 text-xs font-semibold uppercase tracking-[0.32em] text-[#1c1713] transition-all hover:bg-white"
               >
                 Send Message
               </Button>
@@ -132,10 +132,10 @@ export function ContactSection() {
           </div>
         </div>
 
-        <div className="w-full lg:w-1/2 bg-gray-50 relative flex items-center justify-center">
+        <div className="relative flex w-full items-center justify-center bg-[radial-gradient(circle_at_top_right,rgba(255,255,255,0.07),transparent_55%),linear-gradient(180deg,#1a1512_0%,#110d0a_100%)] lg:w-1/2">
           {/* Brand asset as decorative element */}
           <div
-            className="absolute inset-0 opacity-20 bg-cover bg-center bg-no-repeat"
+            className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.08]"
             style={{
               backgroundImage: "url('/united-logo-text.png')",
               transform: `translateY(${scrollY * -0.1}px)`,
@@ -144,14 +144,14 @@ export function ContactSection() {
 
           <div className="relative z-10 p-12 text-center">
             <div className="mb-12">
-              <h2 className="text-5xl font-bold text-black mb-4">UNITED</h2>
-              <h3 className="text-3xl font-bold text-gray-600 mb-6">TATTOO</h3>
-              <p className="text-gray-700 text-lg max-w-md mx-auto leading-relaxed">
+              <h2 className="font-playfair text-5xl text-white">UNITED</h2>
+              <h3 className="mt-2 font-playfair text-3xl text-white/70">TATTOO</h3>
+              <p className="mx-auto mt-6 max-w-md text-base leading-relaxed text-white/65">
                 Where artistry, culture, and custom tattoos meet. Located in Fountain, just minutes from Colorado Springs.
               </p>
             </div>
 
-            <div className="space-y-6 max-w-sm mx-auto">
+            <div className="mx-auto max-w-sm space-y-6">
               {[
                 {
                   icon: MapPin,
@@ -177,10 +177,12 @@ export function ContactSection() {
                 const Icon = item.icon
                 return (
                   <div key={index} className="flex items-start space-x-4 text-left">
-                    <Icon className="w-5 h-5 text-black mt-1 flex-shrink-0" />
+                    <div className="mt-1 flex h-9 w-9 items-center justify-center rounded-full border border-white/15 bg-white/10">
+                      <Icon className="h-4 w-4 text-white/70" />
+                    </div>
                     <div>
-                      <p className="text-black font-medium text-sm">{item.title}</p>
-                      <p className="text-gray-600 text-sm">{item.content}</p>
+                      <p className="text-xs font-semibold uppercase tracking-[0.4em] text-white/60">{item.title}</p>
+                      <p className="mt-1 text-sm text-white/70">{item.content}</p>
                     </div>
                   </div>
                 )

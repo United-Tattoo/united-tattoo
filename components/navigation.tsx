@@ -124,30 +124,38 @@ export function Navigation() {
       className={cn(
         "fixed top-0 left-0 right-0 z-50 transition-all duration-700 ease-out",
         isScrolled
-          ? "bg-black/95 backdrop-blur-md shadow-lg border-b border-white/10 opacity-100"
-          : "bg-transparent backdrop-blur-none opacity-100",
+          ? "backdrop-blur-md bg-[rgba(20,18,16,0.92)] border-b border-white/10 shadow-[0_12px_40px_-20px_rgba(0,0,0,0.8)]"
+          : "bg-transparent"
       )}
     >
-      <div className="max-w-[1800px] mx-auto px-6 lg:px-10">
-        <div className="flex items-center justify-between h-20">
+      <div className="relative mx-auto max-w-[1600px] px-5 sm:px-8">
+        <div
+          aria-hidden="true"
+          className={cn(
+            "pointer-events-none absolute inset-x-3 -top-4 h-[130px] rounded-3xl border border-white/10 transition-opacity duration-700",
+            "before:absolute before:inset-0 before:rounded-3xl before:bg-[linear-gradient(130deg,rgba(255,255,255,0.16)_0%,rgba(255,255,255,0.02)_55%,rgba(10,10,10,0.35)_100%)] before:opacity-90",
+            "after:absolute after:inset-0 after:rounded-3xl after:bg-[url('/assets/liberty/sketch-blue-etching.webp')] after:bg-cover after:bg-center after:opacity-10",
+            isScrolled ? "opacity-100" : "opacity-80"
+          )}
+        />
+
+        <div className="relative flex h-[90px] items-center justify-between gap-3">
           <Link
             href="/"
-            className="flex flex-col items-start transition-all duration-500 text-white group"
+            className="group relative flex flex-col items-start text-white transition-colors duration-500"
           >
-            <span className="font-bold text-2xl lg:text-3xl tracking-[0.15em] leading-none">
-              UNITED
+            <span className="font-playfair text-[1.8rem] uppercase tracking-[0.28em] sm:text-[2.1rem]">
+              United
             </span>
-            <div className="flex items-center gap-2 mt-1">
-              <span className="h-px w-10 bg-white"></span>
-              <span className="text-xs lg:text-sm font-medium tracking-[0.2em] uppercase">
-                TATTOO
-              </span>
-            </div>
+            <span className="mt-1 flex items-center gap-3 text-[0.65rem] font-semibold uppercase tracking-[0.4em] text-white/70">
+              <span className="h-px w-9 bg-white/60 transition-all duration-500 group-hover:w-12" />
+              Tattoo Studio
+            </span>
           </Link>
 
-          <div className="hidden lg:flex items-center flex-1 justify-between ml-16">
-            <NavigationMenu viewport={false} className="flex-initial items-center bg-transparent text-white">
-              <NavigationMenuList className="flex items-center gap-8">
+          <div className="hidden flex-1 items-center justify-end gap-12 text-white lg:flex">
+            <NavigationMenu viewport={false} className="flex flex-1 justify-end">
+              <NavigationMenuList className="flex items-center gap-8 xl:gap-10">
                 {navItems
                   .filter((item) => !item.isButton)
                   .map((item) => {
@@ -159,12 +167,21 @@ export function Navigation() {
                           asChild
                           data-active={isActive || undefined}
                           className={cn(
-                            "group relative inline-flex h-auto bg-transparent px-0 py-1 text-sm font-semibold tracking-[0.15em] uppercase transition-all duration-300",
-                            "text-white/90 hover:bg-transparent hover:text-white focus:bg-transparent focus:text-white",
-                            isActive && "text-white",
+                            "relative inline-flex items-center text-[0.72rem] font-semibold uppercase tracking-[0.42em] text-white/60 transition-colors duration-300",
+                            "group hover:text-white focus-visible:text-white",
+                            isActive && "text-white"
                           )}
                         >
-                          <Link href={item.href}>{item.label}</Link>
+                          <Link href={item.href} className="px-1 py-1">
+                            {item.label}
+                            <span
+                              className={cn(
+                                "pointer-events-none absolute inset-x-0 -bottom-2 h-[1px] origin-left scale-x-0 bg-white/70 transition-transform duration-300",
+                                isActive && "scale-x-100",
+                                "group-hover:scale-x-100"
+                              )}
+                            />
+                          </Link>
                         </NavigationMenuLink>
                       </NavigationMenuItem>
                     )
@@ -175,79 +192,75 @@ export function Navigation() {
             <Button
               asChild
               className={cn(
-                "px-8 py-3 text-sm font-semibold tracking-[0.1em] uppercase transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-0 hover:scale-105 group",
-                isScrolled
-                  ? "bg-white text-black hover:bg-gray-100 shadow-xl hover:shadow-2xl"
-                  : "border border-white/80 bg-transparent text-white shadow-none hover:bg-white/10",
+                "group relative overflow-hidden rounded-full px-8 py-3 text-xs font-semibold uppercase tracking-[0.36em] transition-all duration-300",
+                "bg-white/90 text-[#1c1713] shadow-[0_10px_40px_rgba(0,0,0,0.22)] hover:bg-white"
               )}
             >
               <Link href="/book" className="flex items-center gap-2">
                 <span>Book Now</span>
-                <ArrowUpRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+                <ArrowUpRight className="h-4 w-4 -translate-y-[1px] transition-transform duration-300 group-hover:translate-x-1 group-hover:-translate-y-1" />
               </Link>
             </Button>
           </div>
 
           <button
-            className="lg:hidden p-4 rounded-lg transition-all duration-300 text-white hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-0"
+            className="relative inline-flex rounded-full border border-white/20 p-3 text-white transition-all duration-300 hover:border-white/40 lg:hidden"
             onClick={handleToggleMenu}
             aria-label="Toggle menu"
           >
-            {isOpen ? <X size={24} /> : <Menu size={24} />}
+            {isOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
         </div>
 
         {isOpen && (
-          <div className="lg:hidden bg-black/98 backdrop-blur-md border-t border-white/10">
-            <div className="px-6 py-8 space-y-5">
-              <NavigationMenu viewport={false} className="w-full">
-                <NavigationMenuList className="flex w-full flex-col space-y-3">
-                  {navItems.map((item) => {
-                    const isActive = !item.isButton && activeSection === item.id
+          <div className="relative z-10 mt-1 overflow-hidden rounded-3xl border border-white/10 bg-[rgba(21,19,16,0.96)] px-6 py-8 shadow-[0_35px_60px_-30px_rgba(0,0,0,0.65)] lg:hidden">
+            <NavigationMenu viewport={false} className="w-full">
+              <NavigationMenuList className="flex w-full flex-col gap-4">
+                {navItems.map((item) => {
+                  const isActive = !item.isButton && activeSection === item.id
 
-                    if (item.isButton) {
-                      return (
-                        <NavigationMenuItem key={item.id} className="w-full">
-                          <Button
-                            asChild
-                            className="w-full bg-white hover:bg-gray-100 text-black py-5 text-lg font-semibold tracking-[0.05em] uppercase shadow-xl mt-8"
-                          >
-                            <Link href={item.href} onClick={handleCloseMenu}>
-                              {item.label}
-                            </Link>
-                          </Button>
-                        </NavigationMenuItem>
-                      )
-                    }
-
+                  if (item.isButton) {
                     return (
-                      <NavigationMenuItem key={item.id} className="w-full">
-                        <NavigationMenuLink
+                      <NavigationMenuItem key={item.id} className="w-full pt-4">
+                        <Button
                           asChild
-                          data-active={isActive || undefined}
-                          className={cn(
-                            "block w-full rounded-md px-4 py-4 text-lg font-semibold tracking-[0.1em] uppercase transition-all duration-300",
-                            isActive
-                              ? "border-l-4 border-white pl-6 text-white"
-                              : "text-white/70 hover:text-white hover:pl-5 focus:text-white focus:pl-5",
-                          )}
+                          className="w-full rounded-full bg-white/90 py-4 text-sm font-semibold uppercase tracking-[0.32em] text-[#1c1713] shadow-[0_20px_45px_-25px_rgba(255,255,255,0.9)] hover:bg-white"
                         >
-                          <Link
-                            href={item.href}
-                            onClick={(event) => {
-                              handleNavClick(event, item)
-                              handleCloseMenu()
-                            }}
-                          >
+                          <Link href={item.href} onClick={handleCloseMenu}>
                             {item.label}
                           </Link>
-                        </NavigationMenuLink>
+                        </Button>
                       </NavigationMenuItem>
                     )
-                  })}
-                </NavigationMenuList>
-              </NavigationMenu>
-            </div>
+                  }
+
+                  return (
+                    <NavigationMenuItem key={item.id} className="w-full">
+                      <NavigationMenuLink
+                        asChild
+                        data-active={isActive || undefined}
+                        className={cn(
+                          "block w-full rounded-2xl border border-transparent px-4 py-4 text-sm font-semibold uppercase tracking-[0.3em] text-white/70 transition-all duration-300",
+                          isActive
+                            ? "border-white/20 bg-white/5 text-white"
+                            : "hover:border-white/10 hover:bg-white/5 hover:text-white"
+                        )}
+                      >
+                        <Link
+                          href={item.href}
+                          onClick={(event) => {
+                            handleNavClick(event, item)
+                            handleCloseMenu()
+                          }}
+                        >
+                          {item.label}
+                        </Link>
+                      </NavigationMenuLink>
+                    </NavigationMenuItem>
+                  )
+                })}
+              </NavigationMenuList>
+            </NavigationMenu>
           </div>
         )}
       </div>
