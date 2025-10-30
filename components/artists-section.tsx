@@ -14,7 +14,7 @@ type ArtistGridSet = {
   items: PublicArtist[]
 }
 
-const GRID_SIZE = 16
+const GRID_SIZE = 8
 const GRID_INTERVAL = 12000
 
 export function ArtistsSection() {
@@ -48,6 +48,7 @@ export function ArtistsSection() {
   const [gridSets, setGridSets] = useState<ArtistGridSet[]>([])
   const [activeSetIndex, setActiveSetIndex] = useState(0)
   const [previousSetIndex, setPreviousSetIndex] = useState<number | null>(null)
+  const [centerIndex, setCenterIndex] = useState(0)
 
   artistsRef.current = artists
   gridSetsRef.current = gridSets
@@ -117,11 +118,33 @@ export function ArtistsSection() {
       const next = prev + 1
       if (next >= gridSetsRef.current.length) {
         regenerateSets()
+        setCenterIndex(0)
         return 0
       }
+      setCenterIndex(0)
       return next
     })
   }, [regenerateSets])
+
+  const rotateCarousel = useCallback((direction: 'next' | 'prev') => {
+    if (gridSetsRef.current.length === 0) return
+
+    const currentSet = gridSetsRef.current[activeSetRef.current]
+    if (!currentSet) return
+
+    setCenterIndex((prev) => {
+      const nextIndex = direction === 'next'
+        ? (prev + 1) % currentSet.items.length
+        : (prev - 1 + currentSet.items.length) % currentSet.items.length
+
+      // If we've looped back to start on 'next', advance to next set
+      if (direction === 'next' && nextIndex === 0 && prev === currentSet.items.length - 1) {
+        setTimeout(() => advanceSet(), 0)
+      }
+
+      return nextIndex
+    })
+  }, [advanceSet])
 
   useEffect(() => {
     if (gridSets.length === 0) {
@@ -129,11 +152,11 @@ export function ArtistsSection() {
     }
 
     const interval = window.setInterval(() => {
-      advanceSet()
+      rotateCarousel('next')
     }, GRID_INTERVAL)
 
     return () => window.clearInterval(interval)
-  }, [advanceSet, gridSets.length])
+  }, [rotateCarousel, gridSets.length])
 
   const displayIndices = useMemo(() => {
     const indices = new Set<number>()
@@ -145,15 +168,20 @@ export function ArtistsSection() {
   }, [activeSetIndex, previousSetIndex])
 
   const getArtistImage = (artist: PublicArtist) => {
-    const candidate = (artist as any).faceImage || artist.workImages?.[0]
-    if (candidate) {
-      return candidate
+    // Try faceImage from static data first
+    if ((artist as any).faceImage) {
+      return (artist as any).faceImage
     }
+    // Fall back to first work image
+    if (artist.workImages && artist.workImages.length > 0) {
+      return artist.workImages[0]
+    }
+    // Final fallback
     return "/placeholder.svg"
   }
 
   return (
-    <section id="artists" className="relative isolate overflow-hidden pb-24 pt-24">
+    <section id="artists" className="relative isolate overflow-hidden pb-32 pt-32 lg:pb-40 lg:pt-40">
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(14,11,9,0)_0%,rgba(14,11,9,0.85)_20%,rgba(14,11,9,0.92)_55%,rgba(14,11,9,0.98)_100%)]" />
         <div
@@ -177,134 +205,143 @@ export function ArtistsSection() {
         <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_20%,rgba(255,255,255,0.08),transparent_55%)]" />
       </div>
 
-      <div className="relative mx-auto flex max-w-6xl flex-col gap-16 px-6 lg:px-10 xl:flex-row">
-        <div className="flex-1 space-y-10 text-white">
-          <div className="space-y-4">
+      <div className="relative mx-auto flex max-w-7xl flex-col gap-16 px-6 lg:px-10 xl:flex-row">
+        <div className="xl:w-[40%] space-y-10 text-white">
+          <div className="space-y-8">
             <span className="inline-flex items-center gap-3 text-[0.7rem] font-semibold uppercase tracking-[0.55em] text-white/55">
               <span className="h-px w-8 bg-white/35" /> Resident & Guest Artists
             </span>
             <h2 className="font-playfair text-4xl leading-[1.1] tracking-tight sm:text-5xl lg:text-[3.6rem]">
-              A Collective of Story-Driven Tattoo Artists
+              Artists Who Know What They're Doing
             </h2>
             <p className="max-w-xl text-base leading-relaxed text-white/70 sm:text-lg">
-              United Tattoo is home to cover-up virtuosos, illustrative explorers, anime specialists, and fine line minimalists.
-              Every artist curates their chair with intention—offering custom narratives, flash experiments, and collaborative pieces
-              that evolve with you.
+              Cover-up specialists, illustrative work, anime, and fine line. Each artist brings years of experience and their own style.
+              Custom work and flash drops.
             </p>
           </div>
 
-          <div className="grid gap-5 text-xs uppercase tracking-[0.32em] text-white/60 sm:grid-cols-2">
-            <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.05)] p-6">
-              <p className="text-[0.65rem] font-semibold text-white/55">What to Expect</p>
-              <p className="mt-3 text-sm tracking-[0.28em] text-white">Consultation-first Process</p>
-              <p className="mt-3 text-[0.68rem] leading-relaxed tracking-[0.26em] text-white/45">
-                Artist pairing • Mood-boards • Aftercare guides • CalDAV-synced scheduling
-              </p>
-            </div>
-            <div className="rounded-3xl border border-white/10 bg-[rgba(255,255,255,0.04)] p-6">
-              <p className="text-[0.65rem] font-semibold text-white/55">Specialties</p>
-              <p className="mt-3 text-sm tracking-[0.28em] text-white">Layered Stylescapes</p>
-              <p className="mt-3 text-[0.68rem] leading-relaxed tracking-[0.26em] text-white/45">
-                Black & grey realism • Neo-traditional color • Bold cover-ups • Fine line botanicals
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-col gap-6 pt-2 sm:flex-row sm:items-center">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
             <Button
               asChild
-              className="group relative w-full overflow-hidden rounded-full bg-white/90 px-8 py-4 text-xs font-semibold uppercase tracking-[0.38em] text-[#1c1713] transition-all duration-300 hover:bg-white sm:w-auto"
+              className="w-full bg-white px-8 py-4 text-sm font-semibold uppercase tracking-wide text-black transition-colors hover:bg-white/90 sm:w-auto"
             >
-              <Link href="/book">
-                Reserve with an Artist
-                <span className="ml-3 inline-flex h-[1px] w-6 bg-[#1c1713] transition-all duration-300 group-hover:w-10" />
-              </Link>
+              <Link href="/book">Book Your Session</Link>
             </Button>
             <Button
               variant="ghost"
               asChild
-              className="w-full justify-start rounded-full border border-white/15 bg-white/5 px-6 py-4 text-xs font-semibold uppercase tracking-[0.32em] text-white/80 backdrop-blur sm:w-auto"
+              className="w-full justify-start border border-white/20 bg-white/5 px-6 py-4 text-sm font-medium uppercase tracking-wide text-white/80 backdrop-blur hover:bg-white/10 sm:w-auto"
             >
-              <Link href="/artists">View full roster</Link>
+              <Link href="/artists">View All Artists</Link>
             </Button>
           </div>
         </div>
 
-        <div className="relative flex-1">
-          <div className="relative overflow-hidden rounded-[36px] border border-white/12 bg-[rgba(12,10,8,0.82)] p-6 shadow-[0_45px_90px_-35px_rgba(0,0,0,0.75)]">
-            <div className="pointer-events-none absolute inset-0 rounded-[36px] border border-white/[0.05]" aria-hidden="true" />
-            <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(255,255,255,0.12),transparent_55%)]" aria-hidden="true" />
+        <div className="relative xl:w-[60%]">
+            <div className="relative h-[500px] sm:h-[550px] lg:h-[600px] flex items-center justify-center">
+              {gridSets[activeSetIndex] && (
+                <div className="relative w-full h-full flex items-center justify-center">
+                  {gridSets[activeSetIndex].items.map((artist, index) => {
+                    const href = `/artists/${artist.slug}`
+                    const image = getArtistImage(artist)
 
-            <div className="relative min-h-[520px]">
-              {displayIndices.map((index) => {
-                const set = gridSets[index]
-                if (!set) {
-                  return null
-                }
-                const isActive = index === activeSetIndex
+                    // Calculate position relative to center with wrapping for infinite loop
+                    let positionFromCenter = index - centerIndex
+                    const totalCards = gridSets[activeSetIndex].items.length
 
-                return (
-                  <div
-                    key={set.key}
-                    className={cn(
-                      "absolute inset-0 grid grid-cols-2 gap-3 sm:gap-4 md:gap-5 lg:grid-cols-4",
-                      "transition-opacity duration-[1300ms] ease-out",
-                      isActive ? "pointer-events-auto opacity-100" : "pointer-events-none opacity-0"
-                    )}
+                    // Wrap around for continuous loop effect
+                    if (positionFromCenter < -2) {
+                      positionFromCenter += totalCards
+                    } else if (positionFromCenter > totalCards / 2) {
+                      positionFromCenter -= totalCards
+                    }
+
+                    // Only show center + 2 behind on each side
+                    const isVisible = Math.abs(positionFromCenter) <= 2
+
+                    // Calculate transforms for stacked deck effect
+                    const isCenterCard = positionFromCenter === 0
+
+                    // Cards stack behind based on position
+                    let translateY = 0
+                    let translateX = 0
+                    let scale = 1
+                    let opacity = 1
+                    let zIndex = 10
+
+                    if (positionFromCenter > 0) {
+                      // Cards to the right (future cards) - stack behind on right
+                      translateY = positionFromCenter * 20
+                      translateX = positionFromCenter * 40
+                      scale = 1 - positionFromCenter * 0.08
+                      opacity = Math.max(0, 1 - positionFromCenter * 0.4)
+                      zIndex = 10 - positionFromCenter
+                    } else if (positionFromCenter < 0) {
+                      // Cards to the left (past cards) - slide out to left and fade
+                      translateX = positionFromCenter * 150
+                      opacity = Math.max(0, 1 + positionFromCenter * 0.5)
+                      zIndex = 10 + positionFromCenter
+                    }
+
+                    if (!isVisible) return null
+
+                    return (
+                      <Link
+                        key={`${artist.id}-${artist.slug}-${index}`}
+                        href={href}
+                        className="group absolute aspect-[3/4] w-[280px] sm:w-[320px] lg:w-[380px] overflow-hidden rounded-2xl border border-white/12 text-left transition-all duration-700 ease-out hover:border-white/25"
+                        style={{
+                          transform: `translate(${translateX}px, ${translateY}px) scale(${scale})`,
+                          opacity,
+                          zIndex,
+                          pointerEvents: isCenterCard ? 'auto' : 'none',
+                        }}
+                      >
+                        <img
+                          src={image}
+                          alt={`${artist.name} portfolio sample`}
+                          className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
+                          loading="lazy"
+                        />
+                        <div className="absolute inset-0 bg-gradient-to-t from-[#0b0907] via-transparent to-transparent" />
+                        <div className="absolute right-5 top-5 h-12 w-12 rounded-full border border-white/20 bg-white/10 backdrop-blur">
+                          <span className="absolute inset-2 rounded-full border border-white/15" />
+                        </div>
+                        <div className="absolute bottom-0 left-0 right-0 p-6 space-y-2">
+                          <p className="text-lg font-semibold uppercase tracking-wider text-white">
+                            {artist.name}
+                          </p>
+                          <p className="text-sm uppercase tracking-wide text-white/60">
+                            {(artist as any).specialty || "Tattoo Artist"}
+                          </p>
+                        </div>
+                      </Link>
+                    )
+                  })}
+
+                  {/* Navigation buttons */}
+                  <button
+                    onClick={() => rotateCarousel('prev')}
+                    className="absolute left-0 z-20 p-3 text-white/60 transition-colors hover:text-white"
+                    aria-label="Previous artist"
                   >
-                    {set.items.map((artist) => {
-                      const href = `/artists/${artist.slug}`
-                      const image = getArtistImage(artist)
-                      return (
-                        <Link
-                          key={`${set.key}-${artist.id}-${artist.slug}`}
-                          href={href}
-                          className="group relative flex flex-col overflow-hidden rounded-3xl border border-white/12 bg-white/[0.06] p-3 text-left transition-all duration-500 hover:-translate-y-1 hover:border-white/25 hover:bg-white/[0.1]"
-                        >
-                          <div className="relative aspect-[4/5] overflow-hidden rounded-2xl">
-                            <img
-                              src={image}
-                              alt={`${artist.name} portfolio sample`}
-                              className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-[1.06]"
-                              loading="lazy"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-[#0b0907] via-transparent to-transparent" />
-                            <div className="absolute right-4 top-4 h-10 w-10 rounded-full border border-white/20 bg-white/10 backdrop-blur">
-                              <span className="absolute inset-2 rounded-full border border-white/15" />
-                            </div>
-                          </div>
-                          <div className="mt-4 space-y-1">
-                            <p className="text-sm font-semibold uppercase tracking-[0.35em] text-white">
-                              {artist.name}
-                            </p>
-                            <p className="text-[0.65rem] uppercase tracking-[0.32em] text-white/55">
-                              {(artist as any).specialty || "Tattoo Artist"}
-                            </p>
-                          </div>
-                        </Link>
-                      )
-                    })}
-                  </div>
-                )
-              })}
+                    <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                    </svg>
+                  </button>
+                  <button
+                    onClick={() => rotateCarousel('next')}
+                    className="absolute right-0 z-20 p-3 text-white/60 transition-colors hover:text-white"
+                    aria-label="Next artist"
+                  >
+                    <svg className="h-8 w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </button>
+                </div>
+              )}
             </div>
-          </div>
         </div>
-      </div>
-
-      <div className="relative z-10 mt-24 flex flex-col items-center gap-6 px-6 text-center text-white lg:px-10">
-        <p className="uppercase tracking-[0.4em] text-white/45">Let's Plan Your Piece</p>
-        <h3 className="font-playfair text-3xl leading-tight sm:text-4xl">
-          Choose your artist, share your story, and build a tattoo ritual around intentional ink.
-        </h3>
-        <Button
-          asChild
-          className="rounded-full border border-white/20 bg-white text-sm font-semibold uppercase tracking-[0.32em] text-[#1c1713] shadow-[0_30px_60px_-35px_rgba(255,255,255,0.65)] transition-transform duration-300 hover:scale-[1.03]"
-        >
-          <Link href="/book" className="px-10 py-4">
-            Start A Consultation
-          </Link>
-        </Button>
       </div>
     </section>
   )
