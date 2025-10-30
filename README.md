@@ -2,7 +2,7 @@
 
 <!-- DEPLOYMENT COMMAND -->
 <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 10px; margin-bottom: 30px;">
-  <h3 style="color: white; margin: 0;">🚀 DEPLOYMENT COMMAND</h3>
+  <h3 style="color: white; margin: 0;">DEPLOYMENT COMMAND</h3>
   <code style="color: #ffd700; font-size: 16px; font-weight: bold;">npm run pages:build && wrangler deploy</code>
 </div>
 
@@ -27,17 +27,17 @@
   <p align="center" style="font-size: 18px; max-width: 600px;">
     Professional tattoo studio platform built on Cloudflare's edge network
     <br />
-    <strong>⚡ Lightning-fast • 🎨 Artist-first • 📅 Calendar-integrated</strong>
+    <strong>Lightning-fast • Artist-first • Calendar-integrated</strong>
     <br />
     <br />
-    <a href="https://united-tattoos.com"><strong>🌐 View Live Site »</strong></a>
+    <a href="https://united-tattoos.com"><strong>View Live Site »</strong></a>
     <br />
     <br />
     <a href="#getting-started">Quick Start</a>
     ·
-    <a href="https://git.biohazardvfx.com/nicholai/united-tattoo/issues/new?labels=bug">🐛 Report Bug</a>
+    <a href="https://git.biohazardvfx.com/nicholai/united-tattoo/issues/new?labels=bug">Report Bug</a>
     ·
-    <a href="https://git.biohazardvfx.com/nicholai/united-tattoo/issues/new?labels=enhancement">✨ Request Feature</a>
+    <a href="https://git.biohazardvfx.com/nicholai/united-tattoo/issues/new?labels=enhancement">Request Feature</a>
   </p>
 </div>
 
@@ -45,35 +45,35 @@
 
 <!-- TABLE OF CONTENTS -->
 <details open>
-  <summary><h2 style="display: inline-block;">📑 Table of Contents</h2></summary>
+  <summary><h2 style="display: inline-block;">Table of Contents</h2></summary>
   <ol>
-    <li><a href="#about-the-project">🎯 About The Project</a>
+    <li><a href="#about-the-project">About The Project</a>
       <ul>
-        <li><a href="#key-features">✨ Key Features</a></li>
-        <li><a href="#why-united-tattoo">💡 Why United Tattoo?</a></li>
+        <li><a href="#key-features">Key Features</a></li>
+        <li><a href="#why-united-tattoo">Why United Tattoo?</a></li>
       </ul>
     </li>
-    <li><a href="#tech-stack">🛠️ Tech Stack</a></li>
-    <li><a href="#architecture">🏗️ Architecture</a></li>
-    <li><a href="#getting-started">🚀 Getting Started</a>
+    <li><a href="#tech-stack">Tech Stack</a></li>
+    <li><a href="#architecture">Architecture</a></li>
+    <li><a href="#getting-started">Getting Started</a>
       <ul>
-        <li><a href="#prerequisites">📋 Prerequisites</a></li>
-        <li><a href="#installation">⚙️ Installation</a></li>
-        <li><a href="#environment-variables">🔐 Environment Variables</a></li>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+        <li><a href="#environment-variables">Environment Variables</a></li>
       </ul>
     </li>
-    <li><a href="#development">💻 Development</a>
+    <li><a href="#development">Development</a>
       <ul>
-        <li><a href="#common-commands">⌨️ Common Commands</a></li>
-        <li><a href="#database-management">🗄️ Database Management</a></li>
+        <li><a href="#common-commands">Common Commands</a></li>
+        <li><a href="#database-management">Database Management</a></li>
       </ul>
     </li>
-    <li><a href="#deployment">🌍 Deployment</a></li>
-    <li><a href="#documentation">📚 Documentation</a></li>
-    <li><a href="#roadmap">🗺️ Roadmap</a></li>
-    <li><a href="#contributing">🤝 Contributing</a></li>
-    <li><a href="#license">📄 License</a></li>
-    <li><a href="#contact">📬 Contact</a></li>
+    <li><a href="#deployment">Deployment</a></li>
+    <li><a href="#documentation">Documentation</a></li>
+    <li><a href="#roadmap">Roadmap</a></li>
+    <li><a href="#contributing">Contributing</a></li>
+    <li><a href="#license">License</a></li>
+    <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
 
@@ -81,7 +81,7 @@
 
 </div>
 
-## 🎯 About The Project
+## About The Project
 
 <div align="center">
   <img src="public/united-studio-main.jpg" alt="United Tattoo Studio" width="800" style="border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
@@ -91,26 +91,26 @@
 
 **United Tattoo** is a comprehensive tattoo studio management platform designed for [United Tattoo](https://united-tattoos.com), a professional tattoo studio in **Fountain, Colorado**. This platform seamlessly integrates artist portfolios, appointment booking, flash tattoo marketplace, and real-time calendar synchronization—all running on Cloudflare's global edge network for exceptional performance.
 
-### ✨ Key Features
+### Key Features
 
 <table>
 <tr>
 <td width="50%">
 
-#### 🎨 **Artist Management**
+#### **Artist Management**
 - Dynamic portfolio galleries with Instagram integration
 - SEO-friendly artist pages (`/artists/artist-name`)
 - Specialty tracking and hourly rate management
 - Active/inactive status control
 - Self-service artist dashboard
 
-#### ⚡ **Flash Tattoo Marketplace**
+#### **Flash Tattoo Marketplace**
 - Pre-drawn designs available for instant booking
 - Responsive carousel UI with smooth scrolling
 - Pricing and availability management
 - Direct integration with booking system
 
-#### 📅 **Smart Booking System**
+#### **Smart Booking System**
 - Client appointment scheduling
 - Multiple status workflows (PENDING → CONFIRMED → IN_PROGRESS → COMPLETED)
 - Deposit and payment tracking
@@ -119,20 +119,20 @@
 </td>
 <td width="50%">
 
-#### 🔄 **CalDAV/Nextcloud Integration**
+#### **CalDAV/Nextcloud Integration**
 - **Bidirectional calendar sync** with Nextcloud
 - Real-time availability checking
 - Per-artist calendar configuration
 - Sync logging and monitoring
 - Automatic conflict prevention
 
-#### 🔐 **Nextcloud OAuth Authentication**
+#### **Nextcloud OAuth Authentication**
 - Auto-provisioning based on Nextcloud groups
 - Role-based access control (SUPER_ADMIN, SHOP_ADMIN, ARTIST, CLIENT)
 - Seamless integration with existing artist portal
 - Emergency admin credentials fallback
 
-#### 📊 **Comprehensive Dashboards**
+#### **Comprehensive Dashboards**
 - **Admin Dashboard**: Analytics, portfolio management, calendar oversight, artist management
 - **Artist Dashboard**: Profile editing, portfolio management, appointment view
 - File upload management with R2 cloud storage
@@ -141,23 +141,23 @@
 </tr>
 </table>
 
-### 💡 Why United Tattoo?
+### Why United Tattoo?
 
 <div style="background: #f6f8fa; padding: 20px; border-left: 4px solid #667eea; border-radius: 4px; margin: 20px 0;">
 
-**🌍 Edge-First Architecture**
+**Edge-First Architecture**
 Built on Cloudflare Workers for global performance with <100ms response times worldwide.
 
-**🔗 Nextcloud-First Integration**
+**Nextcloud-First Integration**
 Seamless authentication and calendar sync with existing artist infrastructure—no duplicate account management.
 
-**⚡ Zero-ORM Overhead**
+**Zero-ORM Overhead**
 Direct Cloudflare D1 integration via bindings for maximum performance.
 
-**📦 Bundle Size Enforced**
+**Bundle Size Enforced**
 CI/CD enforces 3MB static budget to ensure lightning-fast page loads.
 
-**🧪 Test Coverage**
+**Test Coverage**
 Comprehensive Vitest test suite with coverage tracking.
 
 </div>
@@ -166,7 +166,7 @@ Comprehensive Vitest test suite with coverage tracking.
 
 ---
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 <div align="center">
 
@@ -200,7 +200,7 @@ Comprehensive Vitest test suite with coverage tracking.
 </div>
 
 <details>
-<summary><strong>📦 Complete Dependency List</strong></summary>
+<summary><strong>Complete Dependency List</strong></summary>
 
 **Core Dependencies:**
 - Next.js 14.2.33 (App Router)
@@ -241,14 +241,14 @@ Comprehensive Vitest test suite with coverage tracking.
 
 ---
 
-## 🏗️ Architecture
+## Architecture
 
 <div align="center">
 
 ```mermaid
 graph TB
     subgraph "Client Layer"
-        Browser[🌐 Browser]
+        Browser[Browser]
     end
 
     subgraph "Edge Layer - Cloudflare Workers"
@@ -281,7 +281,7 @@ graph TB
 
 </div>
 
-### 🔄 System Flow
+### System Flow
 
 <details>
 <summary><strong>Authentication Flow</strong></summary>
@@ -357,7 +357,7 @@ pullCalendarEventsToDatabase()
 
 </details>
 
-### 📁 Project Structure
+### Project Structure
 
 ```
 united-tattoo/
@@ -398,18 +398,18 @@ united-tattoo/
 
 ---
 
-## 🚀 Getting Started
+## Getting Started
 
-### 📋 Prerequisites
+### Prerequisites
 
 <div style="background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 4px; margin: 20px 0;">
-<strong>⚠️ Required Accounts & Access</strong>
+<strong>Required Accounts & Access</strong>
 
 Before starting, ensure you have:
-- ✅ **Cloudflare Account** with access to Workers, D1, R2, and Pages
-- ✅ **Nextcloud Instance** with admin access for OAuth app creation
-- ✅ **Node.js 18+** and npm installed
-- ✅ **Wrangler CLI** version 3+
+- **Cloudflare Account** with access to Workers, D1, R2, and Pages
+- **Nextcloud Instance** with admin access for OAuth app creation
+- **Node.js 18+** and npm installed
+- **Wrangler CLI** version 3+
 </div>
 
 **Install Wrangler:**
@@ -422,7 +422,7 @@ npm install -g wrangler
 - **D1 Database**: SQLite database (named `united-tattoo`)
 - **R2 Buckets**: File storage (`united-tattoo`, `united-tattoo-inc-cache`)
 
-### ⚙️ Installation
+### Installation
 
 1. **Clone the repository**
    ```bash
@@ -476,10 +476,10 @@ npm install -g wrangler
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
-### 🔐 Environment Variables
+### Environment Variables
 
 <details open>
-<summary><strong>📝 Required Variables</strong></summary>
+<summary><strong>Required Variables</strong></summary>
 
 | Variable | Description | Example |
 |----------|-------------|---------|
@@ -505,7 +505,7 @@ npm install -g wrangler
 </details>
 
 <details>
-<summary><strong>🔧 Optional Variables</strong></summary>
+<summary><strong>Optional Variables</strong></summary>
 
 | Variable | Description | Default |
 |----------|-------------|---------|
@@ -526,16 +526,16 @@ npm install -g wrangler
 </details>
 
 <div style="background: #d1ecf1; padding: 15px; border-left: 4px solid #0c5460; border-radius: 4px; margin: 20px 0;">
-<strong>💡 Pro Tip:</strong> Use <code>.env.local</code> for local development and configure production variables in Cloudflare dashboard under Settings → Environment Variables.
+<strong>Pro Tip:</strong> Use <code>.env.local</code> for local development and configure production variables in Cloudflare dashboard under Settings → Environment Variables.
 </div>
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
 
-## 💻 Development
+## Development
 
-### ⌨️ Common Commands
+### Common Commands
 
 <table>
 <thead>
@@ -546,7 +546,7 @@ npm install -g wrangler
 </thead>
 <tbody>
 
-<tr><td colspan="2"><strong>🔧 Development</strong></td></tr>
+<tr><td colspan="2"><strong>Development</strong></td></tr>
 <tr>
   <td><code>npm run dev</code></td>
   <td>Start Next.js dev server (port 3000)</td>
@@ -556,7 +556,7 @@ npm install -g wrangler
   <td>Build and preview with OpenNext/Cloudflare</td>
 </tr>
 
-<tr><td colspan="2"><strong>🧪 Testing</strong></td></tr>
+<tr><td colspan="2"><strong>Testing</strong></td></tr>
 <tr>
   <td><code>npm run test</code></td>
   <td>Run Vitest in watch mode</td>
@@ -574,7 +574,7 @@ npm install -g wrangler
   <td>Run tests with coverage report</td>
 </tr>
 
-<tr><td colspan="2"><strong>🏗️ Build & Deployment</strong></td></tr>
+<tr><td colspan="2"><strong>Build & Deployment</strong></td></tr>
 <tr>
   <td><code>npm run pages:build</code></td>
   <td>Build with OpenNext for Cloudflare</td>
@@ -592,7 +592,7 @@ npm install -g wrangler
   <td>Deploy to Cloudflare Pages</td>
 </tr>
 
-<tr><td colspan="2"><strong>🔍 Code Quality</strong></td></tr>
+<tr><td colspan="2"><strong>Code Quality</strong></td></tr>
 <tr>
   <td><code>npm run ci:lint</code></td>
   <td>Run ESLint</td>
@@ -614,7 +614,7 @@ npm install -g wrangler
   <td>Check bundle size budgets</td>
 </tr>
 
-<tr><td colspan="2"><strong>✨ Formatting</strong></td></tr>
+<tr><td colspan="2"><strong>Formatting</strong></td></tr>
 <tr>
   <td><code>npm run lint</code></td>
   <td>Run ESLint</td>
@@ -631,10 +631,10 @@ npm install -g wrangler
 </tbody>
 </table>
 
-### 🗄️ Database Management
+### Database Management
 
 <details>
-<summary><strong>📦 Migration Commands</strong></summary>
+<summary><strong>Migration Commands</strong></summary>
 
 **Local Database:**
 ```bash
@@ -687,7 +687,7 @@ wrangler d1 execute united-tattoo --command="SELECT * FROM users"
 </details>
 
 <details>
-<summary><strong>🔄 Creating New Migrations</strong></summary>
+<summary><strong>Creating New Migrations</strong></summary>
 
 1. Create migration file in `sql/migrations/` with format:
    ```
@@ -730,14 +730,14 @@ wrangler d1 execute united-tattoo --command="SELECT * FROM users"
 
 ---
 
-## 🌍 Deployment
+## Deployment
 
 **Production URL:** [https://united-tattoos.com](https://united-tattoos.com)
 
-### 🚀 Deployment Process
+### Deployment Process
 
 <div style="background: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; border-radius: 4px; margin: 20px 0;">
-<strong>⚡ Quick Deploy Command</strong><br><br>
+<strong>Quick Deploy Command</strong><br><br>
 <code>npm run pages:build && wrangler deploy</code>
 </div>
 
@@ -758,17 +758,17 @@ wrangler d1 execute united-tattoo --command="SELECT * FROM users"
    - Check Cloudflare dashboard: Workers & Pages → united-tattoo
    - Visit production URL: https://united-tattoos.com
 
-### 🔄 CI/CD Pipeline
+### CI/CD Pipeline
 
 The project uses **Gitea workflows** for automated CI/CD:
 
 **Workflows:**
 - **`ci.yaml`** - Main CI pipeline
-  - ✅ ESLint
-  - ✅ TypeScript type checking
-  - ✅ Vitest tests with coverage
-  - ✅ Production build
-  - ✅ Bundle size budgets
+  - ESLint
+  - TypeScript type checking
+  - Vitest tests with coverage
+  - Production build
+  - Bundle size budgets
 
 - **`deploy.yaml`** - Automated deployments
   - Triggers on push to `main` branch
@@ -788,10 +788,10 @@ The project uses **Gitea workflows** for automated CI/CD:
 
 Enforced by `scripts/budgets.mjs` in CI.
 
-### 🐳 Docker Support
+### Docker Support
 
 <details>
-<summary><strong>🐋 Docker Deployment (Alternative)</strong></summary>
+<summary><strong>Docker Deployment (Alternative)</strong></summary>
 
 The project includes a Dockerfile for self-hosting:
 
@@ -816,20 +816,20 @@ docker run --rm -p 3000:3000 \
 
 ---
 
-## 📚 Documentation
+## Documentation
 
 Comprehensive documentation is available in the [`docs/`](docs/) directory:
 
-### 🔑 Key Documentation
+### Key Documentation
 
 | Document | Description |
 |----------|-------------|
-| 📘 [**NEXTCLOUD-OAUTH-SETUP.md**](docs/NEXTCLOUD-OAUTH-SETUP.md) | Complete guide to setting up Nextcloud OAuth and group-based authentication |
-| 📗 [**CALDAV-SETUP.md**](docs/CALDAV-SETUP.md) | Instructions for configuring CalDAV calendar synchronization |
-| 📙 [**CI-CD-PIPELINE.md**](docs/CI-CD-PIPELINE.md) | Detailed CI/CD pipeline documentation and troubleshooting |
-| 📕 [**BOOKING-WORKFLOW-FINAL-PLAN.md**](docs/BOOKING-WORKFLOW-FINAL-PLAN.md) | Complete booking system architecture and workflow |
+| [**NEXTCLOUD-OAUTH-SETUP.md**](docs/NEXTCLOUD-OAUTH-SETUP.md) | Complete guide to setting up Nextcloud OAuth and group-based authentication |
+| [**CALDAV-SETUP.md**](docs/CALDAV-SETUP.md) | Instructions for configuring CalDAV calendar synchronization |
+| [**CI-CD-PIPELINE.md**](docs/CI-CD-PIPELINE.md) | Detailed CI/CD pipeline documentation and troubleshooting |
+| [**BOOKING-WORKFLOW-FINAL-PLAN.md**](docs/BOOKING-WORKFLOW-FINAL-PLAN.md) | Complete booking system architecture and workflow |
 
-### 📑 Additional Documentation
+### Additional Documentation
 
 <details>
 <summary><strong>View All Documentation Files</strong></summary>
@@ -859,7 +859,7 @@ Comprehensive documentation is available in the [`docs/`](docs/) directory:
 
 </details>
 
-### 🤖 AI Development Guide
+### AI Development Guide
 
 The project includes **[`CLAUDE.md`](CLAUDE.md)** with comprehensive instructions for AI assistants (like Claude Code) working with this codebase, including:
 - Complete architecture overview
@@ -873,9 +873,9 @@ The project includes **[`CLAUDE.md`](CLAUDE.md)** with comprehensive instruction
 
 ---
 
-## 🗺️ Roadmap
+## Roadmap
 
-### ✅ Completed Features
+### Completed Features
 
 - [x] Artist portfolio system with galleries
 - [x] Nextcloud OAuth with auto-provisioning
@@ -891,7 +891,7 @@ The project includes **[`CLAUDE.md`](CLAUDE.md)** with comprehensive instruction
 - [x] HEIC image conversion
 - [x] Artist slug-based URLs
 
-### 🚧 In Progress
+### In Progress
 
 - [ ] Email notifications for appointments
 - [ ] SMS reminders for clients
@@ -900,7 +900,7 @@ The project includes **[`CLAUDE.md`](CLAUDE.md)** with comprehensive instruction
 - [ ] Gift card system enhancements
 - [ ] Enhanced analytics dashboard
 
-### 💡 Future Enhancements
+### Future Enhancements
 
 - [ ] Client self-service portal
 - [ ] Online deposit payments
@@ -917,7 +917,7 @@ See the [open issues](https://git.biohazardvfx.com/nicholai/united-tattoo/issues
 
 ---
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! This project follows standard Git workflows and conventional commits.
 
@@ -991,10 +991,10 @@ Contributions are welcome! This project follows standard Git workflows and conve
 
 ---
 
-## 📄 License
+## License
 
 <div style="background: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; border-radius: 4px; margin: 20px 0;">
-<strong>⚠️ License Status</strong><br><br>
+<strong>License Status</strong><br><br>
 This project currently does not have a LICENSE file in the repository. If you intend to use GNU GPLv3 (as referenced in the original README template), please add a <code>LICENSE</code> or <code>COPYING</code> file with the full license text.<br><br>
 
 Alternatively, consider:
@@ -1012,7 +1012,7 @@ Alternatively, consider:
 
 ---
 
-## 📬 Contact
+## Contact
 
 <div align="center">
 
@@ -1034,13 +1034,13 @@ Alternatively, consider:
 
 <div align="center">
 
-### ⭐ Star this repository if you find it helpful!
+### Star this repository if you find it helpful!
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
 ---
 
-**Made with ❤️ for United Tattoo Studio, Fountain, CO**
+**Made with love for United Tattoo Studio, Fountain, CO**
 
 </div>
 
