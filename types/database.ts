@@ -194,6 +194,20 @@ export interface PortfolioImage {
   createdAt: Date
 }
 
+export interface FlashItem {
+  id: string
+  artistId: string
+  url: string
+  title?: string
+  description?: string
+  price?: number // cents
+  sizeHint?: string
+  tags?: string[]
+  orderIndex: number
+  isAvailable: boolean
+  createdAt: Date
+}
+
 // Calendar & Booking Types
 export interface Appointment {
   id: string
@@ -306,4 +320,47 @@ export interface AppointmentFilters {
   status?: AppointmentStatus
   startDate?: Date
   endDate?: Date
+}
+
+// CalDAV / Calendar Integration Types
+export interface ArtistCalendar {
+  id: string
+  artistId: string
+  calendarUrl: string
+  calendarId: string
+  syncToken?: string
+  lastSyncAt?: Date
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface CalendarSyncLog {
+  id: string
+  artistId?: string
+  syncType: 'PUSH' | 'PULL' | 'FULL'
+  status: 'SUCCESS' | 'FAILED' | 'PARTIAL'
+  errorMessage?: string
+  eventsProcessed: number
+  eventsCreated: number
+  eventsUpdated: number
+  eventsDeleted: number
+  durationMs?: number
+  createdAt: Date
+}
+
+export interface CalendarEvent {
+  uid: string
+  summary: string
+  description?: string
+  startTime: Date
+  endTime: Date
+  etag?: string
+  url?: string
+}
+
+export interface AvailabilitySlot {
+  start: Date
+  end: Date
+  available: boolean
+  reason?: string
 }

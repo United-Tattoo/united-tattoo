@@ -3,6 +3,11 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { getDB } from '@/lib/db'
 import { Flags } from '@/lib/flags'
+import { 
+  syncAppointmentToCalendar, 
+  deleteAppointmentFromCalendar,
+  checkArtistAvailability,
+} from '@/lib/calendar-sync'
 import { z } from 'zod'
 
 export const dynamic = "force-dynamic";
@@ -103,33 +108,30 @@ export async function POST(request: NextRequest, { params }: { params?: any } = 
     const body = await request.json()
     const validatedData = createAppointmentSchema.parse(body)
 
-    // Check for scheduling conflicts
     const db = getDB(context?.env)
-    const conflictCheck = db.prepare(`
-      SELECT id FROM appointments 
-      WHERE artist_id = ? 
-      AND status NOT IN ('CANCELLED', 'COMPLETED')
-      AND (
-        (start_time <= ? AND end_time > ?) OR
-        (start_time < ? AND end_time >= ?) OR
-        (start_time >= ? AND end_time <= ?)
-      )
-    `)
 
-    const conflictResult = await conflictCheck.bind(
+    // IMPORTANT: Check CalDAV availability first (Nextcloud is source of truth)
+    const startDate = new Date(validatedData.startTime)
+    const endDate = new Date(validatedData.endTime)
+    
+    const availabilityCheck = await checkArtistAvailability(
       validatedData.artistId,
-      validatedData.startTime, validatedData.startTime,
-      validatedData.endTime, validatedData.endTime,
-      validatedData.startTime, validatedData.endTime
-    ).all()
+      startDate,
+      endDate,
+      context
+    )
 
-    if (conflictResult.results.length > 0) {
+    if (!availabilityCheck.available) {
       return NextResponse.json(
-        { error: 'Time slot conflicts with existing appointment' },
+        { 
+          error: 'Time slot not available',
+          reason: availabilityCheck.reason || 'Selected time slot conflicts with existing booking. Please select a different time.'
+        },
         { status: 409 }
       )
     }
 
+    // Create appointment in database with PENDING status
     const appointmentId = crypto.randomUUID()
     const insertStmt = db.prepare(`
       INSERT INTO appointments (
@@ -165,6 +167,14 @@ export async function POST(request: NextRequest, { params }: { params?: any } = 
     `)
 
     const appointment = await selectStmt.bind(appointmentId).first()
+
+    // Sync to CalDAV calendar (non-blocking - failure won't prevent appointment creation)
+    try {
+      await syncAppointmentToCalendar(appointment as any, context)
+    } catch (syncError) {
+      console.error('Failed to sync appointment to calendar:', syncError)
+      // Continue - appointment is created in DB even if CalDAV sync fails
+    }
 
     return NextResponse.json({ appointment }, { status: 201 })
   } catch (error) {
@@ -286,6 +296,14 @@ export async function PUT(request: NextRequest, { params }: { params?: any } = {
 
     const appointment = await selectStmt.bind(validatedData.id).first()
 
+    // Sync updated appointment to CalDAV (non-blocking)
+    try {
+      await syncAppointmentToCalendar(appointment as any, context)
+    } catch (syncError) {
+      console.error('Failed to sync updated appointment to calendar:', syncError)
+      // Continue - appointment is updated in DB even if CalDAV sync fails
+    }
+
     return NextResponse.json({ appointment })
   } catch (error) {
     console.error('Error updating appointment:', error)
@@ -323,16 +341,28 @@ export async function DELETE(request: NextRequest, { params }: { params?: any } 
     }
 
     const db = getDB(context?.env)
-    const deleteStmt = db.prepare('DELETE FROM appointments WHERE id = ?')
-    const result = await deleteStmt.bind(id).run()
-
-    const written = (result as any)?.meta?.changes ?? (result as any)?.meta?.rows_written ?? 0
-    if (written === 0) {
+    
+    // Fetch appointment before deleting (needed for CalDAV sync)
+    const appointment = await db.prepare('SELECT * FROM appointments WHERE id = ?').bind(id).first()
+    
+    if (!appointment) {
       return NextResponse.json(
         { error: 'Appointment not found' },
         { status: 404 }
       )
     }
+
+    // Delete from CalDAV calendar first (non-blocking)
+    try {
+      await deleteAppointmentFromCalendar(appointment as any, context)
+    } catch (syncError) {
+      console.error('Failed to delete appointment from calendar:', syncError)
+      // Continue with DB deletion even if CalDAV deletion fails
+    }
+
+    // Delete from database
+    const deleteStmt = db.prepare('DELETE FROM appointments WHERE id = ?')
+    await deleteStmt.bind(id).run()
 
     return NextResponse.json({ success: true })
   } catch (error) {

@@ -3,10 +3,13 @@
 import { useState, useEffect, useRef, useCallback } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
-import { ArrowLeft, Instagram, ExternalLink, Loader2, DollarSign } from "lucide-react"
+import { Instagram, ExternalLink, Loader2 } from "lucide-react"
 import { useArtist } from "@/hooks/use-artist-data"
+import { useIsMobile } from "@/hooks/use-mobile"
+import { type CarouselApi, Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from "@/components/ui/carousel"
+import { useFlash } from "@/hooks/use-flash"
+// Removed mobile filter scroll area
 
 interface ArtistPortfolioProps {
   artistId: string
@@ -16,30 +19,110 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
   const [selectedCategory, setSelectedCategory] = useState("All")
   const [selectedImage, setSelectedImage] = useState<string | null>(null)
   const [scrollY, setScrollY] = useState(0)
+  const isMobile = useIsMobile()
+  // carousel indicator state (mobile)
+  const [carouselApi, setCarouselApi] = useState<CarouselApi | null>(null)
+  const [carouselCount, setCarouselCount] = useState(0)
+  const [carouselCurrent, setCarouselCurrent] = useState(0)
+  const [showSwipeHint, setShowSwipeHint] = useState(true)
+  const [showFullBio, setShowFullBio] = useState(false)
+  const [flashApi, setFlashApi] = useState<CarouselApi | null>(null)
 
   // Fetch artist data from API
   const { data: artist, isLoading, error } = useArtist(artistId)
+  const { data: flashItems = [] } = useFlash(artist?.id)
 
   // keep a reference to the last focused thumbnail so we can return focus on modal close
   const lastFocusedRef = useRef<HTMLElement | null>(null)
   const closeButtonRef = useRef<HTMLButtonElement | null>(null)
+  const touchStartX = useRef<number | null>(null)
 
   useEffect(() => {
+    // Enable parallax only on desktop to avoid jank on mobile
+    if (isMobile) return
     const handleScroll = () => setScrollY(window.scrollY)
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
+  }, [isMobile])
+
+  // Fade swipe hint after a short delay
+  useEffect(() => {
+    const t = setTimeout(() => setShowSwipeHint(false), 2500)
+    return () => clearTimeout(t)
   }, [])
+
+  // Preserve scroll position when modal opens/closes
+  useEffect(() => {
+    if (!selectedImage) return
+    const y = window.scrollY
+    const { body } = document
+    body.style.position = "fixed"
+    body.style.top = `-${y}px`
+    body.style.left = "0"
+    body.style.right = "0"
+    return () => {
+      const top = body.style.top
+      body.style.position = ""
+      body.style.top = ""
+      body.style.left = ""
+      body.style.right = ""
+      const restoreY = Math.abs(parseInt(top || "0", 10))
+      window.scrollTo(0, restoreY)
+    }
+  }, [selectedImage])
+
+  // Carousel indicators state wiring
+  useEffect(() => {
+    if (!carouselApi) return
+    setCarouselCount(carouselApi.scrollSnapList().length)
+    setCarouselCurrent(carouselApi.selectedScrollSnap())
+    const onSelect = () => setCarouselCurrent(carouselApi.selectedScrollSnap())
+    carouselApi.on("select", onSelect)
+    return () => {
+      carouselApi.off("select", onSelect)
+    }
+  }, [carouselApi])
+
+  // Flash carousel scale effect based on position (desktop emphasis)
+  useEffect(() => {
+    if (!flashApi) return
+    const updateScales = () => {
+      const root = flashApi.rootNode() as HTMLElement | null
+      const slides = flashApi.slideNodes() as HTMLElement[]
+      if (!root || !slides?.length) return
+      const rect = root.getBoundingClientRect()
+      const centerX = rect.left + rect.width / 2
+      slides.forEach((slide) => {
+        const sRect = slide.getBoundingClientRect()
+        const sCenter = sRect.left + sRect.width / 2
+        const dist = Math.abs(sCenter - centerX)
+        const norm = Math.min(dist / (rect.width / 2), 1) // 0 at center, 1 at edge
+        const scale = 0.92 + (1 - norm) * 0.08 // 0.92 at edge → 1.0 center
+        slide.style.transition = 'transform 200ms ease'
+        slide.style.transform = `scale(${scale})`
+      })
+    }
+    updateScales()
+    flashApi.on('scroll', updateScales)
+    flashApi.on('reInit', updateScales)
+    return () => {
+      flashApi.off('scroll', updateScales)
+      flashApi.off('reInit', updateScales)
+    }
+  }, [flashApi])
 
   // Derived lists (safe when `artist` is undefined during initial renders)
   const portfolioImages = artist?.portfolioImages || []
+  // Exclude profile/non-public images from the displayed gallery
+  const galleryImages = portfolioImages.filter((img) => img.isPublic !== false && !img.tags.includes('profile'))
   
-  // Get unique categories from tags
-  const allTags = portfolioImages.flatMap(img => img.tags)
+  // Get unique categories from tags (use gallery images only)
+  const allTags = galleryImages.flatMap(img => img.tags)
   const categories = ["All", ...Array.from(new Set(allTags))]
   
   const filteredPortfolio = selectedCategory === "All" 
-    ? portfolioImages 
-    : portfolioImages.filter(img => img.tags.includes(selectedCategory))
+    ? galleryImages 
+    : galleryImages.filter(img => img.tags.includes(selectedCategory))
 
   // keyboard navigation for modal (kept as hooks so they run in same order every render)
   const goToIndex = useCallback(
@@ -132,25 +215,14 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
   const profileImage = portfolioImages.find(img => img.tags.includes('profile'))?.url || 
                       portfolioImages[0]?.url || 
                       "/placeholder.svg"
+  const bioText = artist.bio || ""
 
   return (
     <div className="min-h-screen bg-black text-white">
-      {/* Back Button */}
-      <div className="fixed top-6 right-8 z-40">
-        <Button
-          asChild
-          variant="ghost"
-          className="text-white hover:bg-white/20 border border-white/30 backdrop-blur-sm bg-black/40 hover:text-white"
-        >
-          <Link href="/artists">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back to Artists
-          </Link>
-        </Button>
-      </div>
+      {/* Removed Back to Artists button per request */}
 
-      {/* Hero Section with Split Screen */}
-      <section className="relative h-screen overflow-hidden -mt-20">
+      {/* Hero Section with Split Screen (Desktop only) */}
+      <section className="relative h-screen overflow-hidden -mt-20 hidden md:block">
         {/* Left Side - Artist Image */}
         <div className="absolute left-0 top-0 w-1/2 h-full" style={{ transform: `translateY(${scrollY * 0.3}px)` }}>
           <div className="relative w-full h-full">
@@ -162,14 +234,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
               className="object-cover"
             />
             <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/50" />
-            <div className="absolute top-28 left-8">
-              <Badge
-                variant={artist.isActive ? "default" : "secondary"}
-                className="bg-white/20 backdrop-blur-sm text-white border-white/30"
-              >
-                {artist.isActive ? "Available" : "Unavailable"}
-              </Badge>
-            </div>
+            {/* Availability badge removed */}
           </div>
         </div>
 
@@ -181,7 +246,6 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
           <div className="px-16 py-20">
             <div className="mb-8">
               <h1 className="font-playfair text-6xl font-bold mb-4 text-balance leading-tight">{artist.name}</h1>
-              <p className="text-2xl text-gray-300 mb-6">{artist.specialties.join(", ")}</p>
             </div>
 
             <p className="text-gray-300 mb-8 leading-relaxed text-lg max-w-lg">{artist.bio}</p>
@@ -200,24 +264,9 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
                   </a>
                 </div>
               )}
-              {artist.hourlyRate && (
-                <div className="flex items-center space-x-3">
-                  <DollarSign className="w-5 h-5 text-gray-400" />
-                  <span className="text-gray-300">Starting at ${artist.hourlyRate}/hr</span>
-                </div>
-              )}
             </div>
 
-            <div className="mb-8">
-              <h3 className="font-semibold mb-4 text-lg">Specializes in:</h3>
-              <div className="flex flex-wrap gap-2">
-                {artist.specialties.map((style) => (
-                  <Badge key={style} variant="outline" className="border-white/30 text-white">
-                    {style}
-                  </Badge>
-                ))}
-              </div>
-            </div>
+            {/* Specialties and pricing hidden on desktop per request */}
 
             <div className="flex space-x-4">
               <Button asChild size="lg" className="bg-white text-black hover:bg-gray-100 !text-black hover:!text-black">
@@ -242,8 +291,42 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
         </div>
       </section>
 
-      {/* Portfolio Section with Split Screen Layout */}
-      <section className="relative bg-black">
+      {/* Hero Section - Mobile stacked */}
+      <section className="md:hidden -mt-16">
+          <div className="relative w-full h-[55vh]">
+          <Image
+            src={profileImage}
+            alt={artist.name}
+            fill
+            sizes="100vw"
+            className="object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+        </div>
+        <div className="px-6 py-8">
+          <h1 className="font-playfair text-4xl font-bold mb-2 text-balance">{artist.name}</h1>
+          <p className="text-white/80 mb-4 text-base">{artist.specialties.join(", ")}</p>
+          <p className="text-white/80 leading-relaxed mb-2 text-[17px]">
+            {showFullBio ? bioText : bioText.slice(0, 180)}{bioText.length > 180 && !showFullBio ? "…" : ""}
+          </p>
+          {bioText.length > 180 && (
+            <button onClick={() => setShowFullBio((v) => !v)} className="text-white/70 text-sm underline">
+              {showFullBio ? "Show less" : "Read more"}
+            </button>
+          )}
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Button asChild size="lg" className="bg-white text-black hover:bg-gray-100 !text-black hover:!text-black">
+              <Link href={`/book?artist=${artist.slug}`}>Book Appointment</Link>
+            </Button>
+            <Button variant="outline" size="lg" className="border-white/30 text-white hover:bg-white hover:text-black bg-transparent">
+              Get Consultation
+            </Button>
+          </div>
+        </div>
+      </section>
+
+      {/* Portfolio Section with Split Screen Layout (Desktop only) */}
+      <section className="relative bg-black hidden md:block">
         <div className="flex min-h-screen">
           {/* Left Side - Portfolio Grid */}
           <div className="w-2/3 p-8 overflow-y-auto">
@@ -358,6 +441,97 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
         </div>
       </section>
 
+      {/* Mobile Portfolio: Carousel + Filters (simplified) */}
+      <section className="md:hidden bg-black">
+        {/* Removed mobile category filters for simplicity */}
+
+        {/* Carousel only */}
+        <div className="px-2 pb-10">
+          {filteredPortfolio.length === 0 ? (
+            <div className="flex items-center justify-center h-64">
+              <p className="text-gray-400">No portfolio images available</p>
+            </div>
+          ) : (
+            <div className="relative" aria-label="Portfolio carousel">
+              <Carousel opts={{ align: "start", loop: true }} className="w-full" setApi={setCarouselApi}>
+                <CarouselContent>
+                  {filteredPortfolio.map((item) => (
+                    <CarouselItem key={item.id} className="basis-full">
+                      <div className="w-full h-[70vh] relative">
+                        <Image
+                          src={item.url || "/placeholder.svg"}
+                          alt={item.caption || `${artist.name} portfolio image`}
+                          fill
+                          sizes="100vw"
+                          className="object-contain bg-black"
+                        />
+                      </div>
+                    </CarouselItem>)
+                  )}
+                </CarouselContent>
+              </Carousel>
+              <div className="pointer-events-none absolute top-2 right-3 rounded-full bg-white/10 backdrop-blur px-2 py-1 text-xs text-white">
+                {filteredPortfolio.length} pieces
+              </div>
+              {/* Swipe hint */}
+              {showSwipeHint && (
+                <div className="pointer-events-none absolute bottom-2 left-1/2 -translate-x-1/2 rounded-full bg-white/10 backdrop-blur px-3 py-1 text-xs text-white">
+                  Swipe left or right
+                </div>
+              )}
+              {/* Dots indicators */}
+              <div className="mt-3 flex items-center justify-center gap-2" role="tablist" aria-label="Carousel indicators">
+                {Array.from({ length: carouselCount }).map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => carouselApi?.scrollTo(i)}
+                    aria-current={carouselCurrent === i}
+                    aria-label={`Go to slide ${i + 1}`}
+                    className={`h-2 w-2 rounded-full ${carouselCurrent === i ? "bg-white" : "bg-white/40"}`}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Available Flash (carousel) */}
+      {flashItems && flashItems.length > 0 && (
+        <section className="bg-black border-t border-white/10 py-10">
+          <div className="px-4 md:px-0 md:max-w-none md:w-screen">
+            <h3 className="font-playfair text-3xl md:text-4xl font-bold mb-6">Available Flash</h3>
+            <div className="relative">
+            <Carousel opts={{ align: "start", loop: true, skipSnaps: false, dragFree: true }} className="w-full relative" setApi={setFlashApi}>
+              <CarouselContent>
+                {flashItems.map((item) => (
+                  <CarouselItem key={item.id} className="basis-full md:basis-1/2 lg:basis-1/3">
+                    <div className="relative w-full aspect-[4/5] bg-black rounded-md overflow-hidden">
+                      <Image src={item.url} alt={item.title || `${artist?.name} flash`} fill sizes="(max-width:768px) 100vw, 33vw" className="object-cover" />
+                    </div>
+                    <div className="flex items-center justify-end mt-3">
+                      <Button asChild size="sm" className="bg-white text-black hover:bg-gray-100 !text-black">
+                        <Link href={`/book?artist=${artist?.slug}&flashId=${item.id}`}>Book this</Link>
+                      </Button>
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              {/* Minimal nav controls */}
+              <CarouselPrevious className="left-4 top-1/2 -translate-y-1/2 size-12 md:size-14 z-10 bg-black/85 text-white shadow-xl border border-white/30 hover:bg-black rounded-full" aria-label="Previous flash" />
+              <CarouselNext className="right-4 top-1/2 -translate-y-1/2 size-12 md:size-14 z-10 bg-black/85 text-white shadow-xl border border-white/30 hover:bg-black rounded-full" aria-label="Next flash" />
+            </Carousel>
+            {/* Edge fade gradients (desktop) */}
+            <div className="pointer-events-none hidden md:block absolute inset-y-0 left-0 w-24 bg-gradient-to-r from-black to-transparent" />
+            <div className="pointer-events-none hidden md:block absolute inset-y-0 right-0 w-24 bg-gradient-to-l from-black to-transparent" />
+            </div>
+            {showSwipeHint && (
+              <div className="pointer-events-none mt-3 text-center text-xs text-white/70">Swipe or use ◀ ▶</div>
+            )}
+          </div>
+        </section>
+      )}
+
       {/* Contact Section */}
       <section className="relative py-32 bg-black border-t border-white/10">
         <div className="container mx-auto px-8 text-center">
@@ -385,22 +559,7 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
               </Button>
             </div>
 
-            <div className="mt-16 pt-16 border-t border-white/10">
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-                <div>
-                  <div className="text-3xl font-bold mb-2">{artist.specialties.length}+</div>
-                  <div className="text-gray-400">Specialties</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold mb-2">{portfolioImages.length}</div>
-                  <div className="text-gray-400">Portfolio Pieces</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold mb-2">{artist.hourlyRate ? `$${artist.hourlyRate}` : "Contact"}</div>
-                  <div className="text-gray-400">Starting Rate</div>
-                </div>
-              </div>
-            </div>
+            {/* Desktop stats removed per request */}
           </div>
         </div>
       </section>
@@ -417,6 +576,24 @@ export function ArtistPortfolio({ artistId }: ArtistPortfolioProps) {
           <div
             className="relative max-w-6xl max-h-[90vh] w-full flex items-center justify-center"
             onClick={(e) => e.stopPropagation()}
+            onTouchStart={(e) => {
+              touchStartX.current = e.touches[0].clientX
+            }}
+            onTouchEnd={(e) => {
+              if (touchStartX.current == null) return
+              const dx = e.changedTouches[0].clientX - touchStartX.current
+              const threshold = 40
+              if (Math.abs(dx) > threshold) {
+                if (dx < 0) {
+                  const next = (currentIndex + 1) % filteredPortfolio.length
+                  goToIndex(next)
+                } else {
+                  const prev = (currentIndex - 1 + filteredPortfolio.length) % filteredPortfolio.length
+                  goToIndex(prev)
+                }
+              }
+              touchStartX.current = null
+            }}
           >
             {/* Prev */}
             <button

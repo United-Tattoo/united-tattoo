@@ -1,5 +1,7 @@
 # United Tattoo — Official Website (Next.js + ShadCN UI)
 
+# DEPLOYMENT COMMAND `npm run pages:build && wrangler deploy`
+
 Hi, I’m Nicholai. I built this site for my friend Christy (aka Ink Mama) and the United Tattoo crew in Fountain, CO. The goal was simple: give the studio a site that actually reflects the art, the people, and the experience — not the stiff, generic stuff you usually see. This is also a thank you for everything Christy has done for Amari (my girlfriend and soulmate), who was her apprentice. So yeah, this is personal — and it shows.
 
 This repo powers the official United Tattoo website, built with:

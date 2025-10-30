@@ -7,6 +7,13 @@ export default withAuth(
     const token = req.nextauth.token
     const { pathname } = req.nextUrl
 
+    // Permanent redirect for renamed artist slug
+    if (pathname === "/artists/amari-rodriguez") {
+      const url = new URL("/artists/amari-kyss", req.url)
+      const res = NextResponse.redirect(url, 308)
+      return res
+    }
+
     // Allow token-based bypass for admin migrate endpoint (non-interactive deployments)
     const migrateToken = process.env.MIGRATE_TOKEN
     const headerToken = req.headers.get("x-migrate-token")

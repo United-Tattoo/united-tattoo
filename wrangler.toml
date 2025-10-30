@@ -6,6 +6,8 @@ main = ".open-next/worker.js"
 
 [vars]
 MIGRATE_TOKEN = "ut_migrate_20251006_rotated_1a2b3c"
+NEXTAUTH_URL = "https://united-tattoos.com"
+NODE_ENV = "production"
 
 [assets]
 directory = ".open-next/assets"

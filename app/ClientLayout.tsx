@@ -13,6 +13,7 @@ import { ThemeProvider } from "@/components/theme-provider"
 import type { FlagsSnapshot } from "@/lib/flags"
 
 import "./globals.css"
+import ConstructionBanner from "@/components/construction-banner"
 
 export default function ClientLayout({
   children,
@@ -52,7 +53,12 @@ export default function ClientLayout({
           <ThemeProvider attribute="class" defaultTheme="dark" enableSystem={false}>
             <Suspense fallback={<div>Loading...</div>}>
               <LenisProvider>
-                {children}
+                {/* Global construction banner */}
+                <ConstructionBanner />
+                {/* Push fixed nav down when banner visible */}
+                <style>{`html.has-site-banner nav.fixed{top:var(--site-banner-height,0)!important}`}</style>
+                {/* Offset page content by banner height */}
+                <div style={{ paddingTop: "var(--site-banner-height, 0px)" }}>{children}</div>
                 <Toaster />
               </LenisProvider>
             </Suspense>

@@ -33,6 +33,18 @@ const envSchema = z.object({
   
   // Optional: Analytics
   VERCEL_ANALYTICS_ID: z.string().optional(),
+  
+  // CalDAV / Nextcloud Integration
+  NEXTCLOUD_BASE_URL: z.string().url().optional(),
+  NEXTCLOUD_USERNAME: z.string().optional(),
+  NEXTCLOUD_PASSWORD: z.string().optional(),
+  NEXTCLOUD_CALENDAR_BASE_PATH: z.string().default('/remote.php/dav/calendars'),
+
+  // Nextcloud OAuth Authentication
+  NEXTCLOUD_OAUTH_CLIENT_ID: z.string().optional(),
+  NEXTCLOUD_OAUTH_CLIENT_SECRET: z.string().optional(),
+  NEXTCLOUD_ARTISTS_GROUP: z.string().default('artists'),
+  NEXTCLOUD_ADMINS_GROUP: z.string().default('shop_admins'),
 })
 
 export type Env = z.infer<typeof envSchema>
