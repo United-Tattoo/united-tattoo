@@ -153,3 +153,9 @@ supabase/.temp/
 .tanstack/
 .cursorindexingignore
 .specstory/
+.bmad/**
+.bmad/
+.claude/
+.claude/**
+.cursor/**
+.cursor/
