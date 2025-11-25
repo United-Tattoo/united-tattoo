@@ -1,0 +1,1243 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2025-11-18T00:00:00Z",
+  "designLanguage": {
+    "name": "United Tattoo Design System",
+    "description": "A living design system for United Tattoo that blends sun-washed plaster aesthetics with gallery pacing principles. The system prioritizes tactile interactions, sensory analogies, and deliberate movement patterns.",
+    "philosophy": "Sun-washed plaster aesthetic with gallery pacing, tactile interactions, sensory analogies, and deliberate brush-stroke-like movements.",
+    "principles": [
+      "Sensory-driven design inspired by plaster walls catching afternoon light",
+      "Gallery pacing: spacious, staggered, editorial rhythm",
+      "Typography as carved etchings: precise, deliberate, never shouting",
+      "Micro-interactions that feel tactile and intentional",
+      "Fade/slide reveals with 200-300ms ease-out timing",
+      "Authentic, transparent process-focused messaging"
+    ]
+  },
+  "colors": {
+    "palette": {
+      "primary": {
+        "burntOrange": {
+          "name": "Burnt Orange",
+          "hex": "#E67E50",
+          "rgb": "rgb(230, 126, 80)",
+          "cssVar": "N/A",
+          "usage": "Hero gradients, CTA fills, warm spotlight moments, primary button fills",
+          "accessibility": "Used on dark text (charcoal/ink) backgrounds for sufficient contrast"
+        },
+        "terracotta": {
+          "name": "Terracotta",
+          "hex": "#D87850",
+          "rgb": "rgb(216, 120, 80)",
+          "cssVar": "--terracotta",
+          "usage": "Secondary buttons, form focus states, micro interactions, calendar booked states",
+          "accessibility": "Primary action color with high contrast against white backgrounds"
+        },
+        "burnt": {
+          "name": "Burnt (Dark Orange)",
+          "hex": "#b0471e",
+          "rgb": "rgb(176, 71, 30)",
+          "cssVar": "--burnt",
+          "usage": "Primary button background, link underlines, strong accent moments",
+          "accessibility": "Darkest orange variant for maximum contrast"
+        }
+      },
+      "secondary": {
+        "sageConcrete": {
+          "name": "Sage Concrete",
+          "hex": "#7A8B8B",
+          "rgb": "rgb(122, 139, 139)",
+          "cssVar": "N/A",
+          "usage": "Page background gradients, cards, filmstrip fades, subtle overlays",
+          "accessibility": "Background color providing calm, muted tone"
+        },
+        "sage": {
+          "name": "Sage",
+          "hex": "#a28f79",
+          "rgb": "rgb(162, 143, 121)",
+          "cssVar": "--sage",
+          "usage": "Success toast backgrounds, accent elements, metadata text",
+          "accessibility": "Desaturated green for calming success states"
+        },
+        "deepOlive": {
+          "name": "Deep Olive",
+          "hex": "#4a4034",
+          "rgb": "rgb(74, 64, 52)",
+          "cssVar": "--deep-olive",
+          "usage": "Dark accent color, alternative text color",
+          "accessibility": "High contrast dark tone"
+        },
+        "moss": {
+          "name": "Moss",
+          "hex": "#6f5c49",
+          "rgb": "rgb(111, 92, 73)",
+          "cssVar": "--moss",
+          "usage": "Section labels, metadata text, card titles, eyebrow text",
+          "accessibility": "Medium-dark brown for labels and metadata"
+        }
+      },
+      "neutral": {
+        "charcoal": {
+          "name": "Charcoal",
+          "hex": "#1c1915",
+          "rgb": "rgb(28, 25, 21)",
+          "cssVar": "--charcoal",
+          "usage": "Darkest text color, photography overlays, line work",
+          "accessibility": "Maximum contrast text color"
+        },
+        "ink": {
+          "name": "Ink",
+          "hex": "#241b16",
+          "rgb": "rgb(36, 27, 22)",
+          "cssVar": "--ink",
+          "usage": "Primary text color, headings, body copy",
+          "accessibility": "Primary text color with full contrast"
+        },
+        "cream": {
+          "name": "Cream",
+          "hex": "#fff7ec",
+          "rgb": "rgb(255, 247, 236)",
+          "cssVar": "--cream",
+          "usage": "Light background, card fills, soft off-white",
+          "accessibility": "Warm white background alternative"
+        },
+        "sand": {
+          "name": "Sand",
+          "hex": "#f2e3d0",
+          "rgb": "rgb(242, 227, 208)",
+          "cssVar": "--sand",
+          "usage": "Ghost button backgrounds, light card fills, hero overlay base",
+          "accessibility": "Warm beige for soft backgrounds"
+        },
+        "white": {
+          "name": "White",
+          "hex": "#ffffff",
+          "rgb": "rgb(255, 255, 255)",
+          "usage": "Button text, form inputs, toast icons background",
+          "accessibility": "Maximum brightness for text on colored backgrounds"
+        }
+      },
+      "semantic": {
+        "success": {
+          "name": "Success",
+          "hex": "#a28f79",
+          "cssVar": "--sage",
+          "usage": "Success toasts, confirmation states, check marks",
+          "description": "Sage green for positive actions"
+        },
+        "alert": {
+          "name": "Alert",
+          "hex": "#e59863",
+          "cssVar": "--rose",
+          "usage": "Alert toasts, warning states, notification badges",
+          "description": "Rose/coral for attention-grabbing notifications"
+        },
+        "rose": {
+          "name": "Rose",
+          "hex": "#e59863",
+          "rgb": "rgb(229, 152, 99)",
+          "cssVar": "--rose",
+          "usage": "Alert accent, warm highlights, notification colors",
+          "accessibility": "Warm accent color for alerts and highlights"
+        }
+      },
+      "opacity": {
+        "10": 0.1,
+        "15": 0.15,
+        "18": 0.18,
+        "20": 0.2,
+        "25": 0.25,
+        "3": 0.03,
+        "35": 0.35,
+        "4": 0.04,
+        "5": 0.05,
+        "50": 0.5,
+        "55": 0.55,
+        "6": 0.06,
+        "65": 0.65,
+        "75": 0.75,
+        "8": 0.08,
+        "85": 0.85,
+        "88": 0.88,
+        "9": 0.09,
+        "90": 0.9,
+        "95": 0.95,
+        "98": 0.98"
+      },
+      "gradients": {
+        "heroBackground": {
+          "value": "linear-gradient(180deg, #7A8B8B 0%, #9CAAA6 45%, #F2E3D0 100%)",
+          "usage": "Full-page background gradient"
+        },
+        "heroOverlay": {
+          "value": "linear-gradient(135deg, rgba(242, 227, 208, 0.95), rgba(255, 247, 236, 0.9))",
+          "usage": "Hero section card background"
+        },
+        "buttonGradient": {
+          "value": "linear-gradient(90deg, #b0471e, #d26a32)",
+          "usage": "Primary button gradient (not currently implemented)"
+        },
+        "burnedToRose": {
+          "value": "linear-gradient(90deg, #b0471e, #e59863)",
+          "usage": "Filmstrip progress bar"
+        }
+      }
+    }
+  },
+  "typography": {
+    "fontFamilies": {
+      "primary": {
+        "name": "Playfair Display",
+        "fallback": "Times New Roman, serif",
+        "usage": "Display, headlines, statements",
+        "source": "Google Fonts",
+        "weights": [400, 600]
+      },
+      "secondary": {
+        "name": "Space Grotesk",
+        "fallback": "Inter, -apple-system, BlinkMacSystemFont, Segoe UI, sans-serif",
+        "usage": "Body, interface, metadata",
+        "source": "Google Fonts",
+        "weights": [400, 500, 600]
+      }
+    },
+    "sizes": {
+      "xs": {
+        "value": "0.7rem",
+        "usage": "Uppercase metadata, filmstrip labels"
+      },
+      "sm": {
+        "value": "0.75rem",
+        "usage": "Small labels, form hints, section labels"
+      },
+      "base": {
+        "value": "0.95rem",
+        "usage": "Body copy, interface text"
+      },
+      "md": {
+        "value": "1rem",
+        "usage": "Regular body text"
+      },
+      "lg": {
+        "value": "1.1rem",
+        "usage": "Large body, section leads"
+      },
+      "xl": {
+        "value": "1.2rem",
+        "usage": "Card titles, strong statements"
+      },
+      "2xl": {
+        "value": "1.9rem",
+        "usage": "Section headings (responsive)"
+      },
+      "3xl": {
+        "value": "2.4rem",
+        "usage": "Main interface headings"
+      },
+      "4xl": {
+        "value": "2.5rem",
+        "usage": "Page section headings"
+      },
+      "5xl": {
+        "value": "3rem",
+        "usage": "Large section headings"
+      },
+      "6xl": {
+        "value": "3.8rem",
+        "usage": "Hero title, main page heading"
+      }
+    },
+    "weights": {
+      "light": 300,
+      "normal": 400,
+      "medium": 500,
+      "semibold": 600,
+      "bold": 700
+    },
+    "lineHeights": {
+      "tight": 1.1,
+      "snug": 1.15,
+      "normal": 1.5,
+      "relaxed": 1.6,
+      "loose": 1.65,
+      "veryLoose": 1.7
+    },
+    "letterSpacing": {
+      "tight": "-0.02em",
+      "normal": "0em",
+      "wide": "0.05em",
+      "wider": "0.2em",
+      "widest": "0.25em",
+      "veryWide": "0.3em",
+      "extraWide": "0.35em"
+    },
+    "textTransforms": {
+      "uppercase": "text-transform: uppercase",
+      "capitalize": "text-transform: capitalize",
+      "none": "text-transform: none"
+    },
+    "typographyRules": {
+      "eyebrow": {
+        "size": "0.75rem",
+        "weight": 600,
+        "transform": "uppercase",
+        "letterSpacing": "0.3em",
+        "color": "var(--moss)",
+        "usage": "Section labels, metadata headers"
+      },
+      "sectionLabel": {
+        "size": "0.85rem",
+        "weight": 600,
+        "transform": "uppercase",
+        "letterSpacing": "0.3em",
+        "color": "var(--moss)",
+        "usage": "Section dividers, component labels"
+      },
+      "display": {
+        "family": "Playfair Display",
+        "size": "clamp(2.5rem, 5vw, 3.8rem)",
+        "weight": 400,
+        "lineHeight": 1.1,
+        "usage": "Hero title"
+      },
+      "heading2": {
+        "family": "Playfair Display",
+        "size": "clamp(1.9rem, 4vw, 3rem)",
+        "weight": 400,
+        "lineHeight": 1.1,
+        "usage": "Section headings"
+      },
+      "heading3": {
+        "size": "0.95rem",
+        "weight": 600,
+        "transform": "uppercase",
+        "letterSpacing": "0.2em",
+        "usage": "Card titles, data card headers"
+      },
+      "heading4": {
+        "size": "0.85rem",
+        "weight": 600,
+        "letterSpacing": "0.2em",
+        "usage": "Component labels, subsection headers"
+      },
+      "body": {
+        "family": "Space Grotesk",
+        "size": "0.95rem",
+        "weight": 400,
+        "lineHeight": 1.6,
+        "usage": "Body copy, interface text"
+      },
+      "lead": {
+        "size": "clamp(0.95rem, 2vw, 1.3rem)",
+        "color": "rgba(31, 27, 23, 0.75)",
+        "lineHeight": 1.65,
+        "maxWidth": "54ch",
+        "usage": "Introductory paragraph text, section descriptions"
+      },
+      "accent": {
+        "size": "0.9rem",
+        "weight": 500,
+        "letterSpacing": "0.25em",
+        "transform": "uppercase",
+        "usage": "Buttons, accent text, metadata"
+      }
+    }
+  },
+  "spacing": {
+    "baseUnit": "0.5rem",
+    "scale": {
+      "0": "0",
+      "xs": "0.4rem",
+      "sm": "0.5rem",
+      "md": "0.8rem",
+      "lg": "1rem",
+      "xl": "1.2rem",
+      "2xl": "1.5rem",
+      "3xl": "1.8rem",
+      "4xl": "2rem",
+      "5xl": "2.5rem",
+      "6xl": "3rem",
+      "7xl": "3.5rem",
+      "8xl": "4rem",
+      "9xl": "5rem",
+      "10xl": "6rem"
+    },
+    "padding": {
+      "container": "clamp(1.5rem, 4vw, 5rem)",
+      "containerLarge": "clamp(2rem, 5vw, 6rem)",
+      "card": "1.6rem",
+      "cardDense": "1.4rem",
+      "cardLarge": "2rem",
+      "button": "1rem 1.6rem",
+      "section": "clamp(2.5rem, 6vw, 5rem)"
+    },
+    "margin": {
+      "section": "3.5rem",
+      "sectionLarge": "4rem"
+    },
+    "gap": {
+      "xs": "0.4rem",
+      "sm": "0.8rem",
+      "md": "1rem",
+      "lg": "1.2rem",
+      "xl": "1.5rem",
+      "2xl": "1.8rem",
+      "3xl": "2rem",
+      "4xl": "2.5rem",
+      "5xl": "3rem",
+      "6xl": "4rem"
+    },
+    "gridGaps": {
+      "tight": "1rem",
+      "normal": "1.8rem",
+      "comfortable": "2rem",
+      "spacious": "clamp(2rem, 5vw, 5rem)"
+    }
+  },
+  "layout": {
+    "maxWidth": "1600px",
+    "breakpoints": {
+      "mobile": "720px",
+      "tablet": "1024px",
+      "desktop": "1600px"
+    },
+    "responsivePatterns": {
+      "containerPadding": "clamp(1.5rem, 4vw, 5rem)",
+      "sectionPadding": "clamp(2rem, 5vw, 6rem)",
+      "gapResponsive": "clamp(1.5rem, 4vw, 4rem)"
+    },
+    "gridSystems": {
+      "gridTwo": {
+        "description": "Two-column auto-fit grid for cards",
+        "css": "grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))",
+        "gap": "1.8rem",
+        "usage": "Color swatches, data cards, component grids"
+      },
+      "stickySplit": {
+        "description": "Sticky left column with flexible right column",
+        "css": "grid-template-columns: minmax(260px, 0.85fr) minmax(320px, 1fr)",
+        "gap": "clamp(1.5rem, 4vw, 4rem)",
+        "usage": "Identity section, process storytelling"
+      },
+      "layoutExamples": {
+        "description": "Three-column layout for gallery-style displays",
+        "css": "grid-template-columns: repeat(3, 1fr)",
+        "gap": "clamp(2rem, 4vw, 4rem)",
+        "responsiveBreakpoint": "720px = 1fr"
+      },
+      "componentDemo": {
+        "description": "Auto-fit grid for component showcases",
+        "css": "grid-template-columns: repeat(auto-fit, minmax(320px, 1fr))",
+        "gap": "2rem"
+      },
+      "interactionSplit": {
+        "description": "Split layout for interaction principles and examples",
+        "css": "grid-template-columns: minmax(300px, 0.85fr) minmax(400px, 1fr)",
+        "gap": "clamp(2rem, 5vw, 4rem)"
+      },
+      "stickyGrid": {
+        "description": "Sticky left panel with scrolling right content",
+        "css": "grid-template-columns: minmax(230px, 320px) minmax(280px, 1fr)",
+        "gap": "2rem"
+      },
+      "swapContentTrack": {
+        "description": "Two-column layout for interface swap sections",
+        "css": "grid-template-columns: minmax(400px, 1fr) minmax(380px, 0.95fr)",
+        "gap": "clamp(3rem, 5vw, 6rem)"
+      }
+    },
+    "fullBleedPatterns": {
+      "fullBleed": {
+        "width": "100vw",
+        "marginLeft": "calc(50% - 50vw)",
+        "marginRight": "calc(50% - 50vw)",
+        "usage": "Hero, filmstrip, section dividers"
+      }
+    },
+    "stickyPositioning": {
+      "columnSticky": {
+        "position": "sticky",
+        "top": "5rem",
+        "alignSelf": "start",
+        "usage": "Sidebar in sticky-split layouts"
+      },
+      "panelSticky": {
+        "position": "sticky",
+        "top": "2rem",
+        "usage": "Sticky panels in scroll-based sections"
+      }
+    },
+    "mobileResponsive": {
+      "breakpoint": "720px",
+      "changes": {
+        "stickySplit": "1fr (stacks vertically)",
+        "layoutExamples": "1fr (single column)",
+        "stickyColumn": "position: static",
+        "interactionSplit": "1fr (stacks vertically)",
+        "containerPadding": "1.5rem",
+        "heroHeight": "50vh"
+      }
+    }
+  },
+  "designStyle": {
+    "borderRadius": {
+      "xs": "8px",
+      "sm": "12px",
+      "md": "14px",
+      "lg": "18px",
+      "xl": "20px",
+      "2xl": "22px",
+      "3xl": "24px",
+      "4xl": "28px",
+      "5xl": "32px",
+      "full": "999px"
+    },
+    "borderRadiusUsage": {
+      "buttons": "12px",
+      "formInputs": "12px",
+      "cards": "18px-24px",
+      "largeCards": "22px-28px",
+      "filmstripItems": "32px",
+      "chips": "999px"
+    },
+    "shadows": {
+      "none": "none",
+      "sm": "0 4px 12px rgba(31, 27, 23, 0.08)",
+      "md": "0 12px 28px rgba(31, 27, 23, 0.1)",
+      "lg": "0 14px 24px rgba(31, 27, 23, 0.18)",
+      "xl": "0 20px 35px rgba(31, 27, 23, 0.1)",
+      "2xl": "0 20px 40px rgba(31, 27, 23, 0.2)",
+      "3xl": "0 25px 40px rgba(31, 27, 23, 0.08)",
+      "4xl": "0 32px 60px rgba(31, 27, 23, 0.2)",
+      "5xl": "0 35px 55px rgba(31, 27, 23, 0.18)",
+      "6xl": "0 40px 70px rgba(31, 27, 23, 0.25)",
+      "filmic": "0 40px 70px rgba(31, 27, 23, 0.25)"
+    },
+    "borders": {
+      "width": {
+        "hairline": "1px",
+        "thin": "1px",
+        "thick": "4px"
+      },
+      "style": "solid",
+      "colors": {
+        "subtle": "rgba(122, 139, 139, 0.2)",
+        "muted": "rgba(210, 106, 50, 0.2)",
+        "light": "rgba(31, 27, 23, 0.08)",
+        "lighter": "rgba(31, 27, 23, 0.12)",
+        "dashed": "1px dashed rgba(122, 139, 139, 0.3)"
+      }
+    },
+    "backdropFilters": {
+      "heroOverlay": "blur(12px) saturate(110%)",
+      "usage": "Hero section card background blurring"
+    },
+    "maskImages": {
+      "heroFade": "linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%)",
+      "usage": "Hero section fade to transparent at bottom"
+    },
+    "blendModes": {
+      "multiply": "mix-blend-mode: multiply",
+      "usage": "Texture overlay on body background"
+    }
+  },
+  "animations": {
+    "timing": {
+      "fast": "0.2s",
+      "normal": "0.3s",
+      "slow": "0.6s",
+      "slower": "0.8s"
+    },
+    "easing": {
+      "easeOut": "ease-out",
+      "easeIn": "ease-in",
+      "linear": "linear"
+    },
+    "scrollAnimations": {
+      "reveal": {
+        "initial": {
+          "opacity": 0,
+          "transform": "translateY(60px)"
+        },
+        "active": {
+          "opacity": 1,
+          "transform": "translateY(0)"
+        },
+        "timing": "0.8s ease-out",
+        "trigger": "Intersection Observer (threshold: 0.18)",
+        "usage": "Fade-in and slide-up animations on scroll"
+      },
+      "typeCard": {
+        "initial": {
+          "opacity": 0,
+          "transform": "perspective(900px) rotateX(10deg) translateY(60px)"
+        },
+        "active": {
+          "opacity": 1,
+          "transform": "perspective(900px) rotateX(0deg) translateY(0)"
+        },
+        "timing": "0.8s ease",
+        "usage": "3D rotation effect for typography cards"
+      },
+      "sectionDivider": {
+        "initial": {
+          "opacity": 0,
+          "transform": "scaleX(0)"
+        },
+        "active": {
+          "opacity": 1,
+          "transform": "scaleX(1)"
+        },
+        "timing": "opacity 0.6s ease-out, transform 0.8s ease-out",
+        "usage": "Section separator line animation"
+      },
+      "sectionTransition": {
+        "initial": {
+          "opacity": 0,
+          "transform": "translateY(80px)"
+        },
+        "active": {
+          "opacity": 1,
+          "transform": "translateY(0)"
+        },
+        "timing": "opacity 0.8s ease-out 0.2s, transform 0.8s ease-out 0.2s",
+        "usage": "Delayed section entrance animations"
+      }
+    },
+    "componentAnimations": {
+      "button": {
+        "hover": {
+          "transform": "translateY(-1px)",
+          "boxShadow": "0 8px 16px rgba(186, 75, 47, 0.2)"
+        },
+        "timing": "0.2s ease",
+        "motionExample": "Buttons scale to 105% with shadow bloom on hover"
+      },
+      "buttonScale": {
+        "hover": {
+          "transform": "scale(1.05) translateY(-1px)",
+          "boxShadow": "0 12px 24px rgba(186, 75, 47, 0.3)"
+        },
+        "timing": "0.2s ease",
+        "usage": "Enhanced button hover in motion examples"
+      },
+      "linkUnderline": {
+        "initial": {
+          "width": 0,
+          "position": "absolute",
+          "bottom": "-2px",
+          "left": 0,
+          "height": "2px",
+          "background": "var(--burnt)"
+        },
+        "hover": {
+          "width": "100%"
+        },
+        "timing": "0.3s ease-out",
+        "usage": "Link underlines draw from left to right like painted stroke"
+      },
+      "layoutExample": {
+        "hover": {
+          "transform": "translateY(-6px)",
+          "boxShadow": "0 32px 60px rgba(31, 27, 23, 0.2)"
+        },
+        "imageHover": {
+          "transform": "scale(1.03)"
+        },
+        "timing": "0.3s ease"
+      },
+      "motionExampleCard": {
+        "hover": {
+          "transform": "translateY(-2px)",
+          "boxShadow": "0 16px 36px rgba(31, 27, 23, 0.15)"
+        },
+        "timing": "0.3s ease"
+      },
+      "swatch": {
+        "hover": {
+          "transform": "scale(1.1)"
+        },
+        "timing": "0.2s ease",
+        "usage": "Color swatch hover effect"
+      }
+    },
+    "staggerAnimations": {
+      "staggerCard": {
+        "baseDelay": "0s",
+        "card1": "0s",
+        "card2": "0.05s",
+        "card3": "0.1s",
+        "timing": "0.3s ease-out",
+        "usage": "Staggered card animations (50ms between cards)"
+      },
+      "staggerLayoutCard": {
+        "baseDelay": "0s",
+        "card1": "0s",
+        "card2": "0.15s",
+        "card3": "0.3s",
+        "timing": "0.6s ease-out",
+        "usage": "Staggered layout card animations (150ms between cards)"
+      }
+    },
+    "filmstripAnimation": {
+      "scrollDriven": {
+        "description": "Horizontal scroll follows vertical scroll position",
+        "transform": "translateX(calculated based on scroll progress)",
+        "calculation": "-distance * progress where distance = max scroll distance needed",
+        "usage": "Filmstrip scrolls horizontally as user scrolls vertically"
+      },
+      "progressBar": {
+        "transform": "scaleX(progress)",
+        "timing": "0.1s linear",
+        "origin": "left",
+        "gradient": "linear-gradient(90deg, var(--burnt), var(--rose))"
+      }
+    },
+    "parallax": {
+      "heroImage": {
+        "factor": 0.12,
+        "calculation": "window.scrollY * 0.12",
+        "usage": "Subtle hero image parallax effect"
+      },
+      "maxParallax": {
+        "limit": "5%",
+        "note": "Parallax limited to 5% translateY for subtlety"
+      }
+    },
+    "keyframes": {
+      "float": {
+        "0%": "transform: translateY(0px)",
+        "50%": "transform: translateY(-6px)",
+        "100%": "transform: translateY(0px)",
+        "usage": "Floating element animation"
+      }
+    }
+  },
+  "components": {
+    "button": {
+      "description": "Interactive button component for primary actions, secondary options, and ghost links",
+      "element": "button",
+      "className": "demo-btn",
+      "structure": {
+        "element": "button.demo-btn",
+        "padding": "1rem 1.6rem",
+        "borderRadius": "12px",
+        "fontSize": "0.85rem",
+        "fontWeight": 500,
+        "textTransform": "uppercase",
+        "letterSpacing": "0.2em",
+        "border": "none",
+        "cursor": "pointer",
+        "transition": "transform 0.2s ease, box-shadow 0.2s ease"
+      },
+      "variations": {
+        "primary": {
+          "className": "demo-btn.primary",
+          "background": "var(--burnt)",
+          "color": "#fff",
+          "boxShadow": "0 10px 22px rgba(186, 75, 47, 0.25)",
+          "usage": "Primary calls-to-action (Begin Commission, Submit Brief)",
+          "hoverState": "scale(1.05) translateY(-1px), shadow: 0 12px 24px"
+        },
+        "secondary": {
+          "className": "demo-btn.secondary",
+          "background": "var(--terracotta)",
+          "color": "#fff",
+          "boxShadow": "0 10px 22px rgba(216, 120, 80, 0.25)",
+          "usage": "Secondary actions (View Portfolio)",
+          "hoverState": "translateY(-1px), shadow: 0 8px 16px"
+        },
+        "ghost": {
+          "className": "demo-btn.ghost",
+          "background": "var(--sand)",
+          "border": "1px solid rgba(31, 27, 23, 0.25)",
+          "color": "var(--ink)",
+          "boxShadow": "none",
+          "usage": "Tertiary actions, secondary links (Ghost Link, Download PDF)",
+          "hoverState": "translateY(-1px)"
+        }
+      },
+      "states": {
+        "default": "Static button state",
+        "hover": "Scale to 105%, shadow bloom, slight elevation",
+        "focus": "outline: 2px solid var(--rose), outline-offset: 3px",
+        "active": "Scale up with enhanced shadow"
+      },
+      "accessibility": {
+        "focusVisible": "outline: 2px solid var(--rose), outline-offset: 3px",
+        "textContrast": "Primary: white on burnt (high contrast)",
+        "minHeight": "44px recommended for touch targets"
+      }
+    },
+    "card": {
+      "description": "Card component for containing grouped content",
+      "variations": {
+        "dataCard": {
+          "element": ".data-card",
+          "background": "linear-gradient(135deg, rgba(242, 227, 208, 0.95), rgba(255, 247, 236, 0.9))",
+          "borderRadius": "22px",
+          "padding": "1.8rem",
+          "border": "1px solid rgba(122, 139, 139, 0.2)",
+          "boxShadow": "0 20px 35px rgba(31, 27, 23, 0.1)",
+          "usage": "Color language, typography, voice notes, reference sections"
+        },
+        "componentCard": {
+          "element": ".component-card",
+          "borderRadius": "18px",
+          "padding": "1.6rem",
+          "background": "rgba(255, 255, 255, 0.88)",
+          "border": "1px solid rgba(31, 27, 23, 0.08)",
+          "usage": "Smaller component showcases"
+        },
+        "motionExampleCard": {
+          "element": ".motion-example-card-enhanced",
+          "padding": "2rem",
+          "borderRadius": "20px",
+          "background": "linear-gradient(135deg, rgba(255, 247, 236, 0.95), rgba(242, 227, 208, 0.9))",
+          "border": "1px solid rgba(122, 139, 139, 0.25)",
+          "boxShadow": "0 12px 28px rgba(31, 27, 23, 0.1)",
+          "hoverState": "translateY(-2px), shadow: 0 16px 36px",
+          "usage": "Motion and interaction example demonstrations"
+        },
+        "scrollStep": {
+          "element": ".scroll-step",
+          "background": "rgba(255, 255, 255, 0.92)",
+          "borderRadius": "20px",
+          "padding": "1.6rem",
+          "border": "1px solid rgba(31, 27, 23, 0.08)",
+          "boxShadow": "0 18px 28px rgba(31, 27, 23, 0.06)",
+          "usage": "Sequential scroll-based content"
+        },
+        "stickyPanel": {
+          "element": ".sticky-panel",
+          "position": "sticky",
+          "top": "2rem",
+          "background": "rgba(255, 255, 255, 0.95)",
+          "borderRadius": "22px",
+          "padding": "1.8rem",
+          "border": "1px solid rgba(31, 27, 23, 0.12)",
+          "boxShadow": "0 25px 40px rgba(31, 27, 23, 0.08)",
+          "usage": "Sticky sidebars in scroll narratives"
+        }
+      }
+    },
+    "form": {
+      "description": "Form components for user input",
+      "container": {
+        "element": ".form-demo",
+        "borderRadius": "22px",
+        "padding": "2.2rem 2.5rem",
+        "background": "linear-gradient(135deg, rgba(242, 227, 208, 0.98), rgba(255, 247, 236, 0.95))",
+        "border": "1px solid rgba(210, 106, 50, 0.2)",
+        "display": "grid",
+        "gap": "1.5rem",
+        "boxShadow": "0 14px 24px rgba(31, 27, 23, 0.18)",
+        "color": "rgba(31, 27, 23, 0.9)"
+      },
+      "row": {
+        "element": ".form-row",
+        "display": "grid",
+        "gridTemplateColumns": "repeat(auto-fit, minmax(200px, 1fr))",
+        "gap": "1.2rem"
+      },
+      "field": {
+        "element": ".form-field",
+        "display": "flex",
+        "flexDirection": "column"
+      },
+      "label": {
+        "display": "block",
+        "fontSize": "0.75rem",
+        "fontWeight": 600,
+        "letterSpacing": "0.25em",
+        "textTransform": "uppercase",
+        "color": "rgba(31, 27, 23, 0.7)",
+        "marginBottom": "0.5rem"
+      },
+      "input": {
+        "width": "100%",
+        "borderRadius": "12px",
+        "border": "1px solid rgba(210, 106, 50, 0.25)",
+        "padding": "1rem 1.2rem",
+        "fontSize": "0.95rem",
+        "fontWeight": 500,
+        "background": "rgba(255, 255, 255, 0.9)",
+        "color": "rgba(31, 27, 23, 0.9)",
+        "transition": "border 0.2s ease, box-shadow 0.2s ease",
+        "placeholder": "rgba(31, 27, 23, 0.5)"
+      },
+      "inputFocus": {
+        "outline": "none",
+        "borderColor": "var(--terracotta)",
+        "boxShadow": "0 0 0 3px rgba(210, 106, 50, 0.2)",
+        "background": "rgba(255, 255, 255, 0.95)"
+      },
+      "helper": {
+        "fontSize": "0.8rem",
+        "fontWeight": 500,
+        "lineHeight": 1.5,
+        "color": "rgba(31, 27, 23, 0.65)",
+        "usage": "Helper text below form fields"
+      }
+    },
+    "toast": {
+      "description": "Toast notification component for feedback messages",
+      "element": ".toast",
+      "container": {
+        "borderRadius": "14px",
+        "padding": "1.2rem 1.5rem",
+        "display": "flex",
+        "alignItems": "center",
+        "gap": "1.2rem",
+        "color": "#fff",
+        "boxShadow": "0 14px 24px rgba(31, 27, 23, 0.18)"
+      },
+      "variations": {
+        "success": {
+          "className": "toast.success",
+          "background": "var(--sage)",
+          "icon": "✓",
+          "usage": "Deposit received, confirmation messages"
+        },
+        "alert": {
+          "className": "toast.alert",
+          "background": "var(--rose)",
+          "icon": "!",
+          "usage": "Waitlist updates, alerts, warnings"
+        }
+      },
+      "icon": {
+        "element": ".toast-icon",
+        "width": "32px",
+        "height": "32px",
+        "borderRadius": "8px",
+        "background": "rgba(255, 255, 255, 0.25)",
+        "display": "grid",
+        "placeItems": "center",
+        "fontWeight": 600
+      }
+    },
+    "calendar": {
+      "description": "Calendar component for booking/scheduling display",
+      "container": {
+        "element": ".calendar-demo",
+        "borderRadius": "20px",
+        "padding": "1.8rem 2rem",
+        "background": "linear-gradient(135deg, rgba(242, 227, 208, 0.98), rgba(255, 247, 236, 0.95))",
+        "border": "1px solid rgba(210, 106, 50, 0.2)",
+        "width": "100%",
+        "boxShadow": "0 14px 24px rgba(31, 27, 23, 0.18)",
+        "color": "rgba(31, 27, 23, 0.9)"
+      },
+      "grid": {
+        "element": ".calendar-grid",
+        "display": "grid",
+        "gridTemplateColumns": "repeat(7, minmax(0, 1fr))",
+        "gap": "0.4rem",
+        "marginTop": "1.2rem"
+      },
+      "day": {
+        "element": ".calendar-day",
+        "aspectRatio": "1 / 1",
+        "borderRadius": "8px",
+        "background": "rgba(255, 255, 255, 0.8)",
+        "border": "1px solid rgba(210, 106, 50, 0.2)",
+        "display": "flex",
+        "alignItems": "center",
+        "justifyContent": "center",
+        "fontSize": "0.75rem",
+        "fontWeight": 500,
+        "color": "rgba(31, 27, 23, 0.8)"
+      },
+      "dayBooked": {
+        "className": "calendar-day.is-booked",
+        "background": "var(--terracotta)",
+        "border": "none",
+        "color": "#fff",
+        "boxShadow": "0 10px 18px rgba(216, 120, 80, 0.3)"
+      },
+      "dayMuted": {
+        "className": "calendar-day.is-muted",
+        "opacity": 0.4,
+        "usage": "Past or unavailable dates"
+      },
+      "legend": {
+        "booked": "Terracotta background with white text",
+        "open": "White background with border",
+        "past": "White background with border and reduced opacity"
+      }
+    },
+    "swatch": {
+      "description": "Color swatch component for displaying color palette",
+      "element": ".swatch",
+      "borderRadius": "24px",
+      "padding": "1.6rem",
+      "color": "#fff",
+      "minHeight": "220px",
+      "display": "flex",
+      "flexDirection": "column",
+      "justifyContent": "space-between",
+      "fontWeight": 600,
+      "letterSpacing": "0.05em",
+      "structure": {
+        "strong": {
+          "fontSize": "1.2rem",
+          "usage": "Hex color value"
+        },
+        "span": {
+          "fontSize": "0.9rem",
+          "opacity": 0.9,
+          "usage": "Color name"
+        },
+        "small": {
+          "fontSize": "0.75rem",
+          "letterSpacing": "0.15em",
+          "textTransform": "uppercase",
+          "opacity": 0.85,
+          "usage": "Usage description"
+        }
+      },
+      "hoverState": {
+        "transform": "scale(1.1)",
+        "timing": "0.2s ease"
+      }
+    },
+    "filmstrip": {
+      "description": "Horizontal scrollable gallery component with scroll-driven animation",
+      "container": {
+        "element": ".filmstrip-wrapper",
+        "marginTop": "1.5rem",
+        "position": "sticky",
+        "top": 0,
+        "height": "100vh",
+        "display": "flex",
+        "alignItems": "center",
+        "overflow": "hidden",
+        "width": "100vw"
+      },
+      "track": {
+        "element": ".filmstrip",
+        "display": "flex",
+        "gap": "clamp(0.4rem, 0.6vw, 0.8rem)",
+        "willChange": "transform",
+        "padding": "0 clamp(0.5rem, 2vw, 1.5rem)",
+        "animation": "Scroll-driven translateX animation"
+      },
+      "item": {
+        "element": ".filmstrip-item",
+        "borderRadius": "32px",
+        "minWidth": "clamp(420px, 55vw, 820px)",
+        "minHeight": "clamp(420px, 80vh, 780px)",
+        "backgroundSize": "cover",
+        "backgroundPosition": "center",
+        "boxShadow": "0 40px 70px rgba(31, 27, 23, 0.25)",
+        "overflow": "hidden",
+        "label": "data-label attribute displayed in uppercase metadata"
+      },
+      "progressBar": {
+        "element": ".filmstrip-progress-bar",
+        "height": "2px",
+        "background": "linear-gradient(90deg, var(--burnt), var(--rose))",
+        "animation": "Driven by scroll progress"
+      }
+    },
+    "layout": {
+      "heroOverlay": {
+        "element": ".hero-overlay",
+        "width": "min(600px, 100%)",
+        "maxWidth": "620px",
+        "padding": "clamp(2rem, 4vw, 3.5rem)",
+        "background": "rgba(242, 227, 208, 0.95)",
+        "borderRadius": "24px",
+        "border": "1px solid rgba(36, 27, 22, 0.15)",
+        "boxShadow": "0 20px 40px rgba(36, 27, 22, 0.2)",
+        "backdropFilter": "blur(12px) saturate(110%)",
+        "textAlign": "center",
+        "usage": "Main hero section content container"
+      },
+      "layoutExample": {
+        "element": ".layout-example",
+        "borderRadius": "28px",
+        "overflow": "hidden",
+        "boxShadow": "0 20px 40px rgba(31, 27, 23, 0.12), 0 0 0 1px rgba(122, 139, 139, 0.1)",
+        "background": "rgba(255, 247, 236, 0.6)",
+        "transition": "transform 0.3s ease, box-shadow 0.3s ease",
+        "hoverState": "translateY(-6px), enhanced shadow",
+        "figcaption": {
+          "padding": "1.8rem 2rem",
+          "background": "linear-gradient(180deg, rgba(255, 247, 236, 0.98), rgba(242, 227, 208, 0.95))",
+          "fontSize": "0.95rem",
+          "borderTop": "1px solid rgba(122, 139, 139, 0.2)"
+        }
+      },
+      "identityPanel": {
+        "element": ".identity-panel",
+        "borderRadius": "24px",
+        "padding": "1.6rem 2rem",
+        "background": "linear-gradient(120deg, rgba(186, 75, 47, 0.18), rgba(90, 102, 95, 0.25))",
+        "border": "1px solid rgba(31, 27, 23, 0.08)",
+        "display": "flex",
+        "alignItems": "center",
+        "justifyContent": "space-between",
+        "gap": "1.5rem",
+        "flexWrap": "wrap"
+      },
+      "macroPanel": {
+        "element": ".macro-panel",
+        "marginTop": "1.5rem",
+        "borderRadius": "24px",
+        "backgroundImage": "linear-gradient(120deg, rgba(31, 27, 23, 0.4), rgba(255, 255, 255, 0)), url('./public/images/UP1_00012_.png')",
+        "backgroundSize": "cover",
+        "backgroundPosition": "center",
+        "minHeight": "240px",
+        "padding": "1.8rem",
+        "color": "#fff",
+        "boxShadow": "0 35px 55px rgba(31, 27, 23, 0.18)",
+        "position": "relative",
+        "overflow": "hidden",
+        "label": "Content label via ::after pseudo-element"
+      }
+    }
+  },
+  "patterns": {
+    "interactionPrinciples": {
+      "baseline": [
+        "Fade/slide reveals on scroll, 200-300ms, ease-out timing",
+        "Buttons scale to 105% with shadow bloom; no bounce easing",
+        "Link underlines draw from left to right like a painted stroke"
+      ],
+      "accentMoments": [
+        "Parallax on hero imagery (limited to 5% translateY)",
+        "Staggered card entrances of 50ms to mimic gallery walk-through",
+        "Interactive swatches that tint background panels subtly on hover"
+      ]
+    },
+    "scrollDrivenAnimation": {
+      "description": "Filmstrip scrolls horizontally as user scrolls vertically",
+      "implementation": "JavaScript tracks scroll progress and transforms filmstrip translateX",
+      "progressBar": "Scales horizontally (scaleX) matching scroll progress"
+    },
+    "stickyLayout": {
+      "description": "Sticky left sidebar paired with scrolling right content",
+      "rules": [
+        "Panel height <= 70vh with generous padding",
+        "Use position: sticky with top: 2rem",
+        "Mobile stacks vertically; sticky disengages below 720px"
+      ]
+    },
+    "responsiveGallery": {
+      "description": "Gallery pacing: alternate full-width blocks with modular cards",
+      "principles": [
+        "Spacious, staggered, editorial rhythm",
+        "Horizontal galleries with framed imagery",
+        "Salon-hang staggered rows"
+      ]
+    },
+    "textureAndBackground": {
+      "description": "Layered background effects mimicking sun-washed plaster",
+      "layers": [
+        "Base gradient: #7A8B8B to #F2E3D0",
+        "Overlay gradient with multiple radial gradients for depth",
+        "SVG grid texture with low opacity (0.25)",
+        "Multiply blend mode for texture integration"
+      ]
+    },
+    "mobileStickyOffset": {
+      "variable": "--sticky-offset",
+      "value": "clamp(3.5rem, 8vw, 6rem)",
+      "usage": "Dynamic sticky positioning that responds to viewport"
+    }
+  },
+  "tonAndMessaging": {
+    "voice": [
+      "ARTISTIC - Creative, gallery-influenced language",
+      "BOLD - Confident statements about craft and process",
+      "SOPHISTICATED - Elevated tone for luxury positioning",
+      "ENERGETIC - Dynamic language paired with motion",
+      "AUTHENTIC - Transparent about process and collaboration",
+      "PROFESSIONAL - Polished, gallery-quality standards"
+    ],
+    "principles": [
+      "Use sensory analogies ('sun-baked walls', 'charcoal whisper') to anchor visuals",
+      "Keep call-to-actions confident but calm ('Begin Commission', 'Visit the Studio')",
+      "Highlight collaboration and process transparency in every section",
+      "Speak to seasoned collectors, not trend chasers",
+      "Balance poetic descriptions with precise process language"
+    ],
+    "callToActions": {
+      "primary": [
+        "Begin Commission",
+        "Submit Brief",
+        "Request Consultation"
+      ],
+      "secondary": [
+        "View Portfolio",
+        "Visit the Studio",
+        "Explore Process"
+      ]
+    }
+  },
+  "designPrinciples": {
+    "visualLanguage": {
+      "palette": "Burnt oranges, sage concrete, charcoal blacks, and off-whites that feel powdery and matte",
+      "materiality": "Sun-washed plaster walls catching diagonal slant light",
+      "photography": "Macro crops of plaster textures, charcoal studies, architectural details"
+    },
+    "typography": {
+      "principle": "Type as carved etchings on plaster - precise, deliberate, never shouting",
+      "headlines": "Museum placards feel: sculptural serif (Playfair Display)",
+      "body": "Quiet grotesk (Space Grotesk) with generous tracking",
+      "metadata": "Whisper-thin uppercase with letter spacing"
+    },
+    "spacing": {
+      "rhythm": "Gallery pacing - spacious, staggered, editorial",
+      "breathing": "Generous whitespace that feels intentional",
+      "alignment": "Salon-hang staggered rows for imagery"
+    },
+    "motion": {
+      "philosophy": "Every movement should feel deliberate, like brush strokes",
+      "timing": "200-300ms fade/slide reveals with ease-out",
+      "subtlety": "Parallax <= 5%, staggered entrances 50ms apart",
+      "naturalness": "No bounce easing, smooth accelerations only"
+    },
+    "interaction": {
+      "tactile": "Micro-interactions that feel physical and responsive",
+      "feedback": "Clear visual feedback for all user actions",
+      "confidence": "Actions feel intentional and reversible"
+    }
+  },
+  "accessibility": {
+    "colorContrast": {
+      "primary": "Burnt orange/white meets WCAG AA standards",
+      "text": "Charcoal ink (#241b16) on sand/cream backgrounds",
+      "focus": "Rose outline (2px) with 3px offset"
+    },
+    "focusStates": {
+      "button": "outline: 2px solid var(--rose), outline-offset: 3px",
+      "link": "Rose underline with 300ms draw timing"
+    },
+    "minTouchTarget": "44px recommended for interactive elements",
+    "semanticHtml": "Proper heading hierarchy (h1-h4), form labels associated with inputs",
+    "mobileAccessibility": "Touch-friendly spacing, readable font sizes (min 16px), stacked layouts below 720px"
+  },
+  "implementation": {
+    "cssVariables": {
+      "--sand": "#f2e3d0",
+      "--terracotta": "#d26a32",
+      "--burnt": "#b0471e",
+      "--rose": "#e59863",
+      "--deep-olive": "#4a4034",
+      "--sage": "#a28f79",
+      "--ink": "#241b16",
+      "--moss": "#6f5c49",
+      "--cream": "#fff7ec",
+      "--charcoal": "#1c1915",
+      "--ambient-color": "rgba(178, 109, 70, 0.4)",
+      "--sticky-offset": "clamp(3.5rem, 8vw, 6rem)"
+    },
+    "fontImports": "Google Fonts (Playfair Display, Space Grotesk)",
+    "responsiveApproach": "Mobile-first with clamp() for fluid typography and spacing",
+    "animationTriggers": "Intersection Observer API with 0.18 threshold for reveal animations",
+    "scrollBehavior": "RequestAnimationFrame for smooth filmstrip and parallax animations"
+  }
+}

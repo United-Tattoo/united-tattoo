@@ -1,0 +1,1713 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>United Tattoo — Style Brief</title>
+    <meta name="description"
+        content="A living style brief for United Tattoo: targets, palette, typography, layout, and interaction rules expressed in a single immersive page.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=Playfair+Display:wght@400;600&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --sand: #f2e3d0;
+            --terracotta: #d26a32;
+            --burnt: #b0471e;
+            --rose: #e59863;
+            --deep-olive: #4a4034;
+            --sage: #a28f79;
+            --ink: #241b16;
+            --moss: #6f5c49;
+            --cream: #fff7ec;
+            --charcoal: #1c1915;
+            --ambient-color: rgba(178, 109, 70, 0.4);
+            --sticky-offset: clamp(3.5rem, 8vw, 6rem);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            color: var(--ink);
+            background: linear-gradient(180deg, #7A8B8B 0%, #9CAAA6 45%, #F2E3D0 100%);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background: linear-gradient(160deg, rgba(122, 139, 139, 0.85), rgba(242, 227, 208, 0.5)),
+                radial-gradient(circle at 15% 20%, rgba(210, 106, 50, 0.18), transparent 45%),
+                radial-gradient(circle at 85% 5%, rgba(36, 27, 22, 0.1), transparent 55%);
+            opacity: 0.6;
+            z-index: -2;
+        }
+
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 200 200" fill="none" stroke="rgba(0,0,0,0.05)" stroke-width="0.2"><path d="M0 0h200v200H0z"/><path d="M-10 20h220"/><path d="M-10 60h220"/><path d="M-10 100h220"/><path d="M-10 140h220"/><path d="M-10 180h220"/><path d="M20 -10v220"/><path d="M60 -10v220"/><path d="M100 -10v220"/><path d="M140 -10v220"/><path d="M180 -10v220"/></svg>');
+            mix-blend-mode: multiply;
+            opacity: 0.25;
+            z-index: -1;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        .site-shell {
+            position: relative;
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 clamp(1.5rem, 4vw, 5rem) 4rem;
+        }
+
+        header.hero {
+            position: relative;
+            min-height: 65vh;
+            padding: clamp(3rem, 5vw, 4rem) clamp(1.5rem, 6vw, 6rem);
+            background-image: url('./public/images/UP1_00010_.png');
+            background-size: cover;
+            background-position: center top;
+            background-repeat: no-repeat;
+            margin-left: calc(50% - 50vw);
+            margin-top: 0;
+            width: 100vw;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            isolation: isolate;
+            -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%);
+            mask-image: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 70%, rgba(0,0,0,0) 100%);
+        }
+
+        header.hero::before,
+        header.hero::after {
+            content: "";
+            position: absolute;
+            inset: 0;
+        }
+
+        header.hero::before {
+            background: linear-gradient(135deg, rgba(122, 139, 139, 0.75), rgba(242, 227, 208, 0.65));
+            z-index: 0;
+        }
+
+        header.hero::after {
+            background: linear-gradient(180deg, rgba(122, 139, 139, 0) 0%, rgba(122, 139, 139, 0.5) 50%, rgba(122, 139, 139, 0.85) 80%, #7A8B8B 100%);
+            z-index: 0;
+        }
+
+        header.hero>* {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-overlay {
+            position: relative;
+            width: min(600px, 100%);
+            max-width: 620px;
+            padding: clamp(2rem, 4vw, 3.5rem);
+            background: rgba(242, 227, 208, 0.95);
+            border-radius: 24px;
+            border: 1px solid rgba(36, 27, 22, 0.15);
+            box-shadow: 0 20px 40px rgba(36, 27, 22, 0.2);
+            backdrop-filter: blur(12px) saturate(110%);
+            text-align: center;
+        }
+
+
+        .eyebrow {
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.3em;
+            color: var(--moss);
+            font-weight: 600;
+            margin-bottom: 0.8rem;
+        }
+
+        h1 {
+            font-family: 'Playfair Display', 'Times New Roman', serif;
+            font-size: clamp(2.5rem, 5vw, 3.8rem);
+            line-height: 1.1;
+            margin: 0 0 1.2rem 0;
+        }
+
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(60px);
+            transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+        }
+
+        .reveal.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .type-card {
+            opacity: 0;
+            transform: perspective(900px) rotateX(10deg) translateY(60px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .type-card.is-visible {
+            opacity: 1;
+            transform: perspective(900px) rotateX(0deg) translateY(0);
+        }
+
+        .section-divider {
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(31, 27, 23, 0.2), transparent);
+            margin: 4rem 0 2rem;
+            opacity: 0;
+            transform: scaleX(0);
+            transition: opacity 0.6s ease-out, transform 0.8s ease-out;
+        }
+
+        .section-divider.is-visible {
+            opacity: 1;
+            transform: scaleX(1);
+        }
+
+        .section-transition {
+            opacity: 0;
+            transform: translateY(80px);
+            transition: opacity 0.8s ease-out 0.2s, transform 0.8s ease-out 0.2s;
+        }
+
+        .section-transition.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .section {
+            margin-top: 3.5rem;
+        }
+
+        .section-label {
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            font-size: 0.85rem;
+            color: var(--moss);
+            margin-bottom: 0.5rem;
+        }
+
+        .section h2 {
+            font-family: 'Playfair Display', 'Times New Roman', serif;
+            font-size: clamp(1.9rem, 4vw, 3rem);
+            margin: 0 0 1rem 0;
+        }
+
+        .lead {
+            color: rgba(31, 27, 23, 0.75);
+            max-width: 54ch;
+            line-height: 1.65;
+            margin: 0;
+        }
+        
+        .hero-overlay .lead {
+            font-size: clamp(0.95rem, 2vw, 1.1rem);
+        }
+
+        .grid-two {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.8rem;
+        }
+
+        .sticky-split {
+            display: grid;
+            grid-template-columns: minmax(260px, 0.85fr) minmax(320px, 1fr);
+            gap: clamp(1.5rem, 4vw, 4rem);
+        }
+
+        .identity-full-bleed {
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+            padding: clamp(2.5rem, 6vw, 5rem) 0;
+            background: linear-gradient(90deg, rgba(122, 139, 139, 0.35), rgba(242, 227, 208, 0.4));
+        }
+
+        .identity-track {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0 clamp(1.5rem, 4vw, 5rem);
+            display: flex;
+            flex-direction: column;
+            gap: clamp(2rem, 5vw, 5rem);
+        }
+
+        .sticky-column {
+            position: sticky;
+            top: 5rem;
+            align-self: start;
+        }
+
+        .data-card {
+            background: linear-gradient(135deg, rgba(242, 227, 208, 0.95), rgba(255, 247, 236, 0.9));
+            border-radius: 22px;
+            padding: 1.8rem;
+            border: 1px solid rgba(122, 139, 139, 0.2);
+            box-shadow: 0 20px 35px rgba(31, 27, 23, 0.1);
+        }
+
+        .data-card h3 {
+            margin-top: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.95rem;
+            color: var(--moss);
+        }
+
+        .stack {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .list {
+            padding-left: 1.1rem;
+            margin: 0.5rem 0 0 0;
+            color: rgba(31, 27, 23, 0.75);
+        }
+
+        .swatches {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .swatch {
+            border-radius: 24px;
+            padding: 1.6rem;
+            color: #fff;
+            min-height: 220px;
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-weight: 600;
+            letter-spacing: 0.05em;
+        }
+
+        .swatch strong {
+            font-size: 1.2rem;
+        }
+
+        .swatch span {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .swatch small {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            opacity: 0.85;
+        }
+
+        .type-stack {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .type-sample {
+            padding: 1.2rem 1.5rem;
+            border-radius: 18px;
+            border: 1px dashed rgba(122, 139, 139, 0.3);
+            background: rgba(255, 247, 236, 0.8);
+        }
+
+        .type-sample strong {
+            display: block;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: var(--moss);
+        }
+
+        .components-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.8rem;
+        }
+
+        .layout-full-bleed {
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+            padding: clamp(3rem, 6vw, 6rem) 0;
+            background: linear-gradient(90deg, rgba(242, 227, 208, 0.4), rgba(255, 247, 236, 0.5), rgba(122, 139, 139, 0.25));
+        }
+
+        .layout-track {
+            width: 100%;
+            max-width: 100%;
+            margin: 0;
+            padding: 0 clamp(2rem, 5vw, 6rem);
+        }
+
+        .layout-examples {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: clamp(2rem, 4vw, 4rem);
+            margin-top: 2.5rem;
+        }
+
+        .layout-example {
+            position: relative;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(31, 27, 23, 0.12), 0 0 0 1px rgba(122, 139, 139, 0.1);
+            background: rgba(255, 247, 236, 0.6);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .stagger-layout-card {
+            transition: opacity 0.6s ease-out, transform 0.6s ease-out;
+        }
+
+        .stagger-layout-card-1 {
+            transition-delay: 0s;
+        }
+
+        .stagger-layout-card-2 {
+            transition-delay: 0.15s;
+        }
+
+        .stagger-layout-card-3 {
+            transition-delay: 0.3s;
+        }
+
+        .stagger-layout-card.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .layout-example:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 32px 60px rgba(31, 27, 23, 0.2), 0 0 0 1px rgba(122, 139, 139, 0.2);
+        }
+
+        .layout-example img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .layout-example:hover img {
+            transform: scale(1.03);
+        }
+
+        .layout-example figcaption {
+            padding: 1.8rem 2rem;
+            background: linear-gradient(180deg, rgba(255, 247, 236, 0.98), rgba(242, 227, 208, 0.95));
+            font-size: 0.95rem;
+            letter-spacing: 0.05em;
+            line-height: 1.7;
+            color: rgba(31, 27, 23, 0.9);
+            border-top: 1px solid rgba(122, 139, 139, 0.2);
+        }
+
+        .component-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            margin-top: 2.5rem;
+            text-align: left;
+        }
+
+        #interface-swap {
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+            padding: clamp(4rem, 7vw, 8rem) 0;
+        }
+
+        .swap-header-text {
+            padding: 0 clamp(1.5rem, 4vw, 5rem) clamp(2rem, 4vw, 3rem);
+            text-align: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .swap-header-text .section-label {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            letter-spacing: 0.05em;
+        }
+
+        .swap-heading-container h2 {
+            font-family: 'Playfair Display', 'Times New Roman', serif;
+            font-size: clamp(2.4rem, 5.5vw, 4rem);
+            line-height: 1.15;
+            margin: 0.5rem 0 1rem;
+            color: var(--ink);
+        }
+
+        .swap-content-track {
+            display: grid;
+            grid-template-columns: minmax(400px, 1fr) minmax(380px, 0.95fr);
+            gap: clamp(3rem, 5vw, 6rem);
+            padding: 0 clamp(1.5rem, 4vw, 5rem);
+            width: 100%;
+            align-items: start;
+        }
+
+        .swap-content {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+        }
+
+        .swap-content#interface-controls {
+            text-align: center;
+        }
+
+        .swap-content#booking-examples {
+            text-align: left;
+        }
+
+        .split-demo {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+            align-items: flex-start;
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .button-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .demo-btn {
+            border: none;
+            border-radius: 12px;
+            padding: 1rem 1.6rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .demo-btn:focus-visible {
+            outline: 2px solid var(--rose);
+            outline-offset: 3px;
+        }
+
+        .demo-btn.primary {
+            background: var(--burnt);
+            color: #fff;
+            box-shadow: 0 10px 22px rgba(186, 75, 47, 0.25);
+        }
+
+        .demo-btn.secondary {
+            background: var(--terracotta);
+            color: #fff;
+            box-shadow: 0 10px 22px rgba(216, 120, 80, 0.25);
+        }
+
+        .demo-btn.ghost {
+            background: var(--sand);
+            border: 1px solid rgba(31, 27, 23, 0.25);
+            color: var(--ink);
+        }
+
+        .demo-btn:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 8px 16px rgba(186, 75, 47, 0.2);
+        }
+
+        .motion-example-card .demo-btn:hover {
+            transform: scale(1.05) translateY(-1px);
+            box-shadow: 0 12px 24px rgba(186, 75, 47, 0.3);
+        }
+
+        .motion-link {
+            position: relative;
+        }
+
+        .motion-link::after {
+            content: "";
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--burnt);
+            transition: width 0.3s ease-out;
+        }
+
+        .motion-link:hover::after {
+            width: 100%;
+        }
+
+        .stagger-card {
+            transition: opacity 0.3s ease-out, transform 0.3s ease-out;
+            transition-delay: 0s;
+        }
+
+        .stagger-card-2 {
+            transition-delay: 0.05s;
+        }
+
+        .stagger-card-3 {
+            transition-delay: 0.1s;
+        }
+
+        .stagger-card.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .hover-swatch:hover {
+            transform: scale(1.1);
+        }
+
+        .motion-example-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .interaction-full-bleed {
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+            padding: clamp(3rem, 6vw, 6rem) 0;
+            background: linear-gradient(90deg, rgba(122, 139, 139, 0.25), rgba(255, 247, 236, 0.5), rgba(242, 227, 208, 0.4));
+        }
+
+        .interaction-track {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 clamp(1.5rem, 4vw, 5rem);
+        }
+
+        .interaction-split {
+            display: grid;
+            grid-template-columns: minmax(300px, 0.85fr) minmax(400px, 1fr);
+            gap: clamp(2rem, 5vw, 4rem);
+            margin-top: 3rem;
+            align-items: flex-start;
+        }
+
+        .interaction-column {
+            position: sticky;
+            top: 5rem;
+            align-self: start;
+        }
+
+        .interaction-principles {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .motion-examples-enhanced {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .motion-example-card-enhanced {
+            padding: 2rem;
+            border-radius: 20px;
+            background: linear-gradient(135deg, rgba(255, 247, 236, 0.95), rgba(242, 227, 208, 0.9));
+            border: 1px solid rgba(122, 139, 139, 0.25);
+            box-shadow: 0 12px 28px rgba(31, 27, 23, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .motion-example-card-enhanced:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 16px 36px rgba(31, 27, 23, 0.15);
+        }
+
+        #interaction .data-card {
+            background: linear-gradient(135deg, rgba(242, 227, 208, 0.95), rgba(255, 247, 236, 0.9));
+            border: 1px solid rgba(122, 139, 139, 0.2);
+            box-shadow: 0 20px 35px rgba(31, 27, 23, 0.1);
+        }
+
+        #interaction .motion-example-card {
+            background: rgba(255, 247, 236, 0.8);
+            border-color: rgba(122, 139, 139, 0.3);
+        }
+
+        .form-demo {
+            border-radius: 22px;
+            padding: 2.2rem 2.5rem;
+            background: linear-gradient(135deg, rgba(242, 227, 208, 0.98), rgba(255, 247, 236, 0.95));
+            border: 1px solid rgba(210, 106, 50, 0.2);
+            display: grid;
+            gap: 1.5rem;
+            box-shadow: 0 14px 24px rgba(31, 27, 23, 0.18);
+            color: rgba(31, 27, 23, 0.9);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.2rem;
+        }
+
+        .form-field label {
+            display: block;
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.25em;
+            text-transform: uppercase;
+            color: rgba(31, 27, 23, 0.7);
+            margin-bottom: 0.5rem;
+        }
+
+        .form-field input,
+        .form-field textarea {
+            width: 100%;
+            border-radius: 12px;
+            border: 1px solid rgba(210, 106, 50, 0.25);
+            padding: 1rem 1.2rem;
+            font-family: 'Space Grotesk', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 500;
+            background: rgba(255, 255, 255, 0.9);
+            color: rgba(31, 27, 23, 0.9);
+            transition: border 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .form-field input::placeholder,
+        .form-field textarea::placeholder {
+            color: rgba(31, 27, 23, 0.5);
+        }
+
+        .form-field input:focus,
+        .form-field textarea:focus {
+            outline: none;
+            border-color: var(--terracotta);
+            box-shadow: 0 0 0 3px rgba(210, 106, 50, 0.2);
+            background: rgba(255, 255, 255, 0.95);
+        }
+
+        .form-helper {
+            font-size: 0.8rem;
+            font-weight: 500;
+            line-height: 1.5;
+            color: rgba(31, 27, 23, 0.65);
+        }
+
+        .toast-stack {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .toast {
+            border-radius: 14px;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.2rem;
+            color: #fff;
+            box-shadow: 0 14px 24px rgba(31, 27, 23, 0.18);
+        }
+
+        .toast.success {
+            background: var(--sage);
+        }
+
+        .toast.alert {
+            background: var(--rose);
+        }
+
+        .toast-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.25);
+            display: grid;
+            place-items: center;
+            font-weight: 600;
+        }
+
+        .calendar-demo {
+            border-radius: 20px;
+            padding: 1.8rem 2rem;
+            background: linear-gradient(135deg, rgba(242, 227, 208, 0.98), rgba(255, 247, 236, 0.95));
+            border: 1px solid rgba(210, 106, 50, 0.2);
+            width: 100%;
+            box-shadow: 0 14px 24px rgba(31, 27, 23, 0.18);
+            color: rgba(31, 27, 23, 0.9);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, minmax(0, 1fr));
+            gap: 0.4rem;
+            margin-top: 1.2rem;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1 / 1;
+            border-radius: 8px;
+            background: rgba(255, 255, 255, 0.8);
+            border: 1px solid rgba(210, 106, 50, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: rgba(31, 27, 23, 0.8);
+            min-height: 0;
+        }
+
+        .calendar-day.is-booked {
+            background: var(--terracotta);
+            border: none;
+            color: #fff;
+            box-shadow: 0 10px 18px rgba(216, 120, 80, 0.3);
+        }
+
+        .calendar-day.is-muted {
+            opacity: 0.4;
+        }
+
+        .component-card {
+            border-radius: 18px;
+            padding: 1.6rem;
+            background: rgba(255, 255, 255, 0.88);
+            border: 1px solid rgba(31, 27, 23, 0.08);
+        }
+
+        .component-card h4 {
+            margin: 0 0 0.8rem 0;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.85rem;
+            color: var(--moss);
+        }
+
+        .identity-panel {
+            border-radius: 24px;
+            padding: 1.6rem 2rem;
+            background: linear-gradient(120deg, rgba(186, 75, 47, 0.18), rgba(90, 102, 95, 0.25));
+            border: 1px solid rgba(31, 27, 23, 0.08);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .identity-panel strong {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+        }
+
+        .identity-panel small {
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            font-size: 0.7rem;
+            display: block;
+        }
+
+        .macro-panel {
+            margin-top: 1.5rem;
+            border-radius: 24px;
+            background-image: linear-gradient(120deg, rgba(31, 27, 23, 0.4), rgba(255, 255, 255, 0)), url('./public/images/UP1_00012_.png');
+            background-size: cover;
+            background-position: center;
+            min-height: 240px;
+            padding: 1.8rem;
+            color: #fff;
+            box-shadow: 0 35px 55px rgba(31, 27, 23, 0.18);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .macro-panel::after {
+            content: \"Brush study · 02\";
+            position: absolute;
+            bottom: 1.2rem;
+            right: 1.5rem;
+            letter-spacing: 0.35em;
+            font-size: 0.68rem;
+            text-transform: uppercase;
+            opacity: 0.75;
+        }
+
+        .horizontal-scroll {
+            position: relative;
+        }
+
+        .filmstrip-text {
+            margin-bottom: 0.5rem;
+            padding: clamp(3.5rem, 6vw, 5rem) 0 clamp(1rem, 2vw, 1.5rem);
+        }
+
+        .filmstrip-text .section-label {
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+            padding: 0 clamp(1.5rem, 4vw, 3rem);
+        }
+
+        .filmstrip-text h2 {
+            font-size: clamp(2.5rem, 5vw, 4rem);
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            color: var(--ink);
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+            padding: 0 clamp(1.5rem, 4vw, 3rem);
+        }
+
+        .filmstrip-text .lead {
+            font-size: clamp(1.1rem, 2vw, 1.3rem);
+            line-height: 1.6;
+            color: rgba(31, 27, 23, 0.8);
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+            margin-right: calc(50% - 50vw);
+            padding: 0 clamp(1.5rem, 4vw, 3rem);
+        }
+
+        .filmstrip-wrapper {
+            margin-top: 1.5rem;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            overflow: hidden;
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+        }
+
+        .filmstrip {
+            display: flex;
+            gap: clamp(0.4rem, 0.6vw, 0.8rem);
+            will-change: transform;
+            padding: 0 clamp(0.5rem, 2vw, 1.5rem);
+        }
+
+        .filmstrip-item {
+            border-radius: 32px;
+            min-width: clamp(420px, 55vw, 820px);
+            min-height: clamp(420px, 80vh, 780px);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            box-shadow: 0 40px 70px rgba(31, 27, 23, 0.25);
+            overflow: hidden;
+        }
+
+        .filmstrip-item::after {
+            content: attr(data-label);
+            position: absolute;
+            left: 1.5rem;
+            bottom: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3em;
+            font-size: 0.7rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .filmstrip-progress {
+            position: relative;
+            height: 2px;
+            background: rgba(31, 27, 23, 0.15);
+            border-radius: 999px;
+            overflow: hidden;
+            margin-top: 1rem;
+            width: 100vw;
+            margin-left: calc(50% - 50vw);
+        }
+
+        .filmstrip-progress-bar {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(90deg, var(--burnt), var(--rose));
+            transform-origin: left;
+            transform: scaleX(0);
+            transition: transform 0.1s linear;
+        }
+
+        .wide-callout {
+            margin-top: 2rem;
+            padding: 1.8rem 2.2rem;
+            border-left: 4px solid var(--burnt);
+            background: rgba(255, 255, 255, 0.85);
+            border-radius: 18px;
+            font-size: 1.05rem;
+            line-height: 1.5;
+        }
+
+        .sticky-grid {
+            display: grid;
+            grid-template-columns: minmax(230px, 320px) minmax(280px, 1fr);
+            gap: 2rem;
+            align-items: flex-start;
+        }
+
+        .sticky-panel {
+            position: sticky;
+            top: 2rem;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 22px;
+            padding: 1.8rem;
+            border: 1px solid rgba(31, 27, 23, 0.12);
+            box-shadow: 0 25px 40px rgba(31, 27, 23, 0.08);
+        }
+
+        .scroll-steps {
+            display: grid;
+            gap: 1.2rem;
+        }
+
+        .scroll-step {
+            background: rgba(255, 255, 255, 0.92);
+            border-radius: 20px;
+            padding: 1.6rem;
+            border: 1px solid rgba(31, 27, 23, 0.08);
+            box-shadow: 0 18px 28px rgba(31, 27, 23, 0.06);
+        }
+
+        .scroll-step strong {
+            display: block;
+            text-transform: uppercase;
+            letter-spacing: 0.25em;
+            font-size: 0.78rem;
+            color: var(--moss);
+            margin-bottom: 0.4rem;
+        }
+
+        .tone-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.8rem;
+            margin: 1.5rem 0;
+        }
+
+        .tone-chips span {
+            padding: 0.6rem 1.2rem;
+            border-radius: 999px;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.7rem;
+            color: #fff;
+        }
+
+        .ref-list {
+            list-style: none;
+            padding: 0;
+            margin: 1rem 0 0 0;
+        }
+
+        .ref-list li {
+            margin-bottom: 0.9rem;
+            padding-bottom: 0.9rem;
+            border-bottom: 1px solid rgba(31, 27, 23, 0.08);
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding: 2.5rem 0 1.5rem;
+            text-align: center;
+            font-size: 0.85rem;
+            letter-spacing: 0.2em;
+            color: rgba(31, 27, 23, 0.55);
+        }
+
+        @keyframes float {
+            0% {
+                transform: translateY(0px);
+            }
+
+            50% {
+                transform: translateY(-6px);
+            }
+
+            100% {
+                transform: translateY(0px);
+            }
+        }
+
+        @media (max-width: 720px) {
+            header.hero {
+                min-height: 50vh;
+                padding: 2rem 1.5rem;
+            }
+
+            .hero-overlay {
+                width: 100%;
+                border-radius: 20px;
+                padding: 1.8rem 1.5rem;
+            }
+
+            .sticky-split {
+                grid-template-columns: 1fr;
+            }
+
+            .sticky-column {
+                position: static;
+                padding-right: 0;
+                margin-bottom: 1.5rem;
+            }
+
+            .data-card,
+            .component-card {
+                padding: 1.4rem;
+            }
+
+            .sticky-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .sticky-panel {
+                position: static;
+            }
+
+            .layout-full-bleed,
+            .interaction-full-bleed {
+                padding: 2rem 0;
+            }
+
+            .layout-track,
+            .interaction-track {
+                padding: 0 1.5rem;
+            }
+
+            .interaction-split {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .interaction-column {
+                position: static;
+            }
+
+            .layout-examples {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            #interface-swap {
+                padding: 3rem 0;
+            }
+
+            .swap-header-text {
+                padding: 0 1.5rem 2rem;
+            }
+
+            .swap-heading-container h2 {
+                font-size: clamp(2rem, 6vw, 2.8rem);
+            }
+
+            .swap-content-track {
+                grid-template-columns: 1fr;
+                gap: 3rem;
+                padding: 0 1.5rem;
+            }
+
+            .swap-content#booking-examples {
+                text-align: center;
+            }
+            
+            .form-demo {
+                padding: 1.8rem 1.5rem;
+            }
+            
+            .calendar-demo {
+                padding: 1.5rem 1.2rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="site-shell">
+        <header class="hero">
+            <div class="hero-overlay reveal">
+                <p class="eyebrow">United Tattoo</p>
+                <h1 class="hero-title">
+                    <span>Design Language Reference</span>
+                </h1>
+                <p class="lead">A living style guide documenting color, typography, components, and interaction patterns.</p>
+            </div>
+        </header>
+
+        <section class="section reveal horizontal-scroll" id="immersion" data-filmstrip-section>
+            <div class="filmstrip-text" data-filmstrip-prelude>
+                <p class="section-label">Immersion gallery</p>
+                <h2>Sunbleached walls, charcoal studies, and avian sketches.</h2>
+                <p class="lead">Use this scrollable filmstrip to source tonal references. Each frame ties to a studio
+                    story —
+                    from Liberty-inspired murals to macro plaster textures.</p>
+            </div>
+            <div class="filmstrip-wrapper" data-filmstrip-sticky>
+                <div class="filmstrip" data-filmstrip-track>
+                    <figure class="filmstrip-item" data-label="Monument prep"
+                        style="background-image: url('./public/images/UP1_00007_.png');"></figure>
+                    <figure class="filmstrip-item" data-label="Avian story"
+                        style="background-image: url('./public/images/UP1_00009_.png');"></figure>
+                    <figure class="filmstrip-item" data-label="Architectural study"
+                        style="background-image: url('./public/images/UP1_00010_.png');"></figure>
+                    <figure class="filmstrip-item" data-label="Liberty detail"
+                        style="background-image: url('./public/images/UP1_00018_.png');"></figure>
+                    <figure class="filmstrip-item" data-label="Warm plaster"
+                        style="background-image: url('./public/images/0_1.png');"></figure>
+                    <figure class="filmstrip-item" data-label="Shadow glyph"
+                        style="background-image: url('./public/images/0_3.png');"></figure>
+                    <figure class="filmstrip-item" data-label="Studio light"
+                        style="background-image: url('./public/images/0_6.png');"></figure>
+                    <figure class="filmstrip-item" data-label="Avian flight"
+                        style="background-image: url('./public/images/0_7.png');"></figure>
+                </div>
+                <div class="filmstrip-progress">
+                    <div class="filmstrip-progress-bar" data-filmstrip-progress></div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section reveal identity-full-bleed" id="identity">
+            <div class="identity-track">
+            <div class="sticky-split">
+                <div class="sticky-column reveal">
+                    <p class="section-label">02 • Brand Identity</p>
+                    <h2>Color, typography, and materiality echo sun-washed plaster.</h2>
+                    <p class="lead">Think plaster walls catching a diagonal slice of afternoon light—burnt oranges,
+                        desaturated greens, charcoal blacks, and off-whites that feel powdery and matte. Typography should
+                        feel like museum placards: serif statements, grotesk body copy, and micro-type metadata whispering
+                        along the edges.</p>
+                </div>
+                <div class="stack">
+                    <article class="data-card">
+                        <h3>Color Language</h3>
+                        <p>Primary palette blends burnt oranges with sage concrete. Use gradients and overlays to mimic
+                            painted walls catching slant light.</p>
+                        <p style="font-size:0.85rem; text-transform:uppercase; letter-spacing:0.3em; color:rgba(36,27,22,0.6); margin-bottom:0.5rem;">
+                            Ratio — 60 / 25 / 15</p>
+                        <div class="swatches">
+                            <div class="swatch" style="background:#E67E50">
+                                <div>
+                                    <strong>#E67E50</strong>
+                                    <span>Burnt Orange</span>
+                                </div>
+                                <small>Hero gradients, CTA fills, warm spotlight moments.</small>
+                            </div>
+                            <div class="swatch" style="background:#D87850">
+                                <div>
+                                    <strong>#D87850</strong>
+                                    <span>Terracotta</span>
+                                </div>
+                                <small>Buttons, form focus states, micro interactions.</small>
+                            </div>
+                            <div class="swatch" style="background:#7A8B8B">
+                                <div>
+                                    <strong>#7A8B8B</strong>
+                                    <span>Sage Concrete</span>
+                                </div>
+                                <small>Page background, cards, filmstrip fades.</small>
+                            </div>
+                            <div class="swatch" style="background:#2D2D2D">
+                                <div>
+                                    <strong>#2D2D2D</strong>
+                                    <span>Charcoal Ink</span>
+                                </div>
+                                <small>Typography, photographic overlays, line work.</small>
+                            </div>
+                        </div>
+                    </article>
+                    <article class="data-card type-card reveal">
+                        <h3>Typography</h3>
+                        <p style="font-size:0.95rem; color:rgba(36,27,22,0.7); margin-bottom:1rem;">Pair sculptural serif
+                            headlines with quiet grotesk paragraphs and whisper-thin uppercase metadata. Treat type like
+                            carved etchings on plaster—precise, deliberate, never shouting.</p>
+                        <div class="type-stack">
+                            <div class="type-sample">
+                                <strong>Display / Headlines</strong>
+                                <span style="font-family: 'Playfair Display', serif; font-size: 2.1rem; line-height: 1.1;">Playfair Display
+                                    — Use for statements, paired with tight leading.</span>
+                            </div>
+                            <div class="type-sample">
+                                <strong>Body / Interface</strong>
+                                <span style="font-size:1rem;">Space Grotesk — Sentence case, generous tracking. Minimum size
+                                    16px to keep copy airy against textured grounds.</span>
+                            </div>
+                            <div class="type-sample">
+                                <strong>Accent</strong>
+                                <span style="font-size:0.9rem; letter-spacing:0.25em; text-transform:uppercase;">Use
+                                    uppercase micro-type for metadata, nav, and chips.</span>
+                            </div>
+                        </div>
+                    </article>
+                    <div class="macro-panel">
+                        <p style="max-width:32ch; font-size:1.1rem;">Reference imagery pairs plaster gradients with
+                            charcoal studies. Use this macro crop treatment for hero backups or transitions.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="section-divider" data-section-divider></div>
+            <section class="section reveal" id="interface-swap">
+                <div class="swap-header-text">
+                    <p class="section-label">03 • Interface Components</p>
+                    <div class="swap-heading-container">
+                        <h2>Micro-interactions that feel tactile.</h2>
+                    </div>
+                </div>
+                <div class="swap-content-track">
+                    <div class="swap-content" id="interface-controls" data-swap-content="first">
+                        <p class="section-label" style="margin-bottom: 1.5rem;">Buttons & Toasts</p>
+                        <p class="lead" style="max-width: 65ch; margin: 0 auto 2rem;">Primary actions carry
+                            burnt-orange fills while secondary options lean on terracotta and sand. Toasts inherit the same
+                            hues for instant recognition.</p>
+                        <div class="button-showcase" style="margin-top: 2rem;">
+                            <h4 style="text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.85rem; color: var(--moss); margin-bottom: 1.5rem;">Buttons</h4>
+                            <div class="button-row" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.5rem; max-width: 600px; margin: 0 auto;">
+                                <button class="demo-btn primary" style="width: 100%;">Begin Commission</button>
+                                <button class="demo-btn secondary" style="width: 100%;">View Portfolio</button>
+                                <button class="demo-btn ghost" style="width: 100%;">Ghost Link</button>
+                            </div>
+                        </div>
+                        <div class="toast-showcase" style="margin-top: 3rem;">
+                            <h4 style="text-transform: uppercase; letter-spacing: 0.2em; font-size: 0.85rem; color: var(--moss); margin-bottom: 1.5rem;">Toasts</h4>
+                            <div class="toast-stack" style="gap: 1.5rem; max-width: 600px; margin: 0 auto;">
+                                <div class="toast success">
+                                    <div class="toast-icon">✓</div>
+                                    <div>
+                                        <strong>Deposit received</strong>
+                                        <p style="margin:0;">We'll confirm your consultation slot within 24 hours.</p>
+                                    </div>
+                                </div>
+                                <div class="toast alert">
+                                    <div class="toast-icon">!</div>
+                                    <div>
+                                        <strong>Waitlist update</strong>
+                                        <p style="margin:0;">Masato's calendar just opened for February.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="swap-content" id="booking-examples" data-swap-content="second">
+                        <p class="section-label" style="margin-bottom: 1.5rem;">Interface Treatments</p>
+                        <p class="lead" style="margin-bottom: 2rem;">Forms and calendars that echo studio serenity.</p>
+                        <div class="split-demo" style="display: flex; flex-direction: column; gap: 2rem;">
+                    <form class="form-demo" style="width: 100%; max-width: 600px;">
+                        <p style="margin:0; font-size:0.85rem; color:rgba(31,27,23,0.7);">Request a consultation slot in
+                            under a minute.</p>
+                        <div class="form-row">
+                            <div class="form-field">
+                                <label for="demo-name">Full Name</label>
+                                <input id="demo-name" type="text" placeholder="Eden Morales">
+                            </div>
+                            <div class="form-field">
+                                <label for="demo-email">Email</label>
+                                <input id="demo-email" type="email" placeholder="eden@collectors.club">
+                            </div>
+                        </div>
+                        <div class="form-field">
+                            <label for="demo-notes">Concept Notes</label>
+                            <textarea id="demo-notes" rows="3" placeholder="Large-scale illustrative back piece..."></textarea>
+                        </div>
+                        <div class="form-helper">We reply within 24 hours to confirm consultation dates and deposit
+                            details.</div>
+                        <div style="display:flex; gap:0.8rem; flex-wrap:wrap;">
+                            <button class="demo-btn primary" style="align-self:flex-start;">Submit Brief</button>
+                            <button class="demo-btn ghost" type="button" style="align-self:flex-start;">Download PDF</button>
+                        </div>
+                    </form>
+                    <div class="calendar-demo" style="width: 100%; max-width: 400px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center;">
+                            <div>
+                                <p class="section-label" style="margin-bottom:0;">Studio Calendar</p>
+                                <h3 style="margin:0;">February 2026</h3>
+                            </div>
+                            <div class="button-row" style="gap:0.4rem;">
+                                <button class="demo-btn ghost" style="padding:0.4rem 0.8rem;">←</button>
+                                <button class="demo-btn ghost" style="padding:0.4rem 0.8rem;">→</button>
+                            </div>
+                        </div>
+                        <div class="calendar-grid">
+                            <div class="calendar-day is-muted">28</div>
+                            <div class="calendar-day is-muted">29</div>
+                            <div class="calendar-day is-muted">30</div>
+                            <div class="calendar-day is-muted">31</div>
+                            <div class="calendar-day">1</div>
+                            <div class="calendar-day">2</div>
+                            <div class="calendar-day">3</div>
+                            <div class="calendar-day">4</div>
+                            <div class="calendar-day">5</div>
+                            <div class="calendar-day">6</div>
+                            <div class="calendar-day">7</div>
+                            <div class="calendar-day">8</div>
+                            <div class="calendar-day">9</div>
+                            <div class="calendar-day is-booked">10</div>
+                            <div class="calendar-day">11</div>
+                            <div class="calendar-day">12</div>
+                            <div class="calendar-day">13</div>
+                            <div class="calendar-day">14</div>
+                            <div class="calendar-day">15</div>
+                            <div class="calendar-day">16</div>
+                            <div class="calendar-day">17</div>
+                            <div class="calendar-day">18</div>
+                            <div class="calendar-day">19</div>
+                            <div class="calendar-day">20</div>
+                            <div class="calendar-day">21</div>
+                            <div class="calendar-day is-booked">22</div>
+                            <div class="calendar-day is-booked">23</div>
+                            <div class="calendar-day">24</div>
+                            <div class="calendar-day">25</div>
+                            <div class="calendar-day">26</div>
+                            <div class="calendar-day">27</div>
+                            <div class="calendar-day">28</div>
+                            <div class="calendar-day">29</div>
+                            <div class="calendar-day is-muted">1</div>
+                            <div class="calendar-day is-muted">2</div>
+                            <div class="calendar-day is-muted">3</div>
+                        </div>
+                        <div class="calendar-legend" style="display:flex; gap:1rem; margin-top:0.8rem; font-size:0.78rem; color:rgba(31,27,23,0.7);">
+                            <span><span style="display:inline-block; width:10px; height:10px; border-radius:3px; background:var(--terracotta); margin-right:0.3rem;"></span>booked</span>
+                            <span><span style="display:inline-block; width:10px; height:10px; border-radius:3px; border:1px solid rgba(31,27,23,0.4); margin-right:0.3rem;"></span>open</span>
+                            <span><span style="display:inline-block; width:10px; height:10px; border-radius:3px; border:1px solid rgba(31,27,23,0.4); opacity:0.4; margin-right:0.3rem;"></span>past</span>
+                        </div>
+                    </div>
+                </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        <div class="section-divider" data-section-divider></div>
+        <section class="section reveal section-transition layout-full-bleed" id="layout-components">
+            <div class="layout-track">
+                <p class="section-label">04 • Layout & Components</p>
+                <h2>Structure mirrors gallery pacing: spacious, staggered, editorial.</h2>
+                <p class="lead" style="max-width: 65ch; margin-bottom: 3rem;">Think in horizontal galleries: alternate full-width manifesto blocks with modular cards so the page rhythm breathes like walking past framed works.</p>
+                <div class="layout-examples">
+                    <figure class="layout-example stagger-layout-card stagger-layout-card-1">
+                        <img src="./public/images/UP1_00007_.png" alt="Hero layout mock showing manifesto block beside art">
+                        <figcaption>Hero Canvas • Manifesto copy sits in a plaster card while artwork bleeds edge-to-edge,
+                            mimicking a gallery wall diptych.</figcaption>
+                    </figure>
+                    <figure class="layout-example stagger-layout-card stagger-layout-card-2">
+                        <img src="./public/images/UP1_00009_.png" alt="Artist card layout reference">
+                        <figcaption>Artist Card • Portraits rest on color blocks with caption chips, offering the same pacing
+                            as framed studies.</figcaption>
+                    </figure>
+                    <figure class="layout-example stagger-layout-card stagger-layout-card-3">
+                        <img src="./public/images/UP1_00014_.png" alt="Lookbook grid with staggered imagery">
+                        <figcaption>Lookbook Grid • Stagger rows so imagery steps across the viewport the way canvases do in a
+                            salon hang.</figcaption>
+                    </figure>
+                </div>
+            </div>
+        </section>
+
+        <section class="section reveal interaction-full-bleed" id="interaction">
+            <div class="interaction-track">
+                <p class="section-label">05 • Interaction & Motion</p>
+                <h2>Every movement should feel deliberate, like brush strokes.</h2>
+                <div class="interaction-split">
+                    <div class="interaction-column reveal">
+                        <div class="interaction-principles">
+                            <article class="data-card">
+                                <h3>Baseline</h3>
+                                <ul class="list">
+                                    <li>Fade/slide reveals on scroll, 200–300ms, ease-out.</li>
+                                    <li>Buttons scale to 105% with shadow bloom; no bounce easing.</li>
+                                    <li>Link underlines draw from left to right like a painted stroke.</li>
+                                </ul>
+                            </article>
+                            <article class="data-card" style="margin-top: 2rem;">
+                                <h3>Accent Moments</h3>
+                                <ul class="list">
+                                    <li>Parallax on hero imagery (≤5% translateY).</li>
+                                    <li>Staggered card entrances of 50ms to mimic gallery walk-through.</li>
+                                    <li>Interactive swatches that tint background panels subtly on hover.</li>
+                                </ul>
+                            </article>
+                        </div>
+                    </div>
+                    <div class="interaction-examples-column">
+                        <div class="motion-examples-enhanced">
+                            <div class="motion-example-card-enhanced" style="margin-bottom: 2rem;">
+                                <strong style="display: block; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--moss); margin-bottom: 1.2rem;">Example: Button Scale</strong>
+                                <button class="demo-btn primary">Hover to see 105% scale</button>
+                            </div>
+                            <div class="motion-example-card-enhanced" style="margin-bottom: 2rem;">
+                                <strong style="display: block; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--moss); margin-bottom: 1.2rem;">Example: Link Underline</strong>
+                                <a href="#" class="motion-link" style="color: var(--burnt); text-decoration: none; position: relative; display: inline-block; font-size: 1.1rem;">Hover to see underline draw from left</a>
+                            </div>
+                            <div class="motion-example-card-enhanced" style="margin-bottom: 2rem;">
+                                <strong style="display: block; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--moss); margin-bottom: 1.2rem;">Example: Staggered Cards</strong>
+                                <div style="display: grid; gap: 1rem;">
+                                    <div class="stagger-card stagger-card-1" style="padding: 1.2rem; background: rgba(255, 247, 236, 0.95); border-radius: 16px; opacity: 0; transform: translateY(20px); border: 1px solid rgba(122, 139, 139, 0.2); box-shadow: 0 4px 12px rgba(31, 27, 23, 0.08);">Card 1 (0ms)</div>
+                                    <div class="stagger-card stagger-card-2" style="padding: 1.2rem; background: rgba(255, 247, 236, 0.95); border-radius: 16px; opacity: 0; transform: translateY(20px); border: 1px solid rgba(122, 139, 139, 0.2); box-shadow: 0 4px 12px rgba(31, 27, 23, 0.08);">Card 2 (50ms)</div>
+                                    <div class="stagger-card stagger-card-3" style="padding: 1.2rem; background: rgba(255, 247, 236, 0.95); border-radius: 16px; opacity: 0; transform: translateY(20px); border: 1px solid rgba(122, 139, 139, 0.2); box-shadow: 0 4px 12px rgba(31, 27, 23, 0.08);">Card 3 (100ms)</div>
+                                </div>
+                            </div>
+                            <div class="motion-example-card-enhanced">
+                                <strong style="display: block; font-size: 0.8rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--moss); margin-bottom: 1.2rem;">Example: Interactive Swatch</strong>
+                                <div class="swatch-hover-demo" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                                    <div class="hover-swatch" data-color="#E67E50" style="width: 70px; height: 70px; border-radius: 16px; background: #E67E50; cursor: pointer; transition: transform 0.2s ease; box-shadow: 0 4px 12px rgba(31, 27, 23, 0.15);"></div>
+                                    <div class="hover-swatch" data-color="#7A8B8B" style="width: 70px; height: 70px; border-radius: 16px; background: #7A8B8B; cursor: pointer; transition: transform 0.2s ease; box-shadow: 0 4px 12px rgba(31, 27, 23, 0.15);"></div>
+                                    <div class="hover-swatch" data-color="#D87850" style="width: 70px; height: 70px; border-radius: 16px; background: #D87850; cursor: pointer; transition: transform 0.2s ease; box-shadow: 0 4px 12px rgba(31, 27, 23, 0.15);"></div>
+                                </div>
+                                <p style="font-size: 0.8rem; color: rgba(31, 27, 23, 0.65); margin-top: 1rem; margin-bottom: 0;">Hover swatches to tint background</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="section reveal" id="sticky-demo">
+            <p class="section-label">06 • Sticky Storytelling Example</p>
+            <h2>Anchor manifesto copy while narrating evolving work.</h2>
+            <p class="lead">Use sticky paired columns for case studies or process pages: the left rail sets expectations,
+                the right column scrolls through vivid chapters.</p>
+            <div class="sticky-grid">
+                <aside class="sticky-panel">
+                    <h3 style="margin-top:0; text-transform:uppercase; letter-spacing:0.25em; font-size:0.85rem; color:var(--moss);">Sticky
+                        Rules</h3>
+                    <ul class="list">
+                        <li>Panel height ≤ 70vh with generous padding so it never feels cramped.</li>
+                        <li>Set <code>position: sticky</code> with <code>top: 2rem</code> to mimic gallery placards.</li>
+                        <li>Ensure mobile stacks vertically; sticky disengages gracefully below 720px.</li>
+                    </ul>
+                </aside>
+                <div class="scroll-steps">
+                    <article class="scroll-step">
+                        <strong>Phase 01 — Brief Capture</strong>
+                        <p>Client brings mural references, sculptures, and light studies. Capture quotes and palette
+                            swatches directly in the viewport.</p>
+                    </article>
+                    <article class="scroll-step">
+                        <strong>Phase 02 — Material Study</strong>
+                        <p>Use macro photography of charcoal lines and plaster chips. Pair with captions outlining needle
+                            groupings and pigment blends.</p>
+                    </article>
+                    <article class="scroll-step">
+                        <strong>Phase 03 — Session Rhythm</strong>
+                        <p>Document progression with warm gradients + timestamps to show layering, wiping, and varnish
+                            moments.</p>
+                    </article>
+                    <article class="scroll-step">
+                        <strong>Phase 04 — Aftercare</strong>
+                        <p>Close with archival photography and care steps so the story resolves with confidence.</p>
+                    </article>
+                </div>
+            </div>
+        </section>
+
+        <section class="section reveal" id="tone">
+            <p class="section-label">07 • Tone & Messaging</p>
+            <h2>Words should feel archival yet alive.</h2>
+            <p class="lead">Balance poetic descriptions with precise process language. Speak to seasoned collectors, not
+                trend chasers.</p>
+            <div class="tone-chips">
+                <span style="background:#7A8B8B">ARTISTIC</span>
+                <span style="background:#E91E63">BOLD</span>
+                <span style="background:#8B9A9A">SOPHISTICATED</span>
+                <span style="background:#F5A862">ENERGETIC</span>
+                <span style="background:#E67E50">AUTHENTIC</span>
+                <span style="background:#D87850">PROFESSIONAL</span>
+            </div>
+            <article class="data-card">
+                <h3>Voice Notes</h3>
+                <ul class="list">
+                    <li>Use sensory analogies (“sun-baked walls”, “charcoal whisper”) to anchor visuals.</li>
+                    <li>Keep call-to-actions confident but calm (“Begin Commission”, “Visit the Studio”).</li>
+                    <li>Highlight collaboration and process transparency in every section.</li>
+                </ul>
+            </article>
+        </section>
+
+        <section class="section reveal" id="references">
+            <p class="section-label">08 • Reference + Guardrails</p>
+            <h2>Borrow selectively; keep the voice distinctly United.</h2>
+            <div class="grid-two">
+                <article class="data-card">
+                    <h3>Sites We Admire</h3>
+                    <ul class="ref-list">
+                        <li>
+                            <strong>Studio Nari</strong> — Editorial typography pacing, soft gradients.
+                        </li>
+                        <li>
+                            <strong>Acne Studios</strong> — Confident whitespace + effortless photography pairing.
+                        </li>
+                        <li>
+                            <strong>Slowdown Studio</strong> — Product storytelling with tactile textures.
+                        </li>
+                    </ul>
+                </article>
+                <article class="data-card">
+                    <h3>Avoid</h3>
+                    <ul class="list">
+                        <li>Aggressive gothic motifs that feel intimidating.</li>
+                        <li>Overly dark backgrounds that hide brush detail.</li>
+                        <li>Cluttered galleries or confusing booking funnels.</li>
+                    </ul>
+                </article>
+            </div>
+        </section>
+
+        <footer>
+            UNITED TATTOO • LIVING STYLE BRIEF • UPDATED QUARTERLY
+        </footer>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                    }
+                });
+            }, { threshold: 0.18 });
+
+            document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
+            document.querySelectorAll('[data-section-divider]').forEach((el) => observer.observe(el));
+            document.querySelectorAll('.section-transition').forEach((el) => observer.observe(el));
+
+            const heroImage = document.querySelector('.hero-image');
+            if (heroImage) {
+                const handleScroll = () => {
+                    const offset = window.scrollY * 0.12;
+                    heroImage.style.transform = `translateY(${offset}px)`;
+                };
+                handleScroll();
+                window.addEventListener('scroll', () => {
+                    requestAnimationFrame(handleScroll);
+                });
+            }
+
+            const filmstripSection = document.querySelector('[data-filmstrip-section]');
+            const filmstripTrack = document.querySelector('[data-filmstrip-track]');
+            const filmstripProgress = document.querySelector('[data-filmstrip-progress]');
+            const filmstripPrelude = document.querySelector('[data-filmstrip-prelude]');
+            if (filmstripSection && filmstripTrack) {
+                let distance = 0;
+                const setDimensions = () => {
+                    const trackWidth = filmstripTrack.scrollWidth;
+                    distance = Math.max(trackWidth - window.innerWidth, 0);
+                    const preludeHeight = filmstripPrelude ? filmstripPrelude.offsetHeight : 0;
+                    const progressHeight = filmstripProgress ? filmstripProgress.offsetHeight : 0;
+                    filmstripSection.style.height = `${preludeHeight + progressHeight + window.innerHeight + distance + 40}px`;
+                };
+
+                const handleFilmstripScroll = () => {
+                    const sectionTop = filmstripSection.offsetTop;
+                    const sectionHeight = filmstripSection.offsetHeight;
+                    const scrollY = window.scrollY;
+                    const progress = Math.min(Math.max((scrollY - sectionTop) / (sectionHeight - window.innerHeight), 0), 1);
+                    filmstripTrack.style.transform = `translateX(${-distance * progress}px)`;
+                    if (filmstripProgress) {
+                        filmstripProgress.style.transform = `scaleX(${progress})`;
+                    }
+                };
+
+                setDimensions();
+                handleFilmstripScroll();
+                window.addEventListener('resize', () => {
+                    setDimensions();
+                    handleFilmstripScroll();
+                });
+                window.addEventListener('scroll', () => requestAnimationFrame(handleFilmstripScroll));
+            }
+
+            // Staggered cards animation
+            const staggerContainers = document.querySelectorAll('.motion-example-card');
+            staggerContainers.forEach((container) => {
+                const staggerCards = container.querySelectorAll('.stagger-card');
+                if (staggerCards.length > 0) {
+                    const staggerObserver = new IntersectionObserver((entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                                staggerCards.forEach((card) => {
+                                    card.classList.add('is-visible');
+                                });
+                                staggerObserver.unobserve(entry.target);
+                            }
+                        });
+                    }, { threshold: 0.2 });
+                    staggerObserver.observe(container);
+                }
+            });
+
+            // Staggered layout cards animation
+            const layoutExamples = document.querySelector('.layout-examples');
+            if (layoutExamples) {
+                const layoutCards = layoutExamples.querySelectorAll('.stagger-layout-card');
+                if (layoutCards.length > 0) {
+                    const layoutObserver = new IntersectionObserver((entries) => {
+                        entries.forEach((entry) => {
+                            if (entry.isIntersecting) {
+                                layoutCards.forEach((card) => {
+                                    card.classList.add('is-visible');
+                                });
+                                layoutObserver.unobserve(entry.target);
+                            }
+                        });
+                    }, { threshold: 0.1 });
+                    layoutObserver.observe(layoutExamples);
+                }
+            }
+
+            // Interactive swatch hover effect
+            const swatches = document.querySelectorAll('.hover-swatch');
+            const swatchDemo = document.querySelector('.swatch-hover-demo');
+            swatches.forEach((swatch) => {
+                swatch.addEventListener('mouseenter', () => {
+                    if (swatchDemo) {
+                        const color = swatch.getAttribute('data-color');
+                        swatchDemo.style.backgroundColor = color + '20';
+                        swatchDemo.style.transition = 'background-color 0.3s ease';
+                    }
+                });
+                swatch.addEventListener('mouseleave', () => {
+                    if (swatchDemo) {
+                        swatchDemo.style.backgroundColor = 'transparent';
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+
+</html>
