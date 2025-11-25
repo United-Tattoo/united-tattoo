@@ -2,10 +2,11 @@
 
 - Restyle the website following the design.json
 - Preserve the existing layout and UI flow.
+- Keep existing animations, parallax effects and smooth scrolling effects.
 - Elevate the existing site by modifying the styles and components according to the design system and design.json
 - Remove current Hero image and replace with @UP1_00011_.png
-- Refactor current navigation and create something more minimal and beautiful.
 - Update the color palette and core components.
+- Polish the UI following the design.json
 
 ## Resources
 
@@ -41,4 +42,3 @@ There are also three comprehensive design guides that embody the ideals of the n
 - Deployed via OpenNext on Cloudflare Workers
 - ShadCN UI components + Tailwind CSS
 - Vitest for testing
-
