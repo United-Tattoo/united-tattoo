@@ -4,40 +4,73 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Updated color tokens to match United Tattoo design brief */
-  --background: oklch(1 0 0); /* White */
-  --foreground: oklch(0.145 0 0); /* Dark Slate Gray */
-  --card: oklch(1 0 0); /* Light Gray */
-  --card-foreground: oklch(0.145 0 0); /* Dark text for cards */
-  --popover: oklch(1 0 0); /* White */
-  --popover-foreground: oklch(0.145 0 0); /* Dark text */
-  --primary: oklch(0.205 0 0); /* Emerald-600 #059669 */
-  --primary-foreground: oklch(0.985 0 0); /* White text on primary */
-  --secondary: oklch(0.97 0 0); /* Emerald accent #10b981 */
-  --secondary-foreground: oklch(0.205 0 0); /* White text on secondary */
-  --muted: oklch(0.97 0 0); /* Light Gray */
-  --muted-foreground: oklch(0.556 0 0); /* Muted text */
-  --accent: oklch(0.97 0 0); /* Emerald accent */
-  --accent-foreground: oklch(0.205 0 0); /* White text on accent */
+  /* United Tattoo 2026 Design System - Color Tokens */
+
+  /* Primary Brand Colors */
+  --burnt-orange: #E67E50;
+  --terracotta: #D87850;
+  --burnt: #b0471e;
+
+  /* Secondary Colors */
+  --sage-concrete: #7A8B8B;
+  --sage: #a28f79;
+  --deep-olive: #4a4034;
+  --moss: #6f5c49;
+
+  /* Neutral Colors */
+  --charcoal: #1c1915;
+  --ink: #241b16;
+  --cream: #fff7ec;
+  --sand: #f2e3d0;
+  --white: #ffffff;
+
+  /* Semantic Colors */
+  --rose: #e59863;
+
+  /* ShadCN UI Token Mapping */
+  --background: oklch(0.98 0.01 60); /* Cream background */
+  --foreground: oklch(0.15 0.01 40); /* Ink text */
+  --card: oklch(0.97 0.015 55); /* Sand card background */
+  --card-foreground: oklch(0.15 0.01 40); /* Ink text on cards */
+  --popover: oklch(0.97 0.015 55); /* Sand popover */
+  --popover-foreground: oklch(0.15 0.01 40); /* Ink text */
+  --primary: oklch(0.48 0.12 35); /* Burnt (dark orange) */
+  --primary-foreground: oklch(0.99 0 0); /* White text on primary */
+  --secondary: oklch(0.63 0.08 45); /* Terracotta */
+  --secondary-foreground: oklch(0.99 0 0); /* White text on secondary */
+  --muted: oklch(0.95 0.01 55); /* Light sand */
+  --muted-foreground: oklch(0.50 0.02 50); /* Moss for muted text */
+  --accent: oklch(0.67 0.06 45); /* Rose accent */
+  --accent-foreground: oklch(0.15 0.01 40); /* Ink text on accent */
   --destructive: oklch(0.577 0.245 27.325); /* Red for destructive actions */
   --destructive-foreground: oklch(0.985 0 0); /* White text */
-  --border: oklch(0.922 0 0); /* Light border */
-  --input: oklch(0.922 0 0); /* Input background */
-  --ring: oklch(0.708 0 0); /* Focus ring */
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.985 0 0);
-  --sidebar-foreground: oklch(0.145 0 0);
-  --sidebar-primary: oklch(0.205 0 0);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.97 0 0);
-  --sidebar-accent-foreground: oklch(0.205 0 0);
-  --sidebar-border: oklch(0.922 0 0);
-  --sidebar-ring: oklch(0.708 0 0);
+  --border: oklch(0.60 0.02 150 / 0.2); /* Sage concrete with opacity */
+  --input: oklch(0.97 0.015 55); /* Sand input background */
+  --ring: oklch(0.67 0.06 45); /* Rose focus ring */
+
+  /* Chart Colors - Updated to match brand */
+  --chart-1: oklch(0.63 0.08 45); /* Terracotta */
+  --chart-2: oklch(0.60 0.02 150); /* Sage concrete */
+  --chart-3: oklch(0.67 0.06 50); /* Sage */
+  --chart-4: oklch(0.48 0.12 35); /* Burnt */
+  --chart-5: oklch(0.67 0.06 45); /* Rose */
+
+  /* Border Radius */
+  --radius: 0.75rem;
+
+  /* Sidebar Colors */
+  --sidebar: oklch(0.98 0.01 60);
+  --sidebar-foreground: oklch(0.15 0.01 40);
+  --sidebar-primary: oklch(0.48 0.12 35);
+  --sidebar-primary-foreground: oklch(0.99 0 0);
+  --sidebar-accent: oklch(0.97 0.015 55);
+  --sidebar-accent-foreground: oklch(0.15 0.01 40);
+  --sidebar-border: oklch(0.60 0.02 150 / 0.2);
+  --sidebar-ring: oklch(0.67 0.06 45);
+
+  /* Design System Variables */
+  --sticky-offset: clamp(3.5rem, 8vw, 6rem);
+  --ambient-color: rgba(178, 109, 70, 0.4);
 }
 
 .dark {
@@ -76,7 +109,7 @@
 }
 
 @theme inline {
-  --font-sans: var(--font-source-sans);
+  --font-sans: var(--font-grotesk);
   --font-serif: var(--font-playfair);
   --font-mono: var(--font-geist-mono);
   --color-background: var(--background);
@@ -121,8 +154,44 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    /* Sun-washed plaster background with texture layers */
+    background: linear-gradient(180deg, #7A8B8B 0%, #9CAAA6 45%, #F2E3D0 100%);
+    position: relative;
+    font-family: var(--font-grotesk), sans-serif;
+  }
+
+  /* Texture overlay layer - Ambient gradients */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -2;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(216, 120, 80, 0.15), transparent 45%),
+      radial-gradient(circle at 85% 5%, rgba(36, 27, 22, 0.08), transparent 55%);
+    opacity: 0.8;
+  }
+
+  /* Technical Grid Texture (Drafting Table feel) */
+  body::after {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: -1;
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 200 200" fill="none" stroke="rgba(28, 25, 21, 0.06)" stroke-width="0.5"><path d="M0 0h200v200H0z"/><path d="M-10 20h220"/><path d="M-10 60h220"/><path d="M-10 100h220"/><path d="M-10 140h220"/><path d="M-10 180h220"/><path d="M20 -10v220"/><path d="M60 -10v220"/><path d="M100 -10v220"/><path d="M140 -10v220"/><path d="M180 -10v220"/></svg>');
+    mix-blend-mode: multiply;
+    opacity: 1;
   }
 
   /* Added Lenis smooth scrolling styles */

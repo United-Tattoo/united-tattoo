@@ -1,6 +1,6 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Playfair_Display, Source_Sans_3 } from "next/font/google"
+import { Playfair_Display, Space_Grotesk } from "next/font/google"
 import { Suspense } from "react"
 import Script from "next/script"
 
@@ -15,13 +15,16 @@ const playfairDisplay = Playfair_Display({
   variable: "--font-playfair",
   display: "swap",
   preload: true,
+  weight: ["400", "600"],
+  style: ["normal", "italic"],
 })
 
-const sourceSans = Source_Sans_3({
+const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
-  variable: "--font-source-sans",
+  variable: "--font-grotesk",
   display: "swap",
   preload: true,
+  weight: ["300", "400", "500", "600", "700"],
 })
 
 export const metadata: Metadata = createMetadata({
@@ -43,7 +46,7 @@ export default function RootLayout({
   const organizationData = generateOrganizationJsonLd()
 
   return (
-    <html lang="en" className={`${playfairDisplay.variable} ${sourceSans.variable}`}>
+    <html lang="en" className={`${playfairDisplay.variable} ${spaceGrotesk.variable}`}>
       <head>
         {/*
           ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
