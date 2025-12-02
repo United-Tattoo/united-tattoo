@@ -2,10 +2,26 @@ import { withAuth } from "next-auth/middleware"
 import { NextResponse } from "next/server"
 import { UserRole } from "@/types/database"
 
+// Simple request logging for debugging
+function logRequest(req: Request, pathname: string, duration?: number) {
+  // Only log in development or when DEBUG is set
+  if (process.env.NODE_ENV !== "development" && !process.env.DEBUG) return
+
+  const method = req.method
+  const status = duration !== undefined ? "completed" : "started"
+  const timing = duration !== undefined ? `${duration}ms` : ""
+
+  console.log(`[${new Date().toISOString()}] ${method} ${pathname} ${status} ${timing}`.trim())
+}
+
 export default withAuth(
   function middleware(req) {
+    const startTime = Date.now()
     const token = req.nextauth.token
     const { pathname } = req.nextUrl
+
+    // Log incoming request
+    logRequest(req, pathname)
 
     // Permanent redirect for renamed artist slug
     if (pathname === "/artists/amari-rodriguez") {

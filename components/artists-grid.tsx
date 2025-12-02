@@ -12,20 +12,20 @@ const specialties = ["All", "Traditional", "Realism", "Fine Line", "Japanese", "
 
 export function ArtistsGrid() {
   const [selectedSpecialty, setSelectedSpecialty] = useState("All")
-  
+
   // Fetch artists from API
   const { data: artists, isLoading, error } = useArtists({ limit: 50 })
 
   // Filter artists client-side
   const filteredArtists = useMemo(() => {
     if (!artists) return []
-    
+
     if (selectedSpecialty === "All") {
       return artists
     }
-    
+
     return artists.filter((artist) =>
-      artist.specialties.some((style) => 
+      artist.specialties.some((style) =>
         style.toLowerCase().includes(selectedSpecialty.toLowerCase())
       )
     )
@@ -81,10 +81,10 @@ export function ArtistsGrid() {
             ) : (
               filteredArtists.map((artist) => {
                 // Get profile image (first portfolio image or placeholder)
-                const profileImage = artist.portfolioImages.find(img => img.tags.includes('profile'))?.url || 
-                                    artist.portfolioImages[0]?.url || 
+                const profileImage = artist.portfolioImages.find(img => img.tags.includes('profile'))?.url ||
+                                    artist.portfolioImages[0]?.url ||
                                     "/placeholder.svg"
-                
+
                 return (
                   <Card key={artist.id} className="group hover:shadow-xl transition-all duration-300 overflow-hidden">
                     <div className="flex flex-col h-full">
@@ -93,6 +93,7 @@ export function ArtistsGrid() {
                         <img
                           src={profileImage}
                           alt={artist.name}
+                          loading="lazy"
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                         <div className="absolute top-3 left-3">

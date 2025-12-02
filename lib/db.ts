@@ -19,6 +19,62 @@ interface Env {
   R2_BUCKET: R2Bucket;
 }
 
+/**
+ * Custom database error with additional context
+ */
+export class DatabaseError extends Error {
+  public readonly operation: string
+  public readonly table?: string
+  public readonly entityId?: string
+  public readonly cause?: Error
+
+  constructor(message: string, options: {
+    operation: string
+    table?: string
+    entityId?: string
+    cause?: Error
+  }) {
+    super(message)
+    this.name = 'DatabaseError'
+    this.operation = options.operation
+    this.table = options.table
+    this.entityId = options.entityId
+    this.cause = options.cause
+
+    // Log detailed error in development
+    if (process.env.NODE_ENV === 'development') {
+      console.error(`[DB Error] ${this.operation}${this.table ? ` on ${this.table}` : ''}${this.entityId ? ` (id: ${this.entityId})` : ''}: ${message}`)
+      if (this.cause) {
+        console.error('[DB Error] Cause:', this.cause)
+      }
+    }
+  }
+}
+
+/**
+ * Wrap database operations with better error handling
+ */
+async function withDbError<T>(
+  operation: string,
+  table: string,
+  fn: () => Promise<T>,
+  entityId?: string
+): Promise<T> {
+  try {
+    return await fn()
+  } catch (error) {
+    throw new DatabaseError(
+      error instanceof Error ? error.message : 'Unknown database error',
+      {
+        operation,
+        table,
+        entityId,
+        cause: error instanceof Error ? error : undefined
+      }
+    )
+  }
+}
+
 // Get the database instance from the environment
 // In Next.js API routes, bindings are passed through the context parameter
 export function getDB(env?: any): D1Database {
@@ -167,7 +223,7 @@ export async function updateUser(id: string, data: {
 export async function getArtists(env?: any): Promise<Artist[]> {
   const db = getDB(env);
   const result = await db.prepare(`
-    SELECT 
+    SELECT
       a.*,
       u.name as user_name,
       u.email as user_email
@@ -176,7 +232,7 @@ export async function getArtists(env?: any): Promise<Artist[]> {
     WHERE a.is_active = 1
     ORDER BY a.created_at DESC
   `).all();
-  
+
   // Parse JSON fields
   return (result.results as any[]).map(artist => ({
     ...artist,
@@ -187,9 +243,10 @@ export async function getArtists(env?: any): Promise<Artist[]> {
 
 export async function getPublicArtists(filters?: import('@/types/database').ArtistFilters, env?: any): Promise<import('@/types/database').PublicArtist[]> {
   const db = getDB(env);
-  
-  let query = `
-    SELECT 
+
+  // Query 1: Get all matching artists
+  let artistQuery = `
+    SELECT
       a.id,
       a.slug,
       a.name,
@@ -202,74 +259,91 @@ export async function getPublicArtists(filters?: import('@/types/database').Arti
     FROM artists a
     WHERE a.is_active = 1
   `;
-  
+
   const values: any[] = [];
-  
+
   if (filters?.specialty) {
-    query += ` AND a.specialties LIKE ?`;
+    artistQuery += ` AND a.specialties LIKE ?`;
     values.push(`%${filters.specialty}%`);
   }
-  
+
   if (filters?.search) {
-    query += ` AND (a.name LIKE ? OR a.bio LIKE ?)`;
+    artistQuery += ` AND (a.name LIKE ? OR a.bio LIKE ?)`;
     values.push(`%${filters.search}%`, `%${filters.search}%`);
   }
-  
-  query += ` ORDER BY a.created_at DESC`;
-  
+
+  artistQuery += ` ORDER BY a.created_at DESC`;
+
   if (filters?.limit) {
-    query += ` LIMIT ?`;
+    artistQuery += ` LIMIT ?`;
     values.push(filters.limit);
   }
-  
+
   if (filters?.offset) {
-    query += ` OFFSET ?`;
+    artistQuery += ` OFFSET ?`;
     values.push(filters.offset);
   }
-  
-  const result = await db.prepare(query).bind(...values).all();
-  
-  // Fetch portfolio images for each artist
-  const artistsWithPortfolio = await Promise.all(
-    (result.results as any[]).map(async (artist) => {
-      const portfolioResult = await db.prepare(`
-        SELECT * FROM portfolio_images 
-        WHERE artist_id = ? AND is_public = 1
-        ORDER BY order_index ASC, created_at DESC
-      `).bind(artist.id).all();
-      
-      return {
-        id: artist.id,
-        slug: artist.slug,
-        name: artist.name,
-        bio: artist.bio,
-        specialties: artist.specialties ? JSON.parse(artist.specialties) : [],
-        instagramHandle: artist.instagram_handle,
-        isActive: Boolean(artist.is_active),
-        hourlyRate: artist.hourly_rate,
-        createdAt: artist.created_at ? new Date(artist.created_at) : undefined,
-        portfolioImages: (portfolioResult.results as any[]).map(img => ({
-          id: img.id,
-          artistId: img.artist_id,
-          url: img.url,
-          caption: img.caption,
-          tags: img.tags ? JSON.parse(img.tags) : [],
-          orderIndex: img.order_index,
-          isPublic: Boolean(img.is_public),
-          createdAt: new Date(img.created_at)
-        }))
-      };
-    })
-  );
-  
-  return artistsWithPortfolio;
+
+  const artistResult = await db.prepare(artistQuery).bind(...values).all();
+  const artists = artistResult.results as any[];
+
+  if (artists.length === 0) {
+    return [];
+  }
+
+  // Query 2: Batch fetch all portfolio images for the artists in a single query
+  // This eliminates the N+1 query problem
+  const artistIds = artists.map(a => a.id);
+  const placeholders = artistIds.map(() => '?').join(',');
+
+  const portfolioQuery = `
+    SELECT * FROM portfolio_images
+    WHERE artist_id IN (${placeholders}) AND is_public = 1
+    ORDER BY artist_id, order_index ASC, created_at DESC
+  `;
+
+  const portfolioResult = await db.prepare(portfolioQuery).bind(...artistIds).all();
+  const allPortfolioImages = portfolioResult.results as any[];
+
+  // Group portfolio images by artist_id for efficient lookup
+  const portfolioByArtist = new Map<string, any[]>();
+  for (const img of allPortfolioImages) {
+    const artistId = img.artist_id;
+    if (!portfolioByArtist.has(artistId)) {
+      portfolioByArtist.set(artistId, []);
+    }
+    portfolioByArtist.get(artistId)!.push(img);
+  }
+
+  // Map artists with their portfolio images
+  return artists.map(artist => ({
+    id: artist.id,
+    slug: artist.slug,
+    name: artist.name,
+    bio: artist.bio,
+    specialties: artist.specialties ? JSON.parse(artist.specialties) : [],
+    instagramHandle: artist.instagram_handle,
+    isActive: Boolean(artist.is_active),
+    hourlyRate: artist.hourly_rate,
+    createdAt: artist.created_at ? new Date(artist.created_at) : undefined,
+    portfolioImages: (portfolioByArtist.get(artist.id) || []).map(img => ({
+      id: img.id,
+      artistId: img.artist_id,
+      url: img.url,
+      caption: img.caption,
+      tags: img.tags ? JSON.parse(img.tags) : [],
+      orderIndex: img.order_index,
+      isPublic: Boolean(img.is_public),
+      createdAt: new Date(img.created_at)
+    }))
+  }));
 }
 
 export async function getArtistWithPortfolio(id: string, env?: any): Promise<import('@/types/database').ArtistWithPortfolio | null> {
   const db = getDB(env);
-  
+
   const artistResult = await db.prepare(`
-    SELECT 
+    SELECT
       a.*,
       u.name as user_name,
       u.email as user_email,
@@ -278,15 +352,15 @@ export async function getArtistWithPortfolio(id: string, env?: any): Promise<imp
     LEFT JOIN users u ON a.user_id = u.id
     WHERE a.id = ?
   `).bind(id).first();
-  
+
   if (!artistResult) return null;
-  
+
   const portfolioResult = await db.prepare(`
-    SELECT * FROM portfolio_images 
+    SELECT * FROM portfolio_images
     WHERE artist_id = ?
     ORDER BY order_index ASC, created_at DESC
   `).bind(id).all();
-  
+
   // Fetch flash items (public only) - tolerate missing table in older DBs
   let flashRows: any[] = []
   try {
@@ -300,9 +374,9 @@ export async function getArtistWithPortfolio(id: string, env?: any): Promise<imp
     // Table may not exist yet; treat as empty
     flashRows = []
   }
-  
+
   const artist = artistResult as any;
-  
+
   return {
     id: artist.id,
     userId: artist.user_id,
@@ -350,9 +424,9 @@ export async function getArtistWithPortfolio(id: string, env?: any): Promise<imp
 
 export async function getArtistBySlug(slug: string, env?: any): Promise<import('@/types/database').ArtistWithPortfolio | null> {
   const db = getDB(env);
-  
+
   const artistResult = await db.prepare(`
-    SELECT 
+    SELECT
       a.*,
       u.name as user_name,
       u.email as user_email,
@@ -361,9 +435,9 @@ export async function getArtistBySlug(slug: string, env?: any): Promise<import('
     LEFT JOIN users u ON a.user_id = u.id
     WHERE a.slug = ?
   `).bind(slug).first();
-  
+
   if (!artistResult) return null;
-  
+
   const artist = artistResult as any;
   return getArtistWithPortfolio(artist.id, env);
 }
@@ -371,7 +445,7 @@ export async function getArtistBySlug(slug: string, env?: any): Promise<import('
 export async function getArtistByUserId(userId: string, env?: any): Promise<Artist | null> {
   const db = getDB(env);
   const result = await db.prepare(`
-    SELECT 
+    SELECT
       a.*,
       u.name as user_name,
       u.email as user_email
@@ -379,9 +453,9 @@ export async function getArtistByUserId(userId: string, env?: any): Promise<Arti
     LEFT JOIN users u ON a.user_id = u.id
     WHERE a.user_id = ?
   `).bind(userId).first();
-  
+
   if (!result) return null;
-  
+
   const artist = result as any;
   return {
     id: artist.id,
@@ -403,7 +477,7 @@ export async function getArtistByUserId(userId: string, env?: any): Promise<Arti
 export async function getArtist(id: string, env?: any): Promise<Artist | null> {
   const db = getDB(env);
   const result = await db.prepare(`
-    SELECT 
+    SELECT
       a.*,
       u.name as user_name,
       u.email as user_email
@@ -411,7 +485,7 @@ export async function getArtist(id: string, env?: any): Promise<Artist | null> {
     LEFT JOIN users u ON a.user_id = u.id
     WHERE a.id = ?
   `).bind(id).first();
-  
+
   return result as Artist | null;
 }
 
@@ -440,7 +514,7 @@ export async function createArtist(data: CreateArtistInput, env?: any): Promise<
 
   const slugBase = data.name ? generateSlug(data.name) : generateSlug(crypto.randomUUID());
   const slug = await ensureUniqueSlug(slugBase);
-  
+
   // First create or get the user
   let userId = data.userId;
   if (!userId) {
@@ -498,10 +572,10 @@ export async function createArtist(data: CreateArtistInput, env?: any): Promise<
 
 export async function updateArtist(id: string, data: UpdateArtistInput, env?: any): Promise<Artist> {
   const db = getDB(env);
-  
+
   const setParts: string[] = [];
   const values: any[] = [];
-  
+
   if (data.name !== undefined) {
     setParts.push('name = ?');
     values.push(data.name);
@@ -526,17 +600,17 @@ export async function updateArtist(id: string, data: UpdateArtistInput, env?: an
     setParts.push('is_active = ?');
     values.push(data.isActive);
   }
-  
+
   setParts.push('updated_at = CURRENT_TIMESTAMP');
   values.push(id);
-  
+
   const result = await db.prepare(`
-    UPDATE artists 
+    UPDATE artists
     SET ${setParts.join(', ')}
     WHERE id = ?
     RETURNING *
   `).bind(...values).first();
-  
+
   return result as Artist;
 }
 
@@ -552,18 +626,18 @@ export async function deleteArtist(id: string, env?: any): Promise<void> {
 export async function getPortfolioImages(artistId: string, env?: any): Promise<PortfolioImage[]> {
   const db = getDB(env);
   const result = await db.prepare(`
-    SELECT * FROM portfolio_images 
+    SELECT * FROM portfolio_images
     WHERE artist_id = ? AND is_public = 1
     ORDER BY order_index ASC, created_at DESC
   `).bind(artistId).all();
-  
+
   return result.results as PortfolioImage[];
 }
 
 export async function addPortfolioImage(artistId: string, imageData: Omit<PortfolioImage, 'id' | 'artistId' | 'createdAt'>, env?: any): Promise<PortfolioImage> {
   const db = getDB(env);
   const id = crypto.randomUUID();
-  
+
   const result = await db.prepare(`
     INSERT INTO portfolio_images (id, artist_id, url, caption, tags, order_index, is_public)
     VALUES (?, ?, ?, ?, ?, ?, ?)
@@ -577,16 +651,16 @@ export async function addPortfolioImage(artistId: string, imageData: Omit<Portfo
     imageData.orderIndex || 0,
     imageData.isPublic !== false
   ).first();
-  
+
   return result as PortfolioImage;
 }
 
 export async function updatePortfolioImage(id: string, data: Partial<PortfolioImage>, env?: any): Promise<PortfolioImage> {
   const db = getDB(env);
-  
+
   const setParts: string[] = [];
   const values: any[] = [];
-  
+
   if (data.url !== undefined) {
     setParts.push('url = ?');
     values.push(data.url);
@@ -607,16 +681,16 @@ export async function updatePortfolioImage(id: string, data: Partial<PortfolioIm
     setParts.push('is_public = ?');
     values.push(data.isPublic);
   }
-  
+
   values.push(id);
-  
+
   const result = await db.prepare(`
-    UPDATE portfolio_images 
+    UPDATE portfolio_images
     SET ${setParts.join(', ')}
     WHERE id = ?
     RETURNING *
   `).bind(...values).first();
-  
+
   return result as PortfolioImage;
 }
 
@@ -632,7 +706,7 @@ export async function deletePortfolioImage(id: string, env?: any): Promise<void>
 export async function getAppointments(filters?: AppointmentFilters, env?: any): Promise<Appointment[]> {
   const db = getDB(env);
   let query = `
-    SELECT 
+    SELECT
       a.*,
       ar.name as artist_name,
       u.name as client_name,
@@ -642,31 +716,31 @@ export async function getAppointments(filters?: AppointmentFilters, env?: any): 
     LEFT JOIN users u ON a.client_id = u.id
     WHERE 1=1
   `;
-  
+
   const values: any[] = [];
-  
+
   if (filters?.artistId) {
     query += ' AND a.artist_id = ?';
     values.push(filters.artistId);
   }
-  
+
   if (filters?.status) {
     query += ' AND a.status = ?';
     values.push(filters.status);
   }
-  
+
   if (filters?.startDate) {
     query += ' AND a.start_time >= ?';
     values.push(filters.startDate);
   }
-  
+
   if (filters?.endDate) {
     query += ' AND a.start_time <= ?';
     values.push(filters.endDate);
   }
-  
+
   query += ' ORDER BY a.start_time ASC';
-  
+
   const result = await db.prepare(query).bind(...values).all();
   return result.results as Appointment[];
 }
@@ -674,10 +748,10 @@ export async function getAppointments(filters?: AppointmentFilters, env?: any): 
 export async function createAppointment(data: CreateAppointmentInput, env?: any): Promise<Appointment> {
   const db = getDB(env);
   const id = crypto.randomUUID();
-  
+
   const result = await db.prepare(`
     INSERT INTO appointments (
-      id, artist_id, client_id, title, description, 
+      id, artist_id, client_id, title, description,
       start_time, end_time, status, deposit_amount, total_amount, notes
     )
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -695,16 +769,16 @@ export async function createAppointment(data: CreateAppointmentInput, env?: any)
     data.totalAmount || null,
     data.notes || null
   ).first();
-  
+
   return result as Appointment;
 }
 
 export async function updateAppointment(id: string, data: Partial<Appointment>, env?: any): Promise<Appointment> {
   const db = getDB(env);
-  
+
   const setParts: string[] = [];
   const values: any[] = [];
-  
+
   if (data.title !== undefined) {
     setParts.push('title = ?');
     values.push(data.title);
@@ -737,17 +811,17 @@ export async function updateAppointment(id: string, data: Partial<Appointment>, 
     setParts.push('notes = ?');
     values.push(data.notes);
   }
-  
+
   setParts.push('updated_at = CURRENT_TIMESTAMP');
   values.push(id);
-  
+
   const result = await db.prepare(`
-    UPDATE appointments 
+    UPDATE appointments
     SET ${setParts.join(', ')}
     WHERE id = ?
     RETURNING *
   `).bind(...values).first();
-  
+
   return result as Appointment;
 }
 
@@ -768,10 +842,10 @@ export async function getSiteSettings(env?: any): Promise<SiteSettings | null> {
 
 export async function updateSiteSettings(data: UpdateSiteSettingsInput, env?: any): Promise<SiteSettings> {
   const db = getDB(env);
-  
+
   const setParts: string[] = [];
   const values: any[] = [];
-  
+
   if (data.studioName !== undefined) {
     setParts.push('studio_name = ?');
     values.push(data.studioName);
@@ -808,17 +882,17 @@ export async function updateSiteSettings(data: UpdateSiteSettingsInput, env?: an
     setParts.push('logo_url = ?');
     values.push(data.logoUrl);
   }
-  
+
   setParts.push('updated_at = CURRENT_TIMESTAMP');
   values.push('default');
-  
+
   const result = await db.prepare(`
-    UPDATE site_settings 
+    UPDATE site_settings
     SET ${setParts.join(', ')}
     WHERE id = ?
     RETURNING *
   `).bind(...values).first();
-  
+
   return result as SiteSettings;
 }
 

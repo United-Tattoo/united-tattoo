@@ -92,6 +92,7 @@ export function ServicesSection() {
                 <img
                   src="/tattoo-equipment-and-tools.jpg"
                   alt="Tattoo Equipment"
+                  loading="lazy"
                   className="w-full h-full object-cover"
                 />
               </div>
@@ -190,6 +191,7 @@ export function ServicesSection() {
                       <img
                         src={`/abstract-geometric-shapes.png?height=300&width=400&query=${service.title.toLowerCase()} tattoo example`}
                         alt={service.title}
+                        loading="lazy"
                         className="w-full max-w-sm h-auto object-cover rounded-lg shadow-2xl"
                       />
                       <div className="absolute -bottom-2 -right-2 w-16 h-16 bg-white/5 rounded-lg"></div>

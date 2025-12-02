@@ -63,14 +63,15 @@ export function NewArtistsSection() {
                  <div className="relative overflow-hidden rounded-[24px] bg-[var(--sage-concrete)] aspect-[3/4] shadow-[var(--shadow-lg)] transition-all duration-500 group-hover:-translate-y-2 group-hover:shadow-[var(--shadow-bloom)]">
                     {/* Image */}
                     <div className="absolute inset-0">
-                       <img 
-                         src={artist.faceImage || "/placeholder.svg"} 
+                       <img
+                         src={artist.faceImage || "/placeholder.svg"}
                          alt={artist.name}
+                         loading="lazy"
                          className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
                        />
                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity duration-300" />
                     </div>
-                    
+
                     {/* Content */}
                     <div className="absolute bottom-0 left-0 right-0 p-6 text-white transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                        <span className="block text-[0.7rem] uppercase tracking-[0.25em] mb-2 opacity-90">
@@ -84,7 +85,7 @@ export function NewArtistsSection() {
              </Reveal>
            ))}
         </div>
-        
+
         <div className="mt-10 md:hidden">
             <Link href="/book">
                <UnitedButton variant="primary" className="w-full">

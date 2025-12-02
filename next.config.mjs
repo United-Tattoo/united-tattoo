@@ -1,3 +1,5 @@
+import createMDX from "@next/mdx"
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   eslint: {
@@ -12,6 +14,16 @@ const nextConfig = {
     unoptimized: true,
   },
   output: "standalone",
+  // Enable MDX pages
+  pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
 }
 
-export default nextConfig
+const withMDX = createMDX({
+  // MDX options can be added here
+  options: {
+    remarkPlugins: [],
+    rehypePlugins: [],
+  },
+})
+
+export default withMDX(nextConfig)

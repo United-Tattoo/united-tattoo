@@ -1,11 +1,44 @@
 'use client'
 
-import { StatsDashboard } from '@/components/admin/stats-dashboard'
+import dynamic from 'next/dynamic'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
+import { Skeleton } from '@/components/ui/skeleton'
 import { Users, Calendar, Settings, Upload, BarChart3, Plus } from 'lucide-react'
 import Link from 'next/link'
+
+// Dynamically import heavy dashboard component to reduce initial bundle size
+const StatsDashboard = dynamic(
+  () => import('@/components/admin/stats-dashboard').then(mod => ({ default: mod.StatsDashboard })),
+  {
+    loading: () => (
+      <div className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {[1, 2, 3, 4].map((i) => (
+            <Card key={i}>
+              <CardHeader className="pb-2">
+                <Skeleton className="h-4 w-24" />
+              </CardHeader>
+              <CardContent>
+                <Skeleton className="h-8 w-16" />
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+        <Card>
+          <CardHeader>
+            <Skeleton className="h-5 w-32" />
+          </CardHeader>
+          <CardContent>
+            <Skeleton className="h-64 w-full" />
+          </CardContent>
+        </Card>
+      </div>
+    ),
+    ssr: false,
+  }
+)
 
 export default function AdminDashboard() {
   return (
@@ -18,7 +51,7 @@ export default function AdminDashboard() {
             Welcome to United Tattoo Studio admin panel
           </p>
         </div>
-        
+
         <div className="flex gap-2">
           <Link href="/admin/artists/new">
             <Button>
@@ -117,7 +150,7 @@ export default function AdminDashboard() {
               </div>
               <Badge variant="secondary">2 min ago</Badge>
             </div>
-            
+
             <div className="flex items-center justify-between py-2 border-b">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
@@ -125,7 +158,7 @@ export default function AdminDashboard() {
               </div>
               <Badge variant="secondary">15 min ago</Badge>
             </div>
-            
+
             <div className="flex items-center justify-between py-2 border-b">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-yellow-500 rounded-full"></div>
@@ -133,7 +166,7 @@ export default function AdminDashboard() {
               </div>
               <Badge variant="secondary">1 hour ago</Badge>
             </div>
-            
+
             <div className="flex items-center justify-between py-2">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-purple-500 rounded-full"></div>

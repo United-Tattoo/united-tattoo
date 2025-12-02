@@ -121,6 +121,7 @@ export function ArtistsSection() {
                 <img
                     src="/united-logo-full.jpg"
                     alt=""
+                    loading="lazy"
                     className="w-full h-full object-cover object-center scale-150 blur-[2px]"
                 />
                 <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
@@ -216,6 +217,7 @@ export function ArtistsSection() {
                                                             <img
                                                                 src={portfolioImage}
                                                                 alt={`${artist.name} work`}
+                                                                loading="lazy"
                                                                 className="w-full h-full object-cover"
                                                             />
                                                         </div>

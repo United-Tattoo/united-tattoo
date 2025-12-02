@@ -105,6 +105,7 @@ export function ServicesMobileCarousel() {
                       <img
                         src={`/abstract-geometric-shapes.png?height=250&width=300&query=${service.title.toLowerCase()} tattoo example`}
                         alt={service.title}
+                        loading="lazy"
                         className="w-full max-w-xs h-auto object-cover rounded-lg shadow-2xl"
                       />
                       <div className="absolute -bottom-2 -right-2 w-12 h-12 bg-white/5 rounded-lg"></div>

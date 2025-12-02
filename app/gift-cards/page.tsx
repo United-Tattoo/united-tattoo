@@ -3,6 +3,9 @@ import { GiftCardsPage } from "@/components/gift-cards-page"
 import { Footer } from "@/components/footer"
 import { generateMetadata as createMetadata } from "@/lib/metadata"
 
+// Static content page - cache for 24 hours
+export const revalidate = 86400
+
 export const metadata = createMetadata({
   title: "Gift Cards",
   description: "Give the gift of art! Purchase United Tattoo gift cards for custom tattoos, piercings, and more. Perfect for any occasion.",

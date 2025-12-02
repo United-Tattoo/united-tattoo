@@ -11,13 +11,13 @@ export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest, { params }: { params?: any } = {}, context?: any) {
   try {
     const { searchParams } = new URL(request.url)
-    
+
     // Parse and validate query parameters
     const pagination = paginationSchema.parse({
       page: searchParams.get("page") || "1",
       limit: searchParams.get("limit") || "50", // Increased default for artists grid
     })
-    
+
     const filters = artistFiltersSchema.parse({
       isActive: searchParams.get("isActive"),
       specialty: searchParams.get("specialty"),
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest, { params }: { params?: any } = {
 
     // Fetch artists from database with portfolio images
     const artists = await getPublicArtists(dbFilters, context?.env)
-    
+
     // Get total count for pagination (this is a simplified approach)
     // In production, you'd want a separate count query
     const hasMore = artists.length === pagination.limit
@@ -48,6 +48,11 @@ export async function GET(request: NextRequest, { params }: { params?: any } = {
         hasMore,
       },
       filters,
+    }, {
+      headers: {
+        // Cache for 1 hour, allow stale for 2 hours while revalidating
+        "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=7200",
+      },
     })
   } catch (error) {
     console.error("Error fetching artists:", error)
@@ -66,7 +71,7 @@ export async function POST(request: NextRequest, { params }: { params?: any } = 
     }
     // Require admin authentication
     const session = await requireAuth(UserRole.SHOP_ADMIN)
-    
+
     const body = await request.json()
     const validatedData = createArtistSchema.parse(body)
 
@@ -79,7 +84,7 @@ export async function POST(request: NextRequest, { params }: { params?: any } = 
     return NextResponse.json(newArtist, { status: 201 })
   } catch (error) {
     console.error("Error creating artist:", error)
-    
+
     if (error instanceof Error) {
       if (error.message.includes("Authentication required")) {
         return NextResponse.json(

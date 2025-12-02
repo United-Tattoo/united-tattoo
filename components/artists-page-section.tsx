@@ -110,6 +110,7 @@ export function ArtistsPageSection() {
         <img
           src="/united-logo-full.jpg"
           alt=""
+          loading="lazy"
           className="w-full h-full object-cover object-center scale-150 blur-[2px]"
         />
         <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" />
@@ -180,6 +181,7 @@ export function ArtistsPageSection() {
                         <img
                           src={artist.faceImage || "/placeholder.svg"}
                           alt={`${artist.name} portrait`}
+                          loading="lazy"
                           className="w-full h-full object-cover scale-110"
                         />
                       </div>
@@ -188,6 +190,7 @@ export function ArtistsPageSection() {
                         <img
                           src={artist.workImages?.[0] || "/placeholder.svg"}
                           alt={`${artist.name} tattoo work`}
+                          loading="lazy"
                           className="w-full h-full object-cover scale-110"
                         />
                       </div>
@@ -263,6 +266,7 @@ export function ArtistsPageSection() {
                         <img
                           src={artist.faceImage || "/placeholder.svg"}
                           alt={`${artist.name} portrait`}
+                          loading="lazy"
                           className="w-full h-full object-cover scale-110"
                         />
                       </div>
@@ -271,6 +275,7 @@ export function ArtistsPageSection() {
                         <img
                           src={artist.workImages?.[0] || "/placeholder.svg"}
                           alt={`${artist.name} tattoo work`}
+                          loading="lazy"
                           className="w-full h-full object-cover scale-110"
                         />
                       </div>
@@ -346,6 +351,7 @@ export function ArtistsPageSection() {
                         <img
                           src={artist.faceImage || "/placeholder.svg"}
                           alt={`${artist.name} portrait`}
+                          loading="lazy"
                           className="w-full h-full object-cover scale-110"
                         />
                       </div>
@@ -354,6 +360,7 @@ export function ArtistsPageSection() {
                         <img
                           src={artist.workImages?.[0] || "/placeholder.svg"}
                           alt={`${artist.name} tattoo work`}
+                          loading="lazy"
                           className="w-full h-full object-cover scale-110"
                         />
                       </div>

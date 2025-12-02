@@ -3,11 +3,11 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { signOut } from "next-auth/react"
-import { 
-  Users, 
-  Settings, 
-  Upload, 
-  BarChart3, 
+import {
+  Users,
+  Settings,
+  Upload,
+  BarChart3,
   Calendar,
   LogOut,
   Home,
@@ -76,7 +76,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
   const pathname = usePathname()
 
   // Filter navigation items based on user role
-  const filteredNavigation = navigation.filter(item => 
+  const filteredNavigation = navigation.filter(item =>
     item.roles.includes(user.role)
   )
 
@@ -127,7 +127,8 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
             {user.image ? (
               <img
                 src={user.image}
-                alt={user.name}
+                alt={user.name || "User avatar"}
+                loading="lazy"
                 className="w-10 h-10 rounded-full"
               />
             ) : (
@@ -145,7 +146,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
             </p>
           </div>
         </div>
-        
+
         <Button
           variant="outline"
           size="sm"

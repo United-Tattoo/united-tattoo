@@ -14,14 +14,14 @@ export async function GET(
 ) {
   try {
     const { id } = params
-    
+
     // Try to fetch by ID first, then by slug
     let artist = await getArtistWithPortfolio(id, context?.env)
-    
+
     if (!artist) {
       artist = await getArtistBySlug(id, context?.env)
     }
-    
+
     if (!artist) {
       return NextResponse.json(
         { error: "Artist not found" },
@@ -29,7 +29,12 @@ export async function GET(
       )
     }
 
-    return NextResponse.json(artist)
+    return NextResponse.json(artist, {
+      headers: {
+        // Cache for 30 minutes, allow stale for 1 hour while revalidating
+        "Cache-Control": "public, s-maxage=1800, stale-while-revalidate=3600",
+      },
+    })
   } catch (error) {
     console.error("Error fetching artist:", error)
     return NextResponse.json(
@@ -48,7 +53,7 @@ export async function PUT(
   try {
     const { id } = params
     const session = await requireAuth()
-    
+
     // Get the artist to check ownership
     const artist = await getArtistWithPortfolio(id, context?.env)
     if (!artist) {
@@ -57,21 +62,21 @@ export async function PUT(
         { status: 404 }
       )
     }
-    
+
     // Check authorization: must be the artist themselves or an admin
     const isOwner = artist.userId === session.user.id
     const isAdmin = [UserRole.SUPER_ADMIN, UserRole.SHOP_ADMIN].includes(session.user.role)
-    
+
     if (!isOwner && !isAdmin) {
       return NextResponse.json(
         { error: "Insufficient permissions" },
         { status: 403 }
       )
     }
-    
+
     const body = await request.json()
     const validatedData = updateArtistSchema.parse(body)
-    
+
     // If artist is updating themselves (not admin), restrict what they can change
     let updateData = validatedData
     if (isOwner && !isAdmin) {
@@ -85,7 +90,7 @@ export async function PUT(
     return NextResponse.json(updatedArtist)
   } catch (error) {
     console.error("Error updating artist:", error)
-    
+
     if (error instanceof Error) {
       if (error.message.includes("Authentication required")) {
         return NextResponse.json(
@@ -110,16 +115,16 @@ export async function DELETE(
 ) {
   try {
     const { id } = params
-    
+
     // Require admin authentication
     await requireAuth(UserRole.SHOP_ADMIN)
-    
+
     await deleteArtist(id, context?.env)
 
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error("Error deleting artist:", error)
-    
+
     if (error instanceof Error) {
       if (error.message.includes("Authentication required")) {
         return NextResponse.json(

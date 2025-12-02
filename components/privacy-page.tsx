@@ -16,6 +16,7 @@ export function PrivacyPage() {
           <img
             src="/united-logo-full.jpg"
             alt=""
+            loading="lazy"
             className="w-full h-full object-cover object-center scale-150 blur-[2px]"
           />
         </div>
