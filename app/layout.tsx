@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Playfair_Display, Space_Grotesk } from "next/font/google"
 import { Suspense } from "react"
 import Script from "next/script"
+import { headers } from "next/headers"
 
 import ClientLayout from "./ClientLayout"
 import { getFlags } from "@/lib/flags"
@@ -36,11 +37,22 @@ export const metadata: Metadata = createMetadata({
 
 export const dynamic = "force-dynamic";
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode
 }>) {
+  // Check if we're in the Payload admin panel
+  // Payload routes handle their own HTML structure
+  const headersList = await headers()
+  const pathname = headersList.get("x-pathname") || headersList.get("x-invoke-path") || ""
+  const isPayloadRoute = pathname.startsWith("/cms") || pathname.startsWith("/api/payload")
+
+  // For Payload routes, just render children - Payload has its own RootLayout
+  if (isPayloadRoute) {
+    return <>{children}</>
+  }
+
   const flags = getFlags({ refresh: true })
   const localBusinessData = generateLocalBusinessJsonLd()
   const organizationData = generateOrganizationJsonLd()

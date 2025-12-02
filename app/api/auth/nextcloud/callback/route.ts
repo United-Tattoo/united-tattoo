@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { cookies } from 'next/headers'
-import { signIn } from 'next-auth/react'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/lib/auth'
 import { determineUserRole, getNextcloudUserProfile } from '@/lib/nextcloud-client'
 import { getUserByEmail, createUser, createArtist } from '@/lib/db'
 import { UserRole } from '@/types/database'
+import { getPayload } from '@/src/payload/get-payload'
+import { provisionPayloadUser } from '@/src/payload/auth/nextcloud-strategy'
 
 /**
  * Custom Nextcloud OAuth Callback Handler
  *
  * Handles the OAuth callback from Nextcloud, exchanges code for token,
- * fetches user info, auto-provisions users/artists, and creates a session.
+ * fetches user info, auto-provisions users/artists in both legacy DB and Payload,
+ * and creates a session.
  */
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
@@ -131,7 +131,7 @@ export async function GET(request: NextRequest) {
       )
     }
 
-    // Step 4: Auto-provision user if needed
+    // Step 4: Auto-provision user in legacy database (for backward compatibility)
     let user = await getUserByEmail(email)
 
     if (!user) {
@@ -161,7 +161,25 @@ export async function GET(request: NextRequest) {
       console.log(`Existing user ${email} signed in`)
     }
 
-    // Step 5: Create a one-time token for session completion
+    // Step 5: Also provision user in Payload CMS (for migration)
+    try {
+      const payload = await getPayload()
+      const payloadUser = await provisionPayloadUser(
+        payload,
+        userId,
+        email,
+        displayName
+      )
+
+      if (payloadUser) {
+        console.log(`Payload user provisioned: ${payloadUser.id}`)
+      }
+    } catch (payloadError) {
+      // Log but don't fail - Payload provisioning is optional during migration
+      console.warn('Payload user provisioning failed (non-fatal):', payloadError)
+    }
+
+    // Step 6: Create a one-time token for session completion
     // Store user ID in a short-lived cookie that credentials provider will validate
     const oneTimeToken = crypto.randomUUID()
 

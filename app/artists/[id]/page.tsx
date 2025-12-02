@@ -6,17 +6,18 @@ import { Footer } from "@/components/footer"
 export const revalidate = 1800
 
 interface ArtistPageProps {
-  params: {
+  params: Promise<{
     id: string
-  }
+  }>
 }
 
-export default function ArtistPage({ params }: ArtistPageProps) {
+export default async function ArtistPage({ params }: ArtistPageProps) {
+  const { id } = await params
   return (
     <main className="min-h-screen">
       <Navigation />
       <div className="pt-16">
-        <ArtistPortfolio artistId={params.id} />
+        <ArtistPortfolio artistId={id} />
       </div>
       <Footer />
     </main>

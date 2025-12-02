@@ -1,4 +1,5 @@
 import createMDX from "@next/mdx"
+import { withPayload } from "@payloadcms/next/withPayload"
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -16,6 +17,19 @@ const nextConfig = {
   output: "standalone",
   // Enable MDX pages
   pageExtensions: ["ts", "tsx", "js", "jsx", "md", "mdx"],
+  // Payload requires experimental features
+  experimental: {
+    reactCompiler: false,
+  },
+  // Webpack config for Cloudflare Workers compatibility (from official Payload D1 template)
+  webpack: (webpackConfig) => {
+    webpackConfig.resolve.extensionAlias = {
+      '.cjs': ['.cts', '.cjs'],
+      '.js': ['.ts', '.tsx', '.js', '.jsx'],
+      '.mjs': ['.mts', '.mjs'],
+    }
+    return webpackConfig
+  },
 }
 
 const withMDX = createMDX({
@@ -26,4 +40,6 @@ const withMDX = createMDX({
   },
 })
 
-export default withMDX(nextConfig)
+// Compose the plugins: MDX first, then Payload
+// devBundleServerPackages: false is required for Cloudflare Workers compatibility
+export default withPayload(withMDX(nextConfig), { devBundleServerPackages: false })

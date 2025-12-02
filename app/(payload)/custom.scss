@@ -1,0 +1,219 @@
+/**
+ * Custom Payload Admin Styles - United Tattoo Studio
+ *
+ * Override Payload's default light theme with dark theme
+ * Using @layer payload to ensure our styles take precedence
+ */
+
+/* Override CSS variables at the highest specificity level */
+:root {
+  /* Dark theme elevation scale (backgrounds) */
+  --theme-elevation-0: #0a0a0a;
+  --theme-elevation-50: #141414;
+  --theme-elevation-100: #1a1a1a;
+  --theme-elevation-150: #1f1f1f;
+  --theme-elevation-200: #242424;
+  --theme-elevation-250: #2a2a2a;
+  --theme-elevation-300: #2f2f2f;
+  --theme-elevation-350: #333333;
+  --theme-elevation-400: #3a3a3a;
+  --theme-elevation-450: #404040;
+  --theme-elevation-500: #4a4a4a;
+  --theme-elevation-550: #555555;
+  --theme-elevation-600: #666666;
+  --theme-elevation-650: #777777;
+  --theme-elevation-700: #888888;
+  --theme-elevation-750: #999999;
+  --theme-elevation-800: #aaaaaa;
+  --theme-elevation-850: #bbbbbb;
+  --theme-elevation-900: #cccccc;
+  --theme-elevation-950: #e0e0e0;
+  --theme-elevation-1000: #f5f5f5;
+
+  /* Background */
+  --theme-bg: #0a0a0a;
+  --theme-input-bg: #1a1a1a;
+
+  /* Text colors - inverted for dark theme */
+  --theme-text: #f5f5f5;
+
+  /* Border color */
+  --theme-border-color: #2a2a2a;
+
+  /* Status colors */
+  --theme-success-500: #22c55e;
+  --theme-error-500: #ef4444;
+  --theme-warning-500: #f59e0b;
+
+  color-scheme: dark;
+}
+
+/* Force dark theme even when data-theme="light" */
+html[data-theme="light"] {
+  --theme-elevation-0: #0a0a0a;
+  --theme-elevation-50: #141414;
+  --theme-elevation-100: #1a1a1a;
+  --theme-elevation-150: #1f1f1f;
+  --theme-elevation-200: #242424;
+  --theme-elevation-250: #2a2a2a;
+  --theme-elevation-300: #2f2f2f;
+  --theme-elevation-350: #333333;
+  --theme-elevation-400: #3a3a3a;
+  --theme-elevation-450: #404040;
+  --theme-elevation-500: #4a4a4a;
+  --theme-elevation-550: #555555;
+  --theme-elevation-600: #666666;
+  --theme-elevation-650: #777777;
+  --theme-elevation-700: #888888;
+  --theme-elevation-750: #999999;
+  --theme-elevation-800: #aaaaaa;
+  --theme-elevation-850: #bbbbbb;
+  --theme-elevation-900: #cccccc;
+  --theme-elevation-950: #e0e0e0;
+  --theme-elevation-1000: #f5f5f5;
+  --theme-bg: #0a0a0a;
+  --theme-input-bg: #1a1a1a;
+  --theme-text: #f5f5f5;
+  --theme-border-color: #2a2a2a;
+  color-scheme: dark;
+}
+
+/* Use @layer payload to override payload-default layer */
+@layer payload {
+  /* Card overrides */
+  .card {
+    background: var(--theme-elevation-50);
+    border-color: var(--theme-border-color);
+
+    &__title {
+      color: var(--theme-elevation-1000);
+    }
+  }
+
+  /* Dashboard specific */
+  .dashboard {
+    background: var(--theme-elevation-0);
+
+    &__label {
+      color: var(--theme-elevation-900);
+    }
+  }
+
+  /* Navigation */
+  .nav {
+    background: var(--theme-elevation-0);
+    border-color: var(--theme-border-color);
+
+    &__link,
+    &-group__toggle {
+      color: var(--theme-elevation-800);
+
+      &:hover,
+      &.active {
+        color: var(--theme-elevation-1000);
+        background: var(--theme-elevation-100);
+      }
+    }
+  }
+
+  /* Header */
+  .app-header {
+    background: var(--theme-elevation-0);
+    border-color: var(--theme-border-color);
+  }
+
+  /* Forms */
+  .field-type {
+    input,
+    textarea,
+    select {
+      background: var(--theme-input-bg);
+      border-color: var(--theme-border-color);
+      color: var(--theme-text);
+
+      &:focus {
+        border-color: var(--theme-elevation-400);
+      }
+    }
+  }
+
+  /* Labels */
+  .field-label {
+    color: var(--theme-elevation-800);
+  }
+
+  /* Buttons */
+  .btn {
+    &--style-primary {
+      background: var(--theme-elevation-1000);
+      color: var(--theme-elevation-0);
+    }
+
+    &--style-secondary {
+      background: transparent;
+      border-color: var(--theme-border-color);
+      color: var(--theme-text);
+    }
+  }
+
+  /* Tables */
+  .table {
+    th {
+      background: var(--theme-elevation-100);
+      color: var(--theme-elevation-800);
+    }
+
+    td {
+      border-color: var(--theme-border-color);
+    }
+
+    tr:hover td {
+      background: var(--theme-elevation-100);
+    }
+  }
+
+  /* Template/Layout backgrounds */
+  .template-default,
+  .template-minimal {
+    background: var(--theme-elevation-0);
+  }
+
+  /* Modals */
+  .modal__content,
+  .drawer__content {
+    background: var(--theme-elevation-100);
+    border-color: var(--theme-border-color);
+  }
+
+  /* Popups/Dropdowns */
+  .popup__content,
+  .popup-button-list {
+    background: var(--theme-elevation-100);
+    border-color: var(--theme-border-color);
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--theme-elevation-0);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--theme-elevation-300);
+  border-radius: 4px;
+
+  &:hover {
+    background: var(--theme-elevation-400);
+  }
+}
+
+/* Selection */
+::selection {
+  background: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}

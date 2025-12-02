@@ -1,7 +1,7 @@
 name = "united-tattoo"
 account_id = "5cee6a21cea282a9c89d5297964402e7"
-compatibility_date = "2024-09-23"
-compatibility_flags = ["nodejs_compat"]
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat", "global_fetch_strictly_public"]
 main = ".open-next/worker.js"
 
 [vars]
@@ -13,16 +13,16 @@ NODE_ENV = "production"
 directory = ".open-next/assets"
 binding = "ASSETS"
 
-# D1 Database binding
+# D1 Database binding for Payload CMS
 [[d1_databases]]
-binding = "DB"
+binding = "D1"
 database_name = "united-tattoo"
 database_id = "7191a4c4-e3b2-49c6-bd8d-9cc3394977ec"
 migrations_dir = "sql/migrations_up"
 
-# R2 bucket binding
+# R2 bucket binding for Payload CMS media storage
 [[r2_buckets]]
-binding = "R2_BUCKET"
+binding = "R2"
 bucket_name = "united-tattoo"
 
 # R2 bucket for OpenNext incremental cache

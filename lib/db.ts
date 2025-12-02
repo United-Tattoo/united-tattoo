@@ -78,19 +78,21 @@ async function withDbError<T>(
 // Get the database instance from the environment
 // In Next.js API routes, bindings are passed through the context parameter
 export function getDB(env?: any): D1Database {
+  // Check for D1 binding (new name) or DB binding (legacy name)
+  if (env?.D1) return env.D1;
   if (env?.DB) return env.DB;
 
   // OpenNext Cloudflare exposes bindings on a global symbol during dev/preview
   const cf = (globalThis as any)[Symbol.for("__cloudflare-context__")];
-  const dbFromCf = cf?.env?.DB;
+  const dbFromCf = cf?.env?.D1 || cf?.env?.DB;
 
   // Additional dev fallbacks (when globals are shimmed)
   // @ts-ignore
-  const dbFromGlobal = (globalThis as any).DB || (globalThis as any).env?.DB;
+  const dbFromGlobal = (globalThis as any).D1 || (globalThis as any).DB || (globalThis as any).env?.D1 || (globalThis as any).env?.DB;
 
   const db = dbFromCf || dbFromGlobal;
   if (!db) {
-    throw new Error("Cloudflare D1 binding (env.DB) is unavailable");
+    throw new Error("Cloudflare D1 binding (env.D1) is unavailable");
   }
   return db as D1Database;
 }
@@ -346,8 +348,7 @@ export async function getArtistWithPortfolio(id: string, env?: any): Promise<imp
     SELECT
       a.*,
       u.name as user_name,
-      u.email as user_email,
-      u.avatar as user_avatar
+      u.email as user_email
     FROM artists a
     LEFT JOIN users u ON a.user_id = u.id
     WHERE a.id = ?
@@ -429,8 +430,7 @@ export async function getArtistBySlug(slug: string, env?: any): Promise<import('
     SELECT
       a.*,
       u.name as user_name,
-      u.email as user_email,
-      u.avatar as user_avatar
+      u.email as user_email
     FROM artists a
     LEFT JOIN users u ON a.user_id = u.id
     WHERE a.slug = ?

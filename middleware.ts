@@ -23,6 +23,13 @@ export default withAuth(
     // Log incoming request
     logRequest(req, pathname)
 
+    // For Payload CMS routes, set a header and let Payload handle its own auth
+    if (pathname.startsWith("/cms") || pathname.startsWith("/api/payload")) {
+      const response = NextResponse.next()
+      response.headers.set("x-pathname", pathname)
+      return response
+    }
+
     // Permanent redirect for renamed artist slug
     if (pathname === "/artists/amari-rodriguez") {
       const url = new URL("/artists/amari-kyss", req.url)
@@ -98,6 +105,11 @@ export default withAuth(
     callbacks: {
       authorized: ({ token, req }) => {
         const { pathname } = req.nextUrl
+
+        // Payload CMS routes - let Payload handle its own authentication
+        if (pathname.startsWith("/cms") || pathname.startsWith("/api/payload")) {
+          return true
+        }
 
         // Token-based bypass for migration endpoint (before auth checks)
         const migrateToken = process.env.MIGRATE_TOKEN
