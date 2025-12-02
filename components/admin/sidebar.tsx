@@ -97,7 +97,7 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-4 py-6 space-y-2">
+      <div className="flex-1 px-4 py-6 space-y-2" role="list">
         {filteredNavigation.map((item) => {
           const isActive = pathname === item.href
           const Icon = item.icon
@@ -106,19 +106,23 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
             <Link
               key={item.name}
               href={item.href}
+              role="listitem"
+              aria-current={isActive ? "page" : undefined}
+              aria-label={`${item.name} page${isActive ? ' (current)' : ''}`}
               className={cn(
-                "flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors",
+                "flex items-center px-3 py-2.5 text-base font-medium rounded-md transition-colors",
+                "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 isActive
                   ? "bg-gray-100 text-gray-900"
                   : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
               )}
             >
-              <Icon className="w-5 h-5 mr-3" />
+              <Icon className="w-5 h-5 mr-3" aria-hidden="true" />
               {item.name}
             </Link>
           )
         })}
-      </nav>
+      </div>
 
       {/* User info and sign out */}
       <div className="border-t border-gray-200 p-4">
@@ -138,10 +142,10 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-gray-900 truncate">
+            <p className="text-base font-medium text-gray-900 truncate">
               {user.name}
             </p>
-            <p className="text-xs text-gray-500 truncate">
+            <p className="text-sm text-gray-500 truncate">
               {user.role.replace('_', ' ').toLowerCase()}
             </p>
           </div>
@@ -152,8 +156,9 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
           size="sm"
           onClick={handleSignOut}
           className="w-full justify-start"
+          aria-label="Sign out of admin dashboard"
         >
-          <LogOut className="w-4 h-4 mr-2" />
+          <LogOut className="w-5 h-5 mr-2" aria-hidden="true" />
           Sign Out
         </Button>
       </div>

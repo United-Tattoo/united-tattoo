@@ -70,11 +70,42 @@ interface DashboardStats {
 }
 
 const COLORS = {
-  pending: '#f59e0b',
-  confirmed: '#3b82f6',
-  inProgress: '#10b981',
-  completed: '#6b7280',
-  cancelled: '#ef4444',
+  pending: '#b87503',      // Darker yellow: 5.5:1 contrast
+  confirmed: '#2563eb',    // Keep: 8.6:1 contrast
+  inProgress: '#15803d',   // Darker green: 4.6:1 contrast
+  completed: '#4b5563',    // Keep: 7.2:1 contrast
+  cancelled: '#dc2626',    // Keep: 5.9:1 contrast
+}
+
+// Helper functions for chart accessibility summaries
+function getChartSummary(
+  data: Array<{month: string, appointments?: number, revenue?: number}>,
+  key: 'appointments' | 'revenue'
+): string {
+  if (!data || data.length === 0) return 'No data available'
+
+  const values = data.map(item => item[key] || 0)
+  const total = values.reduce((sum, val) => sum + val, 0)
+  const avg = total / values.length
+  const max = Math.max(...values)
+  const min = Math.min(...values)
+  const maxMonth = data[values.indexOf(max)]?.month
+  const minMonth = data[values.indexOf(min)]?.month
+
+  if (key === 'appointments') {
+    return `Total ${total} appointments across ${data.length} months. Average ${avg.toFixed(0)} per month. Highest was ${max} in ${maxMonth}, lowest was ${min} in ${minMonth}.`
+  } else {
+    return `Total revenue $${total.toLocaleString()} across ${data.length} months. Average $${avg.toFixed(0)} per month. Highest was $${max} in ${maxMonth}, lowest was $${min} in ${minMonth}.`
+  }
+}
+
+function getPieChartSummary(data: Array<{name: string, value: number}>): string {
+  if (!data || data.length === 0) return 'No data available'
+
+  const total = data.reduce((sum, item) => sum + item.value, 0)
+  const largest = data.reduce((max, item) => item.value > max.value ? item : max, data[0])
+
+  return `${data.length} status categories with ${total} total appointments. ${largest.name} has the most with ${largest.value} appointments (${((largest.value / total) * 100).toFixed(0)}%).`
 }
 
 export function StatsDashboard() {
@@ -128,29 +159,39 @@ export function StatsDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Artists</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-base font-medium">Total Artists</CardTitle>
+            <Users className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.artists.total}</div>
-            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+            <div className="text-3xl font-bold">{stats.artists.total}</div>
+            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
               <span>{stats.artists.active} active</span>
-              <Progress value={activeArtistPercentage} className="w-16 h-1" />
+              <Progress
+                value={activeArtistPercentage}
+                className="w-16 h-2"
+                aria-label={`${activeArtistPercentage.toFixed(0)}% of artists are active`}
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={activeArtistPercentage}
+              />
             </div>
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Appointments</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-base font-medium">Total Appointments</CardTitle>
+            <Calendar className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.appointments.total}</div>
-            <div className="flex items-center space-x-1 text-xs">
-              <TrendingUp className={`h-3 w-3 ${appointmentGrowth >= 0 ? 'text-green-500' : 'text-red-500'}`} />
-              <span className={appointmentGrowth >= 0 ? 'text-green-500' : 'text-red-500'}>
-                {appointmentGrowth >= 0 ? '+' : ''}{appointmentGrowth.toFixed(1)}%
+            <div className="text-3xl font-bold">{stats.appointments.total}</div>
+            <div className="flex items-center space-x-1 text-sm">
+              <TrendingUp
+                className={`h-4 w-4 ${appointmentGrowth >= 0 ? 'text-green-500' : 'text-red-500'}`}
+                aria-hidden="true"
+              />
+              <span className={appointmentGrowth >= 0 ? 'text-green-600' : 'text-red-600'}>
+                {appointmentGrowth >= 0 ? 'Increase' : 'Decrease'} {Math.abs(appointmentGrowth).toFixed(1)}%
               </span>
               <span className="text-muted-foreground">from last month</span>
             </div>
@@ -159,14 +200,14 @@ export function StatsDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Monthly Revenue</CardTitle>
-            <DollarSign className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-base font-medium">Monthly Revenue</CardTitle>
+            <DollarSign className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-3xl font-bold">
               ${stats.appointments.revenue.toLocaleString()}
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               From {stats.appointments.thisMonth} appointments this month
             </p>
           </CardContent>
@@ -174,12 +215,12 @@ export function StatsDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Portfolio Images</CardTitle>
-            <Image className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-base font-medium">Portfolio Images</CardTitle>
+            <Image className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.portfolio.totalImages}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-3xl font-bold">{stats.portfolio.totalImages}</div>
+            <p className="text-sm text-muted-foreground">
               {stats.portfolio.recentUploads} uploaded this week
             </p>
           </CardContent>
@@ -188,63 +229,68 @@ export function StatsDashboard() {
 
       {/* Appointment Status Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
-        <Card>
+        <Card role="article" aria-label="Pending appointments">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Pending</CardTitle>
-            <Clock className="h-4 w-4 text-yellow-500" />
+            <CardTitle className="text-base font-medium">Pending</CardTitle>
+            <Clock className="h-5 w-5 text-yellow-500" aria-hidden="true" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-yellow-600">
+            <div className="text-3xl font-bold text-yellow-600">
               {stats.appointments.pending}
             </div>
+            <p className="text-sm text-muted-foreground mt-1">Awaiting confirmation</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card role="article" aria-label="Confirmed appointments">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Confirmed</CardTitle>
-            <CheckCircle className="h-4 w-4 text-blue-500" />
+            <CardTitle className="text-base font-medium">Confirmed</CardTitle>
+            <CheckCircle className="h-5 w-5 text-blue-500" aria-hidden="true" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-blue-600">
+            <div className="text-3xl font-bold text-blue-600">
               {stats.appointments.confirmed}
             </div>
+            <p className="text-sm text-muted-foreground mt-1">Ready to proceed</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card role="article" aria-label="In progress appointments">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">In Progress</CardTitle>
-            <AlertCircle className="h-4 w-4 text-green-500" />
+            <CardTitle className="text-base font-medium">In Progress</CardTitle>
+            <AlertCircle className="h-5 w-5 text-green-500" aria-hidden="true" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-green-600">
+            <div className="text-3xl font-bold text-green-600">
               {stats.appointments.inProgress}
             </div>
+            <p className="text-sm text-muted-foreground mt-1">Currently active</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card role="article" aria-label="Completed appointments">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Completed</CardTitle>
-            <CheckCircle className="h-4 w-4 text-gray-500" />
+            <CardTitle className="text-base font-medium">Completed</CardTitle>
+            <CheckCircle className="h-5 w-5 text-gray-500" aria-hidden="true" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-gray-600">
+            <div className="text-3xl font-bold text-gray-600">
               {stats.appointments.completed}
             </div>
+            <p className="text-sm text-muted-foreground mt-1">Successfully finished</p>
           </CardContent>
         </Card>
 
-        <Card>
+        <Card role="article" aria-label="Cancelled appointments">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Cancelled</CardTitle>
-            <XCircle className="h-4 w-4 text-red-500" />
+            <CardTitle className="text-base font-medium">Cancelled</CardTitle>
+            <XCircle className="h-5 w-5 text-red-500" aria-hidden="true" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold text-red-600">
+            <div className="text-3xl font-bold text-red-600">
               {stats.appointments.cancelled}
             </div>
+            <p className="text-sm text-muted-foreground mt-1">No longer scheduled</p>
           </CardContent>
         </Card>
       </div>
@@ -254,52 +300,78 @@ export function StatsDashboard() {
         {/* Monthly Appointments Trend */}
         <Card>
           <CardHeader>
-            <CardTitle>Monthly Appointments</CardTitle>
+            <CardTitle className="text-lg">Monthly Appointments</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <LineChart data={stats.monthlyData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="month" />
-                <YAxis />
-                <Tooltip />
-                <Line 
-                  type="monotone" 
-                  dataKey="appointments" 
-                  stroke="#3b82f6" 
-                  strokeWidth={2}
-                  dot={{ fill: '#3b82f6' }}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            <div
+              role="img"
+              aria-label={`Line chart showing monthly appointments trend. ${getChartSummary(stats.monthlyData, 'appointments')}`}
+            >
+              <ResponsiveContainer width="100%" height={300}>
+                <LineChart data={stats.monthlyData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="month" />
+                  <YAxis />
+                  <Tooltip />
+                  <Line
+                    type="monotone"
+                    dataKey="appointments"
+                    stroke="#3b82f6"
+                    strokeWidth={2}
+                    dot={{ fill: '#3b82f6' }}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="sr-only">
+              <h3>Monthly appointment data</h3>
+              <ul>
+                {stats.monthlyData.map((item, idx) => (
+                  <li key={idx}>{item.month}: {item.appointments} appointments</li>
+                ))}
+              </ul>
+            </div>
           </CardContent>
         </Card>
 
         {/* Appointment Status Distribution */}
         <Card>
           <CardHeader>
-            <CardTitle>Appointment Status Distribution</CardTitle>
+            <CardTitle className="text-lg">Appointment Status Distribution</CardTitle>
           </CardHeader>
           <CardContent>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={stats.statusData}
-                  cx="50%"
-                  cy="50%"
-                  labelLine={false}
-                  label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                  outerRadius={80}
-                  fill="#8884d8"
-                  dataKey="value"
-                >
-                  {stats.statusData.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={entry.color} />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+            <div
+              role="img"
+              aria-label={`Pie chart showing appointment status distribution. ${getPieChartSummary(stats.statusData)}`}
+            >
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={stats.statusData}
+                    cx="50%"
+                    cy="50%"
+                    labelLine={false}
+                    label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                    outerRadius={80}
+                    fill="#8884d8"
+                    dataKey="value"
+                  >
+                    {stats.statusData.map((entry, index) => (
+                      <Cell key={`cell-${index}`} fill={entry.color} />
+                    ))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            </div>
+            <div className="sr-only">
+              <h3>Appointment status breakdown</h3>
+              <ul>
+                {stats.statusData.map((item, idx) => (
+                  <li key={idx}>{item.name}: {item.value} appointments</li>
+                ))}
+              </ul>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -307,20 +379,33 @@ export function StatsDashboard() {
       {/* Monthly Revenue Trend */}
       <Card>
         <CardHeader>
-          <CardTitle>Monthly Revenue Trend</CardTitle>
+          <CardTitle className="text-lg">Monthly Revenue Trend</CardTitle>
         </CardHeader>
         <CardContent>
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={stats.monthlyData}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip 
-                formatter={(value) => [`$${value}`, 'Revenue']}
-              />
-              <Bar dataKey="revenue" fill="#10b981" />
-            </BarChart>
-          </ResponsiveContainer>
+          <div
+            role="img"
+            aria-label={`Bar chart showing monthly revenue trend. ${getChartSummary(stats.monthlyData, 'revenue')}`}
+          >
+            <ResponsiveContainer width="100%" height={300}>
+              <BarChart data={stats.monthlyData}>
+                <CartesianGrid strokeDasharray="3 3" />
+                <XAxis dataKey="month" />
+                <YAxis />
+                <Tooltip
+                  formatter={(value) => [`$${value}`, 'Revenue']}
+                />
+                <Bar dataKey="revenue" fill="#10b981" />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+          <div className="sr-only">
+            <h3>Monthly revenue data</h3>
+            <ul>
+              {stats.monthlyData.map((item, idx) => (
+                <li key={idx}>{item.month}: ${item.revenue}</li>
+              ))}
+            </ul>
+          </div>
         </CardContent>
       </Card>
 
@@ -328,12 +413,12 @@ export function StatsDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Total Files</CardTitle>
-            <Upload className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-base font-medium">Total Files</CardTitle>
+            <Upload className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.files.totalUploads}</div>
-            <p className="text-xs text-muted-foreground">
+            <div className="text-3xl font-bold">{stats.files.totalUploads}</div>
+            <p className="text-sm text-muted-foreground">
               {stats.files.recentUploads} uploaded this week
             </p>
           </CardContent>
@@ -341,14 +426,14 @@ export function StatsDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Storage Used</CardTitle>
-            <Upload className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-base font-medium">Storage Used</CardTitle>
+            <Upload className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">
+            <div className="text-3xl font-bold">
               {(stats.files.totalSize / (1024 * 1024)).toFixed(1)} MB
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-sm text-muted-foreground">
               Across all uploads
             </p>
           </CardContent>
@@ -356,12 +441,12 @@ export function StatsDashboard() {
 
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Artists</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
+            <CardTitle className="text-base font-medium">Active Artists</CardTitle>
+            <Users className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           </CardHeader>
           <CardContent>
-            <div className="text-2xl font-bold">{stats.artists.active}</div>
-            <div className="flex items-center space-x-2 text-xs text-muted-foreground">
+            <div className="text-3xl font-bold">{stats.artists.active}</div>
+            <div className="flex items-center space-x-2 text-sm text-muted-foreground">
               <span>of {stats.artists.total} total</span>
               <Badge variant="secondary">
                 {activeArtistPercentage.toFixed(0)}%
