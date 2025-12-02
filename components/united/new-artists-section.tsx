@@ -35,12 +35,12 @@ export function NewArtistsSection() {
   }, [dbArtistsData, isLoading, error])
 
   return (
-    <section id="artists" className="py-[clamp(3.5rem,6vw,6rem)] px-[clamp(1.5rem,4vw,5rem)] max-w-[1600px] mx-auto">
+    <section id="artists" className="py-[clamp(3.5rem,6vw,6rem)] px-[clamp(1.5rem,4vw,10rem)] max-w-[1900px] mx-auto">
       <StickySplit
         sidebar={
           <div className="space-y-6">
              <SectionLabel>03 • The Team</SectionLabel>
-             <h2 className="font-serif text-[clamp(1.9rem,4vw,3rem)] leading-[1.15] text-[var(--ink)]">
+             <h2 className="font-serif text-[clamp(4rem,4vw,3rem)] leading-[1.15] text-[var(--ink)]">
                Resident Artists
              </h2>
              <p className="text-[clamp(0.95rem,2vw,1.3rem)] leading-[1.65] text-[var(--ink)]/75 mb-8">
@@ -56,7 +56,7 @@ export function NewArtistsSection() {
           </div>
         }
       >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
            {artists.map((artist, i) => (
              <Reveal key={artist.id} delay={i * 0.1}>
                <Link href={"/artists/" + artist.slug} className="group block h-full">

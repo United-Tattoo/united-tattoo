@@ -52,7 +52,7 @@ export function NewHero() {
 
         <div className="lg:col-span-4 pb-4 animate-fade-in-up [animation-delay:200ms]">
           <p className="text-[1.1rem] leading-[1.7] text-[var(--ink)]/80 mb-8 max-w-[34ch] border-l border-[var(--terracotta)] pl-6">
-            A creative collective specializing in custom narrative work, fine line, and traditional tattooing.
+            A creative collective specializing in custom tattoos, fine line, and traditional tattooing.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 pl-6">
@@ -60,7 +60,7 @@ export function NewHero() {
                 <Button
                   className="bg-[var(--burnt)] text-white hover:bg-[var(--terracotta)] uppercase tracking-widest px-8 py-6 h-auto rounded-full shadow-lg hover:shadow-xl transition-all duration-300 hover:-translate-y-1 w-full sm:w-auto"
                 >
-                  Commission
+                  Book Now
                 </Button>
              </Link>
              <Link href="/artists">

@@ -21,6 +21,9 @@ export default function HomePage() {
                 <div id="home">
                     <NewHero />
                 </div>
+                <div id="artists">
+                    <NewArtistsSection />
+                </div>
 
                 <ImmersionSection />
 
@@ -28,9 +31,8 @@ export default function HomePage() {
                     <IdentitySection />
                 </div>
 
-                <NewArtistsSection />
 
-                <NewContactSection />
+              {/* <NewContactSection /> */}
 
                 <Footer />
             </main>
