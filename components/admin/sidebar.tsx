@@ -85,14 +85,14 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
   }
 
   return (
-    <div className="flex flex-col w-64 bg-white shadow-lg">
+    <div className="flex flex-col w-64 bg-card shadow-lg">
       {/* Logo/Brand */}
-      <div className="flex items-center justify-center h-16 px-4 border-b border-gray-200">
+      <div className="flex items-center justify-center h-16 px-4 border-b border-border">
         <Link href="/" className="flex items-center space-x-2">
-          <div className="w-8 h-8 bg-black rounded-md flex items-center justify-center">
-            <span className="text-white font-bold text-sm">U</span>
+          <div className="w-8 h-8 bg-primary rounded-md flex items-center justify-center">
+            <span className="text-primary-foreground font-bold text-sm">U</span>
           </div>
-          <span className="text-xl font-bold text-gray-900">United Admin</span>
+          <span className="text-xl font-bold text-foreground">United Admin</span>
         </Link>
       </div>
 
@@ -113,8 +113,8 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
                 "flex items-center px-3 py-2.5 text-base font-medium rounded-md transition-colors",
                 "focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2",
                 isActive
-                  ? "bg-gray-100 text-gray-900"
-                  : "text-gray-600 hover:bg-gray-50 hover:text-gray-900"
+                  ? "bg-muted text-foreground"
+                  : "text-muted-foreground hover:bg-muted/50 hover:text-foreground"
               )}
             >
               <Icon className="w-5 h-5 mr-3" aria-hidden="true" />
@@ -125,9 +125,9 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
       </div>
 
       {/* User info and sign out */}
-      <div className="border-t border-gray-200 p-4">
+      <div className="border-t border-border p-4">
         <div className="flex items-center space-x-3 mb-4">
-          <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+          <div className="w-10 h-10 bg-muted rounded-full flex items-center justify-center">
             {user.image ? (
               <img
                 src={user.image}
@@ -136,17 +136,17 @@ export function AdminSidebar({ user }: AdminSidebarProps) {
                 className="w-10 h-10 rounded-full"
               />
             ) : (
-              <span className="text-sm font-medium text-gray-600">
-                {user.name.charAt(0).toUpperCase()}
+              <span className="text-sm font-medium text-muted-foreground">
+                {(user.name || user.email || 'U').charAt(0).toUpperCase()}
               </span>
             )}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-base font-medium text-gray-900 truncate">
-              {user.name}
+            <p className="text-base font-medium text-foreground truncate">
+              {user.name || user.email || 'User'}
             </p>
-            <p className="text-sm text-gray-500 truncate">
-              {user.role.replace('_', ' ').toLowerCase()}
+            <p className="text-sm text-muted-foreground truncate">
+              {user.role.replace(/_/g, ' ').toLowerCase()}
             </p>
           </div>
         </div>

@@ -125,10 +125,10 @@ export function StatsDashboard() {
         {Array.from({ length: 8 }).map((_, i) => (
           <Card key={i}>
             <CardHeader className="animate-pulse">
-              <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+              <div className="h-4 bg-muted rounded w-3/4"></div>
             </CardHeader>
             <CardContent className="animate-pulse">
-              <div className="h-8 bg-gray-200 rounded w-1/2"></div>
+              <div className="h-8 bg-muted rounded w-1/2"></div>
             </CardContent>
           </Card>
         ))}
@@ -271,10 +271,10 @@ export function StatsDashboard() {
         <Card role="article" aria-label="Completed appointments">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
             <CardTitle className="text-base font-medium">Completed</CardTitle>
-            <CheckCircle className="h-5 w-5 text-gray-500" aria-hidden="true" />
+            <CheckCircle className="h-5 w-5 text-muted-foreground" aria-hidden="true" />
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold text-gray-600">
+            <div className="text-3xl font-bold text-foreground">
               {stats.appointments.completed}
             </div>
             <p className="text-sm text-muted-foreground mt-1">Successfully finished</p>
