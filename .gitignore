@@ -52,6 +52,7 @@ lerna-debug.log*
 
 # typescript
 *.log
+*.map
 
 # IDEs
 .vscode/*
@@ -154,3 +155,12 @@ supabase/.temp/
 .cursorindexingignore
 .specstory/
 2025-11-25-where-we-left-off.txt
+
+# Accidental/misnamed files
+et -e
+AGENTS.md
+.playwright-mcp/
+.playwright-mcp/**
+.opencode/
+.opencode/**
+OPTIMIZATION_GUIDE.md
