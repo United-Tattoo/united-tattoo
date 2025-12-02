@@ -14,10 +14,10 @@ const immersionImages = [
 export function ImmersionSection() {
   return (
     <section className="relative">
-      <Filmstrip 
-        items={immersionImages} 
-        title="Sunbleached walls & charcoal studies."
-        subtitle="01 • Immersion Gallery"
+      <Filmstrip
+        items={immersionImages}
+        title="TEMPORARY IMAGES"
+        subtitle="01 • TEMPORARY IMAGES"
       />
     </section>
   )

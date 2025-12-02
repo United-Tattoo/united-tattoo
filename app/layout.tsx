@@ -28,7 +28,7 @@ const spaceGrotesk = Space_Grotesk({
 })
 
 export const metadata: Metadata = createMetadata({
-  title: "United Tattoo - Professional Tattoo Studio in Fountain, Colorado",
+  title: "United Tattoo - Custom Tattoos and Flash Tattoos in Fountain, Colorado",
   description: "Custom tattoos by talented artists in Fountain, CO. Book your appointment with our award-winning tattoo studio. Specializing in custom designs, portraits, and traditional ink.",
   path: "/",
   keywords: ["tattoo", "tattoo studio", "fountain colorado", "custom tattoos", "tattoo artists", "ink", "body art"],
@@ -60,13 +60,13 @@ export default function RootLayout({
           :    \___/\_| \_/\___/  \_/ \____/|___/     \_/\_| |_/\_/   \_/  \___/  \___/    :
           ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
           >> AUTHOR   : Nicholai Vogel → Christy Lumberg
-          >> STATUS   : NO MIDDLEMEN | NO INTERMEDIARIES | VERIFIED OWNERSHIP              
-          >> RIGHTS   : © 2025 Christy Lumberg — ALL RIGHTS RESERVED                       
-          >> SYSTEM   : [0xDEADBEEF] [0xFUCKKRST] [0xSYSLOCK] [0xUT-OWNERSHIP-OK]          
+          >> STATUS   : NO MIDDLEMEN | NO INTERMEDIARIES | VERIFIED OWNERSHIP
+          >> RIGHTS   : © 2025 Christy Lumberg — ALL RIGHTS RESERVED
+          >> SYSTEM   : [0xDEADBEEF] [0xFUCKKRST] [0xSYSLOCK] [0xUT-OWNERSHIP-OK]
           :   ████ ████ ████ ████ ████ ████ ████ ████ ████ ████ ████ ████ ████ ████ ████   :
           ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
         */}
-        
+
         {/* JSON-LD Structured Data for SEO */}
         <Script
           id="local-business-jsonld"
@@ -84,7 +84,7 @@ export default function RootLayout({
             __html: JSON.stringify(organizationData),
           }}
         />
-        
+
         {/* Design Credit Console Message */}
         <Script id="design-credit" strategy="afterInteractive">
           {`(function(){

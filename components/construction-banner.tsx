@@ -58,6 +58,7 @@ export default function ConstructionBanner() {
         <a href="tel:17196989004" className="font-semibold underline">
           719-698-9004
         </a>
+        <span className="font-semibold"> THIS IS A PRODUCTION DEPLOYMENT TEST FOR BUG TESTING. </span>
         <button
           type="button"
           onClick={() => {
