@@ -1,7 +1,7 @@
 # Payload CMS Cloudflare Workers - MessagePort Issue
 
-**Date:** December 2, 2025  
-**Status:** Unresolved - Blocked by Payload CMS bug  
+**Date:** December 2, 2025
+**Status:** Unresolved - Blocked by Payload CMS bug
 **Severity:** Critical - Prevents admin panel from loading on Cloudflare Workers
 
 ## Summary
@@ -114,7 +114,7 @@ GET https://united-tattoos.com/artists/amari-kyss - Ok @ 12/2/2025, 4:17:43 AM
 
 ### HTTP Response
 ```
-HTTP/2 500 
+HTTP/2 500
 content-type: text/html; charset=utf-8
 x-pathname: /cms
 ```
@@ -254,7 +254,7 @@ Payload CMS 3.x with Cloudflare D1/R2 is currently **not production-ready** for 
 
 ---
 
-*Document created: December 2, 2025*  
-*Last updated: December 2, 2025*  
+*Document created: December 2, 2025*
+*Last updated: December 2, 2025*
 *Author: AI Assistant (Claude)*
 
