@@ -1,0 +1,158 @@
+---
+import type { ArtistCmsRecord } from "../lib/nextcloud-cms";
+
+interface Props {
+  artists: ArtistCmsRecord[];
+}
+
+const { artists } = Astro.props;
+---
+
+<style>
+  .artists-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 2rem;
+    padding: 2rem 0;
+  }
+
+  .artist-card {
+    background: var(--cream);
+    border: 1px solid var(--cream-dark);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .artist-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(26, 24, 21, 0.1);
+  }
+
+  .artist-image-wrapper {
+    width: 100%;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background: var(--cream-dark);
+    position: relative;
+  }
+
+  .artist-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .artist-card:hover .artist-image {
+    transform: scale(1.05);
+  }
+
+  .artist-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--cream-dark);
+    color: var(--warm-gray);
+    font-size: 3rem;
+  }
+
+  .artist-info {
+    padding: 1.5rem;
+  }
+
+  .artist-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    color: var(--ink);
+  }
+
+  .artist-specialties {
+    color: var(--warm-gray);
+    font-size: 0.9rem;
+    line-height: 1.5;
+  }
+
+  .artist-specialties-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-top: 0.5rem;
+  }
+
+  .specialty-tag {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    background: var(--cream-dark);
+    border-radius: 4px;
+    font-size: 0.85rem;
+  }
+
+  @media (max-width: 768px) {
+    .artists-grid {
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 1.5rem;
+      padding: 1.5rem 0;
+    }
+
+    .artist-info {
+      padding: 1rem;
+    }
+
+    .artist-name {
+      font-size: 1.25rem;
+    }
+  }
+</style>
+
+<div class="artists-grid">
+  {artists.map((artist) => {
+    const name = artist.info.name || artist.slug;
+    const specialties = artist.info.specialties || [];
+    const avatarUrl = artist.info.avatarUrl;
+    const firstPortfolioImage = artist.portfolio[0];
+    const imageUrl = avatarUrl || (firstPortfolioImage ? `/api/media?path=${encodeURIComponent(firstPortfolioImage.webdavPath)}` : null);
+    
+    return (
+      <a href={`/artists/${artist.slug}`} class="artist-card">
+        <div class="artist-image-wrapper">
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt={name}
+              class="artist-image"
+              loading="lazy"
+            />
+          ) : (
+            <div class="artist-placeholder">✎</div>
+          )}
+        </div>
+        <div class="artist-info">
+          <h3 class="artist-name">{name}</h3>
+          {specialties.length > 0 ? (
+            <div class="artist-specialties">
+              <div class="artist-specialties-list">
+                {specialties.slice(0, 3).map((specialty) => (
+                  <span class="specialty-tag">{specialty}</span>
+                ))}
+                {specialties.length > 3 && (
+                  <span class="specialty-tag">+{specialties.length - 3} more</span>
+                )}
+              </div>
+            </div>
+          ) : (
+            <div class="artist-specialties">Artist</div>
+          )}
+        </div>
+      </a>
+    );
+  })}
+</div>
+

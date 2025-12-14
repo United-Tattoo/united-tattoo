@@ -1,0 +1,110 @@
+/* =============================================================================
+   Tailwind CSS (without Preflight to preserve existing design)
+   We import only theme + utilities, skipping preflight reset.
+   ============================================================================= */
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+/* =============================================================================
+   Tailwind Theme Extensions
+   Map existing CSS variables to Tailwind color names for utility class usage.
+   Usage: bg-ink, text-cream, border-terracotta, etc.
+   ============================================================================= */
+@theme {
+  /* Colors mapped from CSS variables */
+  --color-cream: var(--cream);
+  --color-cream-dark: var(--cream-dark);
+  --color-ink: var(--ink);
+  --color-ink-light: var(--ink-light);
+  --color-warm-gray: var(--warm-gray);
+  --color-terracotta: var(--terracotta);
+  --color-sage: var(--sage);
+
+  /* Font families matching existing design */
+  --font-display: 'Playfair Display', serif;
+  --font-serif: 'Libre Baskerville', serif;
+  --font-sans: 'Manrope', sans-serif;
+}
+
+/* =============================================================================
+   Global CSS Variables
+   ============================================================================= */
+:root {
+  --cream: #f7f5f2;
+  --cream-dark: #ebe7e1;
+  --ink: #1a1815;
+  --ink-light: #3d3830;
+  --warm-gray: #8a8279;
+  --terracotta: #b8705b;
+  --sage: #7a8b7a;
+}
+
+/* Global Reset */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+::selection {
+  background: var(--terracotta);
+  color: var(--cream);
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background: var(--cream);
+  color: var(--ink);
+  overflow-x: hidden;
+  line-height: 1.7;
+}
+
+/* Cursor dot effect (optional global feature) */
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--terracotta);
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transition: transform 0.1s;
+  mix-blend-mode: difference;
+}
+
+/* Shared Animations */
+@keyframes slideUp {
+  to {
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes expandLine {
+  to {
+    transform: scaleX(1);
+  }
+}
+
+/* Scroll Reveal Animation */
+.reveal {
+  opacity: 0;
+  transform: translateY(40px);
+  transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.reveal.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+

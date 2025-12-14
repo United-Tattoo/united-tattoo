@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>United Tattoo | Fountain, Colorado</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Manrope:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --cream: #f7f5f2;
+      --cream-dark: #ebe7e1;
+      --ink: #1a1815;
+      --ink-light: #3d3830;
+      --warm-gray: #8a8279;
+      --terracotta: #b8705b;
+      --sage: #7a8b7a;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    ::selection {
+      background: var(--terracotta);
+      color: var(--cream);
+    }
+
+    html {
+      scroll-behavior: smooth;
+      font-size: 16px;
+    }
+
+    body {
+      font-family: 'Manrope', sans-serif;
+      background: var(--cream);
+      color: var(--ink);
+      overflow-x: hidden;
+      line-height: 1.7;
+    }
+
+    /* Cursor dot effect */
+    .cursor-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--terracotta);
+      border-radius: 50%;
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      transition: transform 0.1s;
+      mix-blend-mode: difference;
+    }
+
+    /* Navigation */
+    .nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 100;
+      padding: 2rem 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      mix-blend-mode: difference;
+    }
+
+    .nav * {
+      color: var(--cream);
+    }
+
+    .nav-logo {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 0.9rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 3rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+
+    .nav-links a:hover {
+      opacity: 1;
+    }
+
+    .nav-cta {
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      text-decoration: none;
+      padding: 0.8rem 1.5rem;
+      border: 1px solid currentColor;
+      transition: all 0.3s;
+    }
+
+    .nav-cta:hover {
+      background: var(--cream);
+      color: var(--ink);
+    }
+
+    /* Hero */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1.2fr;
+      background: var(--ink);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 8rem 6rem;
+      position: relative;
+      z-index: 2;
+    }
+
+    .hero-eyebrow {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--warm-gray);
+      margin-bottom: 2rem;
+    }
+
+    .hero-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      color: var(--cream);
+      line-height: 0.95;
+      margin-bottom: 3rem;
+    }
+
+    .hero-title .line {
+      display: block;
+      overflow: hidden;
+    }
+
+    .hero-title .line span {
+      display: block;
+      transform: translateY(100%);
+      animation: slideUp 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+    }
+
+    .hero-title .line:nth-child(1) span { animation-delay: 0.2s; }
+    .hero-title .line:nth-child(2) span { animation-delay: 0.35s; }
+
+    .hero-title .large {
+      font-size: clamp(4rem, 12vw, 9rem);
+    }
+
+    .hero-title .script {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(3rem, 8vw, 6rem);
+      color: var(--terracotta);
+      margin-left: 1rem;
+    }
+
+    .hero-tagline {
+      font-size: 1rem;
+      color: var(--warm-gray);
+      max-width: 320px;
+      line-height: 1.8;
+      opacity: 0;
+      animation: fadeIn 1s ease 0.8s forwards;
+    }
+
+    .hero-visual {
+      position: relative;
+    }
+
+    .hero-image {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      animation: fadeIn 1.5s ease 0.3s forwards;
+    }
+
+    .hero-image-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to right, var(--ink) 0%, transparent 30%);
+      z-index: 1;
+    }
+
+    .hero-scroll {
+      position: absolute;
+      bottom: 3rem;
+      left: 6rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      color: var(--warm-gray);
+      font-size: 0.7rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeIn 1s ease 1.2s forwards;
+    }
+
+    .hero-scroll-line {
+      width: 60px;
+      height: 1px;
+      background: var(--warm-gray);
+      transform-origin: left;
+      animation: expandLine 1s ease 1.4s forwards;
+      transform: scaleX(0);
+    }
+
+    /* Intro Section */
+    .intro {
+      padding: 12rem 8rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8rem;
+      align-items: center;
+    }
+
+    .intro-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1.2;
+      margin-bottom: 2.5rem;
+    }
+
+    .intro-text h2 em {
+      font-style: italic;
+      color: var(--terracotta);
+    }
+
+    .intro-text p {
+      font-size: 1rem;
+      color: var(--ink-light);
+      line-height: 2;
+      margin-bottom: 1.5rem;
+    }
+
+    .intro-image {
+      position: relative;
+    }
+
+    .intro-image img {
+      width: 100%;
+      height: 600px;
+      object-fit: cover;
+    }
+
+    .intro-image::before {
+      content: '';
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 100%;
+      height: 100%;
+      border: 1px solid var(--terracotta);
+      opacity: 0.4;
+      z-index: -1;
+    }
+
+    .intro-badge {
+      position: absolute;
+      bottom: -30px;
+      left: -30px;
+      width: 120px;
+      height: 120px;
+      background: var(--ink);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: var(--cream);
+      font-size: 0.65rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      line-height: 1.5;
+    }
+
+    /* Values */
+    .values {
+      background: var(--cream-dark);
+      padding: 10rem 8rem;
+    }
+
+    .values-header {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 4rem;
+      margin-bottom: 6rem;
+    }
+
+    .values-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--warm-gray);
+    }
+
+    .values-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: clamp(2rem, 4vw, 3.5rem);
+      line-height: 1.3;
+    }
+
+    .values-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--warm-gray);
+    }
+
+    .value-item {
+      background: var(--cream-dark);
+      padding: 4rem 3rem;
+      transition: background 0.4s;
+    }
+
+    .value-item:hover {
+      background: var(--cream);
+    }
+
+    .value-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      color: var(--terracotta);
+      opacity: 0.4;
+      margin-bottom: 2rem;
+    }
+
+    .value-title {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.4rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .value-text {
+      font-size: 0.95rem;
+      color: var(--ink-light);
+      line-height: 1.9;
+    }
+
+    /* Gallery */
+    .gallery {
+      padding: 10rem 0;
+    }
+
+    .gallery-header {
+      padding: 0 8rem;
+      margin-bottom: 4rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+    }
+
+    .gallery-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: clamp(3rem, 8vw, 6rem);
+    }
+
+    .gallery-title em {
+      font-style: italic;
+      color: var(--terracotta);
+    }
+
+    .gallery-link {
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      text-decoration: none;
+      color: var(--ink);
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      transition: gap 0.3s;
+    }
+
+    .gallery-link:hover {
+      gap: 1.25rem;
+    }
+
+    .gallery-link span {
+      width: 30px;
+      height: 1px;
+      background: currentColor;
+    }
+
+    .gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      grid-template-rows: repeat(3, 280px);
+      gap: 1rem;
+      padding: 0 2rem;
+    }
+
+    .gallery-item {
+      overflow: hidden;
+      position: relative;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.8s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .gallery-item:hover img {
+      transform: scale(1.08);
+    }
+
+    .gallery-item:nth-child(1) { grid-column: 1 / 5; grid-row: 1 / 3; }
+    .gallery-item:nth-child(2) { grid-column: 5 / 8; grid-row: 1 / 2; }
+    .gallery-item:nth-child(3) { grid-column: 8 / 13; grid-row: 1 / 2; }
+    .gallery-item:nth-child(4) { grid-column: 5 / 9; grid-row: 2 / 4; }
+    .gallery-item:nth-child(5) { grid-column: 9 / 13; grid-row: 2 / 3; }
+    .gallery-item:nth-child(6) { grid-column: 1 / 5; grid-row: 3 / 4; }
+    .gallery-item:nth-child(7) { grid-column: 9 / 13; grid-row: 3 / 4; }
+
+    /* Quote */
+    .quote {
+      padding: 8rem;
+      background: var(--ink);
+      color: var(--cream);
+      text-align: center;
+    }
+
+    .quote-text {
+      font-family: 'Playfair Display', serif;
+      font-style: italic;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      line-height: 1.5;
+      max-width: 900px;
+      margin: 0 auto 3rem;
+    }
+
+    .quote-author {
+      font-size: 0.75rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--warm-gray);
+    }
+
+    /* Contact */
+    .contact {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 100vh;
+    }
+
+    .contact-info {
+      padding: 8rem 6rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .contact-label {
+      font-size: 0.7rem;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: var(--warm-gray);
+      margin-bottom: 2rem;
+    }
+
+    .contact-title {
+      font-family: 'Playfair Display', serif;
+      font-weight: 400;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1.2;
+      margin-bottom: 3rem;
+    }
+
+    .contact-title em {
+      font-style: italic;
+      color: var(--terracotta);
+    }
+
+    .contact-details {
+      margin-top: 3rem;
+    }
+
+    .contact-item {
+      margin-bottom: 2rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--cream-dark);
+    }
+
+    .contact-item:last-child {
+      border-bottom: none;
+    }
+
+    .contact-item-label {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--warm-gray);
+      margin-bottom: 0.5rem;
+    }
+
+    .contact-item-value {
+      font-family: 'Libre Baskerville', serif;
+      font-size: 1.1rem;
+    }
+
+    .contact-item-value a {
+      color: inherit;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+
+    .contact-item-value a:hover {
+      color: var(--terracotta);
+    }
+
+    .contact-form-section {
+      background: var(--cream-dark);
+      padding: 8rem 6rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .contact-form {
+      max-width: 500px;
+    }
+
+    .form-row {
+      margin-bottom: 2rem;
+    }
+
+    .form-row label {
+      display: block;
+      font-size: 0.7rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: var(--warm-gray);
+      margin-bottom: 0.75rem;
+    }
+
+    .form-row input,
+    .form-row textarea {
+      width: 100%;
+      padding: 1rem 0;
+      border: none;
+      border-bottom: 1px solid var(--warm-gray);
+      background: transparent;
+      font-family: inherit;
+      font-size: 1rem;
+      color: var(--ink);
+      transition: border-color 0.3s;
+    }
+
+    .form-row input:focus,
+    .form-row textarea:focus {
+      outline: none;
+      border-color: var(--terracotta);
+    }
+
+    .form-row textarea {
+      resize: none;
+      min-height: 120px;
+    }
+
+    .form-row input::placeholder,
+    .form-row textarea::placeholder {
+      color: var(--warm-gray);
+    }
+
+    .form-submit {
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
+      background: var(--ink);
+      color: var(--cream);
+      border: none;
+      padding: 1.25rem 2.5rem;
+      font-family: inherit;
+      font-size: 0.75rem;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-top: 1rem;
+    }
+
+    .form-submit:hover {
+      background: var(--terracotta);
+      gap: 1.5rem;
+    }
+
+    .form-submit svg {
+      width: 20px;
+      height: 20px;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--ink);
+      color: var(--cream);
+      padding: 6rem 8rem 3rem;
+    }
+
+    .footer-main {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding-bottom: 4rem;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .footer-brand {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      line-height: 1;
+    }
+
+    .footer-brand em {
+      font-style: italic;
+      display: block;
+      color: var(--terracotta);
+    }
+
+    .footer-nav {
+      display: flex;
+      gap: 4rem;
+    }
+
+    .footer-nav-col h4 {
+      font-size: 0.65rem;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: var(--warm-gray);
+      margin-bottom: 1.5rem;
+      font-weight: 400;
+    }
+
+    .footer-nav-col a {
+      display: block;
+      color: var(--cream);
+      text-decoration: none;
+      font-size: 0.9rem;
+      margin-bottom: 0.75rem;
+      opacity: 0.7;
+      transition: opacity 0.3s;
+    }
+
+    .footer-nav-col a:hover {
+      opacity: 1;
+    }
+
+    .footer-bottom {
+      padding-top: 2rem;
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.75rem;
+      color: var(--warm-gray);
+    }
+
+    /* Animations */
+    @keyframes slideUp {
+      to {
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes fadeIn {
+      to {
+        opacity: 1;
+      }
+    }
+
+    @keyframes expandLine {
+      to {
+        transform: scaleX(1);
+      }
+    }
+
+    /* Scroll animations */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 1s cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
+    .reveal.active {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .nav { padding: 1.5rem 3rem; }
+      .intro { padding: 8rem 4rem; gap: 4rem; }
+      .values { padding: 6rem 4rem; }
+      .gallery-header { padding: 0 4rem; }
+      .contact-info, .contact-form-section { padding: 6rem 4rem; }
+      .footer { padding: 4rem; }
+    }
+
+    @media (max-width: 1024px) {
+      .hero { grid-template-columns: 1fr; min-height: auto; }
+      .hero-content { padding: 10rem 4rem 4rem; }
+      .hero-visual { height: 60vh; position: relative; }
+      .hero-image-overlay { background: linear-gradient(to top, var(--ink) 0%, transparent 50%); }
+      
+      .intro { grid-template-columns: 1fr; }
+      .intro-image { order: -1; }
+      .intro-image img { height: 400px; }
+      
+      .values-header { grid-template-columns: 1fr; gap: 1rem; }
+      .values-grid { grid-template-columns: 1fr; }
+      
+      .gallery-grid {
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: auto;
+      }
+      .gallery-item { grid-column: auto !important; grid-row: auto !important; height: 300px; }
+      
+      .contact { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 768px) {
+      .nav-links, .nav-cta { display: none; }
+      .hero-content { padding: 8rem 2rem 3rem; }
+      .hero-scroll { left: 2rem; }
+      .intro { padding: 5rem 2rem; }
+      .values { padding: 5rem 2rem; }
+      .value-item { padding: 3rem 2rem; }
+      .gallery-header { padding: 0 2rem; flex-direction: column; align-items: flex-start; gap: 1.5rem; }
+      .gallery-grid { grid-template-columns: 1fr; padding: 0 1rem; }
+      .gallery-item { height: 250px; }
+      .quote { padding: 5rem 2rem; }
+      .contact-info, .contact-form-section { padding: 4rem 2rem; }
+      .footer { padding: 3rem 2rem; }
+      .footer-main { flex-direction: column; gap: 3rem; }
+      .footer-nav { gap: 2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <a href="#" class="nav-logo">United Tattoo</a>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#values">Values</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Book Now</a>
+  </nav>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-content">
+      <p class="hero-eyebrow">Fountain, Colorado</p>
+      <h1 class="hero-title">
+        <span class="line"><span class="large">United</span></span>
+        <span class="line"><span class="script">Tattoo</span></span>
+      </h1>
+      <p class="hero-tagline">A sanctuary for self-expression. Where every story finds its place on skin, and every person finds their home.</p>
+      <div class="hero-scroll">
+        <span class="hero-scroll-line"></span>
+        Scroll to explore
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="hero-image-overlay"></div>
+      <img src="https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?w=1200&q=80" alt="Tattoo artistry" class="hero-image">
+    </div>
+  </section>
+
+  <!-- Intro -->
+  <section class="intro" id="about">
+    <div class="intro-text reveal">
+      <h2>We believe your body is the most <em>precious canvas</em> in the world</h2>
+      <p>At United Tattoo, we don't just create tattoos—we honor your journey. Every mark tells a story, and we're here to listen, understand, and translate your vision into art that lives with you forever.</p>
+      <p>Our studio in Fountain is built on something simple: the belief that everyone deserves a space where they feel seen, respected, and celebrated exactly as they are.</p>
+    </div>
+    <div class="intro-image reveal">
+      <img src="https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?w=800&q=80" alt="Tattoo studio atmosphere">
+      <div class="intro-badge">Est.<br>Fountain<br>Colorado</div>
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="values" id="values">
+    <div class="values-header">
+      <span class="values-label">Our Foundation</span>
+      <h2 class="values-title reveal">Three principles guide everything we do at United Tattoo</h2>
+    </div>
+    <div class="values-grid">
+      <div class="value-item reveal">
+        <div class="value-number">01</div>
+        <h3 class="value-title">Family</h3>
+        <p class="value-text">You're not just a client here—you're family. We take time to know your story, your dreams, what makes you who you are. That connection shapes every piece we create together.</p>
+      </div>
+      <div class="value-item reveal">
+        <div class="value-number">02</div>
+        <h3 class="value-title">Community</h3>
+        <p class="value-text">Fountain raised us. This community shaped us. We're committed to giving back, supporting local artists, and creating a space where neighbors become friends.</p>
+      </div>
+      <div class="value-item reveal">
+        <div class="value-number">03</div>
+        <h3 class="value-title">Inclusivity</h3>
+        <p class="value-text">Your identity is valid. Your story matters. We welcome every body, every background, every journey. This is a judgment-free zone where you can be authentically you.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section class="gallery" id="work">
+    <div class="gallery-header">
+      <h2 class="gallery-title reveal">Our <em>Work</em></h2>
+      <a href="#" class="gallery-link reveal">
+        View Full Portfolio
+        <span></span>
+      </a>
+    </div>
+    <div class="gallery-grid">
+      <div class="gallery-item reveal">
+        <img src="https://images.unsplash.com/photo-1568515045052-f9a854d70bfd?w=800&q=80" alt="Tattoo artwork">
+      </div>
+      <div class="gallery-item reveal">
+        <img src="https://images.unsplash.com/photo-1542359649-6068c0b0abe3?w=600&q=80" alt="Tattoo artwork">
+      </div>
+      <div class="gallery-item reveal">
+        <img src="https://images.unsplash.com/photo-1475403614135-5f1aa0eb5015?w=600&q=80" alt="Tattoo artwork">
+      </div>
+      <div class="gallery-item reveal">
+        <img src="https://images.unsplash.com/photo-1461956846143-95c7b46ca8e0?w=800&q=80" alt="Tattoo artwork">
+      </div>
+      <div class="gallery-item reveal">
+        <img src="https://images.unsplash.com/photo-1590246815117-e8c31569bf05?w=600&q=80" alt="Tattoo artwork">
+      </div>
+      <div class="gallery-item reveal">
+        <img src="https://images.unsplash.com/photo-1519699047748-de8e457a634e?w=600&q=80" alt="Tattoo artwork">
+      </div>
+      <div class="gallery-item reveal">
+        <img src="https://images.unsplash.com/photo-1604941590519-65c8ea85c7e7?w=600&q=80" alt="Tattoo artwork">
+      </div>
+    </div>
+  </section>
+
+  <!-- Quote -->
+  <section class="quote">
+    <p class="quote-text reveal">"Art is not what you see, but what you make others see. Every tattoo we create is a window into someone's soul."</p>
+    <span class="quote-author reveal">— The United Tattoo Family</span>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact" id="contact">
+    <div class="contact-info">
+      <span class="contact-label">Get in Touch</span>
+      <h2 class="contact-title reveal">Ready to tell your <em>story?</em></h2>
+      <p class="reveal">We'd love to hear about your vision. Whether it's your first tattoo or your fiftieth, we approach every piece with the same care and dedication.</p>
+      
+      <div class="contact-details">
+        <div class="contact-item reveal">
+          <span class="contact-item-label">Location</span>
+          <p class="contact-item-value">Fountain, Colorado</p>
+        </div>
+        <div class="contact-item reveal">
+          <span class="contact-item-label">Email</span>
+          <p class="contact-item-value"><a href="mailto:hello@unitedtattoo.com">hello@unitedtattoo.com</a></p>
+        </div>
+        <div class="contact-item reveal">
+          <span class="contact-item-label">Social</span>
+          <p class="contact-item-value"><a href="#">@unitedtattoo</a></p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="contact-form-section">
+      <form class="contact-form">
+        <div class="form-row reveal">
+          <label for="name">Your Name</label>
+          <input type="text" id="name" placeholder="How should we call you?">
+        </div>
+        <div class="form-row reveal">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="your@email.com">
+        </div>
+        <div class="form-row reveal">
+          <label for="vision">Your Vision</label>
+          <textarea id="vision" placeholder="Tell us about your tattoo idea, placement, size, and any inspiration you have..."></textarea>
+        </div>
+        <button type="submit" class="form-submit reveal">
+          Send Request
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </button>
+      </form>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-main">
+      <div class="footer-brand">
+        United<em>Tattoo</em>
+      </div>
+      <div class="footer-nav">
+        <div class="footer-nav-col">
+          <h4>Navigate</h4>
+          <a href="#about">About</a>
+          <a href="#values">Values</a>
+          <a href="#work">Portfolio</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-nav-col">
+          <h4>Connect</h4>
+          <a href="#">Instagram</a>
+          <a href="#">Facebook</a>
+          <a href="#">TikTok</a>
+        </div>
+        <div class="footer-nav-col">
+          <h4>Legal</h4>
+          <a href="#">Privacy</a>
+          <a href="#">Terms</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 United Tattoo</span>
+      <span>Fountain, Colorado</span>
+    </div>
+  </footer>
+
+  <script>
+    // Scroll reveal animation
+    const reveals = document.querySelectorAll('.reveal');
+    
+    const revealOnScroll = () => {
+      reveals.forEach(el => {
+        const top = el.getBoundingClientRect().top;
+        const windowHeight = window.innerHeight;
+        
+        if (top < windowHeight - 100) {
+          el.classList.add('active');
+        }
+      });
+    };
+
+    window.addEventListener('scroll', revealOnScroll);
+    window.addEventListener('load', revealOnScroll);
+
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) {
+          target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>

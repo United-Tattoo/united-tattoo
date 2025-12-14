@@ -1,0 +1,20 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { listArtistSlugs } from "../../lib/nextcloud-cms";
+import { BookingIsland } from "../../components/booking/BookingIsland";
+
+export const prerender = false;
+const runtimeEnv = (Astro.locals as any)?.runtime?.env ?? process.env;
+const slugs = await listArtistSlugs(runtimeEnv).catch(() => []);
+---
+
+<Layout title="Book • United Tattoo">
+  <section>
+    <h1>Book</h1>
+    <p><a href="/">Back</a></p>
+    <p>Minimal booking form to validate CalDAV connectivity.</p>
+    <BookingIsland client:load artistSlugs={slugs.length ? slugs : ["default"]} />
+  </section>
+</Layout>
+
+

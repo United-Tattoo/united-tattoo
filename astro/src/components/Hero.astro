@@ -1,0 +1,193 @@
+---
+interface Props {
+  eyebrow?: string;
+  titleLine1?: string;
+  titleLine2?: string;
+  tagline?: string;
+  imageUrl?: string;
+  imageAlt?: string;
+  scrollText?: string;
+}
+
+const {
+  eyebrow = "Fountain, Colorado",
+  titleLine1 = "United",
+  titleLine2 = "Tattoo",
+  tagline = "A sanctuary for self-expression. Where every story finds its place on skin, and every person finds their home.",
+  imageUrl = "https://images.unsplash.com/photo-1598371839696-5c5bb00bdc28?w=1200&q=80",
+  imageAlt = "Tattoo artistry",
+  scrollText = "Scroll to explore",
+} = Astro.props;
+---
+
+<section class="hero">
+  <div class="hero-content">
+    <p class="hero-eyebrow">{eyebrow}</p>
+    <h1 class="hero-title">
+      <span class="line"><span class="large">{titleLine1}</span></span>
+      <span class="line"><span class="script">{titleLine2}</span></span>
+    </h1>
+    <p class="hero-tagline">{tagline}</p>
+    <div class="hero-scroll">
+      <span class="hero-scroll-line"></span>
+      {scrollText}
+    </div>
+  </div>
+  <div class="hero-visual">
+    <div class="hero-image-overlay"></div>
+    <img src={imageUrl} alt={imageAlt} class="hero-image">
+  </div>
+</section>
+
+<style>
+  .hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1.2fr;
+    background: var(--ink);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 8rem 6rem;
+    position: relative;
+    z-index: 2;
+  }
+
+  .hero-eyebrow {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 2rem;
+  }
+
+  .hero-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    color: var(--cream);
+    line-height: 0.95;
+    margin-bottom: 3rem;
+  }
+
+  .hero-title .line {
+    display: block;
+    overflow: hidden;
+  }
+
+  .hero-title .line span {
+    display: block;
+    transform: translateY(100%);
+    animation: slideUp 1.2s cubic-bezier(0.23, 1, 0.32, 1) forwards;
+  }
+
+  .hero-title .line:nth-child(1) span {
+    animation-delay: 0.2s;
+  }
+
+  .hero-title .line:nth-child(2) span {
+    animation-delay: 0.35s;
+  }
+
+  .hero-title .large {
+    font-size: clamp(4rem, 12vw, 9rem);
+  }
+
+  .hero-title .script {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(3rem, 8vw, 6rem);
+    color: var(--terracotta);
+    margin-left: 1rem;
+  }
+
+  .hero-tagline {
+    font-size: 1rem;
+    color: var(--warm-gray);
+    max-width: 320px;
+    line-height: 1.8;
+    opacity: 0;
+    animation: fadeIn 1s ease 0.8s forwards;
+  }
+
+  .hero-visual {
+    position: relative;
+  }
+
+  .hero-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0;
+    animation: fadeIn 1.5s ease 0.3s forwards;
+  }
+
+  .hero-image-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, var(--ink) 0%, transparent 30%);
+    z-index: 1;
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 3rem;
+    left: 6rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    color: var(--warm-gray);
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    opacity: 0;
+    animation: fadeIn 1s ease 1.2s forwards;
+  }
+
+  .hero-scroll-line {
+    width: 60px;
+    height: 1px;
+    background: var(--warm-gray);
+    transform-origin: left;
+    animation: expandLine 1s ease 1.4s forwards;
+    transform: scaleX(0);
+  }
+
+  /* Responsive */
+  @media (max-width: 1024px) {
+    .hero {
+      grid-template-columns: 1fr;
+      min-height: auto;
+    }
+
+    .hero-content {
+      padding: 10rem 4rem 4rem;
+    }
+
+    .hero-visual {
+      height: 60vh;
+      position: relative;
+    }
+
+    .hero-image-overlay {
+      background: linear-gradient(to top, var(--ink) 0%, transparent 50%);
+    }
+  }
+
+  @media (max-width: 768px) {
+    .hero-content {
+      padding: 8rem 2rem 3rem;
+    }
+
+    .hero-scroll {
+      left: 2rem;
+    }
+  }
+</style>
+

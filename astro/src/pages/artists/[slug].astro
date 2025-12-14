@@ -1,0 +1,54 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { getArtistRecord } from "../../lib/nextcloud-cms";
+
+export const prerender = false;
+
+const { slug } = Astro.params;
+const runtimeEnv = (Astro.locals as any)?.runtime?.env ?? process.env;
+const record = slug ? await getArtistRecord(runtimeEnv, slug).catch(() => null) : null;
+---
+
+<Layout title={record?.info?.name ? `${record.info.name}` : `Artist: ${slug}`}>
+  <p><a href="/artists">Back</a></p>
+
+  <h1>{record?.info?.name ?? slug}</h1>
+
+  {record ? (
+    <>
+      <h2>Info</h2>
+      <pre>{JSON.stringify(record.info, null, 2)}</pre>
+
+      <h2>Bio</h2>
+      {record.bioMarkdown ? <pre>{record.bioMarkdown}</pre> : <p>(no bio.md)</p>}
+
+      <h2>Portfolio</h2>
+      {record.portfolio.length ? (
+        <ul>
+          {record.portfolio.map((img) => (
+            <li>
+              <div>{img.filename}</div>
+              <img
+                src={`/api/media?path=${encodeURIComponent(img.webdavPath)}`}
+                alt={img.filename}
+                loading="lazy"
+              />
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <p>(no portfolio images)</p>
+      )}
+
+      <h2>Calendar</h2>
+      <p>
+        calendarUrl:{" "}
+        <code>{(record.info as any).calendarUrl || (record.info as any).calendar_url || "(missing)"}</code>
+      </p>
+    </>
+  ) : (
+    <p>Artist not found (or Nextcloud env not configured).</p>
+  )}
+</Layout>
+
+

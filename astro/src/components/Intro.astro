@@ -1,0 +1,133 @@
+---
+interface Props {
+  heading?: string;
+  paragraphs?: string[];
+  imageUrl?: string;
+  imageAlt?: string;
+  badgeText?: string;
+  id?: string;
+}
+
+const {
+  heading = 'We believe your body is the most <em>precious canvas</em> in the world',
+  paragraphs = [
+    "At United Tattoo, we don't just create tattoos—we honor your journey. Every mark tells a story, and we're here to listen, understand, and translate your vision into art that lives with you forever.",
+    "Our studio in Fountain is built on something simple: the belief that everyone deserves a space where they feel seen, respected, and celebrated exactly as they are.",
+  ],
+  imageUrl = "https://images.unsplash.com/photo-1611501275019-9b5cda994e8d?w=800&q=80",
+  imageAlt = "Tattoo studio atmosphere",
+  badgeText = "Est.<br>Fountain<br>Colorado",
+  id = "about",
+} = Astro.props;
+---
+
+<section class="intro" id={id}>
+  <div class="intro-text reveal">
+    <h2 set:html={heading} />
+    {paragraphs.map((p) => <p>{p}</p>)}
+  </div>
+  <div class="intro-image reveal">
+    <img src={imageUrl} alt={imageAlt}>
+    <div class="intro-badge" set:html={badgeText} />
+  </div>
+</section>
+
+<style>
+  .intro {
+    padding: 12rem 8rem;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8rem;
+    align-items: center;
+  }
+
+  .intro-text h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 1.2;
+    margin-bottom: 2.5rem;
+  }
+
+  .intro-text h2 :global(em) {
+    font-style: italic;
+    color: var(--terracotta);
+  }
+
+  .intro-text p {
+    font-size: 1rem;
+    color: var(--ink-light);
+    line-height: 2;
+    margin-bottom: 1.5rem;
+  }
+
+  .intro-image {
+    position: relative;
+  }
+
+  .intro-image img {
+    width: 100%;
+    height: 600px;
+    object-fit: cover;
+  }
+
+  .intro-image::before {
+    content: '';
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    width: 100%;
+    height: 100%;
+    border: 1px solid var(--terracotta);
+    opacity: 0.4;
+    z-index: -1;
+  }
+
+  .intro-badge {
+    position: absolute;
+    bottom: -30px;
+    left: -30px;
+    width: 120px;
+    height: 120px;
+    background: var(--ink);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: var(--cream);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    line-height: 1.5;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .intro {
+      padding: 8rem 4rem;
+      gap: 4rem;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .intro {
+      grid-template-columns: 1fr;
+    }
+
+    .intro-image {
+      order: -1;
+    }
+
+    .intro-image img {
+      height: 400px;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .intro {
+      padding: 5rem 2rem;
+    }
+  }
+</style>
+

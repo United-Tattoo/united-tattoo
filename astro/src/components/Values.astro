@@ -1,0 +1,147 @@
+---
+interface Value {
+  number: string;
+  title: string;
+  text: string;
+}
+
+interface Props {
+  label?: string;
+  title?: string;
+  values?: Value[];
+  id?: string;
+}
+
+const {
+  label = "Our Foundation",
+  title = "Three principles guide everything we do at United Tattoo",
+  values = [
+    {
+      number: "01",
+      title: "Family",
+      text: "You're not just a client here—you're family. We take time to know your story, your dreams, what makes you who you are. That connection shapes every piece we create together.",
+    },
+    {
+      number: "02",
+      title: "Community",
+      text: "Fountain raised us. This community shaped us. We're committed to giving back, supporting local artists, and creating a space where neighbors become friends.",
+    },
+    {
+      number: "03",
+      title: "Inclusivity",
+      text: "Your identity is valid. Your story matters. We welcome every body, every background, every journey. This is a judgment-free zone where you can be authentically you.",
+    },
+  ],
+  id = "values",
+} = Astro.props;
+---
+
+<section class="values" id={id}>
+  <div class="values-header">
+    <span class="values-label">{label}</span>
+    <h2 class="values-title reveal">{title}</h2>
+  </div>
+  <div class="values-grid">
+    {values.map((value) => (
+      <div class="value-item reveal">
+        <div class="value-number">{value.number}</div>
+        <h3 class="value-title">{value.title}</h3>
+        <p class="value-text">{value.text}</p>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .values {
+    background: var(--cream-dark);
+    padding: 10rem 8rem;
+  }
+
+  .values-header {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 4rem;
+    margin-bottom: 6rem;
+  }
+
+  .values-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+  }
+
+  .values-title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.3;
+  }
+
+  .values-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+    background: var(--warm-gray);
+  }
+
+  .value-item {
+    background: var(--cream-dark);
+    padding: 4rem 3rem;
+    transition: background 0.4s;
+  }
+
+  .value-item:hover {
+    background: var(--cream);
+  }
+
+  .value-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    color: var(--terracotta);
+    opacity: 0.4;
+    margin-bottom: 2rem;
+  }
+
+  .value-title {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .value-text {
+    font-size: 0.95rem;
+    color: var(--ink-light);
+    line-height: 1.9;
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .values {
+      padding: 6rem 4rem;
+    }
+  }
+
+  @media (max-width: 1024px) {
+    .values-header {
+      grid-template-columns: 1fr;
+      gap: 1rem;
+    }
+
+    .values-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .values {
+      padding: 5rem 2rem;
+    }
+
+    .value-item {
+      padding: 3rem 2rem;
+    }
+  }
+</style>
+

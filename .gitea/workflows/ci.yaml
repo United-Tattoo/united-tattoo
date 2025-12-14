@@ -5,13 +5,14 @@ on:
     branches:
       - main
       - master
+      - astro-migration
   pull_request:
     branches:
       - main
       - master
 
 jobs:
-  build-and-test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -30,70 +31,33 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      - name: Install dependencies
+      - name: Install root dependencies
         run: npm install --no-audit --no-fund
 
-      - name: Ensure CI dev deps present (fallback)
-        run: |
-          # Workaround when package-lock is stale vs package.json
-          npm i --no-save eslint@^8.57.0 eslint-config-next@14.2.16 @vitest/coverage-v8@^3.2.4 || true
+      - name: Install Astro dependencies
+        run: npm --prefix astro install --no-audit --no-fund
 
-      - name: Lint
-        run: npm run ci:lint
-
-      - name: Typecheck
-        run: npm run ci:typecheck
-
-      - name: Unit tests (coverage)
-        run: npm run ci:test
-
-      - name: Build (OpenNext)
+      - name: Build Astro
         run: npm run ci:build
+
+      - name: Verify build output
+        run: npm run ci:smoke
 
       - name: Preview smoke check
         shell: bash
         run: |
           set -euo pipefail
-          # Start preview via local CLI in background and verify it doesn't crash immediately
-          npm run preview > preview.log 2>&1 &
+          # Start Astro preview server in background
+          npm --prefix astro run preview > preview.log 2>&1 &
           PREVIEW_PID=$!
           # Give it a moment to start
           sleep 5
           if ! kill -0 "$PREVIEW_PID" 2>/dev/null; then
             echo "Preview process exited prematurely. Logs:" >&2
-            sed -n '1,200p' preview.log >&2 || true
+            head -100 preview.log >&2 || true
             exit 1
           fi
           # Cleanly stop the preview
           kill "$PREVIEW_PID" || true
           wait "$PREVIEW_PID" || true
           echo "Preview started successfully (smoke check passed)."
-
-      - name: Budgets check
-        run: npm run ci:budgets
-        env:
-          TOTAL_STATIC_MAX_BYTES: ${{ vars.TOTAL_STATIC_MAX_BYTES }}
-          MAX_ASSET_BYTES: ${{ vars.MAX_ASSET_BYTES }}
-
-      - name: Upload budgets report
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: budgets-report
-          path: .vercel/output/static-budgets-report.txt
-
-      - name: D1 migration dry-run (best-effort)
-        shell: bash
-        continue-on-error: true
-        run: |
-          set -euo pipefail
-          if [ -f sql/schema.sql ]; then
-            echo "Attempting D1 migration dry-run (local mode)..."
-            if npx wrangler d1 execute united-tattoo --local --file=./sql/schema.sql; then
-              echo "D1 migration dry-run completed successfully."
-            else
-              echo "D1 dry-run skipped or failed due to missing local bindings. This is expected until CI bindings are configured." >&2
-            fi
-          else
-            echo "No sql/schema.sql found; skipping D1 dry-run."
-          fi

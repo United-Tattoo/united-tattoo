@@ -1,0 +1,49 @@
+---
+interface Props {
+  text?: string;
+  author?: string;
+}
+
+const {
+  text = '"Art is not what you see, but what you make others see. Every tattoo we create is a window into someone\'s soul."',
+  author = "— The United Tattoo Family",
+} = Astro.props;
+---
+
+<section class="quote">
+  <p class="quote-text reveal">{text}</p>
+  <span class="quote-author reveal">{author}</span>
+</section>
+
+<style>
+  .quote {
+    padding: 8rem;
+    background: var(--ink);
+    color: var(--cream);
+    text-align: center;
+  }
+
+  .quote-text {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    line-height: 1.5;
+    max-width: 900px;
+    margin: 0 auto 3rem;
+  }
+
+  .quote-author {
+    font-size: 0.75rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+  }
+
+  /* Responsive */
+  @media (max-width: 768px) {
+    .quote {
+      padding: 5rem 2rem;
+    }
+  }
+</style>
+

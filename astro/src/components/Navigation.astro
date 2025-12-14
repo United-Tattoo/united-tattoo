@@ -1,0 +1,113 @@
+---
+interface NavLink {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  logoText?: string;
+  logoHref?: string;
+  links?: NavLink[];
+  ctaText?: string;
+  ctaHref?: string;
+}
+
+const {
+  logoText = "United Tattoo",
+  logoHref = "/",
+  links = [
+    { label: "About", href: "#about" },
+    { label: "Artists", href: "/artists" },
+    { label: "Work", href: "#work" },
+    { label: "Contact", href: "/book" },
+  ],
+  ctaText = "Book Now",
+  ctaHref = "/book",
+} = Astro.props;
+---
+
+<nav class="nav">
+  <a href={logoHref} class="nav-logo">{logoText}</a>
+  <ul class="nav-links">
+    {links.map((link) => (
+      <li><a href={link.href}>{link.label}</a></li>
+    ))}
+  </ul>
+  <a href={ctaHref} class="nav-cta">{ctaText}</a>
+</nav>
+
+<style>
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 2rem 4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    mix-blend-mode: difference;
+  }
+
+  .nav * {
+    color: var(--cream);
+  }
+
+  .nav-logo {
+    font-family: 'Libre Baskerville', serif;
+    font-size: 0.9rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 3rem;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+
+  .nav-links a:hover {
+    opacity: 1;
+  }
+
+  .nav-cta {
+    font-size: 0.75rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: 0.8rem 1.5rem;
+    border: 1px solid currentColor;
+    transition: all 0.3s;
+  }
+
+  .nav-cta:hover {
+    background: var(--cream);
+    color: var(--ink);
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .nav {
+      padding: 1.5rem 3rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .nav-links,
+    .nav-cta {
+      display: none;
+    }
+  }
+</style>
+

@@ -1,0 +1,66 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { listArtistSlugs, getArtistRecord } from "../../lib/nextcloud-cms";
+import ArtistsGrid from "../../components/ArtistsGrid.astro";
+
+export const prerender = false;
+
+const runtimeEnv = (Astro.locals as any)?.runtime?.env ?? process.env;
+let artists = [];
+let loadError: string | null = null;
+
+try {
+  const slugs = await listArtistSlugs(runtimeEnv);
+  artists = await Promise.all(
+    slugs.map((slug) =>
+      getArtistRecord(runtimeEnv, slug).catch((e) => {
+        console.error(`Failed to load artist ${slug}:`, e);
+        return null;
+      })
+    )
+  );
+  artists = artists.filter((a) => a !== null);
+} catch (e) {
+  loadError = e instanceof Error ? e.message : "Failed to list artists";
+}
+---
+
+<Layout title="Artists">
+  <main style="max-width: 1200px; margin: 0 auto; padding: 2rem 1rem;">
+    <h1 style="font-family: 'Playfair Display', serif; font-size: 2.5rem; margin-bottom: 1rem; color: var(--ink);">
+      Our Artists
+    </h1>
+    <p style="color: var(--warm-gray); margin-bottom: 2rem; font-size: 1.1rem;">
+      Meet the talented artists at United Tattoo
+    </p>
+
+    {loadError ? (
+      <div style="padding: 2rem; background: var(--cream-dark); border-radius: 8px;">
+        <p style="color: var(--terracotta); margin-bottom: 1rem;">Error loading artists:</p>
+        <pre style="background: var(--cream); padding: 1rem; border-radius: 4px; overflow-x: auto;">
+          {loadError}
+        </pre>
+        <p style="margin-top: 1rem;">
+          Debug endpoint:{" "}
+          <a href="/api/debug/nextcloud" target="_blank" rel="noreferrer" style="color: var(--terracotta);">
+            /api/debug/nextcloud
+          </a>
+        </p>
+      </div>
+    ) : artists.length ? (
+      <ArtistsGrid artists={artists} />
+    ) : (
+      <div style="padding: 2rem; background: var(--cream-dark); border-radius: 8px; text-align: center;">
+        <p style="color: var(--warm-gray); margin-bottom: 1rem;">
+          No artists found (or Nextcloud env not configured).
+        </p>
+        <p style="color: var(--warm-gray); font-size: 0.9rem;">
+          See <code>astro/docs/nextcloud-env.md</code> and{" "}
+          <code>astro/docs/nextcloud-content-schema.md</code>.
+        </p>
+      </div>
+    )}
+  </main>
+</Layout>
+
+

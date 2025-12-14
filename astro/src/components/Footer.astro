@@ -1,0 +1,156 @@
+---
+interface NavColumn {
+  title: string;
+  links: { label: string; href: string }[];
+}
+
+interface Props {
+  brandName?: string;
+  brandAccent?: string;
+  navColumns?: NavColumn[];
+  copyright?: string;
+  location?: string;
+}
+
+const {
+  brandName = "United",
+  brandAccent = "Tattoo",
+  navColumns = [
+    {
+      title: "Navigate",
+      links: [
+        { label: "About", href: "#about" },
+        { label: "Values", href: "#values" },
+        { label: "Portfolio", href: "#work" },
+        { label: "Contact", href: "#contact" },
+      ],
+    },
+    {
+      title: "Connect",
+      links: [
+        { label: "Instagram", href: "#" },
+        { label: "Facebook", href: "#" },
+        { label: "TikTok", href: "#" },
+      ],
+    },
+    {
+      title: "Legal",
+      links: [
+        { label: "Privacy", href: "#" },
+        { label: "Terms", href: "#" },
+      ],
+    },
+  ],
+  copyright = "© 2025 United Tattoo",
+  location = "Fountain, Colorado",
+} = Astro.props;
+---
+
+<footer class="footer">
+  <div class="footer-main">
+    <div class="footer-brand">
+      {brandName}<em>{brandAccent}</em>
+    </div>
+    <div class="footer-nav">
+      {navColumns.map((column) => (
+        <div class="footer-nav-col">
+          <h4>{column.title}</h4>
+          {column.links.map((link) => (
+            <a href={link.href}>{link.label}</a>
+          ))}
+        </div>
+      ))}
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>{copyright}</span>
+    <span>{location}</span>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 6rem 8rem 3rem;
+  }
+
+  .footer-main {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding-bottom: 4rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .footer-brand {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    line-height: 1;
+  }
+
+  .footer-brand em {
+    font-style: italic;
+    display: block;
+    color: var(--terracotta);
+  }
+
+  .footer-nav {
+    display: flex;
+    gap: 4rem;
+  }
+
+  .footer-nav-col h4 {
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--warm-gray);
+    margin-bottom: 1.5rem;
+    font-weight: 400;
+  }
+
+  .footer-nav-col a {
+    display: block;
+    color: var(--cream);
+    text-decoration: none;
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+    opacity: 0.7;
+    transition: opacity 0.3s;
+  }
+
+  .footer-nav-col a:hover {
+    opacity: 1;
+  }
+
+  .footer-bottom {
+    padding-top: 2rem;
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.75rem;
+    color: var(--warm-gray);
+  }
+
+  /* Responsive */
+  @media (max-width: 1200px) {
+    .footer {
+      padding: 4rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .footer {
+      padding: 3rem 2rem;
+    }
+
+    .footer-main {
+      flex-direction: column;
+      gap: 3rem;
+    }
+
+    .footer-nav {
+      gap: 2rem;
+    }
+  }
+</style>
+

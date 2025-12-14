@@ -1,47 +1,16 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
-# dependencies
+# Dependencies
 node_modules/
-/node_modules
-/.pnp
-.pnp.js
-.yarn/install-state.gz
 
-# testing
-/coverage
-coverage/
-.nyc_output/
+# Astro build output
+astro/dist/
+astro/.astro/
 
-# next.js
-/.next/
-/out/
-.next/
-next-env.d.ts
-*.tsbuildinfo
+# Wrangler/Cloudflare local state
+.wrangler/
+.dev.vars
+.mf/
 
-# vercel
-.vercel/
-.vercel
-
-# production
-/build
-dist/
-build/
-
-# misc
-.DS_Store
-*.pem
-.vscode/
-.idea/
-
-# debug
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-.pnpm-debug.log*
-lerna-debug.log*
-
-# local env files
+# Environment files
 .env
 .env*.local
 .env.local
@@ -50,30 +19,36 @@ lerna-debug.log*
 .env.production.local
 .env.production
 
-# typescript
+# Logs
 *.log
-*.map
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 
-# IDEs
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE/Editor
 .vscode/*
 !.vscode/settings.json
 !.vscode/tasks.json
 !.vscode/launch.json
 !.vscode/extensions.json
+.idea/
 *.swp
 *.swo
 *~
-.idea/
 *.sublime-project
 *.sublime-workspace
 
-# OS
-.DS_Store
-Thumbs.db
+# Cache directories
+.cache/
+.turbo/
 
-# project temp and large binary assets (avoid committing raw media dumps)
+# Large binary assets (avoid committing raw media dumps)
 temp/
-temp/**
 *.mp4
 *.mov
 *.avi
@@ -84,83 +59,22 @@ temp/**
 *.7z
 *.rar
 
-# BMAD (local only)
-.bmad-core/
-.bmad-*/
-
-# database backups (local exports)
+# Database backups
 backups/
 *.sql.bak
 *.db-backup
+local.db
 
-# wrangler/cloudflare local state (do not commit)
-.wrangler/
-.wrangler/**
-.dev.vars
-.mf/
-
-# opennext build files (NEVER commit these - they are build artifacts)
+# Legacy Next.js (archived on nextjs-archive branch)
+.next/
 .open-next/
-.open-next/**
-.open next/
-.vercel/output/
-.vercel/output/**
+.vercel/
+next-env.d.ts
+*.tsbuildinfo
 
-# Cache directories
-.cache/
-.parcel-cache/
-.turbo/
-.swc/
-
-# Lock files (keep only one)
-# Uncomment the ones you don't use
-# package-lock.json
-# yarn.lock
-# pnpm-lock.yaml
-
-# Vitest
-.vitest/
-
-# Logs
-logs/
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Runtime data
-pids/
-*.pid
-*.seed
-*.pid.lock
-
-# Optional npm cache directory
+# Misc
 .npm
-
-# Optional eslint cache
 .eslintcache
-
-# Sentry
-.sentryclirc
-
-# React Query
-.react-query/
-
-# Supabase
-.supabase/
-supabase/.temp/
-
-# Tanstack Query Devtools
-.tanstack/
-.cursorindexingignore
 .specstory/
-2025-11-25-where-we-left-off.txt
-
-# Accidental/misnamed files
-et -e
-AGENTS.md
-.playwright-mcp/
-.playwright-mcp/**
 .opencode/
-.opencode/**
-OPTIMIZATION_GUIDE.md
+.playwright-mcp/
