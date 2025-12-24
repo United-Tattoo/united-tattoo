@@ -8,7 +8,7 @@
   --color-bg-deep: #050505;
   --color-text-main: #e0e0e0;
   --color-accent: #ffffff;
-  --color-grid-line: rgba(255, 255, 255, 0.02);
+  --color-grid-line: rgba(255, 255, 255, 0.1);
 }
 
 @layer base {
@@ -17,7 +17,7 @@
   :root {
     --bg-deep: #050505;
     --text-main: #e0e0e0;
-    --grid-line: rgba(255, 255, 255, 0.02);
+    --grid-line: rgba(255, 255, 255, 0.1);
   }
 
   body {
@@ -47,6 +47,26 @@
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
     border: 1px solid rgba(255, 255, 255, 0.06);
+  }
+
+  .grid-border {
+    @apply border border-white/10;
+  }
+
+  .grid-border-t {
+    @apply border-t border-white/10;
+  }
+
+  .grid-border-b {
+    @apply border-b border-white/10;
+  }
+
+  .grid-border-l {
+    @apply border-l border-white/10;
+  }
+
+  .grid-border-r {
+    @apply border-r border-white/10;
   }
 
   /* Editorial section label - subtle, not loud */

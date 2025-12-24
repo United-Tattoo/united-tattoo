@@ -14,9 +14,11 @@ interface Props {
   };
   announcement?: string;
   hideAnnouncement?: boolean;
+  removeMainPadding?: boolean;
+  hideFooter?: boolean;
 }
 
-const { frontmatter, hideAnnouncement = false, announcement, ...props } = Astro.props;
+const { frontmatter, hideAnnouncement = false, removeMainPadding = false, hideFooter = false, announcement, ...props } = Astro.props;
 const title = props.title || frontmatter?.title || '';
 const description = props.description || frontmatter?.description || 'Professional tattoo studio in Fountain, CO';
 const currentPath = Astro.url.pathname;
@@ -33,6 +35,7 @@ const currentPath = Astro.url.pathname;
 		<!-- Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
 		<!-- Icons -->
 		<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 	</head>
@@ -41,12 +44,12 @@ const currentPath = Astro.url.pathname;
 		<div class="fixed inset-0 noise pointer-events-none z-50"></div>
 
 		{!hideAnnouncement && <Announcement message={announcement} />}
-		<HeaderNav currentPath={currentPath} />
+		<HeaderNav currentPath={currentPath} hasAnnouncement={!hideAnnouncement} />
 
-		<main class="pt-32 pb-24">
+		<main class:list={[{ "pt-32 pb-24": !removeMainPadding }]}>
 			<slot />
 		</main>
 
-		<SiteFooter />
+		{!hideFooter && <SiteFooter />}
 	</body>
 </html>
