@@ -1,27 +1,14 @@
 {
-  "name": "united-tattoo",
-  "version": "1.0.0",
-  "private": true,
-  "description": "United Tattoo website - Astro + Cloudflare Workers",
+  "name": "",
+  "type": "module",
+  "version": "0.0.1",
   "scripts": {
-    "dev": "npm --prefix astro run dev -- --host 0.0.0.0 --port 4321",
-    "build": "npm --prefix astro run build",
-    "preview": "npm --prefix astro run preview",
-    "deploy": "npm run build && npx wrangler deploy --config astro/wrangler.jsonc",
-    "deploy:dry-run": "npm run build && npx wrangler deploy --config astro/wrangler.jsonc --dry-run",
-    "clean": "rm -rf astro/dist astro/.astro node_modules/.cache",
-    "fresh": "npm run clean && npm install && npm --prefix astro install && npm run dev",
-    "install:all": "npm install && npm --prefix astro install",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "ci:build": "npm --prefix astro run build",
-    "ci:smoke": "test -f astro/dist/_worker.js/index.js && echo 'Build output OK' || (echo 'Build output missing!' && exit 1)"
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro"
   },
-  "devDependencies": {
-    "prettier": "^3.2.5",
-    "wrangler": "^4.49.1"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+  "dependencies": {
+    "astro": "^5.16.6"
   }
 }

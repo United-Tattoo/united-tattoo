@@ -1,0 +1,4052 @@
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AETHER - Advanced Skincare</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Hide scrollbar */
+        ::-webkit-scrollbar {
+            width: 0px;
+            background: transparent;
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+    <style>
+        @keyframes molecule-float {
+
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+
+            50% {
+                transform: translateY(-15px) rotate(4deg);
+            }
+        }
+
+        .animate-molecule {
+            animation: molecule-float 8s ease-in-out infinite;
+        }
+    </style>
+    <script src="https://www.aura.build/FxFilter.js"></script>
+    <link id="all-fonts-link-font-geist" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Geist:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-geist">
+        .font-geist {
+            font-family: 'Geist', sans-serif !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-roboto" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-roboto">
+        .font-roboto {
+            font-family: 'Roboto', sans-serif !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-montserrat" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-montserrat">
+        .font-montserrat {
+            font-family: 'Montserrat', sans-serif !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-poppins" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-poppins">
+        .font-poppins {
+            font-family: 'Poppins', sans-serif !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-playfair" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;900&amp;display=swap">
+    <style id="all-fonts-style-font-playfair">
+        .font-playfair {
+            font-family: 'Playfair Display', serif !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-instrument-serif" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Instrument+Serif:wght@400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-instrument-serif">
+        .font-instrument-serif {
+            font-family: 'Instrument Serif', serif !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-merriweather" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Merriweather:wght@300;400;700;900&amp;display=swap">
+    <style id="all-fonts-style-font-merriweather">
+        .font-merriweather {
+            font-family: 'Merriweather', serif !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-bricolage" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-bricolage">
+        .font-bricolage {
+            font-family: 'Bricolage Grotesque', sans-serif !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-jakarta" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&amp;display=swap">
+    <style id="all-fonts-style-font-jakarta">
+        .font-jakarta {
+            font-family: 'Plus Jakarta Sans', sans-serif !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-manrope" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&amp;display=swap">
+    <style id="all-fonts-style-font-manrope">
+        .font-manrope {
+            font-family: 'Manrope', sans-serif !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-space-grotesk" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-space-grotesk">
+        .font-space-grotesk {
+            font-family: 'Space Grotesk', sans-serif !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-work-sans" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500;600;700;800&amp;display=swap">
+    <style id="all-fonts-style-font-work-sans">
+        .font-work-sans {
+            font-family: 'Work Sans', sans-serif !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-pt-serif" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=PT+Serif:wght@400;700&amp;display=swap">
+    <style id="all-fonts-style-font-pt-serif">
+        .font-pt-serif {
+            font-family: 'PT Serif', serif !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-geist-mono" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-geist-mono">
+        .font-geist-mono {
+            font-family: 'Geist Mono', monospace !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-space-mono" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&amp;display=swap">
+    <style id="all-fonts-style-font-space-mono">
+        .font-space-mono {
+            font-family: 'Space Mono', monospace !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-quicksand" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Quicksand:wght@300;400;500;600;700&amp;display=swap">
+    <style id="all-fonts-style-font-quicksand">
+        .font-quicksand {
+            font-family: 'Quicksand', sans-serif !important;
+        }
+    </style>
+    <link id="all-fonts-link-font-nunito" rel="stylesheet"
+        href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800&amp;display=swap">
+    <style id="all-fonts-style-font-nunito">
+        .font-nunito {
+            font-family: 'Nunito', sans-serif !important;
+        }
+    </style>
+    <style>
+        *,
+        ::before,
+        ::after {
+            --tw-border-spacing-x: 0;
+            --tw-border-spacing-y: 0;
+            --tw-translate-x: 0;
+            --tw-translate-y: 0;
+            --tw-rotate: 0;
+            --tw-skew-x: 0;
+            --tw-skew-y: 0;
+            --tw-scale-x: 1;
+            --tw-scale-y: 1;
+            --tw-pan-x: ;
+            --tw-pan-y: ;
+            --tw-pinch-zoom: ;
+            --tw-scroll-snap-strictness: proximity;
+            --tw-gradient-from-position: ;
+            --tw-gradient-via-position: ;
+            --tw-gradient-to-position: ;
+            --tw-ordinal: ;
+            --tw-slashed-zero: ;
+            --tw-numeric-figure: ;
+            --tw-numeric-spacing: ;
+            --tw-numeric-fraction: ;
+            --tw-ring-inset: ;
+            --tw-ring-offset-width: 0px;
+            --tw-ring-offset-color: #fff;
+            --tw-ring-color: rgb(59 130 246 / 0.5);
+            --tw-ring-offset-shadow: 0 0 #0000;
+            --tw-ring-shadow: 0 0 #0000;
+            --tw-shadow: 0 0 #0000;
+            --tw-shadow-colored: 0 0 #0000;
+            --tw-blur: ;
+            --tw-brightness: ;
+            --tw-contrast: ;
+            --tw-grayscale: ;
+            --tw-hue-rotate: ;
+            --tw-invert: ;
+            --tw-saturate: ;
+            --tw-sepia: ;
+            --tw-drop-shadow: ;
+            --tw-backdrop-blur: ;
+            --tw-backdrop-brightness: ;
+            --tw-backdrop-contrast: ;
+            --tw-backdrop-grayscale: ;
+            --tw-backdrop-hue-rotate: ;
+            --tw-backdrop-invert: ;
+            --tw-backdrop-opacity: ;
+            --tw-backdrop-saturate: ;
+            --tw-backdrop-sepia: ;
+            --tw-contain-size: ;
+            --tw-contain-layout: ;
+            --tw-contain-paint: ;
+            --tw-contain-style:
+        }
+
+        ::backdrop {
+            --tw-border-spacing-x: 0;
+            --tw-border-spacing-y: 0;
+            --tw-translate-x: 0;
+            --tw-translate-y: 0;
+            --tw-rotate: 0;
+            --tw-skew-x: 0;
+            --tw-skew-y: 0;
+            --tw-scale-x: 1;
+            --tw-scale-y: 1;
+            --tw-pan-x: ;
+            --tw-pan-y: ;
+            --tw-pinch-zoom: ;
+            --tw-scroll-snap-strictness: proximity;
+            --tw-gradient-from-position: ;
+            --tw-gradient-via-position: ;
+            --tw-gradient-to-position: ;
+            --tw-ordinal: ;
+            --tw-slashed-zero: ;
+            --tw-numeric-figure: ;
+            --tw-numeric-spacing: ;
+            --tw-numeric-fraction: ;
+            --tw-ring-inset: ;
+            --tw-ring-offset-width: 0px;
+            --tw-ring-offset-color: #fff;
+            --tw-ring-color: rgb(59 130 246 / 0.5);
+            --tw-ring-offset-shadow: 0 0 #0000;
+            --tw-ring-shadow: 0 0 #0000;
+            --tw-shadow: 0 0 #0000;
+            --tw-shadow-colored: 0 0 #0000;
+            --tw-blur: ;
+            --tw-brightness: ;
+            --tw-contrast: ;
+            --tw-grayscale: ;
+            --tw-hue-rotate: ;
+            --tw-invert: ;
+            --tw-saturate: ;
+            --tw-sepia: ;
+            --tw-drop-shadow: ;
+            --tw-backdrop-blur: ;
+            --tw-backdrop-brightness: ;
+            --tw-backdrop-contrast: ;
+            --tw-backdrop-grayscale: ;
+            --tw-backdrop-hue-rotate: ;
+            --tw-backdrop-invert: ;
+            --tw-backdrop-opacity: ;
+            --tw-backdrop-saturate: ;
+            --tw-backdrop-sepia: ;
+            --tw-contain-size: ;
+            --tw-contain-layout: ;
+            --tw-contain-paint: ;
+            --tw-contain-style:
+        }
+
+        /* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */
+        *,
+        ::after,
+        ::before {
+            box-sizing: border-box;
+            border-width: 0;
+            border-style: solid;
+            border-color: #e5e7eb
+        }
+
+        ::after,
+        ::before {
+            --tw-content: ''
+        }
+
+        :host,
+        html {
+            line-height: 1.5;
+            -webkit-text-size-adjust: 100%;
+            -moz-tab-size: 4;
+            tab-size: 4;
+            font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-feature-settings: normal;
+            font-variation-settings: normal;
+            -webkit-tap-highlight-color: transparent
+        }
+
+        body {
+            margin: 0;
+            line-height: inherit
+        }
+
+        hr {
+            height: 0;
+            color: inherit;
+            border-top-width: 1px
+        }
+
+        abbr:where([title]) {
+            -webkit-text-decoration: underline dotted;
+            text-decoration: underline dotted
+        }
+
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6 {
+            font-size: inherit;
+            font-weight: inherit
+        }
+
+        a {
+            color: inherit;
+            text-decoration: inherit
+        }
+
+        b,
+        strong {
+            font-weight: bolder
+        }
+
+        code,
+        kbd,
+        pre,
+        samp {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            font-feature-settings: normal;
+            font-variation-settings: normal;
+            font-size: 1em
+        }
+
+        small {
+            font-size: 80%
+        }
+
+        sub,
+        sup {
+            font-size: 75%;
+            line-height: 0;
+            position: relative;
+            vertical-align: baseline
+        }
+
+        sub {
+            bottom: -.25em
+        }
+
+        sup {
+            top: -.5em
+        }
+
+        table {
+            text-indent: 0;
+            border-color: inherit;
+            border-collapse: collapse
+        }
+
+        button,
+        input,
+        optgroup,
+        select,
+        textarea {
+            font-family: inherit;
+            font-feature-settings: inherit;
+            font-variation-settings: inherit;
+            font-size: 100%;
+            font-weight: inherit;
+            line-height: inherit;
+            letter-spacing: inherit;
+            color: inherit;
+            margin: 0;
+            padding: 0
+        }
+
+        button,
+        select {
+            text-transform: none
+        }
+
+        button,
+        input:where([type=button]),
+        input:where([type=reset]),
+        input:where([type=submit]) {
+            -webkit-appearance: button;
+            background-color: transparent;
+            background-image: none
+        }
+
+        :-moz-focusring {
+            outline: auto
+        }
+
+        :-moz-ui-invalid {
+            box-shadow: none
+        }
+
+        progress {
+            vertical-align: baseline
+        }
+
+        ::-webkit-inner-spin-button,
+        ::-webkit-outer-spin-button {
+            height: auto
+        }
+
+        [type=search] {
+            -webkit-appearance: textfield;
+            outline-offset: -2px
+        }
+
+        ::-webkit-search-decoration {
+            -webkit-appearance: none
+        }
+
+        ::-webkit-file-upload-button {
+            -webkit-appearance: button;
+            font: inherit
+        }
+
+        summary {
+            display: list-item
+        }
+
+        blockquote,
+        dd,
+        dl,
+        figure,
+        h1,
+        h2,
+        h3,
+        h4,
+        h5,
+        h6,
+        hr,
+        p,
+        pre {
+            margin: 0
+        }
+
+        fieldset {
+            margin: 0;
+            padding: 0
+        }
+
+        legend {
+            padding: 0
+        }
+
+        menu,
+        ol,
+        ul {
+            list-style: none;
+            margin: 0;
+            padding: 0
+        }
+
+        dialog {
+            padding: 0
+        }
+
+        textarea {
+            resize: vertical
+        }
+
+        input::placeholder,
+        textarea::placeholder {
+            opacity: 1;
+            color: #9ca3af
+        }
+
+        [role=button],
+        button {
+            cursor: pointer
+        }
+
+        :disabled {
+            cursor: default
+        }
+
+        audio,
+        canvas,
+        embed,
+        iframe,
+        img,
+        object,
+        svg,
+        video {
+            display: block;
+            vertical-align: middle
+        }
+
+        img,
+        video {
+            max-width: 100%;
+            height: auto
+        }
+
+        [hidden]:where(:not([hidden=until-found])) {
+            display: none
+        }
+
+        .pointer-events-none {
+            pointer-events: none
+        }
+
+        .fixed {
+            position: fixed
+        }
+
+        .absolute {
+            position: absolute
+        }
+
+        .relative {
+            position: relative
+        }
+
+        .inset-0 {
+            inset: 0px
+        }
+
+        .left-0 {
+            left: 0px
+        }
+
+        .top-0 {
+            top: 0px
+        }
+
+        .top-9 {
+            top: 2.25rem
+        }
+
+        .-bottom-10 {
+            bottom: -2.5rem
+        }
+
+        .bottom-0 {
+            bottom: 0px
+        }
+
+        .bottom-6 {
+            bottom: 1.5rem
+        }
+
+        .left-1\/2 {
+            left: 50%
+        }
+
+        .left-4 {
+            left: 1rem
+        }
+
+        .left-8 {
+            left: 2rem
+        }
+
+        .right-4 {
+            right: 1rem
+        }
+
+        .top-\[15\%\] {
+            top: 15%
+        }
+
+        .top-\[42\%\] {
+            top: 42%
+        }
+
+        .top-\[45\%\] {
+            top: 45%
+        }
+
+        .top-\[55\%\] {
+            top: 55%
+        }
+
+        .bottom-10 {
+            bottom: 2.5rem
+        }
+
+        .left-10 {
+            left: 2.5rem
+        }
+
+        .bottom-4 {
+            bottom: 1rem
+        }
+
+        .bottom-\[-4px\] {
+            bottom: -4px
+        }
+
+        .right-0 {
+            right: 0px
+        }
+
+        .top-\[-4px\] {
+            top: -4px
+        }
+
+        .right-2 {
+            right: 0.5rem
+        }
+
+        .top-2 {
+            top: 0.5rem
+        }
+
+        .top-\[10\%\] {
+            top: 10%
+        }
+
+        .-z-10 {
+            z-index: -10
+        }
+
+        .z-10 {
+            z-index: 10
+        }
+
+        .z-40 {
+            z-index: 40
+        }
+
+        .z-50 {
+            z-index: 50
+        }
+
+        .z-0 {
+            z-index: 0
+        }
+
+        .z-20 {
+            z-index: 20
+        }
+
+        .z-30 {
+            z-index: 30
+        }
+
+        .z-\[5\] {
+            z-index: 5
+        }
+
+        .mx-2 {
+            margin-left: 0.5rem;
+            margin-right: 0.5rem
+        }
+
+        .mx-auto {
+            margin-left: auto;
+            margin-right: auto
+        }
+
+        .ml-0\.5 {
+            margin-left: 0.125rem
+        }
+
+        .ml-2 {
+            margin-left: 0.5rem
+        }
+
+        .mb-10 {
+            margin-bottom: 2.5rem
+        }
+
+        .mb-4 {
+            margin-bottom: 1rem
+        }
+
+        .mb-40 {
+            margin-bottom: 10rem
+        }
+
+        .mb-8 {
+            margin-bottom: 2rem
+        }
+
+        .ml-1 {
+            margin-left: 0.25rem
+        }
+
+        .ml-auto {
+            margin-left: auto
+        }
+
+        .mr-2 {
+            margin-right: 0.5rem
+        }
+
+        .mr-auto {
+            margin-right: auto
+        }
+
+        .mt-1 {
+            margin-top: 0.25rem
+        }
+
+        .mt-12 {
+            margin-top: 3rem
+        }
+
+        .mt-auto {
+            margin-top: auto
+        }
+
+        .mb-6 {
+            margin-bottom: 1.5rem
+        }
+
+        .mt-2 {
+            margin-top: 0.5rem
+        }
+
+        .mt-4 {
+            margin-top: 1rem
+        }
+
+        .mb-20 {
+            margin-bottom: 5rem
+        }
+
+        .mt-10 {
+            margin-top: 2.5rem
+        }
+
+        .-ml-2 {
+            margin-left: -0.5rem
+        }
+
+        .mb-16 {
+            margin-bottom: 4rem
+        }
+
+        .mb-2 {
+            margin-bottom: 0.5rem
+        }
+
+        .mt-8 {
+            margin-top: 2rem
+        }
+
+        .block {
+            display: block
+        }
+
+        .inline-block {
+            display: inline-block
+        }
+
+        .flex {
+            display: flex
+        }
+
+        .inline-flex {
+            display: inline-flex
+        }
+
+        .grid {
+            display: grid
+        }
+
+        .hidden {
+            display: none
+        }
+
+        .aspect-\[4\/3\] {
+            aspect-ratio: 4/3
+        }
+
+        .h-1\.5 {
+            height: 0.375rem
+        }
+
+        .h-9 {
+            height: 2.25rem
+        }
+
+        .h-full {
+            height: 100%
+        }
+
+        .h-2 {
+            height: 0.5rem
+        }
+
+        .h-20 {
+            height: 5rem
+        }
+
+        .h-3\.5 {
+            height: 0.875rem
+        }
+
+        .h-\[1px\] {
+            height: 1px
+        }
+
+        .h-auto {
+            height: auto
+        }
+
+        .h-12 {
+            height: 3rem
+        }
+
+        .h-6 {
+            height: 1.5rem
+        }
+
+        .h-8 {
+            height: 2rem
+        }
+
+        .h-\[420px\] {
+            height: 420px
+        }
+
+        .h-64 {
+            height: 16rem
+        }
+
+        .h-32 {
+            height: 8rem
+        }
+
+        .h-4 {
+            height: 1rem
+        }
+
+        .h-48 {
+            height: 12rem
+        }
+
+        .h-\[160px\] {
+            height: 160px
+        }
+
+        .h-\[90vh\] {
+            height: 90vh
+        }
+
+        .max-h-\[160px\] {
+            max-height: 160px
+        }
+
+        .min-h-screen {
+            min-height: 100vh
+        }
+
+        .w-1\.5 {
+            width: 0.375rem
+        }
+
+        .w-full {
+            width: 100%
+        }
+
+        .w-2 {
+            width: 0.5rem
+        }
+
+        .w-3\.5 {
+            width: 0.875rem
+        }
+
+        .w-56 {
+            width: 14rem
+        }
+
+        .w-\[1px\] {
+            width: 1px
+        }
+
+        .w-auto {
+            width: auto
+        }
+
+        .w-12 {
+            width: 3rem
+        }
+
+        .w-6 {
+            width: 1.5rem
+        }
+
+        .w-8 {
+            width: 2rem
+        }
+
+        .w-64 {
+            width: 16rem
+        }
+
+        .w-4 {
+            width: 1rem
+        }
+
+        .w-\[756px\] {
+            width: 756px
+        }
+
+        .min-w-\[300px\] {
+            min-width: 300px
+        }
+
+        .max-w-5xl {
+            max-width: 64rem
+        }
+
+        .max-w-7xl {
+            max-width: 80rem
+        }
+
+        .max-w-xs {
+            max-width: 20rem
+        }
+
+        .max-w-md {
+            max-width: 28rem
+        }
+
+        .max-w-6xl {
+            max-width: 72rem
+        }
+
+        .max-w-lg {
+            max-width: 32rem
+        }
+
+        .max-w-xl {
+            max-width: 36rem
+        }
+
+        .max-w-sm {
+            max-width: 24rem
+        }
+
+        .flex-grow {
+            flex-grow: 1
+        }
+
+        .origin-center {
+            transform-origin: center
+        }
+
+        .-translate-x-1\/2 {
+            --tw-translate-x: -50%;
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        .translate-y-1\/4 {
+            --tw-translate-y: 25%;
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        .translate-y-8 {
+            --tw-translate-y: 2rem;
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        .translate-y-0 {
+            --tw-translate-y: 0px;
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        .rotate-12 {
+            --tw-rotate: 12deg;
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        .rotate-45 {
+            --tw-rotate: 45deg;
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        .scale-105 {
+            --tw-scale-x: 1.05;
+            --tw-scale-y: 1.05;
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        .scale-100 {
+            --tw-scale-x: 1;
+            --tw-scale-y: 1;
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        .scale-y-\[0\.3\] {
+            --tw-scale-y: 0.3;
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        .scale-y-110 {
+            --tw-scale-y: 1.1;
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        .transform {
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        @keyframes ping {
+
+            75%,
+            100% {
+                transform: scale(2);
+                opacity: 0
+            }
+        }
+
+        .animate-ping {
+            animation: ping 1s cubic-bezier(0, 0, 0.2, 1) infinite
+        }
+
+        .cursor-pointer {
+            cursor: pointer
+        }
+
+        .cursor-default {
+            cursor: default
+        }
+
+        .select-none {
+            -webkit-user-select: none;
+            user-select: none
+        }
+
+        .snap-x {
+            scroll-snap-type: x var(--tw-scroll-snap-strictness)
+        }
+
+        .snap-mandatory {
+            --tw-scroll-snap-strictness: mandatory
+        }
+
+        .snap-center {
+            scroll-snap-align: center
+        }
+
+        .grid-cols-1 {
+            grid-template-columns: repeat(1, minmax(0, 1fr))
+        }
+
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, minmax(0, 1fr))
+        }
+
+        .flex-col {
+            flex-direction: column
+        }
+
+        .items-start {
+            align-items: flex-start
+        }
+
+        .items-end {
+            align-items: flex-end
+        }
+
+        .items-center {
+            align-items: center
+        }
+
+        .justify-start {
+            justify-content: flex-start
+        }
+
+        .justify-end {
+            justify-content: flex-end
+        }
+
+        .justify-center {
+            justify-content: center
+        }
+
+        .justify-between {
+            justify-content: space-between
+        }
+
+        .gap-2 {
+            gap: 0.5rem
+        }
+
+        .gap-8 {
+            gap: 2rem
+        }
+
+        .gap-1\.5 {
+            gap: 0.375rem
+        }
+
+        .gap-3 {
+            gap: 0.75rem
+        }
+
+        .gap-4 {
+            gap: 1rem
+        }
+
+        .gap-6 {
+            gap: 1.5rem
+        }
+
+        .gap-12 {
+            gap: 3rem
+        }
+
+        .gap-10 {
+            gap: 2.5rem
+        }
+
+        .gap-y-8 {
+            row-gap: 2rem
+        }
+
+        .gap-x-12 {
+            column-gap: 3rem
+        }
+
+        .gap-y-12 {
+            row-gap: 3rem
+        }
+
+        .gap-x-6 {
+            column-gap: 1.5rem
+        }
+
+        .gap-y-6 {
+            row-gap: 1.5rem
+        }
+
+        .space-y-0> :not([hidden])~ :not([hidden]) {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0px * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0px * var(--tw-space-y-reverse))
+        }
+
+        .space-y-3> :not([hidden])~ :not([hidden]) {
+            --tw-space-y-reverse: 0;
+            margin-top: calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));
+            margin-bottom: calc(0.75rem * var(--tw-space-y-reverse))
+        }
+
+        .self-start {
+            align-self: flex-start
+        }
+
+        .overflow-hidden {
+            overflow: hidden
+        }
+
+        .whitespace-nowrap {
+            white-space: nowrap
+        }
+
+        .rounded-full {
+            border-radius: 9999px
+        }
+
+        .rounded-lg {
+            border-radius: 0.5rem
+        }
+
+        .rounded-sm {
+            border-radius: 0.125rem
+        }
+
+        .rounded-xl {
+            border-radius: 0.75rem
+        }
+
+        .border {
+            border-width: 1px
+        }
+
+        .border-2 {
+            border-width: 2px
+        }
+
+        .border-y {
+            border-top-width: 1px;
+            border-bottom-width: 1px
+        }
+
+        .border-b {
+            border-bottom-width: 1px
+        }
+
+        .border-r {
+            border-right-width: 1px
+        }
+
+        .border-t {
+            border-top-width: 1px
+        }
+
+        .border-dashed {
+            border-style: dashed
+        }
+
+        .border-neutral-200\/50 {
+            border-color: rgb(229 229 229 / 0.5)
+        }
+
+        .border-white\/5 {
+            border-color: rgb(255 255 255 / 0.05)
+        }
+
+        .border-white\/10 {
+            border-color: rgb(255 255 255 / 0.1)
+        }
+
+        .border-white\/20 {
+            border-color: rgb(255 255 255 / 0.2)
+        }
+
+        .border-white\/80 {
+            border-color: rgb(255 255 255 / 0.8)
+        }
+
+        .border-neutral-200 {
+            --tw-border-opacity: 1;
+            border-color: rgb(229 229 229 / var(--tw-border-opacity, 1))
+        }
+
+        .border-neutral-300 {
+            --tw-border-opacity: 1;
+            border-color: rgb(212 212 212 / var(--tw-border-opacity, 1))
+        }
+
+        .border-white\/50 {
+            border-color: rgb(255 255 255 / 0.5)
+        }
+
+        .border-neutral-100 {
+            --tw-border-opacity: 1;
+            border-color: rgb(245 245 245 / var(--tw-border-opacity, 1))
+        }
+
+        .border-neutral-900\/20 {
+            border-color: rgb(23 23 23 / 0.2)
+        }
+
+        .border-neutral-800 {
+            --tw-border-opacity: 1;
+            border-color: rgb(38 38 38 / var(--tw-border-opacity, 1))
+        }
+
+        .border-neutral-900 {
+            --tw-border-opacity: 1;
+            border-color: rgb(23 23 23 / var(--tw-border-opacity, 1))
+        }
+
+        .border-white\/40 {
+            border-color: rgb(255 255 255 / 0.4)
+        }
+
+        .bg-\[\#080808\] {
+            --tw-bg-opacity: 1;
+            background-color: rgb(8 8 8 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-neutral-50 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(250 250 250 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-orange-500 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(249 115 22 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-white\/80 {
+            background-color: rgb(255 255 255 / 0.8)
+        }
+
+        .bg-white\/5 {
+            background-color: rgb(255 255 255 / 0.05)
+        }
+
+        .bg-\[\#121212\] {
+            --tw-bg-opacity: 1;
+            background-color: rgb(18 18 18 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-neutral-900\/95 {
+            background-color: rgb(23 23 23 / 0.95)
+        }
+
+        .bg-neutral-950 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(10 10 10 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-orange-600 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(234 88 12 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-white {
+            --tw-bg-opacity: 1;
+            background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-white\/20 {
+            background-color: rgb(255 255 255 / 0.2)
+        }
+
+        .bg-neutral-100 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(245 245 245 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-neutral-200 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(229 229 229 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-neutral-300 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(212 212 212 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-\[\#050505\] {
+            --tw-bg-opacity: 1;
+            background-color: rgb(5 5 5 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-\[\#fafafa\] {
+            --tw-bg-opacity: 1;
+            background-color: rgb(250 250 250 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-neutral-100\/20 {
+            background-color: rgb(245 245 245 / 0.2)
+        }
+
+        .bg-neutral-900 {
+            --tw-bg-opacity: 1;
+            background-color: rgb(23 23 23 / var(--tw-bg-opacity, 1))
+        }
+
+        .bg-gradient-to-b {
+            background-image: linear-gradient(to bottom, var(--tw-gradient-stops))
+        }
+
+        .bg-gradient-to-r {
+            background-image: linear-gradient(to right, var(--tw-gradient-stops))
+        }
+
+        .bg-gradient-to-t {
+            background-image: linear-gradient(to top, var(--tw-gradient-stops))
+        }
+
+        .from-neutral-900\/10 {
+            --tw-gradient-from: rgb(23 23 23 / 0.1) var(--tw-gradient-from-position);
+            --tw-gradient-to: rgb(23 23 23 / 0) var(--tw-gradient-to-position);
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)
+        }
+
+        .from-white\/0 {
+            --tw-gradient-from: rgb(255 255 255 / 0) var(--tw-gradient-from-position);
+            --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position);
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)
+        }
+
+        .from-white\/50 {
+            --tw-gradient-from: rgb(255 255 255 / 0.5) var(--tw-gradient-from-position);
+            --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position);
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)
+        }
+
+        .from-black {
+            --tw-gradient-from: #000 var(--tw-gradient-from-position);
+            --tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position);
+            --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to)
+        }
+
+        .via-white\/20 {
+            --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position);
+            --tw-gradient-stops: var(--tw-gradient-from), rgb(255 255 255 / 0.2) var(--tw-gradient-via-position), var(--tw-gradient-to)
+        }
+
+        .via-transparent {
+            --tw-gradient-to: rgb(0 0 0 / 0) var(--tw-gradient-to-position);
+            --tw-gradient-stops: var(--tw-gradient-from), transparent var(--tw-gradient-via-position), var(--tw-gradient-to)
+        }
+
+        .to-neutral-900\/40 {
+            --tw-gradient-to: rgb(23 23 23 / 0.4) var(--tw-gradient-to-position)
+        }
+
+        .to-transparent {
+            --tw-gradient-to: transparent var(--tw-gradient-to-position)
+        }
+
+        .to-white\/0 {
+            --tw-gradient-to: rgb(255 255 255 / 0) var(--tw-gradient-to-position)
+        }
+
+        .stroke-\[1\.5\] {
+            stroke-width: 1.5
+        }
+
+        .object-cover {
+            object-fit: cover
+        }
+
+        .object-center {
+            object-position: center
+        }
+
+        .p-6 {
+            padding: 1.5rem
+        }
+
+        .p-4 {
+            padding: 1rem
+        }
+
+        .p-8 {
+            padding: 2rem
+        }
+
+        .px-6 {
+            padding-left: 1.5rem;
+            padding-right: 1.5rem
+        }
+
+        .py-4 {
+            padding-top: 1rem;
+            padding-bottom: 1rem
+        }
+
+        .px-8 {
+            padding-left: 2rem;
+            padding-right: 2rem
+        }
+
+        .py-2 {
+            padding-top: 0.5rem;
+            padding-bottom: 0.5rem
+        }
+
+        .py-32 {
+            padding-top: 8rem;
+            padding-bottom: 8rem
+        }
+
+        .px-2 {
+            padding-left: 0.5rem;
+            padding-right: 0.5rem
+        }
+
+        .py-1 {
+            padding-top: 0.25rem;
+            padding-bottom: 0.25rem
+        }
+
+        .py-3 {
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem
+        }
+
+        .py-8 {
+            padding-top: 2rem;
+            padding-bottom: 2rem
+        }
+
+        .pb-32 {
+            padding-bottom: 8rem
+        }
+
+        .pl-6 {
+            padding-left: 1.5rem
+        }
+
+        .pr-6 {
+            padding-right: 1.5rem
+        }
+
+        .pt-32 {
+            padding-top: 8rem
+        }
+
+        .pt-12 {
+            padding-top: 3rem
+        }
+
+        .pb-10 {
+            padding-bottom: 2.5rem
+        }
+
+        .pb-20 {
+            padding-bottom: 5rem
+        }
+
+        .pb-4 {
+            padding-bottom: 1rem
+        }
+
+        .pb-40 {
+            padding-bottom: 10rem
+        }
+
+        .pl-4 {
+            padding-left: 1rem
+        }
+
+        .pr-4 {
+            padding-right: 1rem
+        }
+
+        .pt-24 {
+            padding-top: 6rem
+        }
+
+        .pt-4 {
+            padding-top: 1rem
+        }
+
+        .text-center {
+            text-align: center
+        }
+
+        .align-top {
+            vertical-align: top
+        }
+
+        .font-mono {
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace
+        }
+
+        .font-serif {
+            font-family: ui-serif, Georgia, Cambria, "Times New Roman", Times, serif
+        }
+
+        .text-\[10px\] {
+            font-size: 10px
+        }
+
+        .text-\[9px\] {
+            font-size: 9px
+        }
+
+        .text-xl {
+            font-size: 1.25rem;
+            line-height: 1.75rem
+        }
+
+        .text-xs {
+            font-size: 0.75rem;
+            line-height: 1rem
+        }
+
+        .text-2xl {
+            font-size: 1.5rem;
+            line-height: 2rem
+        }
+
+        .text-\[11px\] {
+            font-size: 11px
+        }
+
+        .text-\[21vw\] {
+            font-size: 21vw
+        }
+
+        .text-lg {
+            font-size: 1.125rem;
+            line-height: 1.75rem
+        }
+
+        .text-sm {
+            font-size: 0.875rem;
+            line-height: 1.25rem
+        }
+
+        .text-5xl {
+            font-size: 3rem;
+            line-height: 1
+        }
+
+        .text-\[15vw\] {
+            font-size: 15vw
+        }
+
+        .text-base {
+            font-size: 1rem;
+            line-height: 1.5rem
+        }
+
+        .text-4xl {
+            font-size: 2.25rem;
+            line-height: 2.5rem
+        }
+
+        .text-\[12vw\] {
+            font-size: 12vw
+        }
+
+        .text-\[18vw\] {
+            font-size: 18vw
+        }
+
+        .text-\[22vw\] {
+            font-size: 22vw
+        }
+
+        .font-bold {
+            font-weight: 700
+        }
+
+        .font-medium {
+            font-weight: 500
+        }
+
+        .font-semibold {
+            font-weight: 600
+        }
+
+        .font-light {
+            font-weight: 300
+        }
+
+        .font-normal {
+            font-weight: 400
+        }
+
+        .uppercase {
+            text-transform: uppercase
+        }
+
+        .italic {
+            font-style: italic
+        }
+
+        .leading-none {
+            line-height: 1
+        }
+
+        .leading-relaxed {
+            line-height: 1.625
+        }
+
+        .leading-tight {
+            line-height: 1.25
+        }
+
+        .leading-\[1\.1\] {
+            line-height: 1.1
+        }
+
+        .leading-\[1\.05\] {
+            line-height: 1.05
+        }
+
+        .leading-\[0\.7\] {
+            line-height: 0.7
+        }
+
+        .tracking-\[0\.15em\] {
+            letter-spacing: 0.15em
+        }
+
+        .tracking-tighter {
+            letter-spacing: -0.05em
+        }
+
+        .tracking-widest {
+            letter-spacing: 0.1em
+        }
+
+        .tracking-\[0\.2em\] {
+            letter-spacing: 0.2em
+        }
+
+        .tracking-tight {
+            letter-spacing: -0.025em
+        }
+
+        .tracking-wide {
+            letter-spacing: 0.025em
+        }
+
+        .tracking-wider {
+            letter-spacing: 0.05em
+        }
+
+        .text-neutral-200 {
+            --tw-text-opacity: 1;
+            color: rgb(229 229 229 / var(--tw-text-opacity, 1))
+        }
+
+        .text-neutral-400 {
+            --tw-text-opacity: 1;
+            color: rgb(163 163 163 / var(--tw-text-opacity, 1))
+        }
+
+        .text-neutral-800 {
+            --tw-text-opacity: 1;
+            color: rgb(38 38 38 / var(--tw-text-opacity, 1))
+        }
+
+        .text-neutral-900 {
+            --tw-text-opacity: 1;
+            color: rgb(23 23 23 / var(--tw-text-opacity, 1))
+        }
+
+        .text-orange-500 {
+            --tw-text-opacity: 1;
+            color: rgb(249 115 22 / var(--tw-text-opacity, 1))
+        }
+
+        .text-white {
+            --tw-text-opacity: 1;
+            color: rgb(255 255 255 / var(--tw-text-opacity, 1))
+        }
+
+        .text-neutral-300 {
+            --tw-text-opacity: 1;
+            color: rgb(212 212 212 / var(--tw-text-opacity, 1))
+        }
+
+        .text-neutral-500 {
+            --tw-text-opacity: 1;
+            color: rgb(115 115 115 / var(--tw-text-opacity, 1))
+        }
+
+        .text-orange-400 {
+            --tw-text-opacity: 1;
+            color: rgb(251 146 60 / var(--tw-text-opacity, 1))
+        }
+
+        .text-white\/80 {
+            color: rgb(255 255 255 / 0.8)
+        }
+
+        .text-neutral-600 {
+            --tw-text-opacity: 1;
+            color: rgb(82 82 82 / var(--tw-text-opacity, 1))
+        }
+
+        .text-neutral-100 {
+            --tw-text-opacity: 1;
+            color: rgb(245 245 245 / var(--tw-text-opacity, 1))
+        }
+
+        .text-orange-600 {
+            --tw-text-opacity: 1;
+            color: rgb(234 88 12 / var(--tw-text-opacity, 1))
+        }
+
+        .text-\[\#141414\] {
+            --tw-text-opacity: 1;
+            color: rgb(20 20 20 / var(--tw-text-opacity, 1))
+        }
+
+        .text-neutral-100\/80 {
+            color: rgb(245 245 245 / 0.8)
+        }
+
+        .opacity-75 {
+            opacity: 0.75
+        }
+
+        .opacity-0 {
+            opacity: 0
+        }
+
+        .opacity-40 {
+            opacity: 0.4
+        }
+
+        .opacity-50 {
+            opacity: 0.5
+        }
+
+        .opacity-60 {
+            opacity: 0.6
+        }
+
+        .opacity-100 {
+            opacity: 1
+        }
+
+        .opacity-20 {
+            opacity: 0.2
+        }
+
+        .opacity-80 {
+            opacity: 0.8
+        }
+
+        .mix-blend-screen {
+            mix-blend-mode: screen
+        }
+
+        .mix-blend-overlay {
+            mix-blend-mode: overlay
+        }
+
+        .shadow-sm {
+            --tw-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --tw-shadow-colored: 0 1px 2px 0 var(--tw-shadow-color);
+            box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+        }
+
+        .shadow-lg {
+            --tw-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --tw-shadow-colored: 0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);
+            box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)
+        }
+
+        .shadow-orange-600\/20 {
+            --tw-shadow-color: rgb(234 88 12 / 0.2);
+            --tw-shadow: var(--tw-shadow-colored)
+        }
+
+        .blur-sm {
+            --tw-blur: blur(4px);
+            filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)
+        }
+
+        .brightness-125 {
+            --tw-brightness: brightness(1.25);
+            filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)
+        }
+
+        .drop-shadow-\[0_30px_80px_rgba\(0\2c 0\2c 0\2c 0\.6\)\] {
+            --tw-drop-shadow: drop-shadow(0 30px 80px rgba(0, 0, 0, 0.6));
+            filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)
+        }
+
+        .drop-shadow-2xl {
+            --tw-drop-shadow: drop-shadow(0 25px 25px rgb(0 0 0 / 0.15));
+            filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)
+        }
+
+        .grayscale {
+            --tw-grayscale: grayscale(100%);
+            filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)
+        }
+
+        .grayscale-\[10\%\] {
+            --tw-grayscale: grayscale(10%);
+            filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow)
+        }
+
+        .backdrop-blur-md {
+            --tw-backdrop-blur: blur(12px);
+            -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+            backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)
+        }
+
+        .backdrop-blur-xl {
+            --tw-backdrop-blur: blur(24px);
+            -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+            backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)
+        }
+
+        .backdrop-blur-sm {
+            --tw-backdrop-blur: blur(4px);
+            -webkit-backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);
+            backdrop-filter: var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)
+        }
+
+        .transition-all {
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms
+        }
+
+        .transition-colors {
+            transition-property: color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms
+        }
+
+        .transition-opacity {
+            transition-property: opacity;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms
+        }
+
+        .transition-transform {
+            transition-property: transform;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms
+        }
+
+        .transition {
+            transition-property: color, background-color, border-color, fill, stroke, opacity, box-shadow, transform, filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter;
+            transition-property: color, background-color, border-color, text-decoration-color, fill, stroke, opacity, box-shadow, transform, filter, backdrop-filter, -webkit-text-decoration-color, -webkit-backdrop-filter;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms
+        }
+
+        .duration-300 {
+            transition-duration: 300ms
+        }
+
+        .duration-500 {
+            transition-duration: 500ms
+        }
+
+        .duration-1000 {
+            transition-duration: 1000ms
+        }
+
+        .duration-700 {
+            transition-duration: 700ms
+        }
+
+        .ease-out {
+            transition-timing-function: cubic-bezier(0, 0, 0.2, 1)
+        }
+
+        .\[--fx-filter\:blur\(10px\)_liquid-glass\(4\.7\2c 10\)_saturate\(1\.25\)_noise\(0\.5\2c 1\2c 0\)\] {
+            --fx-filter: blur(10px) liquid-glass(4.7, 10) saturate(1.25) noise(0.5, 1, 0)
+        }
+
+        .selection\:bg-neutral-300 *::selection {
+            --tw-bg-opacity: 1;
+            background-color: rgb(212 212 212 / var(--tw-bg-opacity, 1))
+        }
+
+        .selection\:text-black *::selection {
+            --tw-text-opacity: 1;
+            color: rgb(0 0 0 / var(--tw-text-opacity, 1))
+        }
+
+        .selection\:bg-neutral-300::selection {
+            --tw-bg-opacity: 1;
+            background-color: rgb(212 212 212 / var(--tw-bg-opacity, 1))
+        }
+
+        .selection\:text-black::selection {
+            --tw-text-opacity: 1;
+            color: rgb(0 0 0 / var(--tw-text-opacity, 1))
+        }
+
+        .hover\:bg-white:hover {
+            --tw-bg-opacity: 1;
+            background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1))
+        }
+
+        .hover\:bg-neutral-50:hover {
+            --tw-bg-opacity: 1;
+            background-color: rgb(250 250 250 / var(--tw-bg-opacity, 1))
+        }
+
+        .hover\:bg-neutral-900:hover {
+            --tw-bg-opacity: 1;
+            background-color: rgb(23 23 23 / var(--tw-bg-opacity, 1))
+        }
+
+        .hover\:text-black:hover {
+            --tw-text-opacity: 1;
+            color: rgb(0 0 0 / var(--tw-text-opacity, 1))
+        }
+
+        .hover\:text-neutral-400:hover {
+            --tw-text-opacity: 1;
+            color: rgb(163 163 163 / var(--tw-text-opacity, 1))
+        }
+
+        .hover\:text-white:hover {
+            --tw-text-opacity: 1;
+            color: rgb(255 255 255 / var(--tw-text-opacity, 1))
+        }
+
+        .hover\:opacity-60:hover {
+            opacity: 0.6
+        }
+
+        .hover\:opacity-70:hover {
+            opacity: 0.7
+        }
+
+        .hover\:opacity-80:hover {
+            opacity: 0.8
+        }
+
+        .group:hover .group-hover\:-translate-x-3 {
+            --tw-translate-x: -0.75rem;
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        .group:hover .group-hover\:translate-x-1 {
+            --tw-translate-x: 0.25rem;
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        .group:hover .group-hover\:translate-x-3 {
+            --tw-translate-x: 0.75rem;
+            transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))
+        }
+
+        .group:hover .group-hover\:text-black {
+            --tw-text-opacity: 1;
+            color: rgb(0 0 0 / var(--tw-text-opacity, 1))
+        }
+
+        .group:hover .group-hover\:opacity-100 {
+            opacity: 1
+        }
+
+        @media (min-width: 640px) {
+            .sm\:inline {
+                display: inline
+            }
+
+            .sm\:h-\[480px\] {
+                height: 480px
+            }
+        }
+
+        @media (min-width: 768px) {
+            .md\:bottom-12 {
+                bottom: 3rem
+            }
+
+            .md\:left-16 {
+                left: 4rem
+            }
+
+            .md\:left-auto {
+                left: auto
+            }
+
+            .md\:right-16 {
+                right: 4rem
+            }
+
+            .md\:col-span-3 {
+                grid-column: span 3 / span 3
+            }
+
+            .md\:block {
+                display: block
+            }
+
+            .md\:flex {
+                display: flex
+            }
+
+            .md\:contents {
+                display: contents
+            }
+
+            .md\:hidden {
+                display: none
+            }
+
+            .md\:h-96 {
+                height: 24rem
+            }
+
+            .md\:w-80 {
+                width: 20rem
+            }
+
+            .md\:w-full {
+                width: 100%
+            }
+
+            .md\:w-96 {
+                width: 24rem
+            }
+
+            .md\:min-w-\[340px\] {
+                min-width: 340px
+            }
+
+            .md\:max-w-sm {
+                max-width: 24rem
+            }
+
+            .md\:grid-cols-3 {
+                grid-template-columns: repeat(3, minmax(0, 1fr))
+            }
+
+            .md\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr))
+            }
+
+            .md\:flex-row {
+                flex-direction: row
+            }
+
+            .md\:items-center {
+                align-items: center
+            }
+
+            .md\:justify-between {
+                justify-content: space-between
+            }
+
+            .md\:gap-3 {
+                gap: 0.75rem
+            }
+
+            .md\:gap-8 {
+                gap: 2rem
+            }
+
+            .md\:gap-x-8 {
+                column-gap: 2rem
+            }
+
+            .md\:p-8 {
+                padding: 2rem
+            }
+
+            .md\:p-16 {
+                padding: 4rem
+            }
+
+            .md\:px-12 {
+                padding-left: 3rem;
+                padding-right: 3rem
+            }
+
+            .md\:py-6 {
+                padding-top: 1.5rem;
+                padding-bottom: 1.5rem
+            }
+
+            .md\:px-20 {
+                padding-left: 5rem;
+                padding-right: 5rem
+            }
+
+            .md\:px-16 {
+                padding-left: 4rem;
+                padding-right: 4rem
+            }
+
+            .md\:text-\[10px\] {
+                font-size: 10px
+            }
+
+            .md\:text-sm {
+                font-size: 0.875rem;
+                line-height: 1.25rem
+            }
+
+            .md\:text-4xl {
+                font-size: 2.25rem;
+                line-height: 2.5rem
+            }
+
+            .md\:text-xs {
+                font-size: 0.75rem;
+                line-height: 1rem
+            }
+
+            .md\:text-6xl {
+                font-size: 3.75rem;
+                line-height: 1
+            }
+
+            .md\:text-5xl {
+                font-size: 3rem;
+                line-height: 1
+            }
+        }
+
+        @media (min-width: 1024px) {
+            .lg\:sticky {
+                position: sticky
+            }
+
+            .lg\:top-0 {
+                top: 0px
+            }
+
+            .lg\:order-1 {
+                order: 1
+            }
+
+            .lg\:order-2 {
+                order: 2
+            }
+
+            .lg\:col-span-4 {
+                grid-column: span 4 / span 4
+            }
+
+            .lg\:col-span-8 {
+                grid-column: span 8 / span 8
+            }
+
+            .lg\:block {
+                display: block
+            }
+
+            .lg\:flex {
+                display: flex
+            }
+
+            .lg\:hidden {
+                display: none
+            }
+
+            .lg\:h-\[300vh\] {
+                height: 300vh
+            }
+
+            .lg\:h-auto {
+                height: auto
+            }
+
+            .lg\:h-screen {
+                height: 100vh
+            }
+
+            .lg\:w-96 {
+                width: 24rem
+            }
+
+            .lg\:grid-cols-2 {
+                grid-template-columns: repeat(2, minmax(0, 1fr))
+            }
+
+            .lg\:grid-cols-12 {
+                grid-template-columns: repeat(12, minmax(0, 1fr))
+            }
+
+            .lg\:gap-24 {
+                gap: 6rem
+            }
+
+            .lg\:gap-20 {
+                gap: 5rem
+            }
+
+            .lg\:border-t-0 {
+                border-top-width: 0px
+            }
+
+            .lg\:text-\[10rem\] {
+                font-size: 10rem
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-neutral-50 text-neutral-900 selection:bg-neutral-300 selection:text-black">
+    <div id="promo-banner"
+        class="fixed top-0 left-0 w-full h-9 bg-[#080808] border-b border-white/5 z-40 flex items-center justify-center transition-transform duration-300">
+        <a href="#shop" class="flex items-center gap-2 md:gap-3 hover:opacity-80 transition-opacity"><span
+                class="relative flex h-1.5 w-1.5"><span
+                    class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75"></span><span
+                    class="relative inline-flex rounded-full h-1.5 w-1.5 bg-orange-500"></span></span>
+            <p class="text-[9px] md:text-[10px] font-medium tracking-[0.15em] text-neutral-400 uppercase">Black Friday
+                Event <span class="hidden sm:inline mx-2 text-neutral-800">|</span> <span class="text-neutral-200">30%
+                    Off Sitewide</span> <span class="ml-2 text-orange-500 font-bold">CODE: AETHER30</span></p>
+        </a>
+    </div>
+    <header id="site-header"
+        class="fixed left-0 w-full z-50 transition-all duration-300 px-6 py-4 md:px-12 md:py-6 flex justify-between items-center top-9">
+        <div class="absolute inset-0 w-full h-full -z-10 bg-white/80 backdrop-blur-md border-b border-neutral-200/50 shadow-sm transition-all duration-500"
+            id="header-bg"></div>
+        <div class="flex items-center z-10">
+            <a href="#hero" id="header-logo"
+                class="text-xl font-semibold tracking-tighter text-neutral-900 transition-colors duration-300">AE__</a>
+        </div>
+        <nav id="header-nav"
+            class="hidden md:flex items-center gap-8 z-10 text-xs font-medium text-neutral-900 transition-colors duration-300 uppercase tracking-widest">
+            <a href="#about" class="hover:opacity-60 transition-opacity">About</a>
+            <a href="#scrolly-section" class="hover:opacity-60 transition-opacity">Science</a>
+            <a href="#formula" class="hover:opacity-60 transition-opacity">Formula</a>
+            <a href="#shop" class="hover:opacity-60 transition-opacity">Shop <span
+                    class="text-orange-500 text-[10px] align-top ml-0.5">●</span></a>
+            <a href="#reviews" class="hover:opacity-60 transition-opacity">Stories</a>
+        </nav><button id="header-menu" type="button"
+            class="md:hidden text-xs md:text-sm font-medium text-neutral-900 hover:opacity-70 transition-colors duration-300 uppercase tracking-widest z-10">
+            Menu
+        </button>
+        <script>
+            (function () {
+                const bg = document.getElementById('header-bg');
+                const logo = document.getElementById('header-logo');
+                const menuBtn = document.getElementById('header-menu');
+                const nav = document.getElementById('header-nav');
+                const mobileOverlay = document.getElementById('mobile-menu-overlay');
+                const mobileLinks = document.querySelectorAll('.mobile-link');
+
+                let isMenuOpen = false;
+
+                function toggleMenu() {
+                    isMenuOpen = !isMenuOpen;
+                    if (isMenuOpen) {
+                        mobileOverlay.classList.remove('opacity-0', 'pointer-events-none');
+                        mobileOverlay.classList.add('opacity-100', 'pointer-events-auto');
+                        menuBtn.textContent = 'Close';
+                        logo.className = 'text-xl font-semibold tracking-tighter text-white transition-colors duration-300 relative z-20';
+                        menuBtn.className = 'md:hidden text-xs md:text-sm font-medium text-white hover:opacity-70 transition-colors duration-300 uppercase tracking-widest z-20 relative';
+                    } else {
+                        mobileOverlay.classList.add('opacity-0', 'pointer-events-none');
+                        mobileOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+                        menuBtn.textContent = 'Menu';
+                        updateHeader();
+                    }
+                }
+
+                menuBtn.addEventListener('click', toggleMenu);
+                mobileLinks.forEach(link => link.addEventListener('click', () => {
+                    if (isMenuOpen) toggleMenu();
+                }));
+
+                function updateHeader() {
+                    if (isMenuOpen) return;
+                    const scrolled = window.scrollY > 20;
+                    if (scrolled) {
+                        bg.className = 'absolute inset-0 w-full h-full -z-10 bg-white/80 backdrop-blur-md border-b border-neutral-200/50 shadow-sm transition-all duration-500';
+                        logo.className = 'text-xl font-semibold tracking-tighter text-neutral-900 transition-colors duration-300';
+                        menuBtn.className = 'md:hidden text-xs md:text-sm font-medium text-neutral-900 hover:opacity-70 transition-colors duration-300 uppercase tracking-widest z-10';
+                        if (nav) nav.className = 'hidden md:flex items-center gap-8 z-10 text-xs font-medium text-neutral-900 transition-colors duration-300 uppercase tracking-widest';
+                    } else {
+                        bg.className = 'absolute inset-0 w-full h-full -z-10 bg-white/5 backdrop-blur-md border-b border-white/10 transition-all duration-500';
+                        logo.className = 'text-xl font-semibold tracking-tighter text-white transition-colors duration-300';
+                        menuBtn.className = 'md:hidden text-xs md:text-sm font-medium text-white hover:opacity-70 transition-colors duration-300 uppercase tracking-widest z-10';
+                        if (nav) nav.className = 'hidden md:flex items-center gap-8 z-10 text-xs font-medium text-white transition-colors duration-300 uppercase tracking-widest';
+                    }
+                }
+
+                window.addEventListener('scroll', updateHeader);
+                updateHeader();
+            })();
+        </script>
+        <div id="mobile-menu-overlay"
+            class="fixed inset-0 bg-neutral-900/95 backdrop-blur-xl text-white flex flex-col items-center justify-center gap-8 opacity-0 pointer-events-none transition-all duration-500 z-[5]">
+            <a href="#about"
+                class="mobile-link text-2xl font-light tracking-tight hover:text-neutral-400 transition-colors">About</a>
+            <a href="#scrolly-section"
+                class="mobile-link text-2xl font-light tracking-tight hover:text-neutral-400 transition-colors">Science</a>
+            <a href="#formula"
+                class="mobile-link text-2xl font-light tracking-tight hover:text-neutral-400 transition-colors">Formula</a>
+            <a href="#shop"
+                class="mobile-link text-2xl font-light tracking-tight hover:text-neutral-400 transition-colors">Shop
+                <span class="text-orange-500 text-sm align-top ml-1">●</span></a>
+            <a href="#reviews"
+                class="mobile-link text-2xl font-light tracking-tight hover:text-neutral-400 transition-colors">Stories</a>
+        </div>
+    </header>
+    <!-- SECTION 1: HERO -->
+    <section class="relative w-full min-h-screen bg-[#121212] overflow-hidden text-white flex flex-col" id="hero">
+        <!-- Background: Abstract Grey Curves -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://images.unsplash.com/photo-1604871000636-074fa5117945?q=80&amp;w=2487&amp;auto=format&amp;fit=crop"
+                alt="Abstract silver liquid background"
+                class="w-full h-full object-cover opacity-40 grayscale brightness-125" loading="lazy">
+            <div class="absolute inset-0 bg-gradient-to-b from-neutral-900/10 to-neutral-900/40"></div>
+        </div>
+
+        <!-- Nav -->
+
+
+        <!-- Main Hero Content -->
+        <div class="flex-grow z-10 w-full h-full relative">
+            <!-- Giant Typography -->
+            <div class="absolute top-[15%] left-0 w-full text-center pointer-events-none select-none z-0">
+                <h1
+                    class="hero-heading text-[21vw] leading-none font-semibold tracking-tighter text-white/80 mix-blend-overlay opacity-0">
+                    AETHER
+                </h1>
+            </div>
+
+            <!-- Horizontal Grid Line -->
+            <div class="hero-line absolute top-[42%] left-0 w-full h-[1px] bg-white/20 z-10 origin-center"></div>
+
+            <!-- Floating Product Image (Center, Tilted) -->
+            <div class="hero-product z-20 md:w-80 lg:w-96 group cursor-pointer w-56 absolute top-[45%] left-1/2">
+                <div class="relative">
+                    <img src="https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&amp;w=1887&amp;auto=format&amp;fit=crop"
+                        alt="Lumina Repair peptide serum standing on soft white fabric"
+                        class="grayscale-[10%] contrast-110 w-full h-auto z-10 relative drop-shadow-[0_30px_80px_rgba(0,0,0,0.6)]">
+                    <!-- Subtle indicator circle/target under bottle -->
+                    <div
+                        class="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/4 w-full h-full border border-white/20 rounded-full scale-y-[0.3] opacity-0 group-hover:opacity-100 transition-opacity duration-500">
+                    </div>
+                    <div
+                        class="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[1px] h-20 bg-gradient-to-b from-white/50 to-transparent opacity-50">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Left Text Content (desktop / tablet) -->
+            <div class="hero-left hidden md:block max-w-xs absolute top-[55%] left-8 md:left-16 opacity-0">
+                <p class="leading-relaxed uppercase text-xs font-medium text-neutral-200 tracking-widest">
+                    We believe that skincare is not just a routine; it's a journey towards
+                    confidence, vitality, and self-expression.
+                </p>
+            </div>
+
+            <!-- Left Text Content (mobile only, below image) -->
+            <p
+                class="md:hidden px-8 mt-auto mb-40 text-[11px] leading-relaxed text-neutral-200 uppercase tracking-widest">
+                Skincare is a journey towards confidence, vitality, and self-expression.
+            </p>
+
+            <!-- Right Glass Card -->
+            <div
+                class="hero-card absolute bottom-6 left-4 right-4 md:bottom-12 md:right-16 md:left-auto z-30 w-auto md:w-full md:max-w-sm opacity-0">
+                <div class="glass-card rounded-lg p-6 md:p-8 text-white">
+                    <div class="flex flex-col md:flex-row md:justify-between md:items-center gap-4 mb-8">
+                        <div class="">
+                            <h3 class="text-lg font-medium tracking-tight">
+                                Lumina Repair
+                            </h3>
+                            <p class="text-sm text-neutral-300 font-light mt-1">Complex 8% Peptide Serum <span
+                                    class="text-orange-400 font-medium ml-2 text-[10px] uppercase tracking-wider">[30%
+                                    OFF]</span></p>
+                        </div>
+                        <button type="button"
+                            class="border border-white/80 px-6 py-2 rounded-full text-xs font-medium hover:bg-white hover:text-black transition-all duration-300 whitespace-nowrap">Shop
+                            Sale</button>
+                    </div>
+
+                    <div class="w-full h-[1px] bg-gradient-to-r from-white/0 via-white/20 to-white/0 mb-4"></div>
+
+                    <div
+                        class="flex justify-between items-center text-[10px] md:text-xs text-neutral-300 font-medium tracking-wide">
+                        <span class="flex items-center gap-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="w-3.5 h-3.5 stroke-[1.5]">
+                                <path d="M20 6 9 17l-5-5"></path>
+                            </svg>
+                            Sulfate free
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="w-3.5 h-3.5 stroke-[1.5]">
+                                <path d="M20 6 9 17l-5-5"></path>
+                            </svg>
+                            Paraben free
+                        </span>
+                        <span class="flex items-center gap-1.5">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="w-3.5 h-3.5 stroke-[1.5]">
+                                <path d="M20 6 9 17l-5-5"></path>
+                            </svg>
+                            Silicone free
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    <div class="bg-neutral-950 border-y border-white/10 text-white relative z-20">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8">
+            <div class="flex items-center gap-3">
+                <span class="relative flex h-2 w-2">
+                    <span
+                        class="animate-ping absolute inline-flex h-full w-full rounded-full bg-orange-500 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-orange-600"></span>
+                </span>
+                <p class="text-xs md:text-sm font-medium tracking-wide text-neutral-300">
+                    <span class="text-white font-bold uppercase tracking-widest mr-2">Black Friday</span>
+                    Event is live. Enjoy 30% off sitewide.
+                </p>
+            </div>
+            <div class="flex items-center gap-6">
+                <span class="hidden md:block text-[10px] font-mono text-neutral-500 uppercase tracking-widest">Use Code:
+                    <span class="text-white">AETHER30</span></span>
+                <a href="#shop"
+                    class="text-[10px] font-bold uppercase tracking-widest border border-white/20 px-6 py-2 rounded-full hover:bg-white hover:text-black transition-all duration-300">
+                    Shop Access
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* Intro + float animations inspired by the Dribbble shot */
+
+        .hero-heading {
+            animation: heroHeadingIn 1s ease-out 0.1s forwards;
+        }
+
+        .hero-line {
+            opacity: 0;
+            transform: scaleX(0);
+            animation: heroLineIn 0.9s ease-out 0.4s forwards;
+        }
+
+        .hero-product {
+            opacity: 0;
+            /* two animations: intro, then subtle float loop */
+            animation:
+                heroProductIn 1s cubic-bezier(0.22, 0.85, 0.25, 1) 0.2s forwards,
+                heroProductFloat 6s ease-in-out 1.2s infinite;
+            transform-origin: center center;
+            will-change: transform;
+        }
+
+        .hero-card {
+            animation: heroCardIn 0.9s ease-out 0.6s forwards;
+        }
+
+        .hero-left {
+            animation: heroTextIn 0.8s ease-out 0.7s forwards;
+        }
+
+        @keyframes heroHeadingIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px) scale(1.08);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes heroLineIn {
+            from {
+                opacity: 0;
+                transform: scaleX(0);
+            }
+
+            to {
+                opacity: 1;
+                transform: scaleX(1);
+            }
+        }
+
+        @keyframes heroProductIn {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 20%) scale(0.9) rotate(-16deg);
+            }
+
+            to {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1) rotate(-8deg);
+            }
+        }
+
+        @keyframes heroProductFloat {
+
+            0%,
+            100% {
+                transform: translate(-50%, -50%) scale(1) rotate(-8deg);
+            }
+
+            50% {
+                transform: translate(-50%, -56%) scale(1.02) rotate(-6deg);
+            }
+        }
+
+        @keyframes heroCardIn {
+            from {
+                opacity: 0;
+                transform: translateY(40px) translateX(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) translateX(0);
+            }
+        }
+
+        @keyframes heroTextIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Optional: respect reduced motion preferences */
+        @media (prefers-reduced-motion: reduce) {
+
+            .hero-heading,
+            .hero-line,
+            .hero-product,
+            .hero-card,
+            .hero-left {
+                animation: none !important;
+                opacity: 1 !important;
+                transform: none !important;
+            }
+
+            .hero-product {
+                transform: translate(-50%, -50%) rotate(-8deg) !important;
+            }
+        }
+
+        .glass-card {
+            /* translucent white base with a subtle gradient */
+            background: linear-gradient(135deg,
+                    rgba(255, 255, 255, 0.18),
+                    rgba(255, 255, 255, 0.04));
+            border: 1px solid rgba(255, 255, 255, 0.22);
+
+            /* strong blur to sell the glass effect */
+            backdrop-filter: blur(22px);
+            -webkit-backdrop-filter: blur(22px);
+
+            /* a bit of depth */
+            box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+
+            /* soft corners (your Tailwind rounded-lg still applies) */
+            position: relative;
+        }
+
+        /* Light highlight edge on top for extra “glass” feeling */
+        .glass-card::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            border-top: 1px solid rgba(255, 255, 255, 0.45);
+            border-left: 1px solid rgba(255, 255, 255, 0.25);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        /* Fallback if backdrop-filter isn't supported */
+        @supports not ((backdrop-filter: blur(10px))) {
+            .glass-card {
+                background: rgba(20, 20, 20, 0.9);
+                box-shadow: 0 24px 80px rgba(0, 0, 0, 0.7);
+            }
+        }
+    </style>
+
+
+
+    <!-- SECTION 2: ABOUT / MISSION -->
+    <section class="md:px-12 bg-white pt-32 pr-6 pb-32 pl-6">
+        <div class="text-center max-w-5xl mr-auto ml-auto">
+
+            <style>
+                .k-word {
+                    opacity: 0.2;
+                    transition: opacity 0.25s ease;
+                    display: inline-block;
+                }
+
+                .k-word.active {
+                    opacity: 1;
+                }
+            </style>
+
+            <span class="inline-block text-neutral-400 text-xs font-medium tracking-[0.2em] uppercase mb-8">
+                [ The Collective ]
+            </span>
+
+            <h2 class="karaoke-container text-2xl md:text-4xl leading-tight font-normal text-neutral-800 mb-10 tracking-tight"
+                data-processed="true">
+                <span class="k-word active">We</span> <span class="k-word active">are</span> <span
+                    class="k-word active">a</span> <span class="k-word active">collective</span> <span
+                    class="k-word active">of</span> <span class="k-word active">dermatologists</span> <span
+                    class="k-word active">and</span> <span class="k-word active">designers</span> <span
+                    class="k-word active">obsessed</span> <span class="k-word active">with</span> <span
+                    class="k-word active">clarity.</span> <span class="k-word active">Rejecting</span> <span
+                    class="k-word active">the</span> <span class="k-word active">noise</span> <span
+                    class="k-word active">of</span> <span class="k-word active">the</span> <span
+                    class="k-word active">industry,</span>
+                <span class="k-word active">we</span> <span class="k-word active">engineer</span> <span
+                    class="k-word active">solutions</span> <span class="k-word active">that</span> <span
+                    class="k-word active">blend</span> <span class="k-word active">clinical</span> <span
+                    class="k-word active">precision</span> <span class="k-word active">with</span> <span
+                    class="k-word active">botanical</span> <span class="k-word active">purity</span> <span
+                    class="k-word active">to</span>
+                <span class="italic text-neutral-400 font-serif"><span class="k-word active">nourish</span> <span
+                        class="k-word active">and</span> <span class="k-word active">transcend</span></span><span
+                    class="k-word active">.</span>
+            </h2>
+
+            <p class="text-xs text-neutral-400 uppercase tracking-widest mt-12">
+                Welcome to the new standard
+            </p>
+
+            <script>
+                (function () {
+                    const container = document.querySelector('.karaoke-container');
+                    if (!container || container.dataset.processed) return;
+
+                    const wrapWords = (node) => {
+                        if (node.nodeType === 3) {
+                            const words = node.textContent.match(/\S+|\s+/g) || [];
+                            const fragment = document.createDocumentFragment();
+
+                            words.forEach((word) => {
+                                if (word.trim().length > 0) {
+                                    const span = document.createElement('span');
+                                    span.textContent = word;
+                                    span.className = 'k-word';
+                                    fragment.appendChild(span);
+                                } else {
+                                    fragment.appendChild(document.createTextNode(word));
+                                }
+                            });
+
+                            node.replaceWith(fragment);
+                        } else if (node.nodeType === 1) {
+                            Array.from(node.childNodes).forEach(wrapWords);
+                        }
+                    };
+
+                    Array.from(container.childNodes).forEach(wrapWords);
+                    container.dataset.processed = 'true';
+
+                    const observer = new IntersectionObserver(
+                        (entries) => {
+                            entries.forEach((entry) => {
+                                if (entry.isIntersecting) {
+                                    const words = container.querySelectorAll('.k-word');
+
+                                    words.forEach((word, index) => {
+                                        setTimeout(() => {
+                                            word.classList.add('active');
+                                        }, index * 40); // speed of the karaoke effect
+                                    });
+
+                                    observer.unobserve(container);
+                                }
+                            });
+                        },
+                        {threshold: 0.2}
+                    );
+
+                    observer.observe(container);
+                })();
+            </script>
+        </div>
+    </section>
+
+
+    <!-- SECTION 3: FEATURE SPLIT -->
+    <section id="scrolly-section" class="relative bg-neutral-50 lg:h-[300vh]" <!--="" 300vh="" only="" on="" desktop=""
+        --="">
+        &gt;
+        <div class="w-full grid grid-cols-1 lg:grid-cols-2 overflow-hidden lg:sticky lg:top-0 lg:h-screen">
+            <!-- Left Panel: Content -->
+            <div
+                class="relative h-full w-full flex flex-col justify-center lg:order-1 bg-neutral-50 border-r border-neutral-200 z-10">
+                <!-- Step 1 Content -->
+                <div class="scrolly-content flex flex-col px-8 md:px-20 transition-all duration-700 ease-out absolute inset-0 justify-center opacity-100 translate-y-0"
+                    data-step="1">
+                    <span class="text-neutral-500 text-xs font-medium mb-6 block">
+                        [ 01 ]
+                    </span>
+                    <h2 class="text-5xl md:text-6xl font-medium tracking-tighter mb-8 text-neutral-900">
+                        CellularRevival
+                    </h2>
+                    <!-- Abstract bubbles visualization Step 1 -->
+                    <div class="flex gap-4 mb-10 opacity-60">
+                        <div class="w-12 h-12 rounded-full border border-neutral-300 flex items-center justify-center">
+                            <div class="w-8 h-8 bg-neutral-200 rounded-full blur-sm"></div>
+                        </div>
+                        <div class="w-8 h-8 mt-4 rounded-full border border-neutral-300"></div>
+                    </div>
+                    <p class="text-lg leading-relaxed text-neutral-600 max-w-md">
+                        Our proprietary delivery system ensures active ingredients penetrate
+                        the stratum corneum. From revitalizing dull textures to reinforcing
+                        the lipid barrier, we prioritize bioavailability above all else.
+                    </p>
+                </div>
+
+                <!-- Step 2 Content -->
+                <div class="scrolly-content absolute inset-0 flex flex-col justify-center px-8 md:px-20 transition-all duration-700 ease-out opacity-0 translate-y-8"
+                    data-step="2">
+                    <span class="text-neutral-500 text-xs font-medium mb-6 block">
+                        [ 02 ]
+                    </span>
+                    <h2 class="text-5xl md:text-6xl font-medium tracking-tighter mb-8 text-neutral-900">
+                        MolecularStability
+                    </h2>
+                    <!-- Visualization Step 2 -->
+                    <div class="flex gap-4 mb-10 opacity-60">
+                        <div class="w-12 h-12 rotate-45 border border-neutral-300 flex items-center justify-center">
+                            <div class="w-8 h-8 bg-neutral-200 rounded-full blur-sm"></div>
+                        </div>
+                        <div class="w-8 h-8 mt-2 rotate-12 border border-neutral-300 bg-neutral-50"></div>
+                    </div>
+                    <p class="text-lg leading-relaxed text-neutral-600 max-w-md">
+                        Engineered peptides remain stable in formulation, delivering maximum
+                        potency upon contact. We utilize cold-process manufacturing to
+                        preserve ingredient integrity and effectiveness.
+                    </p>
+                </div>
+
+                <!-- Step 3 Content -->
+                <div class="scrolly-content absolute inset-0 flex flex-col justify-center px-8 md:px-20 transition-all duration-700 ease-out opacity-0 translate-y-8"
+                    data-step="3">
+                    <span class="text-neutral-500 text-xs font-medium mb-6 block">
+                        [ 03 ]
+                    </span>
+                    <h2 class="text-5xl md:text-6xl font-medium tracking-tighter mb-8 text-neutral-900">
+                        BarrierDefense
+                    </h2>
+                    <!-- Visualization Step 3 -->
+                    <div class="flex gap-4 mb-10 opacity-60">
+                        <div
+                            class="w-12 h-12 rounded-full border-2 border-dashed border-neutral-300 flex items-center justify-center">
+                            <div class="w-6 h-6 bg-neutral-300 rounded-full"></div>
+                        </div>
+                        <div class="w-8 h-8 mt-4 rounded-full bg-neutral-100 border border-neutral-200"></div>
+                    </div>
+                    <p class="text-lg leading-relaxed text-neutral-600 max-w-md">
+                        Fortifies the lipid layer against environmental stressors. Our complex
+                        mimics natural skin ceramides to lock in moisture and deflect
+                        oxidative damage throughout the day.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right Panel: Images -->
+            <!-- On mobile/tablet just give it a nice fixed height; full-height only on lg+ -->
+            <div class="relative h-[420px] sm:h-[480px] lg:h-auto bg-neutral-200 overflow-hidden lg:order-2 group">
+                <!-- Image 1 -->
+                <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/93c27e75-f860-43c4-bb95-ac558fe1660c_1600w.jpg"
+                    alt="Cellular Revival"
+                    class="scrolly-image absolute inset-0 w-full h-full object-cover object-center grayscale transition-all duration-1000 opacity-100 scale-100"
+                    data-step="1">
+
+                <!-- Image 2 -->
+                <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/b85630b8-d9da-484c-93f2-14796d42b80b_1600w.jpg"
+                    alt="Molecular Stability"
+                    class="scrolly-image absolute inset-0 w-full h-full object-cover object-center grayscale transition-all duration-1000 opacity-0 scale-105"
+                    data-step="2">
+
+                <!-- Image 3 -->
+                <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/ec3d38bb-5ff0-41b0-b11c-e5b92c90bce5_1600w.jpg"
+                    alt="Barrier Defense"
+                    class="scrolly-image absolute inset-0 w-full h-full object-cover object-center grayscale transition-all duration-1000 opacity-0 scale-105"
+                    data-step="3">
+
+                <!-- Floating Label -->
+                <div
+                    class="absolute bottom-10 left-10 bg-white/80 backdrop-blur-sm px-6 py-4 max-w-xs border border-white/50 transition-all duration-500 z-20">
+                    <p class="scrolly-label-title text-xl font-medium tracking-tight text-neutral-900 transition-opacity duration-300"
+                        style="opacity: 1;">Lumina Repair</p>
+                    <p class="scrolly-label-desc text-sm text-neutral-500 mt-1 transition-opacity duration-300"
+                        style="opacity: 1;">Concentrate 5%</p>
+                </div>
+            </div>
+        </div>
+
+        <script>
+            (function () {
+                const section = document.getElementById("scrolly-section");
+                if (!section) return;
+
+                const contents = section.querySelectorAll(".scrolly-content");
+                const images = section.querySelectorAll(".scrolly-image");
+                const labelTitle = section.querySelector(".scrolly-label-title");
+                const labelDesc = section.querySelector(".scrolly-label-desc");
+
+                const labels = [
+                    {title: "Lumina Repair", desc: "Concentrate 5%"},
+                    {title: "Peptide Complex", desc: "Stability Index 98%"},
+                    {title: "Barrier Defense", desc: "Ceramide Boost"},
+                ];
+
+                function setStep(index) {
+                    contents.forEach((el, i) => {
+                        if (i === index) {
+                            el.classList.remove("opacity-0", "translate-y-8");
+                            el.classList.add("opacity-100", "translate-y-0");
+                        } else {
+                            el.classList.remove("opacity-100", "translate-y-0");
+                            el.classList.add("opacity-0", "translate-y-8");
+                        }
+                    });
+
+                    images.forEach((el, i) => {
+                        if (i === index) {
+                            el.classList.remove("opacity-0", "scale-105");
+                            el.classList.add("opacity-100", "scale-100");
+                        } else {
+                            el.classList.remove("opacity-100", "scale-100");
+                            el.classList.add("opacity-0", "scale-105");
+                        }
+                    });
+
+                    if (labelTitle && labelDesc) {
+                        if (labelTitle.innerText !== labels[index].title) {
+                            labelTitle.style.opacity = 0;
+                            labelDesc.style.opacity = 0;
+                            setTimeout(() => {
+                                labelTitle.innerText = labels[index].title;
+                                labelDesc.innerText = labels[index].desc;
+                                labelTitle.style.opacity = 1;
+                                labelDesc.style.opacity = 1;
+                            }, 300);
+                        }
+                    }
+                }
+
+                function updateScroll() {
+                    const isDesktop = window.innerWidth >= 1024; // lg breakpoint
+
+                    // On mobile/tablet: no scrolly logic, just show step 1
+                    if (!isDesktop) {
+                        setStep(0);
+                        return;
+                    }
+
+                    const rect = section.getBoundingClientRect();
+                    const windowHeight = window.innerHeight;
+                    const scrollableDistance = rect.height - windowHeight;
+
+                    if (scrollableDistance <= 0) {
+                        setStep(0);
+                        return;
+                    }
+
+                    let progress = -rect.top / scrollableDistance;
+                    progress = Math.max(0, Math.min(1, progress));
+
+                    let activeIndex = 0;
+                    if (progress < 0.33) activeIndex = 0;
+                    else if (progress < 0.66) activeIndex = 1;
+                    else activeIndex = 2;
+
+                    setStep(activeIndex);
+                }
+
+                window.addEventListener("scroll", updateScroll);
+                window.addEventListener("resize", updateScroll);
+                updateScroll(); // Initial state
+            })();
+        </script>
+    </section>
+
+    <!-- SECTION 4: SCIENCE / MOLECULE -->
+    <section class="relative py-32 bg-white overflow-hidden border-b border-neutral-100" id="formula">
+        <!-- Background Big Text -->
+        <div class="absolute top-0 left-0 w-full text-center pointer-events-none select-none">
+            <h2 class="text-[15vw] font-semibold tracking-tighter text-neutral-100 leading-none mt-10 reveal-on-scroll is-visible"
+                id="formula-bg-text" style="transform: translateY(168.928px);">
+                Formula
+            </h2>
+        </div>
+
+        <div class="relative z-10 max-w-6xl mx-auto px-6">
+            <!-- 3D Molecule Placeholder -->
+            <div class="flex justify-center mb-20">
+                <div class="relative w-64 h-64 md:w-96 md:h-96 reveal-on-scroll reveal-delay-200 is-visible"
+                    id="formula-molecule-wrapper" style="transform: translateY(-84.4642px);">
+                    <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg"
+                        class="w-full h-full drop-shadow-2xl animate-molecule">
+                        <!-- Bonds -->
+                        <line x1="60" y1="100" x2="100" y2="100" stroke="#171717" stroke-width="6"></line>
+                        <line x1="100" y1="100" x2="140" y2="70" stroke="#171717" stroke-width="6"></line>
+                        <line x1="100" y1="100" x2="140" y2="130" stroke="#171717" stroke-width="6"></line>
+                        <!-- Atoms -->
+                        <circle cx="60" cy="100" r="18" fill="#404040" class=""></circle>
+                        <circle cx="100" cy="100" r="20" fill="#171717"></circle>
+                        <circle cx="140" cy="70" r="16" fill="#A3A3A3"></circle>
+                        <circle cx="140" cy="130" r="16" fill="#A3A3A3"></circle>
+                    </svg>
+                </div>
+            </div>
+
+            <!-- Data Table -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-y-8 md:gap-x-8 border-t border-neutral-200 pt-12">
+                <!-- Headings -->
+                <div class="hidden md:contents text-xs font-medium text-neutral-400 uppercase tracking-widest mb-4">
+                    <div>Ingredient</div>
+                    <div class="">Structure</div>
+                    <div class="">Function</div>
+                </div>
+
+                <!-- Row 1 -->
+                <div
+                    class="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4 py-4 border-b border-neutral-100 hover:bg-neutral-50 transition-colors group cursor-default reveal-on-scroll reveal-delay-100 is-visible">
+                    <div class="text-lg font-medium text-neutral-800">Alpha Lipoic</div>
+                    <div class="text-base font-mono text-neutral-500 group-hover:text-black transition-colors">
+                        [C8H14O2S2]
+                    </div>
+                    <div class="text-base text-neutral-600 reveal-on-scroll reveal-delay-200 is-visible">
+                        Restores cellular energy and texture.
+                    </div>
+                </div>
+
+                <!-- Row 2 -->
+                <div
+                    class="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4 py-4 border-b border-neutral-100 hover:bg-neutral-50 transition-colors group cursor-default">
+                    <div class="text-lg font-medium text-neutral-800">Niacinamide</div>
+                    <div class="text-base font-mono text-neutral-500 group-hover:text-black transition-colors">
+                        [C6H6N2O]
+                    </div>
+                    <div class="text-base text-neutral-600">
+                        Strengthens lipid barrier function.
+                    </div>
+                </div>
+
+                <!-- Row 3 -->
+                <div
+                    class="md:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-4 py-4 border-b border-neutral-100 hover:bg-neutral-50 transition-colors group cursor-default reveal-on-scroll reveal-delay-300 is-visible">
+                    <div class="text-lg font-medium text-neutral-800">
+                        Hyaluronic Acid
+                    </div>
+                    <div class="text-base font-mono text-neutral-500 group-hover:text-black transition-colors">
+                        [C14H21NO11]n
+                    </div>
+                    <div class="text-base text-neutral-600">
+                        Deep hydration retention matrix.
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script>(function () {const s = document.getElementById('formula'), t = document.getElementById('formula-bg-text'), m = document.getElementById('formula-molecule-wrapper'); if (!s || !t || !m) return; function p() {const r = s.getBoundingClientRect(), h = window.innerHeight; if (r.top <= h && r.bottom >= 0) {const d = (h - r.top); t.style.transform = `translateY(${d * 0.1}px)`; m.style.transform = `translateY(${d * -0.05}px)`} } window.addEventListener('scroll', p, {passive: true}); p()})();</script>
+    </section>
+
+    <!-- NEW SECTION A: IN-VITRO STUDIES -->
+    <section class="md:px-12 bg-white border-neutral-100 border-b pt-32 pr-6 pb-32 pl-6">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
+            <!-- Left Title -->
+            <div class="lg:col-span-4">
+                <h2 class="text-4xl md:text-5xl font-medium tracking-tight text-neutral-900 leading-[1.1]">
+                    What makesit special
+                </h2>
+                <!-- Orange Tag (Mobile Only) -->
+                <div class="mt-8 lg:hidden text-xs font-semibold text-orange-600 uppercase tracking-widest">
+                    [ IN-VITRO STUDIES ]
+                </div>
+            </div>
+
+            <!-- Right Content -->
+            <div class="lg:col-span-8 flex flex-col justify-between h-full">
+                <div>
+                    <!-- Big Number -->
+                    <div
+                        class="text-[12vw] lg:text-[10rem] font-medium leading-none text-neutral-100 select-none -ml-2 mb-6 flex">
+                        <span id="animated-stat-number">22.9</span>%
+                    </div>
+
+                    <h3 class="text-xl font-medium tracking-tight text-neutral-900 mb-4">
+                        Revolutionary Patent Pending Blend
+                    </h3>
+                    <p class="text-neutral-500 max-w-lg leading-relaxed text-sm mb-16">
+                        Our serum delivers a remarkable 22.9% increase in the tensile strength of hair fibers after just
+                        one wash,
+                        surpassing competitors' results.
+                    </p>
+                </div>
+
+                <!-- Chart Area -->
+                <div class="w-full relative">
+                    <!-- Label -->
+                    <div
+                        class="absolute bottom-4 left-0 text-xs font-semibold text-orange-600 uppercase tracking-widest hidden lg:block">
+                        [ IN-VITRO STUDIES ]
+                    </div>
+
+                    <!-- Bars -->
+                    <div class="w-full max-w-xl ml-auto">
+                        <!-- Bar 1 -->
+                        <div class="mb-8">
+                            <div class="text-xs text-neutral-500 mb-2 font-medium">Usual Serum</div>
+                            <div class="w-full bg-neutral-100 h-8 relative rounded-sm">
+                                <!-- Dashed line marker effect -->
+                                <div
+                                    class="absolute right-0 top-[-4px] bottom-[-4px] border-r border-dashed border-neutral-300">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Bar 2 -->
+                        <div>
+                            <div class="flex justify-between items-end mb-2">
+                                <span class="text-xs text-neutral-900 font-medium">Minimalist Serum</span>
+                                <span class="text-sm text-orange-600 font-semibold">+22.9%</span>
+                            </div>
+                            <!-- Animated Bar -->
+                            <div id="animated-stat-bar"
+                                class="bg-orange-600 h-8 rounded-sm relative shadow-lg shadow-orange-600/20"
+                                style="width: 100%; transition: width 1.5s cubic-bezier(0.25, 1, 0.5, 1);">
+                                <!-- Dashed line marker effect matching the one above -->
+                                <div
+                                    class="absolute right-0 top-[-4px] bottom-[-4px] border-r border-dashed border-neutral-900/20">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Animation Script -->
+        <script>
+            (function () {
+                // Grab the section that contains THIS script
+                const script = document.currentScript;
+                const section = script.closest('section');
+                if (!section) return;
+
+                const numberEl = section.querySelector('#animated-stat-number');
+                const barEl = section.querySelector('#animated-stat-bar');
+                if (!numberEl || !barEl) return;
+
+                const observer = new IntersectionObserver(
+                    (entries) => {
+                        entries.forEach((entry) => {
+                            if (!entry.isIntersecting) return;
+
+                            // Animate bar width
+                            setTimeout(() => {
+                                barEl.style.width = '100%';
+                            }, 100);
+
+                            // Animate number from 0.0 to 22.9
+                            const targetValue = 22.9;
+                            const duration = 1500;
+                            const startTime = performance.now();
+
+                            function updateNumber(currentTime) {
+                                const elapsed = currentTime - startTime;
+                                const progress = Math.min(elapsed / duration, 1);
+                                const ease = 1 - Math.pow(1 - progress, 4);
+                                const current = progress === 1 ? targetValue : targetValue * ease;
+
+                                numberEl.textContent = current.toFixed(1);
+
+                                if (progress < 1) {
+                                    requestAnimationFrame(updateNumber);
+                                }
+                            }
+
+                            requestAnimationFrame(updateNumber);
+
+                            // Only run once
+                            observer.unobserve(entry.target);
+                        });
+                    },
+                    {threshold: 0.3}
+                );
+
+                observer.observe(section);
+            })();
+        </script>
+    </section>
+
+
+    <!-- MEET OUR SKINCARE HEROES -->
+    <section class="md:px-12 bg-white border-neutral-100 border-b pt-32 pr-6 pb-32 pl-6" id="shop">
+        <div class="grid grid-cols-1 lg:grid-cols-12 lg:gap-20 max-w-7xl mr-auto ml-auto gap-x-12 gap-y-12">
+            <!-- LEFT: TITLE + CATEGORIES -->
+            <div class="lg:col-span-4 flex flex-col justify-between">
+                <div class="">
+                    <h2
+                        class="text-4xl md:text-5xl font-medium tracking-tight text-neutral-900 leading-[1.05] mb-10 reveal-on-scroll is-visible">
+                        Meet OurSkincare Heroes
+                    </h2>
+                </div>
+
+                <!-- Category Tabs -->
+                <div class="text-sm mt-4 space-y-3 reveal-on-scroll reveal-delay-100 is-visible">
+                    <button type="button" class="hero-tab is-active" data-category="skin">
+                        <span>Skin</span>
+                        <span class="hero-tab-count">[24]</span>
+                    </button>
+                    <button type="button" class="hero-tab" data-category="hair">
+                        <span class="">Hair</span>
+                        <span class="hero-tab-count">[12]</span>
+                    </button>
+                    <button type="button" class="hero-tab" data-category="body">
+                        <span class="">Body</span>
+                        <span class="hero-tab-count">[16]</span>
+                    </button>
+                    <button type="button" class="hero-tab" data-category="all">
+                        <span class="">All Products</span>
+                        <span class="hero-tab-count">[52]</span>
+                    </button>
+                </div>
+
+                <!-- Shop All button (desktop) -->
+                <div class="hidden lg:flex mt-10">
+                    <button
+                        class="inline-flex rounded-full border border-neutral-200 px-6 py-2 text-xs font-medium text-neutral-900 hover:bg-neutral-900 hover:text-white transition self-start">
+                        Shop All
+                    </button>
+                </div>
+            </div>
+
+            <!-- RIGHT: PRODUCT PANELS -->
+            <div class="lg:col-span-8">
+                <div id="hero-panels" class="space-y-0 reveal-on-scroll reveal-delay-200 is-visible">
+                    <!-- SKIN PANEL -->
+                    <div class="hero-panel is-active" data-category-panel="skin">
+                        <div class="grid md:grid-cols-2 gap-10">
+                            <!-- Product 1 -->
+                            <article class="flex flex-col">
+                                <div class="aspect-[4/3] overflow-hidden rounded-xl bg-neutral-100">
+                                    <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/58e1f058-319e-4657-8ca7-21d868a1a1c3_800w.jpg"
+                                        class="w-full h-full object-cover" alt="Maleic Bond Repair Complex">
+                                </div>
+                                <div class="flex justify-between items-start text-sm mt-4">
+                                    <div class="max-w-xs">
+                                        <p class="font-medium text-neutral-900">Radiant Renewal Serum
+                                        </p>
+                                        <p class="text-neutral-500">Brightening Vitamin Complex</p>
+                                    </div>
+                                    <span class="text-orange-600 font-semibold text-sm">$34</span>
+                                </div>
+                            </article>
+
+                            <!-- Product 2 -->
+                            <article class="flex flex-col">
+                                <div class="aspect-[4/3] overflow-hidden rounded-xl bg-neutral-100">
+                                    <img src="https://images.pexels.com/photos/3738355/pexels-photo-3738355.jpeg"
+                                        class="w-full h-full object-cover" alt="Frizz Control Complex SPF 30">
+                                </div>
+                                <div class="flex justify-between items-start text-sm mt-4">
+                                    <div class="max-w-xs">
+                                        <p class="font-medium text-neutral-900">Advanced Dermal Repair Treatment</p>
+                                        <p class="text-neutral-500">Clinically Proven Anti-Aging Formula</p>
+                                    </div>
+                                    <span class="text-orange-600 font-semibold text-sm">$36</span>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+
+                    <!-- HAIR PANEL -->
+                    <div class="hero-panel" data-category-panel="hair">
+                        <div class="grid md:grid-cols-2 gap-10">
+                            <article class="flex flex-col">
+                                <div class="aspect-[4/3] overflow-hidden rounded-xl bg-neutral-100">
+                                    <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/6c86bfd8-5307-4938-957d-e00e4067e795_800w.webp"
+                                        class="w-full h-full object-cover" alt="Strength Repair Shampoo">
+                                </div>
+                                <div class="flex justify-between items-start text-sm mt-4">
+                                    <div class="max-w-xs">
+                                        <p class="text-neutral-900 font-medium">Strength Repair Shampoo</p>
+                                        <p class="text-neutral-500">Bond-Fortifying Cleanser</p>
+                                    </div>
+                                    <span class="text-orange-600 font-semibold text-sm">$28</span>
+                                </div>
+                            </article>
+
+                            <article class="flex flex-col">
+                                <div class="aspect-[4/3] overflow-hidden rounded-xl bg-neutral-100">
+                                    <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/bd1db224-b438-47b5-8cb4-6744fbdc7fa2_1600w.jpg"
+                                        class="w-full h-full object-cover" alt="Gloss Renewal Mask">
+                                </div>
+                                <div class="flex justify-between items-start text-sm mt-4">
+                                    <div class="max-w-xs">
+                                        <p class="text-neutral-900 font-medium">Gloss Renewal Mask</p>
+                                        <p class="text-neutral-500">Weekly Treatment</p>
+                                    </div>
+                                    <span class="text-orange-600 font-semibold text-sm">$32</span>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+
+                    <!-- BODY PANEL -->
+                    <div class="hero-panel" data-category-panel="body">
+                        <div class="grid md:grid-cols-2 gap-10">
+                            <article class="flex flex-col">
+                                <div class="aspect-[4/3] overflow-hidden rounded-xl bg-neutral-100">
+                                    <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/430f9d5a-b59f-4387-b373-13fbdd1df442_1600w.jpg"
+                                        class="w-full h-full object-cover" alt="Ceramide Body Lotion">
+                                </div>
+                                <div class="flex justify-between items-start text-sm mt-4">
+                                    <div class="max-w-xs">
+                                        <p class="text-neutral-900 font-medium">Ceramide Body Lotion</p>
+                                        <p class="text-neutral-500">Barrier Repair Complex</p>
+                                    </div>
+                                    <span class="text-orange-600 font-semibold text-sm">$29</span>
+                                </div>
+                            </article>
+
+                            <article class="flex flex-col">
+                                <div class="aspect-[4/3] overflow-hidden rounded-xl bg-neutral-100">
+                                    <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/2c76b5f6-8d40-4634-917d-37ba76b45f11_800w.webp"
+                                        class="w-full h-full object-cover" alt="Overnight Renewal Oil">
+                                </div>
+                                <div class="flex justify-between items-start text-sm mt-4">
+                                    <div class="max-w-xs">
+                                        <p class="text-neutral-900 font-medium">Overnight Renewal Oil</p>
+                                        <p class="text-neutral-500">Brightening Body Elixir</p>
+                                    </div>
+                                    <span class="text-orange-600 font-semibold text-sm">$42</span>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+
+                    <!-- ALL PRODUCTS PANEL -->
+                    <div class="hero-panel" data-category-panel="all">
+                        <div class="grid md:grid-cols-2 gap-10">
+                            <!-- You can mix items from all categories here -->
+                            <article class="flex flex-col">
+                                <div class="aspect-[4/3] overflow-hidden rounded-xl bg-neutral-100">
+                                    <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/799ee289-06e2-4ee9-8640-f53ea2089d12_1600w.jpg"
+                                        class="w-full h-full object-cover" alt="Hero Set">
+                                </div>
+                                <div class="flex justify-between items-start text-sm mt-4">
+                                    <div class="max-w-xs">
+                                        <p class="text-neutral-900 font-medium">Complete Hero Set</p>
+                                        <p class="text-neutral-500">Skin + Hair + Body</p>
+                                    </div>
+                                    <span class="text-orange-600 font-semibold text-sm">$96</span>
+                                </div>
+                            </article>
+
+                            <article class="flex flex-col">
+                                <div class="aspect-[4/3] overflow-hidden rounded-xl bg-neutral-100">
+                                    <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/78670b53-264c-400d-abb5-55eb688e95d0_1600w.jpg"
+                                        class="w-full h-full object-cover" alt="Discovery Kit">
+                                </div>
+                                <div class="flex justify-between items-start text-sm mt-4">
+                                    <div class="max-w-xs">
+                                        <p class="text-neutral-900 font-medium">Discovery Kit</p>
+                                        <p class="text-neutral-500">Travel-size essentials</p>
+                                    </div>
+                                    <span class="text-orange-600 font-semibold text-sm">$49</span>
+                                </div>
+                            </article>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- STYLES FOR TABS + PANELS -->
+        <style>
+            .hero-tab {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.35rem;
+                border: none;
+                background: transparent;
+                padding: 0;
+                font-size: 0.9rem;
+                color: #a3a3a3;
+                cursor: pointer;
+                transition: color 180ms ease;
+            }
+
+            .hero-tab-count {
+                font-size: 0.75rem;
+                color: #d4d4d4;
+            }
+
+            .hero-tab.is-active {
+                color: #111827;
+                font-weight: 500;
+            }
+
+            .hero-tab.is-active .hero-tab-count {
+                color: #f97316;
+                font-weight: 600;
+            }
+
+            .hero-tab:hover {
+                color: #171717;
+            }
+
+            .hero-panel {
+                display: none;
+            }
+
+            .hero-panel.is-active {
+                display: block;
+            }
+        </style>
+
+        <!-- INTERACTIVITY SCRIPT -->
+        <script>
+            (function () {
+                const script = document.currentScript;
+                const section = script.closest('section');
+                if (!section) return;
+
+                const tabs = section.querySelectorAll('.hero-tab');
+                const panels = section.querySelectorAll('.hero-panel');
+
+                const setActiveCategory = (cat) => {
+                    tabs.forEach((tab) => {
+                        tab.classList.toggle('is-active', tab.dataset.category === cat);
+                    });
+
+                    panels.forEach((panel) => {
+                        panel.classList.toggle('is-active', panel.dataset.categoryPanel === cat);
+                    });
+                };
+
+                tabs.forEach((tab) => {
+                    tab.addEventListener('click', () => {
+                        const cat = tab.dataset.category;
+                        setActiveCategory(cat);
+                    });
+                });
+
+                // Initial state
+                setActiveCategory('skin');
+            })();
+        </script>
+    </section>
+
+
+
+
+    <!-- NEW SECTION C: CLIENT STORIES -->
+    <section class="overflow-hidden bg-[#fafafa] pt-32 pb-40 relative" id="reviews">
+
+        <!-- Giant Background Text -->
+        <div class="absolute top-[10%] left-0 right-0 w-full text-center pointer-events-none select-none z-0">
+            <h2
+                class="text-[18vw] font-bold tracking-tighter text-neutral-100/80 leading-none reveal-on-scroll is-visible">
+                Client Stories
+            </h2>
+        </div>
+
+        <div
+            class="md:px-12 z-10 grid grid-cols-1 lg:grid-cols-12 gap-12 max-w-7xl mr-auto ml-auto pr-6 pl-6 relative gap-x-12 gap-y-12 items-end">
+
+            <!-- Left Controls/Info -->
+            <div class="lg:col-span-4 flex flex-col h-full justify-start">
+                <div class="mt-4 mb-8 reveal-on-scroll reveal-delay-100 is-visible">
+                    <span class="text-xs font-semibold text-orange-600 uppercase tracking-widest mb-4 block">
+                        [ 20K HAPPY CLIENTS ]
+                    </span>
+                    <p class="text-neutral-500 text-sm leading-relaxed max-w-xs">
+                        Our products are not only scientifically proven but also customer-approved. See what our
+                        community has to say
+                        about their journey.
+                    </p>
+                </div>
+                <!-- you can add arrows / dots here later if you want -->
+            </div>
+
+            <!-- Right Carousel -->
+            <div class="lg:col-span-8 relative overflow-hidden"
+                style="mask-image: linear-gradient(90deg, transparent, black 35%, black 55%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, black 35%, black 55%, transparent);">
+                <!-- Animated track -->
+                <div
+                    class="testimonial-track flex snap-x snap-mandatory pb-4 gap-x-6 gap-y-6 reveal-on-scroll reveal-delay-300 is-visible">
+
+                    <!-- Review Card 1 -->
+                    <div
+                        class="group testimonial-card min-w-[300px] md:min-w-[340px] bg-white p-4 border border-neutral-100 shadow-sm snap-center">
+                        <div class="relative h-48 w-full mb-4 overflow-hidden bg-neutral-100">
+                            <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/86f7f4a2-e44a-49da-9aa4-387df6392695_800w.webp"
+                                alt="Client Sarah"
+                                class="w-full h-full object-cover transform transition-transform duration-700 group-hover:translate-x-3">
+                            <div
+                                class="absolute top-2 right-2 bg-white px-2 py-1 text-[10px] font-bold text-orange-600 uppercase tracking-wide">
+                                [4.9]
+                            </div>
+                        </div>
+                        <p class="text-xs text-neutral-600 leading-relaxed mb-6 h-20 overflow-hidden">
+                            "I'm amazed at how quickly my skin improved after using these products! My complexion looks
+                            brighter, feels
+                            smoother, and I've received so many compliments."
+                        </p>
+                        <div class="flex justify-between items-end border-t border-neutral-100 pt-4">
+                            <span class="text-xs font-bold text-neutral-900">Sarah H.</span>
+                            <span class="text-[10px] text-neutral-400 uppercase">May 2024</span>
+                        </div>
+                    </div>
+
+                    <!-- Review Card 2 -->
+                    <div
+                        class="group testimonial-card min-w-[300px] md:min-w-[340px] snap-center bg-white border-neutral-100 border pt-4 pr-4 pb-4 pl-4 shadow-sm">
+                        <div class="relative h-48 w-full mb-4 overflow-hidden bg-neutral-100">
+                            <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/419c3346-033b-4638-a935-a2d88a49889c_800w.jpg"
+                                alt="Client Jane"
+                                class="w-full h-full object-cover transform transition-transform duration-700 group-hover:-translate-x-3">
+                            <div
+                                class="absolute top-2 right-2 bg-white px-2 py-1 text-[10px] font-bold text-orange-600 uppercase tracking-wide">
+                                [5.0]
+                            </div>
+                        </div>
+                        <p class="text-xs text-neutral-600 leading-relaxed mb-6 h-20 overflow-hidden">
+                            "I've struggled with dry, sensitive skin for years, but since switching to these products,
+                            my skin feels
+                            hydrated, calm, and more balanced than ever."
+                        </p>
+                        <div class="flex justify-between items-end border-t border-neutral-100 pt-4">
+                            <span class="text-xs font-bold text-neutral-900">Jane D.</span>
+                            <span class="text-[10px] text-neutral-400 uppercase">May 2024</span>
+                        </div>
+                    </div>
+
+                    <!-- Review Card 3 -->
+                    <div
+                        class="group testimonial-card min-w-[300px] md:min-w-[340px] bg-white p-4 border border-neutral-100 shadow-sm snap-center">
+                        <div class="relative h-48 w-full mb-4 overflow-hidden bg-neutral-100">
+                            <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/68d6b8da-d1ca-48b1-a6ff-a76d865061f1_800w.jpg"
+                                alt="Client Michael"
+                                class="w-full h-full object-cover transform transition-transform duration-700 group-hover:translate-x-3">
+                            <div
+                                class="absolute top-2 right-2 bg-white px-2 py-1 text-[10px] font-bold text-orange-600 uppercase tracking-wide">
+                                [4.8]
+                            </div>
+                        </div>
+                        <p class="text-xs text-neutral-600 leading-relaxed mb-6 h-20 overflow-hidden">
+                            "The texture of the serum is incredible. It absorbs instantly without leaving any residue.
+                            My routine has
+                            never been this effective."
+                        </p>
+                        <div class="flex justify-between items-end border-t border-neutral-100 pt-4">
+                            <span class="text-xs font-bold text-neutral-900">Michael R.</span>
+                            <span class="text-[10px] text-neutral-400 uppercase">Apr 2024</span>
+                        </div>
+                    </div>
+
+                    <!-- Review Card 4 -->
+                    <div
+                        class="group testimonial-card min-w-[300px] md:min-w-[340px] bg-white p-4 border border-neutral-100 shadow-sm snap-center">
+                        <div class="relative h-48 w-full mb-4 overflow-hidden bg-neutral-100">
+                            <img src="https://images.pexels.com/photos/3735654/pexels-photo-3735654.jpeg"
+                                alt="Client Lina"
+                                class="w-full h-full object-cover transform transition-transform duration-700 group-hover:-translate-x-3">
+                            <div
+                                class="absolute top-2 right-2 bg-white px-2 py-1 text-[10px] font-bold text-orange-600 uppercase tracking-wide">
+                                [4.7]
+                            </div>
+                        </div>
+                        <p class="text-xs text-neutral-600 leading-relaxed mb-6 h-20 overflow-hidden">
+                            "I love how lightweight everything feels. My routine finally looks minimal but my results
+                            feel maximal."
+                        </p>
+                        <div class="flex justify-between items-end border-t border-neutral-100 pt-4">
+                            <span class="text-xs font-bold text-neutral-900">Lina R.</span>
+                            <span class="text-[10px] text-neutral-400 uppercase">Mar 2024</span>
+                        </div>
+                    </div>
+
+                    <!-- Review Card 5 -->
+                    <div
+                        class="group testimonial-card min-w-[300px] md:min-w-[340px] bg-white p-4 border border-neutral-100 shadow-sm snap-center">
+                        <div class="relative h-48 w-full mb-4 overflow-hidden bg-neutral-100">
+                            <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/4a3559c6-d7dc-463f-9b25-ce7529387e3d_800w.webp"
+                                alt="Client Noah"
+                                class="w-full h-full object-cover transform transition-transform duration-700 group-hover:translate-x-3">
+                            <div
+                                class="absolute top-2 right-2 bg-white px-2 py-1 text-[10px] font-bold text-orange-600 uppercase tracking-wide">
+                                [5.0]
+                            </div>
+                        </div>
+                        <p class="text-xs text-neutral-600 leading-relaxed mb-6 h-20 overflow-hidden">
+                            "From the very first week I noticed a glow I hadn’t seen in years. It genuinely feels like
+                            my skin has been
+                            reset."
+                        </p>
+                        <div class="flex justify-between items-end border-t border-neutral-100 pt-4">
+                            <span class="text-xs font-bold text-neutral-900">Noah S.</span>
+                            <span class="text-[10px] text-neutral-400 uppercase">Jan 2024</span>
+                        </div>
+                    </div>
+
+                    <!-- DUPLICATE SET FOR INFINITE LOOP -->
+                    <!-- Just re-use the same 5 cards to make the scroll seamless -->
+                    <!-- You can keep or remove this if you prefer a single pass instead of a loop -->
+
+                    <!-- Duplicate 1 -->
+                    <div
+                        class="group testimonial-card min-w-[300px] md:min-w-[340px] bg-white p-4 border border-neutral-100 shadow-sm snap-center">
+                        <div class="relative h-48 w-full mb-4 overflow-hidden bg-neutral-100">
+                            <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/86f7f4a2-e44a-49da-9aa4-387df6392695_800w.webp"
+                                alt="Client Sarah"
+                                class="w-full h-full object-cover transform transition-transform duration-700 group-hover:translate-x-3">
+                            <div
+                                class="absolute top-2 right-2 bg-white px-2 py-1 text-[10px] font-bold text-orange-600 uppercase tracking-wide">
+                                [4.9]
+                            </div>
+                        </div>
+                        <p class="text-xs text-neutral-600 leading-relaxed mb-6 h-20 overflow-hidden">
+                            "I'm amazed at how quickly my skin improved after using these products! My complexion looks
+                            brighter, feels
+                            smoother, and I've received so many compliments."
+                        </p>
+                        <div class="flex justify-between items-end border-t border-neutral-100 pt-4">
+                            <span class="text-xs font-bold text-neutral-900">Sarah H.</span>
+                            <span class="text-[10px] text-neutral-400 uppercase">May 2024</span>
+                        </div>
+                    </div>
+
+                    <!-- Duplicate 2 -->
+                    <div
+                        class="group testimonial-card min-w-[300px] md:min-w-[340px] snap-center bg-white border-neutral-100 border pt-4 pr-4 pb-4 pl-4 shadow-sm">
+                        <div class="relative h-48 w-full mb-4 overflow-hidden bg-neutral-100">
+                            <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/419c3346-033b-4638-a935-a2d88a49889c_800w.jpg"
+                                alt="Client Jane"
+                                class="w-full h-full object-cover transform transition-transform duration-700 group-hover:-translate-x-3">
+                            <div
+                                class="absolute top-2 right-2 bg-white px-2 py-1 text-[10px] font-bold text-orange-600 uppercase tracking-wide">
+                                [5.0]
+                            </div>
+                        </div>
+                        <p class="text-xs text-neutral-600 leading-relaxed mb-6 h-20 overflow-hidden">
+                            "I've struggled with dry, sensitive skin for years, but since switching to these products,
+                            my skin feels
+                            hydrated, calm, and more balanced than ever."
+                        </p>
+                        <div class="flex justify-between items-end border-t border-neutral-100 pt-4">
+                            <span class="text-xs font-bold text-neutral-900">Jane D.</span>
+                            <span class="text-[10px] text-neutral-400 uppercase">May 2024</span>
+                        </div>
+                    </div>
+
+                    <!-- Duplicate 3 -->
+                    <div
+                        class="group testimonial-card min-w-[300px] md:min-w-[340px] bg-white p-4 border border-neutral-100 shadow-sm snap-center">
+                        <div class="relative h-48 w-full mb-4 overflow-hidden bg-neutral-100">
+                            <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/68d6b8da-d1ca-48b1-a6ff-a76d865061f1_800w.jpg"
+                                alt="Client Michael"
+                                class="w-full h-full object-cover transform transition-transform duration-700 group-hover:translate-x-3">
+                            <div
+                                class="absolute top-2 right-2 bg-white px-2 py-1 text-[10px] font-bold text-orange-600 uppercase tracking-wide">
+                                [4.8]
+                            </div>
+                        </div>
+                        <p class="text-xs text-neutral-600 leading-relaxed mb-6 h-20 overflow-hidden">
+                            "The texture of the serum is incredible. It absorbs instantly without leaving any residue.
+                            My routine has
+                            never been this effective."
+                        </p>
+                        <div class="flex justify-between items-end border-t border-neutral-100 pt-4">
+                            <span class="text-xs font-bold text-neutral-900">Michael R.</span>
+                            <span class="text-[10px] text-neutral-400 uppercase">Apr 2024</span>
+                        </div>
+                    </div>
+
+                    <!-- Duplicate 4 -->
+                    <div
+                        class="group testimonial-card min-w-[300px] md:min-w-[340px] bg-white p-4 border border-neutral-100 shadow-sm snap-center">
+                        <div class="relative h-48 w-full mb-4 overflow-hidden bg-neutral-100">
+                            <img src="https://images.pexels.com/photos/3735654/pexels-photo-3735654.jpeg"
+                                alt="Client Lina"
+                                class="w-full h-full object-cover transform transition-transform duration-700 group-hover:-translate-x-3">
+                            <div
+                                class="absolute top-2 right-2 bg-white px-2 py-1 text-[10px] font-bold text-orange-600 uppercase tracking-wide">
+                                [4.7]
+                            </div>
+                        </div>
+                        <p class="text-xs text-neutral-600 leading-relaxed mb-6 h-20 overflow-hidden">
+                            "I love how lightweight everything feels. My routine finally looks minimal but my results
+                            feel maximal."
+                        </p>
+                        <div class="flex justify-between items-end border-t border-neutral-100 pt-4">
+                            <span class="text-xs font-bold text-neutral-900">Lina R.</span>
+                            <span class="text-[10px] text-neutral-400 uppercase">Mar 2024</span>
+                        </div>
+                    </div>
+
+                    <!-- Duplicate 5 -->
+                    <div
+                        class="group testimonial-card min-w-[300px] md:min-w-[340px] bg-white p-4 border border-neutral-100 shadow-sm snap-center">
+                        <div class="relative h-48 w-full mb-4 overflow-hidden bg-neutral-100">
+                            <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/917d6f93-fb36-439a-8c48-884b67b35381_1600w.jpg"
+                                alt="Client Noah"
+                                class="w-full h-full object-cover transform transition-transform duration-700 group-hover:translate-x-3">
+                            <div
+                                class="absolute top-2 right-2 bg-white px-2 py-1 text-[10px] font-bold text-orange-600 uppercase tracking-wide">
+                                [5.0]
+                            </div>
+                        </div>
+                        <p class="text-xs text-neutral-600 leading-relaxed mb-6 h-20 overflow-hidden">
+                            "From the very first week I noticed a glow I hadn’t seen in years. It genuinely feels like
+                            my skin has been
+                            reset."
+                        </p>
+                        <div class="flex justify-between items-end border-t border-neutral-100 pt-4">
+                            <span class="text-xs font-bold text-neutral-900">Noah S.</span>
+                            <span class="text-[10px] text-neutral-400 uppercase">Jan 2024</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        <style>
+            .testimonial-track {
+                width: min-content;
+                animation: testimonial-scroll 35s linear infinite;
+            }
+
+            /* Pause on hover so users can read comfortably */
+            .testimonial-track:hover {
+                animation-play-state: paused;
+            }
+
+            @keyframes testimonial-scroll {
+                from {
+                    transform: translateX(0);
+                }
+
+                to {
+                    transform: translateX(-50%);
+                }
+            }
+        </style>
+
+    </section>
+
+    <!-- SECTION 5: FOOTER / PROVEN -->
+    <section class="relative w-full h-[90vh] flex items-end pb-20 px-6 md:px-12 overflow-hidden bg-neutral-900">
+        <!-- Background Video/Image -->
+        <div class="absolute inset-0 z-0">
+            <img src="https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/1699b755-2414-43b4-9e32-3b20e4e000d8_3840w.jpg"
+                alt="Water Texture" class="w-full h-full object-cover opacity-60 grayscale" style="">
+            <div
+                class="bg-gradient-to-t from-black via-transparent to-transparent absolute top-0 right-0 bottom-0 left-0">
+            </div>
+        </div>
+
+        <div
+            class="grid grid-cols-1 lg:grid-cols-2 w-full max-w-7xl z-10 mr-auto ml-auto relative gap-x-12 gap-y-12 items-start">
+            <!-- Left Content -->
+            <div class="pb-10">
+                <h2 class="text-4xl md:text-6xl text-white font-medium tracking-tight mb-6 reveal-on-scroll">
+                    Scientifically ProvenResults.
+                </h2>
+                <p class="text-lg text-neutral-300 mb-10 max-w-md leading-relaxed reveal-on-scroll reveal-delay-100">
+                    Unlock the potential of our formulations. Clinical trials show
+                    significant improvement in elasticity within 14 days.
+                </p>
+                <button
+                    class="group border border-white/40 bg-neutral-100/20 backdrop-blur-md text-white px-8 py-3 rounded-full hover:bg-white hover:text-black transition-all duration-300 flex items-center gap-2 reveal-on-scroll reveal-delay-200">
+                    Shop Collection
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                        data-lucide="arrow-right"
+                        class="lucide lucide-arrow-right w-4 h-4 group-hover:translate-x-1 transition-transform stroke-[1.5]">
+                        <path d="M5 12h14"></path>
+                        <path d="m12 5 7 7-7 7"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Right Floating Glass Card -->
+            <div class="flex justify-end">
+                <div
+                    class="glass-card [--fx-filter:blur(10px)_liquid-glass(4.7,10)_saturate(1.25)_noise(0.5,1,0)] text-white w-full max-w-sm rounded-lg px-8 py-8 reveal-on-scroll reveal-delay-300">
+                    <div class="text-[10px] uppercase tracking-widest text-neutral-400 mb-6">
+                        [ HYALURONIC MATRIX ]
+                    </div>
+
+                    <!-- Chemical Diagram SVG -->
+                    <div class="h-32 w-full mb-6 flex items-center justify-center opacity-80">
+                        <svg width="100%" height="100%" viewBox="0 0 200 100" fill="none" stroke="white"
+                            stroke-width="1" class="">
+                            <path d="M20 50 L50 30 L80 50 L110 30 L140 50 L170 30" stroke-opacity="0.8"></path>
+                            <circle cx="50" cy="30" r="3" fill="white"></circle>
+                            <circle cx="110" cy="30" r="3" fill="white"></circle>
+                            <text x="175" y="35" font-family="sans-serif" font-size="10" fill="white">
+                                OH
+                            </text>
+                            <text x="15" y="55" font-family="sans-serif" font-size="10" fill="white">
+                                HO
+                            </text>
+                        </svg>
+                    </div>
+
+                    <div class="text-5xl font-medium tracking-tight mb-2">40%</div>
+                    <p class="text-sm text-neutral-300">
+                        Increase in skin hydration levels immediately after application.
+                    </p>
+
+
+
+
+                    <svg class="fx-svg-defs" data-fx-svg="true" style="position: absolute; width: 0; height: 0;">
+                        <filter id="fx-liquid-glass-ux81sd" x="0" y="0" width="100%" height="100%"
+                            color-interpolation-filters="sRGB">
+                            <feImage result="FEIMG"
+                                href="data:image/png;base64,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"
+                                color-interpolation-filters="sRGB"></feImage>
+                            <feDisplacementMap in="SourceGraphic" in2="FEIMG" scale="127" yChannelSelector="B"
+                                xChannelSelector="R" color-interpolation-filters="sRGB"></feDisplacementMap>
+                        </filter>
+                        <filter id="fx-noise-0cvpli" x="0" y="0" width="100%" height="100%"
+                            color-interpolation-filters="sRGB">
+                            <feImage
+                                href="data:image/png;base64,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"
+                                result="noiseAdd" image-rendering="pixelated"></feImage>
+                            <feBlend in="SourceGraphic" in2="noiseAdd" mode="overlay" image-rendering="pixelated"
+                                result="brightened"></feBlend>
+                        </filter>
+                    </svg>
+                    <div class="fx-container"
+                        style="position: absolute; top: 0; left: 0; right: 0; bottom: 0; backdrop-filter: blur(10px) url(#fx-liquid-glass-ux81sd) saturate(1.25) url(#fx-noise-0cvpli); background: transparent; pointer-events: none; z-index: -1; overflow: hidden; border-radius: inherit;">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pagination / Progress -->
+
+        </div>
+    </section>
+
+    <!-- NEW SECTION 6: BRAND FOOTER -->
+    <footer class="overflow-hidden text-white bg-[#050505] border-neutral-800 border-t pt-24">
+
+        <!-- Giant Brand Text -->
+        <div class="text-center w-full mb-20 pr-4 pl-4"
+            style="mask-image: linear-gradient(180deg, transparent, black 0%, black 55%, transparent); -webkit-mask-image: linear-gradient(180deg, transparent, black 0%, black 55%, transparent);">
+            <h1
+                class="text-[22vw] leading-[0.7] select-none font-bold text-[#141414] tracking-tighter mix-blend-screen scale-y-110 reveal-on-scroll">
+                AETHER
+            </h1>
+        </div>
+
+        <!-- Links Grid -->
+        <div class="border-t border-neutral-900 grid grid-cols-1 lg:grid-cols-2 reveal-on-scroll reveal-delay-100">
+
+            <!-- Left Side: Navigation Links -->
+            <div class="p-8 md:p-16 grid grid-cols-2 gap-12 border-r border-neutral-900">
+                <div class="flex flex-col gap-6">
+                    <a href="#"
+                        class="text-xs font-medium text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">About
+                        Us</a>
+                    <a href="#"
+                        class="text-xs font-medium text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">Shop</a>
+                    <a href="#"
+                        class="text-xs font-medium text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">Technology</a>
+                </div>
+                <div class="flex flex-col gap-6">
+                    <a href="#"
+                        class="text-xs font-medium text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">Contact
+                        Us</a>
+                    <a href="#"
+                        class="text-xs font-medium text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">Instagram</a>
+                    <a href="#"
+                        class="text-xs font-medium text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">Twitter/X</a>
+                    <a href="#"
+                        class="text-xs font-medium text-neutral-500 uppercase tracking-widest hover:text-white transition-colors">Facebook</a>
+                </div>
+            </div>
+
+            <!-- Right Side: Wireframe Illustration -->
+            <div
+                class="lg:h-auto lg:border-t-0 flex overflow-hidden aether-bottles w-full h-48 border-neutral-900 border-t relative items-center justify-center">
+                <svg viewBox="0 0 400 120" class="opacity-20 max-h-[160px] w-[756px] h-[160px]"
+                    preserveAspectRatio="xMidYMid meet" stroke-width="2"
+                    style="width: 756px; height: 160px; color: rgb(255, 255, 255);">
+                    <!-- Tube 1 (Outline) -->
+                    <path d="M40 100 L50 30 L90 30 L100 100" stroke="white" stroke-width="1" fill="none"></path>
+                    <rect x="50" y="20" width="40" height="10" stroke="white" stroke-width="1" fill="none"></rect>
+
+                    <!-- Tube 2 (Outline) -->
+                    <path d="M120 100 L130 10 L170 10 L180 100" stroke="white" stroke-width="1" fill="none"></path>
+                    <rect x="130" y="5" width="40" height="5" stroke="white" stroke-width="1" fill="none"></rect>
+
+                    <!-- Dropper Bottle (wave liquid) -->
+                    <g transform="translate(200, 10)" class="dropper-bottle">
+                        <!-- ClipPath in the SAME coordinates as the bottle -->
+                        <defs>
+                            <clipPath id="dropper-clip">
+                                <!-- inside shape of the bottle -->
+                                <path d="M15 25
+               Q15 20 20 20
+               L40 20
+               Q45 20 45 25
+               L45 80
+               Q45 90 30 90
+               Q15 90 15 80
+               Z"></path>
+                            </clipPath>
+                        </defs>
+
+                        <!-- Cap -->
+                        <path d="M25 0 L25 10 L20 10 L20 20 L40 20 L40 10 L35 10 L35 0 Z" stroke="white"
+                            stroke-width="1" fill="none"></path>
+
+                        <!-- Body Outline -->
+                        <path d="M15 25 Q15 20 20 20 L40 20 Q45 20 45 25 L45 80 Q45 90 30 90 Q15 90 15 80 Z"
+                            stroke="white" stroke-width="1" fill="none"></path>
+
+                        <!-- Liquid (clipped perfectly inside bottle) -->
+                        <g clip-path="url(#dropper-clip)">
+                            <!-- Base fill -->
+                            <rect class="liquid-fill" x="15" y="60" width="30" height="30" fill="#7c4a30" opacity="0.6">
+                            </rect>
+
+                            <!-- Wave on top -->
+                            <path class="liquid-wave" d="M15 60
+             Q22 55 30 57
+             Q38 59 45 56
+             L45 90
+             L15 90 Z" fill="#7c4a30" opacity="0.9"></path>
+                        </g>
+                    </g>
+
+                    <!-- Tube 3 (Outline) -->
+                    <path d="M270 100 L280 20 L320 20 L330 100" stroke="white" stroke-width="1" fill="none"></path>
+                    <rect x="280" y="10" width="40" height="10" stroke="white" stroke-width="1" fill="none"></rect>
+
+                    <!-- Dropper 2 (Outline) -->
+                    <g transform="translate(350, 20)">
+                        <rect x="25" y="0" width="10" height="20" stroke="white" stroke-width="1" fill="none"></rect>
+                        <path d="M15 25 Q15 20 20 20 L40 20 Q45 20 45 25 L45 70 Q45 80 30 80 Q15 80 15 70 Z"
+                            stroke="white" stroke-width="1" fill="none"></path>
+                    </g>
+                </svg>
+            </div>
+
+            <style>
+                /* make transforms work nicely inside SVG */
+                .aether-bottles .liquid-fill,
+                .aether-bottles .liquid-wave {
+                    transform-box: fill-box;
+                    transform-origin: center bottom;
+                }
+
+                /* hover over the SVG area */
+                .aether-bottles svg:hover .liquid-wave {
+                    animation: aether-wave 1.8s ease-in-out infinite;
+                }
+
+                .aether-bottles svg:hover .liquid-fill {
+                    animation: aether-fill 1.8s ease-in-out infinite;
+                }
+
+                @keyframes aether-wave {
+                    0% {
+                        transform: translateX(0) translateY(0);
+                    }
+
+                    25% {
+                        transform: translateX(-3px) translateY(-2px);
+                    }
+
+                    50% {
+                        transform: translateX(3px) translateY(-1px);
+                    }
+
+                    75% {
+                        transform: translateX(-2px) translateY(-3px);
+                    }
+
+                    100% {
+                        transform: translateX(0) translateY(0);
+                    }
+                }
+
+                @keyframes aether-fill {
+                    0% {
+                        transform: translateY(0);
+                    }
+
+                    50% {
+                        transform: translateY(-4px);
+                    }
+
+                    100% {
+                        transform: translateY(-2px);
+                    }
+                }
+            </style>
+
+
+
+
+            <!-- Copyright Row -->
+            <div
+                class="border-t border-neutral-900 px-8 md:px-16 py-8 flex flex-col md:flex-row justify-between items-center gap-6 text-[10px] text-neutral-600 font-medium tracking-wide">
+                <div>
+                    2024 All rights reserved
+                </div>
+                <div class="flex gap-8">
+                    <a href="#" class="hover:text-white transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-white transition-colors">Terms of use</a>
+                    <a href="#" class="hover:text-white transition-colors">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script class="">
+        lucide.createIcons();
+    </script>
+
+    <style>
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(8px);
+            transition: all 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+            will-change: opacity, transform, filter
+        }
+
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0)
+        }
+
+        .reveal-delay-100 {
+            transition-delay: 0.1s
+        }
+
+        .reveal-delay-200 {
+            transition-delay: 0.2s
+        }
+
+        .reveal-delay-300 {
+            transition-delay: 0.3s
+        }
+    </style>
+    <script>document.addEventListener('DOMContentLoaded', function () {const o = new IntersectionObserver(e => {e.forEach(t => {if (t.isIntersecting) {t.target.classList.add('is-visible'); o.unobserve(t.target)} })}, {threshold: 0.1, rootMargin: '0px 0px -50px 0px'}); document.querySelectorAll('.reveal-on-scroll').forEach(e => o.observe(e))})</script>
+    <script
+        data-img-fallback-handler="">!function () {var f = ["https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/917d6f93-fb36-439a-8c48-884b67b35381_1600w.jpg", "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/4734259a-bad7-422f-981e-ce01e79184f2_1600w.jpg", "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/c543a9e1-f226-4ced-80b0-feb8445a75b9_1600w.jpg", "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/5bab247f-35d9-400d-a82b-fd87cfe913d2_1600w.webp", "https://hoirqrkdgbmvpwutwuwj.supabase.co/storage/v1/object/public/assets/assets/30104e3c-5eea-4b93-93e9-5313698a7156_1600w.webp"], h = new Set; function g(s) {for (var x = 0, i = 0; i < s.length; i++)x = (x << 5) - x + s.charCodeAt(i) | 0; return f[Math.abs(x) % f.length]} function r(t) {var s = t.src; if (s && !h.has(s)) {h.add(s); t.src = g(s)} } window.addEventListener("error", function (e) {var t = e.target; if (t && t.tagName === "IMG") r(t)}, !0); function c() {document.querySelectorAll("img").forEach(function (i) {if (i.complete && !i.naturalWidth && i.src) r(i)})} if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", c); else c()}()</script>
+</body>

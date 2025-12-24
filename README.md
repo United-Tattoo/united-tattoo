@@ -1,82 +1,43 @@
-# United Tattoo
+# Astro Starter Kit: Minimal
 
-Official website for United Tattoo, a tattoo studio in Fountain, Colorado.
-
-Built with **Astro** and deployed to **Cloudflare Workers**.
-
-## Quick Start
-
-```bash
-# Install all dependencies
-npm run install:all
-
-# Start dev server (http://localhost:4321)
-npm run dev
+```sh
+pnpm create astro@latest -- --template minimal
 ```
 
-## Commands
+> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
 
-| Command | Description |
-|---------|-------------|
-| `npm run dev` | Start Astro dev server |
-| `npm run build` | Build for production |
-| `npm run preview` | Preview production build locally |
-| `npm run deploy` | Build and deploy to Cloudflare Workers |
-| `npm run deploy:dry-run` | Build and dry-run deploy (no publish) |
-| `npm run format` | Format code with Prettier |
+## 🚀 Project Structure
 
-## Project Structure
+Inside of your Astro project, you'll see the following folders and files:
 
-```
-united-tattoo/
-├── astro/                 # Astro application
-│   ├── src/
-│   │   ├── components/    # Astro/React components
-│   │   ├── layouts/       # Page layouts
-│   │   ├── lib/           # Utilities (CalDAV, Nextcloud CMS)
-│   │   ├── pages/         # File-based routing
-│   │   └── assets/        # Images for astro:assets optimization
-│   ├── astro.config.mjs   # Astro configuration
-│   ├── wrangler.jsonc     # Cloudflare Workers config
-│   └── package.json       # Astro dependencies
-├── public/                # Static assets (served as-is)
-├── design-language/       # Design reference & assets
-├── docs/                  # Project documentation
-├── sql/                   # Database schema (reference)
-└── package.json           # Root orchestrator scripts
+```text
+/
+├── public/
+├── src/
+│   └── pages/
+│       └── index.astro
+└── package.json
 ```
 
-## Static Assets
+Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
 
-The root `public/` directory contains all static assets (images, fonts, etc.).  
-Astro is configured to use this as its `publicDir`, so files are served from `/`.
+There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
 
-For images that need optimization with `astro:assets`, place them in `astro/src/assets/`.
+Any static assets, like images, can be placed in the `public/` directory.
 
-## Deployment
+## 🧞 Commands
 
-The site deploys to Cloudflare Workers using the `@astrojs/cloudflare` adapter.
+All commands are run from the root of the project, from a terminal:
 
-```bash
-# Deploy to production
-npm run deploy
+| Command                   | Action                                           |
+| :------------------------ | :----------------------------------------------- |
+| `pnpm install`             | Installs dependencies                            |
+| `pnpm dev`             | Starts local dev server at `localhost:4321`      |
+| `pnpm build`           | Build your production site to `./dist/`          |
+| `pnpm preview`         | Preview your build locally, before deploying     |
+| `pnpm astro ...`       | Run CLI commands like `astro add`, `astro check` |
+| `pnpm astro -- --help` | Get help using the Astro CLI                     |
 
-# Dry-run (verify build without publishing)
-npm run deploy:dry-run
-```
+## 👀 Want to learn more?
 
-Configuration: [`astro/wrangler.jsonc`](./astro/wrangler.jsonc)
-
-## Legacy Next.js Version
-
-The original Next.js/OpenNext version of this site is preserved on the [`nextjs-archive`](https://github.com/United-Tattoo/united-tattoo/tree/nextjs-archive) branch for reference and rollback purposes.
-
-## Documentation
-
-- [`docs/`](./docs/) — Project documentation
-- [`astro/docs/`](./astro/docs/) — Astro-specific docs (Nextcloud integration, etc.)
-- [`CLAUDE.md`](./CLAUDE.md) — AI assistant context file
-
-## License
-
-All rights reserved. See LICENSE file for details.
+Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
