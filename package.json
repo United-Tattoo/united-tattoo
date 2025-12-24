@@ -14,9 +14,12 @@
     "convert:avif:png": "node src/utils/convert-to-avif.js --png"
   },
   "dependencies": {
+    "@astrojs/mdx": "^4.3.13",
+    "@astrojs/node": "^9.5.1",
     "@astrojs/rss": "^4.0.14",
     "@tailwindcss/vite": "^4.1.18",
     "astro": "^5.16.6",
+    "resend": "^6.6.0",
     "tailwindcss": "^4.1.18"
   }
 }
