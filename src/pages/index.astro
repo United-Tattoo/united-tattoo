@@ -10,24 +10,24 @@ const artists = await getCollection('artists');
 
 <SiteLayout title={SITE_DESCRIPTION} removeMainPadding={true} hideFooter={true}>
   <!-- Hero Section: The Manual Cover -->
-  <section class="min-h-screen relative flex flex-col pt-20 border-b border-white/10">
+  <section class="hero-section min-h-screen relative flex flex-col pt-20 border-b border-white/10" data-scroll-section>
     <!-- Grid Background -->
-    <div class="absolute inset-0 grid grid-cols-6 md:grid-cols-12 pointer-events-none select-none z-0">
+    <div class="hero-grid absolute inset-0 grid grid-cols-6 md:grid-cols-12 pointer-events-none select-none z-0">
       {Array.from({ length: 12 }).map((_, i) => (
         <div class={`h-full border-r border-white/5 ${i === 0 ? 'border-l' : ''} ${i >= 6 ? 'hidden md:block' : ''}`}></div>
       ))}
     </div>
 
-    <div class="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12">
+    <div class="hero-content relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12">
       <!-- Top Left: Chapter Label -->
-      <div class="col-span-1 lg:col-span-2 p-6 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-between">
-        <div>
+      <div class="hero-chapter col-span-1 lg:col-span-2 p-6 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-between">
+        <div class="hero-reveal">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500">
             Chapter 01
           </span>
           <p class="font-mono text-xs text-white mt-2">United Tattoo</p>
         </div>
-        <div class="hidden lg:block">
+        <div class="hero-reveal hidden lg:block">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-2">
             Coordinates
           </span>
@@ -37,41 +37,41 @@ const artists = await getCollection('artists');
       </div>
 
       <!-- Center: Main Title -->
-      <div class="col-span-1 lg:col-span-7 p-6 lg:p-12 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-center min-h-[50vh] lg:min-h-auto">
-        <div class="mb-4">
+      <div class="hero-main col-span-1 lg:col-span-7 p-6 lg:p-12 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-center min-h-[50vh] lg:min-h-auto">
+        <div class="mb-4 hero-reveal">
            <span class="section-label">Creativity / Technicality</span>
         </div>
-        <h1 class="text-7xl md:text-8xl lg:text-[9rem] leading-[0.85] font-normal tracking-tighter uppercase mb-8">
-          High Art<br/>
-          <span class="italic font-light text-neutral-500">True Craft</span>
+        <h1 class="hero-title text-7xl md:text-8xl lg:text-[9rem] leading-[0.85] font-normal tracking-tighter uppercase mb-8">
+          <span class="hero-title-line block overflow-hidden"><span class="inline-block">High Art</span></span>
+          <span class="hero-title-line block overflow-hidden"><span class="italic font-light text-neutral-500 inline-block">True Craft</span></span>
         </h1>
-        <p class="text-neutral-400 text-lg md:text-xl max-w-xl leading-relaxed font-light">
+        <p class="hero-reveal text-neutral-400 text-lg md:text-xl max-w-xl leading-relaxed font-light">
           A collective of professional tattoo artists dedicated to creating exceptional custom work. We blend artistic vision with technical precision.
         </p>
       </div>
 
       <!-- Right: Data Block -->
-      <div class="col-span-1 lg:col-span-3 border-b lg:border-b-0 border-white/10 flex flex-col">
-        <div class="flex-1 p-6 border-b border-white/10">
+      <div class="hero-data col-span-1 lg:col-span-3 border-b lg:border-b-0 border-white/10 flex flex-col">
+        <div class="hero-reveal flex-1 p-6 border-b border-white/10">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-4">
             Active Ingredients
           </span>
           <ul class="space-y-2">
-            <li class="flex items-center justify-between group">
+            <li class="ingredient-item flex items-center justify-between group">
               <span class="text-sm text-white font-mono">Ink</span>
               <span class="text-xs text-neutral-600 group-hover:text-white transition-colors">100%</span>
             </li>
-            <li class="flex items-center justify-between group">
+            <li class="ingredient-item flex items-center justify-between group">
               <span class="text-sm text-white font-mono">Skin</span>
               <span class="text-xs text-neutral-600 group-hover:text-white transition-colors">Canvas</span>
             </li>
-            <li class="flex items-center justify-between group">
+            <li class="ingredient-item flex items-center justify-between group">
               <span class="text-sm text-white font-mono">Soul</span>
               <span class="text-xs text-neutral-600 group-hover:text-white transition-colors">Infinite</span>
             </li>
           </ul>
         </div>
-        <div class="p-6">
+        <div class="hero-reveal p-6">
            <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-4">
             Status
           </span>
@@ -82,7 +82,7 @@ const artists = await getCollection('artists');
             </span>
             <span class="text-sm text-white font-mono uppercase">Booking Open</span>
           </div>
-          <a href="/booking" class="block mt-6 w-full py-3 bg-white text-black text-center font-mono text-xs uppercase tracking-wider hover:bg-neutral-200 transition-colors">
+          <a href="/booking" class="hero-cta block mt-6 w-full py-3 bg-white text-black text-center font-mono text-xs uppercase tracking-wider hover:bg-neutral-200 transition-colors">
             Init Request
           </a>
         </div>
@@ -91,25 +91,25 @@ const artists = await getCollection('artists');
   </section>
 
   <!-- Artists Section: The Index -->
-  <section id="artists" class="relative z-20">
+  <section id="artists" class="artists-section relative z-20" data-scroll-section>
     <!-- Header Row -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 border-b border-white/10">
-      <div class="col-span-1 lg:col-span-2 p-6 border-r border-white/10">
+    <div class="artists-header grid grid-cols-1 lg:grid-cols-12 border-b border-white/10">
+      <div class="artists-chapter col-span-1 lg:col-span-2 p-6 border-r border-white/10 lg:sticky lg:top-20">
         <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500">
           Chapter 02
         </span>
       </div>
       <div class="col-span-1 lg:col-span-10 p-6">
-        <h2 class="text-4xl md:text-5xl font-normal uppercase tracking-tight">The Collective</h2>
+        <h2 class="artists-title text-4xl md:text-5xl font-normal uppercase tracking-tight">The Collective</h2>
       </div>
     </div>
 
     <!-- Artists List -->
     <div class="grid grid-cols-1 lg:grid-cols-12">
       <div class="hidden lg:block col-span-2 border-r border-white/10"></div>
-      <div class="col-span-1 lg:col-span-10">
+      <div class="artists-list col-span-1 lg:col-span-10">
         {artists.map((artist, index) => (
-          <div class="group relative border-b border-white/10 hover:bg-white/5 transition-colors duration-300">
+          <div class="artist-row group relative border-b border-white/10 hover:bg-white/5 transition-colors duration-300">
             <a href={`/artists/${artist.id}`} class="block p-6 md:p-8 flex flex-col md:flex-row items-baseline md:items-center justify-between gap-4">
               <div class="flex items-baseline gap-4 md:gap-8 md:w-1/2">
                 <span class="font-mono text-xs text-neutral-600 group-hover:text-white transition-colors">
@@ -149,39 +149,39 @@ const artists = await getCollection('artists');
   </section>
 
   <!-- Process Section: The Methodology -->
-  <section id="process" class="relative z-20 border-b border-white/10">
+  <section id="process" class="process-section relative z-20 border-b border-white/10" data-scroll-section>
     <!-- Header -->
-    <div class="grid grid-cols-1 lg:grid-cols-12 border-b border-white/10">
-      <div class="col-span-1 lg:col-span-2 p-6 border-r border-white/10">
+    <div class="process-header grid grid-cols-1 lg:grid-cols-12 border-b border-white/10">
+      <div class="process-chapter col-span-1 lg:col-span-2 p-6 border-r border-white/10">
         <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500">
           Chapter 03
         </span>
       </div>
       <div class="col-span-1 lg:col-span-10 p-6 flex flex-col md:flex-row justify-between items-end gap-6">
-        <h2 class="text-4xl md:text-5xl font-normal uppercase tracking-tight">Methodology</h2>
-        <p class="font-mono text-xs text-neutral-500 uppercase tracking-wide max-w-xs text-right">
+        <h2 class="process-title text-4xl md:text-5xl font-normal uppercase tracking-tight">Methodology</h2>
+        <p class="process-subtitle font-mono text-xs text-neutral-500 uppercase tracking-wide max-w-xs text-right">
           Standard Operating Procedures for custom engagement
         </p>
       </div>
     </div>
 
     <!-- Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+    <div class="process-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
       {[
         { num: '01', title: 'Consultation', desc: 'Concept alignment and placement analysis.' },
         { num: '02', title: 'Design', desc: 'Custom drafting and iterative refinement.' },
         { num: '03', title: 'Session', desc: 'Sterile environment execution and application.' },
         { num: '04', title: 'Aftercare', desc: 'Healing protocols and preservation guidance.' }
       ].map((step, i) => (
-        <div class={`group p-8 border-b md:border-b-0 border-white/10 min-h-[300px] flex flex-col justify-between hover:bg-white/5 transition-colors duration-300 ${i < 3 ? 'lg:border-r md:border-r' : ''} ${i === 1 ? 'md:border-r-0 lg:border-r' : ''}`}>
+        <div class={`process-step group p-8 border-b md:border-b-0 border-white/10 min-h-[300px] flex flex-col justify-between hover:bg-white/5 transition-colors duration-300 ${i < 3 ? 'lg:border-r md:border-r' : ''} ${i === 1 ? 'md:border-r-0 lg:border-r' : ''}`}>
           <div class="flex justify-between items-start">
-            <span class="font-mono text-4xl text-neutral-700 font-light group-hover:text-white transition-colors">
+            <span class="process-num font-mono text-4xl text-neutral-700 font-light group-hover:text-white transition-colors">
               {step.num}
             </span>
             <iconify-icon icon="solar:arrow-right-up-linear" class="text-neutral-600 group-hover:text-white transition-colors"></iconify-icon>
           </div>
 
-          <div>
+          <div class="process-content">
             <h3 class="font-display text-2xl italic text-white mb-3">{step.title}</h3>
             <p class="font-mono text-xs text-neutral-400 leading-relaxed">
               {step.desc}
@@ -193,26 +193,26 @@ const artists = await getCollection('artists');
   </section>
 
   <!-- Footer: Data Sheet -->
-  <footer class="bg-black relative z-20">
+  <footer class="footer-section bg-black relative z-20" data-scroll-section>
     <div class="grid grid-cols-1 lg:grid-cols-12">
       <!-- Left Column: Branding -->
-      <div class="col-span-1 lg:col-span-4 p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-between min-h-[300px]">
-        <div>
-          <h2 class="text-6xl md:text-8xl font-display uppercase tracking-tighter leading-none mb-2">United</h2>
+      <div class="footer-branding col-span-1 lg:col-span-4 p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-between min-h-[300px]">
+        <div class="footer-reveal">
+          <h2 class="footer-title text-6xl md:text-8xl font-display uppercase tracking-tighter leading-none mb-2">United</h2>
           <span class="font-mono text-xs text-neutral-500 block">
             © 2025 United Tattoo Collective
           </span>
         </div>
 
-        <div class="mt-8">
+        <div class="footer-reveal mt-8">
           <p class="font-mono text-xs text-neutral-400 max-w-xs mb-6">
             Pushing boundaries in skin art. Based in Fountain, Colorado.
           </p>
           <div class="flex gap-4">
-            <a href="#" class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
+            <a href="#" class="footer-social w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
               <iconify-icon icon="mdi:instagram"></iconify-icon>
             </a>
-            <a href="mailto:ink@unitedtattoo.com" class="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
+            <a href="mailto:ink@unitedtattoo.com" class="footer-social w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
               <iconify-icon icon="mdi:email"></iconify-icon>
             </a>
           </div>
@@ -222,7 +222,7 @@ const artists = await getCollection('artists');
       <!-- Right Column: Links Grid -->
       <div class="col-span-1 lg:col-span-8 grid grid-cols-1 md:grid-cols-3">
         <!-- Location -->
-        <div class="p-8 border-b md:border-b-0 md:border-r border-white/10">
+        <div class="footer-col footer-reveal p-8 border-b md:border-b-0 md:border-r border-white/10">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-6">
             [01] Location
           </span>
@@ -234,7 +234,7 @@ const artists = await getCollection('artists');
         </div>
 
         <!-- Hours -->
-        <div class="p-8 border-b md:border-b-0 md:border-r border-white/10">
+        <div class="footer-col footer-reveal p-8 border-b md:border-b-0 md:border-r border-white/10">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-6">
             [02] Hours
           </span>
@@ -251,7 +251,7 @@ const artists = await getCollection('artists');
         </div>
 
         <!-- Sitemap -->
-        <div class="p-8">
+        <div class="footer-col footer-reveal p-8">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-6">
             [03] Directory
           </span>
@@ -266,9 +266,191 @@ const artists = await getCollection('artists');
     </div>
 
     <!-- Bottom Bar -->
-    <div class="border-t border-white/10 p-4 flex justify-between items-center bg-neutral-900/50">
+    <div class="footer-bar border-t border-white/10 p-4 flex justify-between items-center bg-neutral-900/50">
       <span class="font-mono text-[10px] text-neutral-600">SYSTEM STATUS: OPERATIONAL</span>
       <span class="font-mono text-[10px] text-neutral-600">V.2.0.25</span>
     </div>
   </footer>
+
+  <!-- Scroll Animations -->
+  <script>
+    // Wait for GSAP to be available
+    const initAnimations = () => {
+      const gsap = window.gsap;
+      const ScrollTrigger = window.ScrollTrigger;
+
+      if (!gsap || !ScrollTrigger) {
+        setTimeout(initAnimations, 100);
+        return;
+      }
+
+      // Set initial states for hero elements
+      gsap.set('.hero-title-line > span', { y: '100%' });
+      gsap.set('.hero-reveal', { opacity: 0, y: 30 });
+      gsap.set('.hero-cta', { opacity: 0, y: 20 });
+      gsap.set('.ingredient-item', { opacity: 0, x: -20 });
+
+      // Hero Title Animation on Load
+      const heroTl = gsap.timeline({ delay: 0.3 });
+
+      heroTl
+        .to('.hero-title-line > span', {
+          y: '0%',
+          duration: 1.2,
+          stagger: 0.15,
+          ease: 'power4.out'
+        })
+        .to('.hero-reveal', {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: 'power3.out'
+        }, '-=0.8')
+        .to('.ingredient-item', {
+          opacity: 1,
+          x: 0,
+          duration: 0.6,
+          stagger: 0.1,
+          ease: 'power2.out'
+        }, '-=0.5')
+        .to('.hero-cta', {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power2.out'
+        }, '-=0.3');
+
+      // Hero Parallax on Scroll
+      gsap.to('.hero-grid', {
+        yPercent: 30,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.hero-section',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1
+        }
+      });
+
+      gsap.to('.hero-title', {
+        yPercent: 20,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.hero-section',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1
+        }
+      });
+
+      // Artists Section Animations
+      gsap.set('.artist-row', { opacity: 0, y: 60 });
+      gsap.set('.artists-title', { opacity: 0, y: 40 });
+
+      gsap.to('.artists-title', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.artists-section',
+          start: 'top 80%'
+        }
+      });
+
+      gsap.to('.artist-row', {
+        opacity: 1,
+        y: 0,
+        stagger: 0.1,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.artists-list',
+          start: 'top 80%'
+        }
+      });
+
+      // Process Section Animations
+      gsap.set('.process-step', { opacity: 0, y: 80, scale: 0.95 });
+      gsap.set('.process-title', { opacity: 0, y: 40 });
+
+      gsap.to('.process-title', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.process-section',
+          start: 'top 80%'
+        }
+      });
+
+      gsap.to('.process-step', {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        stagger: 0.15,
+        duration: 1,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.process-grid',
+          start: 'top 85%'
+        }
+      });
+
+      // Process number parallax
+      gsap.utils.toArray('.process-num').forEach((num) => {
+        gsap.to(num, {
+          yPercent: -30,
+          ease: 'none',
+          scrollTrigger: {
+            trigger: num,
+            start: 'top bottom',
+            end: 'bottom top',
+            scrub: 1
+          }
+        });
+      });
+
+      // Footer Animations
+      gsap.set('.footer-title', { opacity: 0, scale: 0.8 });
+      gsap.set('.footer-reveal', { opacity: 0, y: 40 });
+      gsap.set('.footer-social', { opacity: 0, scale: 0.5 });
+
+      const footerTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.footer-section',
+          start: 'top 80%'
+        }
+      });
+
+      footerTl
+        .to('.footer-title', {
+          opacity: 1,
+          scale: 1,
+          duration: 1,
+          ease: 'power4.out'
+        })
+        .to('.footer-reveal', {
+          opacity: 1,
+          y: 0,
+          stagger: 0.1,
+          duration: 0.8,
+          ease: 'power3.out'
+        }, '-=0.6')
+        .to('.footer-social', {
+          opacity: 1,
+          scale: 1,
+          stagger: 0.1,
+          duration: 0.5,
+          ease: 'back.out(2)'
+        }, '-=0.4');
+
+      console.log('Scroll animations initialized');
+    };
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', initAnimations);
+  </script>
 </SiteLayout>
