@@ -9,25 +9,18 @@ const artists = await getCollection('artists');
 ---
 
 <SiteLayout title={SITE_DESCRIPTION} removeMainPadding={true} hideFooter={true}>
-  <!-- Hero Section: The Manual Cover -->
-  <section class="hero-section min-h-screen relative flex flex-col pt-20 border-b border-white/10" data-scroll-section>
-    <!-- Grid Background -->
-    <div class="hero-grid absolute inset-0 grid grid-cols-6 md:grid-cols-12 pointer-events-none select-none z-0">
-      {Array.from({ length: 12 }).map((_, i) => (
-        <div class={`h-full border-r border-white/5 ${i === 0 ? 'border-l' : ''} ${i >= 6 ? 'hidden md:block' : ''}`}></div>
-      ))}
-    </div>
-
-    <div class="hero-content relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12">
-      <!-- Top Left: Chapter Label -->
-      <div class="hero-chapter col-span-1 lg:col-span-2 p-6 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-between">
+  <!-- Pinned Columns Container - positioned relative for sticky fallback -->
+  <div class="pinned-layout">
+    <!-- Left Pinned Column -->
+    <div class="pinned-left hidden lg:block fixed left-0 top-0 w-[16.666%] pt-20 z-30 pointer-events-none" style="height: calc(100vh - 80px);">
+      <div class="h-full border-r border-white/10 bg-[#050505] p-6 flex flex-col justify-between pointer-events-auto">
         <div class="hero-reveal">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500">
             Chapter 01
           </span>
           <p class="font-mono text-xs text-white mt-2">United Tattoo</p>
         </div>
-        <div class="hero-reveal hidden lg:block">
+        <div class="hero-reveal">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-2">
             Coordinates
           </span>
@@ -35,23 +28,11 @@ const artists = await getCollection('artists');
           <p class="font-mono text-xs text-neutral-400">[Y] 104.70° W</p>
         </div>
       </div>
+    </div>
 
-      <!-- Center: Main Title -->
-      <div class="hero-main col-span-1 lg:col-span-7 p-6 lg:p-12 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-center min-h-[50vh] lg:min-h-auto">
-        <div class="mb-4 hero-reveal">
-           <span class="section-label">Creativity / Technicality</span>
-        </div>
-        <h1 class="hero-title text-7xl md:text-8xl lg:text-[9rem] leading-[0.85] font-normal tracking-tighter uppercase mb-8">
-          <span class="hero-title-line block overflow-hidden"><span class="inline-block">High Art</span></span>
-          <span class="hero-title-line block overflow-hidden"><span class="italic font-light text-neutral-500 inline-block">True Craft</span></span>
-        </h1>
-        <p class="hero-reveal text-neutral-400 text-lg md:text-xl max-w-xl leading-relaxed font-light">
-          A collective of professional tattoo artists dedicated to creating exceptional custom work. We blend artistic vision with technical precision.
-        </p>
-      </div>
-
-      <!-- Right: Data Block -->
-      <div class="hero-data col-span-1 lg:col-span-3 border-b lg:border-b-0 border-white/10 flex flex-col">
+    <!-- Right Pinned Column -->
+    <div class="pinned-right hidden lg:block fixed right-0 top-0 w-[25%] pt-20 z-30 pointer-events-none" style="height: calc(100vh - 80px);">
+      <div class="h-full border-l border-white/10 bg-[#050505] flex flex-col pointer-events-auto">
         <div class="hero-reveal flex-1 p-6 border-b border-white/10">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-4">
             Active Ingredients
@@ -72,7 +53,7 @@ const artists = await getCollection('artists');
           </ul>
         </div>
         <div class="hero-reveal p-6">
-           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-4">
+          <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-4">
             Status
           </span>
           <div class="flex items-center gap-2">
@@ -88,26 +69,78 @@ const artists = await getCollection('artists');
         </div>
       </div>
     </div>
+  </div>
+
+  <!-- Hero Section: The Manual Cover -->
+  <section class="hero-section min-h-screen relative flex flex-col pt-20 border-b border-white/10" data-scroll-section>
+    <!-- Grid Background -->
+    <div class="hero-grid absolute inset-0 grid grid-cols-6 md:grid-cols-12 pointer-events-none select-none z-0">
+      {Array.from({ length: 12 }).map((_, i) => (
+        <div class={`h-full border-r border-white/5 ${i === 0 ? 'border-l' : ''} ${i >= 6 ? 'hidden md:block' : ''}`}></div>
+      ))}
+    </div>
+
+    <div class="hero-content relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12">
+      <!-- Left Spacer (for pinned column) -->
+      <div class="hidden lg:block col-span-2"></div>
+
+      <!-- Center: Main Title -->
+      <div class="hero-main col-span-1 lg:col-span-7 p-6 lg:p-12 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-center min-h-[50vh] lg:min-h-[80vh]">
+        <div class="mb-4 hero-reveal">
+           <span class="section-label">Creativity / Technicality</span>
+        </div>
+        <h1 class="hero-title text-7xl md:text-8xl lg:text-[9rem] leading-[0.85] font-normal tracking-tighter uppercase mb-8">
+          <span class="hero-title-line block overflow-hidden"><span class="inline-block">High Art</span></span>
+          <span class="hero-title-line block overflow-hidden"><span class="italic font-light text-neutral-500 inline-block">True Craft</span></span>
+        </h1>
+        <p class="hero-reveal text-neutral-400 text-lg md:text-xl max-w-xl leading-relaxed font-light">
+          A collective of professional tattoo artists dedicated to creating exceptional custom work. We blend artistic vision with technical precision.
+        </p>
+      </div>
+
+      <!-- Right Spacer (for pinned column) -->
+      <div class="hidden lg:block col-span-3"></div>
+
+      <!-- Mobile Only: Left & Right content -->
+      <div class="lg:hidden col-span-1 p-6 border-b border-white/10">
+        <div class="grid grid-cols-2 gap-6">
+          <div>
+            <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500">Chapter 01</span>
+            <p class="font-mono text-xs text-white mt-2">United Tattoo</p>
+          </div>
+          <div>
+            <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-2">Status</span>
+            <div class="flex items-center gap-2">
+              <span class="relative flex h-2 w-2">
+                <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+              </span>
+              <span class="text-xs text-white font-mono uppercase">Open</span>
+            </div>
+          </div>
+        </div>
+        <a href="/booking" class="block mt-6 w-full py-3 bg-white text-black text-center font-mono text-xs uppercase tracking-wider hover:bg-neutral-200 transition-colors">
+          Init Request
+        </a>
+      </div>
+    </div>
   </section>
 
   <!-- Artists Section: The Index -->
   <section id="artists" class="artists-section relative z-20" data-scroll-section>
     <!-- Header Row -->
     <div class="artists-header grid grid-cols-1 lg:grid-cols-12 border-b border-white/10">
-      <div class="artists-chapter col-span-1 lg:col-span-2 p-6 border-r border-white/10 lg:sticky lg:top-20">
-        <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500">
-          Chapter 02
-        </span>
-      </div>
-      <div class="col-span-1 lg:col-span-10 p-6">
+      <div class="hidden lg:block col-span-2"></div>
+      <div class="col-span-1 lg:col-span-7 p-6 border-r border-white/10">
         <h2 class="artists-title text-4xl md:text-5xl font-normal uppercase tracking-tight">The Collective</h2>
       </div>
+      <div class="hidden lg:block col-span-3"></div>
     </div>
 
     <!-- Artists List -->
     <div class="grid grid-cols-1 lg:grid-cols-12">
-      <div class="hidden lg:block col-span-2 border-r border-white/10"></div>
-      <div class="artists-list col-span-1 lg:col-span-10">
+      <div class="hidden lg:block col-span-2"></div>
+      <div class="artists-list col-span-1 lg:col-span-7 border-r border-white/10">
         {artists.map((artist, index) => (
           <div class="artist-row group relative border-b border-white/10 hover:bg-white/5 transition-colors duration-300">
             <a href={`/artists/${artist.id}`} class="block p-6 md:p-8 flex flex-col md:flex-row items-baseline md:items-center justify-between gap-4">
@@ -134,8 +167,8 @@ const artists = await getCollection('artists');
               </div>
             </a>
 
-            <!-- Hover Image Reveal (Desktop) -->
-            <div class="hidden lg:block absolute top-1/2 right-[10%] -translate-y-1/2 w-[200px] aspect-[3/4] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 bg-neutral-900 border border-white/10 rotate-3 group-hover:rotate-6 transition-transform">
+            <!-- Hover Image Reveal (Desktop) - now positioned within center column -->
+            <div class="hidden lg:block absolute top-1/2 right-8 -translate-y-1/2 w-[180px] aspect-[3/4] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 bg-neutral-900 border border-white/10 rotate-3 group-hover:rotate-6 transition-transform">
               <img
                 src={artist.data.portrait}
                 alt={artist.data.name}
@@ -145,6 +178,7 @@ const artists = await getCollection('artists');
           </div>
         ))}
       </div>
+      <div class="hidden lg:block col-span-3"></div>
     </div>
   </section>
 
@@ -152,21 +186,20 @@ const artists = await getCollection('artists');
   <section id="process" class="process-section relative z-20 border-b border-white/10" data-scroll-section>
     <!-- Header -->
     <div class="process-header grid grid-cols-1 lg:grid-cols-12 border-b border-white/10">
-      <div class="process-chapter col-span-1 lg:col-span-2 p-6 border-r border-white/10">
-        <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500">
-          Chapter 03
-        </span>
-      </div>
-      <div class="col-span-1 lg:col-span-10 p-6 flex flex-col md:flex-row justify-between items-end gap-6">
+      <div class="hidden lg:block col-span-2"></div>
+      <div class="col-span-1 lg:col-span-7 p-6 border-r border-white/10 flex flex-col md:flex-row justify-between items-end gap-6">
         <h2 class="process-title text-4xl md:text-5xl font-normal uppercase tracking-tight">Methodology</h2>
         <p class="process-subtitle font-mono text-xs text-neutral-500 uppercase tracking-wide max-w-xs text-right">
           Standard Operating Procedures for custom engagement
         </p>
       </div>
+      <div class="hidden lg:block col-span-3"></div>
     </div>
 
-    <!-- Grid -->
-    <div class="process-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+    <!-- Grid - Centered within the 7-column space -->
+    <div class="grid grid-cols-1 lg:grid-cols-12">
+      <div class="hidden lg:block col-span-2"></div>
+      <div class="process-grid col-span-1 lg:col-span-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-r border-white/10">
       {[
         { num: '01', title: 'Consultation', desc: 'Concept alignment and placement analysis.' },
         { num: '02', title: 'Design', desc: 'Custom drafting and iterative refinement.' },
@@ -189,6 +222,8 @@ const artists = await getCollection('artists');
           </div>
         </div>
       ))}
+      </div>
+      <div class="hidden lg:block col-span-3"></div>
     </div>
   </section>
 
@@ -370,6 +405,36 @@ const artists = await getCollection('artists');
           start: 'top 80%'
         }
       });
+
+      // Pinned Columns: Lock in place when footer enters viewport
+      const pinnedLeft = document.querySelector('.pinned-left');
+      const pinnedRight = document.querySelector('.pinned-right');
+      const footer = document.querySelector('.footer-section');
+
+      if (pinnedLeft && pinnedRight && footer) {
+        let lockedTop = null;
+
+        ScrollTrigger.create({
+          trigger: footer,
+          start: 'top bottom',
+          onEnter: () => {
+            // Lock columns at their current screen position relative to document
+            lockedTop = window.scrollY;
+            pinnedLeft.style.position = 'absolute';
+            pinnedLeft.style.top = `${lockedTop}px`;
+            pinnedRight.style.position = 'absolute';
+            pinnedRight.style.top = `${lockedTop}px`;
+          },
+          onLeaveBack: () => {
+            // Restore fixed positioning
+            pinnedLeft.style.position = 'fixed';
+            pinnedLeft.style.top = '0';
+            pinnedRight.style.position = 'fixed';
+            pinnedRight.style.top = '0';
+            lockedTop = null;
+          }
+        });
+      }
 
       // Process Section Animations
       gsap.set('.process-step', { opacity: 0, y: 80, scale: 0.95 });

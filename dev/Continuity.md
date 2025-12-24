@@ -1,18 +1,94 @@
 # Artists, Booking & Policy Pages Implementation
 
 **Date:** December 24, 2024 @ 14:36 UTC
-**Last Updated:** December 24, 2024 @ 15:50 UTC
+**Last Updated:** December 24, 2024 @ 16:45 UTC
 **Branch:** astro-migration-from-scratch
 
 ---
 
 ## Summary
 
-Implemented MDX-driven artist pages, a booking system with file uploads and Resend email integration, and policy/aftercare pages. **December 24 update:** Completed a full "editorial gallery polish" pass to remove techy/system UI language and shift the site toward a clean, magazine/gallery aesthetic.
+Implemented MDX-driven artist pages, a booking system with file uploads and Resend email integration, and policy/aftercare pages. **December 24 update:** Completed a full "Technical Manual" / "Brutalist Editorial" homepage redesign with GSAP + Lenis scroll animations, sticky pinned columns, and cinematic scroll-triggered reveals.
 
 ---
 
-## Latest Changes (Dec 24 - Editorial Polish)
+## Latest Changes (Dec 24 - Technical Manual Redesign + Scroll Experience)
+
+### Homepage Complete Overhaul
+
+Redesigned homepage to a "Technical Manual" / "Brutalist Editorial" aesthetic inspired by creative agency portfolio sites:
+
+#### New Layout Structure
+- **12-column grid system** with visible grid lines in the background
+- **Split layout hero** with chapter labels, coordinates, and "Active Ingredients" data blocks
+- **Pinned sidebar columns** (left + right) that stay fixed while center content scrolls
+- **Footer** with "UNITED" branding, location/hours, and directory links
+
+#### Hero Section Features
+- Chapter label: "Chapter 01: United Tattoo"
+- Massive serif heading: "HIGH ART / TRUE CRAFT"
+- "Active Ingredients" block (Ink 100%, Skin Canvas, Soul Infinite)
+- Status indicator with "BOOKING OPEN" and CTA button
+- Coordinates data block
+
+#### Artists Section ("The Collective")
+- List-style layout with numbered entries (01–06)
+- Italic serif artist names with monospace specialty labels
+- **Hover reveals artist portrait** (desktop only)
+- Arrow indicators linking to individual artist pages
+
+#### Process Section ("Methodology")
+- 4-column grid with numbered steps
+- Iconify icons for each step
+- Clean descriptions with italic serif headings
+
+### Scroll Animations (GSAP + Lenis)
+
+Added premium scroll experience with new dependencies:
+- `gsap` - Animation library with ScrollTrigger plugin
+- `lenis` - Buttery-smooth scroll library
+
+#### Animation Features
+
+| Section | Animation |
+|---------|-----------|
+| Hero | Staggered title reveal, ingredient list cascade |
+| Artists | Title fade-in, row stagger (0.1s delay each) |
+| Process | Title slide-in, card scale-up with stagger |
+| Footer | Title scale reveal, content fade cascade |
+
+#### Sticky Pinned Columns
+- Left column: Chapter label, coordinates
+- Right column: Active Ingredients, Status, CTA button
+- **Columns stay fixed** during Hero and Artists sections
+- **Lock into place** when footer approaches (z-index layering)
+
+### New Dependencies
+
+```json
+{
+  "gsap": "^3.x",
+  "lenis": "^1.x"
+}
+```
+
+### Files Modified
+
+```
+src/pages/index.astro          - Complete rewrite with Technical Manual layout
+src/styles/global.css          - Added animation classes, updated typography
+src/layouts/SiteLayout.astro   - Added Lenis + GSAP initialization, font imports
+```
+
+### Layout Props Added
+
+New props in `SiteLayout.astro`:
+- `removeMainPadding` - Removes default padding for full-bleed pages
+- `hideFooter` - Hides SiteFooter component (homepage has custom footer)
+
+---
+
+## Previous Changes (Dec 24 - Editorial Polish)
 
 ### Design Direction Change
 
@@ -216,9 +292,14 @@ BOOKING_FROM_EMAIL=bookings@unitedtattoo.com
   - Add date/time preference field to booking form
   - Consider adding a CAPTCHA or honeypot for spam prevention
 
-- [ ] **Hover States & Micro-interactions**
-  - Add subtle transitions/animations for button hovers
-  - Consider scroll-triggered animations for sections
+- [x] **Hover States & Micro-interactions**
+  - Added hover transitions for artist rows, buttons, and cards
+  - Artist portrait reveals on hover (desktop)
+
+- [x] **Scroll-triggered Animations**
+  - Implemented GSAP ScrollTrigger for all sections
+  - Lenis smooth scrolling enabled
+  - Staggered reveals, parallax effects, and cinematic transitions
 
 ### Content & Polish
 
@@ -267,6 +348,12 @@ BOOKING_FROM_EMAIL=bookings@unitedtattoo.com
 - [x] **404 page styled correctly**
 - [x] **Consistent nav/footer across all pages**
 - [ ] Mobile navigation (not implemented)
+- [x] **Lenis smooth scrolling works**
+- [x] **GSAP scroll animations trigger correctly**
+- [x] **Sticky columns stay fixed during scroll**
+- [x] **Sticky columns lock when footer approaches**
+- [x] **Artist hover reveals portrait image**
+- [x] **Homepage responsive on mobile**
 
 ---
 
@@ -287,11 +374,26 @@ BOOKING_FROM_EMAIL=bookings@unitedtattoo.com
 .noise            /* Very subtle texture overlay */
 ```
 
+### Animation Classes (GSAP-driven)
+
+```css
+.hero-reveal      /* Hero section staggered reveal targets */
+.hero-title       /* Main hero heading animation */
+.hero-cta         /* CTA button entrance */
+.ingredient-item  /* Active ingredients list stagger */
+.artist-row       /* Artist list row cascade */
+.process-step     /* Process card animations */
+.process-num      /* Process number parallax */
+.footer-title     /* Footer title scale reveal */
+.footer-reveal    /* Footer content cascade */
+```
+
 ### Color Palette
 
 - Background: `#050505` (near-black)
 - Text: `#e0e0e0` (light gray)
 - Accent: `#ffffff` (white)
+- Grid lines: `rgba(255, 255, 255, 0.1)`
 - Muted: Various gray shades for hierarchy
 
 ---
@@ -302,3 +404,6 @@ BOOKING_FROM_EMAIL=bookings@unitedtattoo.com
 - The `output: 'hybrid'` option was removed in Astro 5; using `output: 'server'` with `prerender = true` on static pages
 - The booking form stores/handles files client-side before upload to avoid issues with FormData on multiple file inputs
 - Removed background grid utility to keep the aesthetic clean and gallery-like
+- **GSAP + Lenis Integration:** Lenis handles smooth scrolling, GSAP ScrollTrigger syncs via `lenis.on('scroll', ScrollTrigger.update)`
+- **Sticky Columns:** Use `position: fixed` with `z-30`, footer uses `z-20` so columns appear to "lock" as footer scrolls over them
+- **Homepage hides SiteFooter:** Uses custom embedded footer with `hideFooter={true}` prop on SiteLayout
