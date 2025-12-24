@@ -1,8 +1,8 @@
-# Utilities
+# Utility Scripts
 
-This directory contains utility scripts for the project.
+Development utility scripts for the United Tattoo project.
 
-## Git Commit Automation Script
+## Git Commit Automation
 
 ### git-commit.js
 

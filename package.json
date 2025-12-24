@@ -1,14 +1,22 @@
 {
-  "name": "",
+  "name": "united-tattoo",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "commit": "node src/utils/git-commit.js",
+    "convert:avif": "node src/utils/convert-to-avif.js",
+    "convert:avif:all": "node src/utils/convert-to-avif.js --all",
+    "convert:avif:jpeg": "node src/utils/convert-to-avif.js --jpeg",
+    "convert:avif:png": "node src/utils/convert-to-avif.js --png"
   },
   "dependencies": {
-    "astro": "^5.16.6"
+    "@astrojs/rss": "^4.0.14",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.16.6",
+    "tailwindcss": "^4.1.18"
   }
 }
