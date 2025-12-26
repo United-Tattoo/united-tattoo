@@ -1,5 +1,6 @@
 ---
 // Clean editorial footer - no "system verified" or underscore language
+import { ADDRESS_LINE_1, ADDRESS_LINE_2, EMAIL, INSTAGRAM, PHONE_NUMBER } from '../consts';
 ---
 
 <footer class="py-16 px-6 md:px-20 border-t border-white/5">
@@ -17,12 +18,21 @@
       <div class="space-y-4">
         <h4 class="text-xs uppercase tracking-widest text-neutral-500">Visit</h4>
         <address class="text-sm text-neutral-400 not-italic leading-relaxed">
-          5160 Fontaine Blvd <br/>
-          Fountain, CO 80817
+          {ADDRESS_LINE_1} <br/>
+          {ADDRESS_LINE_2}
         </address>
+        <div class="space-y-1">
+          <a href={`tel:${PHONE_NUMBER.replace(/\s+/g, '')}`} class="text-sm text-neutral-400 hover:text-white transition-colors">
+            {PHONE_NUMBER}
+          </a>
+          <br />
+          <a href={`mailto:${EMAIL}`} class="text-sm text-neutral-400 hover:text-white transition-colors">
+            {EMAIL}
+          </a>
+        </div>
         <p class="text-sm text-neutral-500">
           Thursday-Saturday: 10am–8pm <br/>
-          Sunday-Wednesday: 10am-6pm 
+          Sunday-Wednesday: 10am-6pm
         </p>
       </div>
 
@@ -30,8 +40,7 @@
       <div class="space-y-4">
         <h4 class="text-xs uppercase tracking-widest text-neutral-500">Follow</h4>
         <div class="flex flex-col gap-2">
-          <a href="#" class="text-sm text-neutral-400 hover:text-white transition-colors">Instagram</a>
-          <a href="#" class="text-sm text-neutral-400 hover:text-white transition-colors">Facebook</a>
+          <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" class="text-sm text-neutral-400 hover:text-white transition-colors">Instagram</a>
         </div>
       </div>
     </div>

@@ -6,6 +6,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
+    "deploy": "astro build && wrangler deploy",
     "astro": "astro",
     "commit": "node src/utils/git-commit.js",
     "convert:avif": "node src/utils/convert-to-avif.js",

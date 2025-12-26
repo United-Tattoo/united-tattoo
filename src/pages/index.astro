@@ -1,7 +1,9 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 import { SITE_DESCRIPTION } from '../consts';
+import { ADDRESS_LINE_1, ADDRESS_LINE_2, EMAIL, INSTAGRAM, PHONE_NUMBER } from '../consts';
 import { getCollection } from 'astro:content';
+import DoveMark from '../components/DoveMark.astro';
 
 export const prerender = true;
 
@@ -16,13 +18,13 @@ const artists = await getCollection('artists');
       <div class="h-full border-r border-white/10 bg-[#050505] p-6 flex flex-col justify-between pointer-events-auto">
         <div class="hero-reveal">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500">
-            The Collective 
+            The Collective
           </span>
           <p class="font-mono text-xs text-white mt-2">United Tattoo</p>
         </div>
         <div class="hero-reveal">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-2">
-            Studio 
+            Studio
           </span>
           <p class="font-mono text-xs text-neutral-400">5160 Fontaine Blvd</p>
           <p class="font-mono text-xs text-neutral-400">Fountain, CO 80817</p>
@@ -35,7 +37,7 @@ const artists = await getCollection('artists');
       <div class="h-full border-l border-white/10 bg-[#050505] flex flex-col pointer-events-auto">
         <div class="hero-reveal flex-1 p-6 border-b border-white/10">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-4">
-            Hours 
+            Hours
           </span>
           <ul class="space-y-2">
             <li class="ingredient-item flex items-center justify-between group">
@@ -46,6 +48,26 @@ const artists = await getCollection('artists');
               <span class="text-sm text-white font-mono">Mon</span>
               <span class="text-xs text-neutral-600 group-hover:text-white transition-colors">10am-6pm</span>
             </li>
+            <li class="ingredient-item flex items-center justify-between group">
+              <span class="text-sm text-white font-mono">Tue</span>
+              <span class="text-xs text-neutral-600 group-hover:text-white transition-colors">10am-6pm</span>
+            </li>
+            <li class="ingredient-item flex items-center justify-between group">
+              <span class="text-sm text-white font-mono">Wed</span>
+              <span class="text-xs text-neutral-600 group-hover:text-white transition-colors">10am-6pm</span>
+            </li>
+            <li class="ingredient-item flex items-center justify-between group">
+              <span class="text-sm text-white font-mono">Thu</span>
+              <span class="text-xs text-neutral-600 group-hover:text-white transition-colors">10am-8pm</span>
+            </li>
+            <li class="ingredient-item flex items-center justify-between group">
+              <span class="text-sm text-white font-mono">Fri</span>
+              <span class="text-xs text-neutral-600 group-hover:text-white transition-colors">10am-8pm</span>
+            </li>
+            <li class="ingredient-item flex items-center justify-between group">
+              <span class="text-sm text-white font-mono">Sat</span>
+              <span class="text-xs text-neutral-600 group-hover:text-white transition-colors">10am-8pm</span>
+            </li>
          </ul>
         </div>
         <div class="hero-reveal p-6">
@@ -55,7 +77,7 @@ const artists = await getCollection('artists');
             <span class="text-sm text-white font-mono uppercase">Start your journey</span>
           </div>
           <a href="/booking" class="hero-cta block mt-6 w-full py-3 bg-white text-black text-center font-mono text-xs uppercase tracking-wider hover:bg-neutral-200 transition-colors">
-            Book now 
+            Book now
           </a>
         </div>
       </div>
@@ -180,7 +202,7 @@ const artists = await getCollection('artists');
       <div class="col-span-1 lg:col-span-7 p-6 border-r border-white/10 flex flex-col md:flex-row justify-between items-end gap-6">
         <h2 class="process-title text-4xl md:text-5xl font-normal uppercase tracking-tight">Methodology</h2>
         <p class="process-subtitle font-mono text-xs text-neutral-500 uppercase tracking-wide max-w-xs text-right">
-          An overview of our process 
+          An overview of our process
         </p>
       </div>
       <div class="hidden lg:block col-span-3"></div>
@@ -235,10 +257,10 @@ const artists = await getCollection('artists');
             Inking beautiful tattoos. Based in Fountain, Colorado.
           </p>
           <div class="flex gap-4">
-            <a href="#" class="footer-social w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
+            <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" class="footer-social w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
               <iconify-icon icon="mdi:instagram"></iconify-icon>
             </a>
-            <a href="mailto:ink@unitedtattoo.com" class="footer-social w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
+            <a href={`mailto:${EMAIL}`} class="footer-social w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
               <iconify-icon icon="mdi:email"></iconify-icon>
             </a>
           </div>
@@ -253,8 +275,8 @@ const artists = await getCollection('artists');
             [01] Location
           </span>
           <address class="not-italic font-mono text-sm text-neutral-300 space-y-1">
-            <p>5160 Fontaine Blvd,</p>
-            <p>Fountain, CO 80817</p>
+          <p>{ADDRESS_LINE_1},</p>
+          <p>{ADDRESS_LINE_2}</p>
           </address>
         </div>
 
@@ -312,8 +334,17 @@ const artists = await getCollection('artists');
 
     <!-- Bottom Bar -->
     <div class="footer-bar border-t border-white/10 p-4 flex justify-between items-center bg-neutral-900/50">
-      <span class="font-mono text-[10px] text-neutral-600">SYSTEM STATUS: OPERATIONAL</span>
-      <span class="font-mono text-[10px] text-neutral-600">V.2.0.25</span>
+      <div class="flex items-center gap-3 font-mono text-[10px] text-neutral-600">
+        <span class="inline-flex items-center text-neutral-500/70">
+          <DoveMark class="w-5 h-5" />
+        </span>
+        <span>Freedom in ink</span>
+      </div>
+      <div class="flex items-center gap-4 font-mono text-[10px] text-neutral-600">
+        <a class="hover:text-neutral-300 transition-colors" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a class="hover:text-neutral-300 transition-colors" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+        <a class="hover:text-neutral-300 transition-colors" href={`tel:${PHONE_NUMBER.replace(/\s+/g, '')}`}>{PHONE_NUMBER}</a>
+      </div>
     </div>
   </footer>
 

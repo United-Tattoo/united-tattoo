@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
+import { getCollection } from 'astro:content';
 
 const MAX_FILES = 5;
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
@@ -25,6 +26,14 @@ export const POST: APIRoute = async ({ request }) => {
     const acceptTerms = formData.get('acceptTerms');
     const acceptAge = formData.get('acceptAge');
     const acceptDeposit = formData.get('acceptDeposit');
+
+    const escapeHtml = (input: string) =>
+      input
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
 
     // Validate required fields
     if (!artist || !name || !email || !phone || !style || !placement || !size || !description) {
@@ -98,31 +107,41 @@ export const POST: APIRoute = async ({ request }) => {
     const BOOKING_TO_EMAIL = import.meta.env.BOOKING_TO_EMAIL || 'ink@unitedtattoo.com';
     const BOOKING_FROM_EMAIL = import.meta.env.BOOKING_FROM_EMAIL || 'bookings@yourdomain.com';
 
+    // Lookup artist (to notify both reception + artist, per booking flow)
+    const artists = await getCollection('artists');
+    const selectedArtist =
+      artist === 'no-preference' ? undefined : artists.find((a) => a.id === artist);
+    const artistDisplayName =
+      artist === 'no-preference' ? 'No preference' : (selectedArtist?.data.name || artist);
+    const artistEmail = selectedArtist?.data.bookingEmailCc;
+
+    const recipients = artistEmail ? [BOOKING_TO_EMAIL, artistEmail] : [BOOKING_TO_EMAIL];
+
     // Build email content
     const emailHtml = `
       <h1>New Booking Request</h1>
 
       <h2>Artist Selection</h2>
-      <p><strong>Preferred Artist:</strong> ${artist === 'no-preference' ? 'No preference' : artist}</p>
+      <p><strong>Preferred Artist:</strong> ${escapeHtml(artistDisplayName)}</p>
 
       <h2>Contact Information</h2>
       <ul>
-        <li><strong>Name:</strong> ${name}</li>
-        <li><strong>Email:</strong> ${email}</li>
-        <li><strong>Phone:</strong> ${phone}</li>
-        <li><strong>Preferred Contact:</strong> ${preferredContact || 'Email'}</li>
+        <li><strong>Name:</strong> ${escapeHtml(name)}</li>
+        <li><strong>Email:</strong> ${escapeHtml(email)}</li>
+        <li><strong>Phone:</strong> ${escapeHtml(phone)}</li>
+        <li><strong>Preferred Contact:</strong> ${escapeHtml(preferredContact || 'Email')}</li>
       </ul>
 
       <h2>Project Details</h2>
       <ul>
-        <li><strong>Style:</strong> ${style}</li>
-        <li><strong>Placement:</strong> ${placement}</li>
-        <li><strong>Size:</strong> ${size}</li>
-        <li><strong>Budget:</strong> ${budget || 'Not specified'}</li>
+        <li><strong>Style:</strong> ${escapeHtml(style)}</li>
+        <li><strong>Placement:</strong> ${escapeHtml(placement)}</li>
+        <li><strong>Size:</strong> ${escapeHtml(size)}</li>
+        <li><strong>Budget:</strong> ${escapeHtml(budget || 'Not specified')}</li>
       </ul>
 
       <h3>Description</h3>
-      <p>${description.replace(/\n/g, '<br>')}</p>
+      <p>${escapeHtml(description).replace(/\n/g, '<br>')}</p>
 
       <h2>Consent</h2>
       <ul>
@@ -142,7 +161,7 @@ export const POST: APIRoute = async ({ request }) => {
 New Booking Request
 
 Artist Selection
-Preferred Artist: ${artist === 'no-preference' ? 'No preference' : artist}
+Preferred Artist: ${artistDisplayName}
 
 Contact Information
 Name: ${name}
@@ -176,9 +195,9 @@ This booking request was submitted via the United Tattoo website.
 
       const { error } = await resend.emails.send({
         from: BOOKING_FROM_EMAIL,
-        to: BOOKING_TO_EMAIL,
+        to: recipients,
         replyTo: email,
-        subject: `New Booking Request: ${name} - ${style}`,
+        subject: `New Booking Request: ${name} · ${style} · ${artistDisplayName}`,
         html: emailHtml,
         text: emailText,
         attachments: attachments.length > 0 ? attachments : undefined,
@@ -194,10 +213,10 @@ This booking request was submitted via the United Tattoo website.
     } else {
       // Dev mode: log the email instead of sending
       console.log('=== BOOKING REQUEST (Dev Mode) ===');
-      console.log('Would send email to:', BOOKING_TO_EMAIL);
+      console.log('Would send email to:', recipients.join(', '));
       console.log('From:', BOOKING_FROM_EMAIL);
       console.log('Reply-To:', email);
-      console.log('Subject:', `New Booking Request: ${name} - ${style}`);
+      console.log('Subject:', `New Booking Request: ${name} · ${style} · ${artistDisplayName}`);
       console.log('Attachments:', validFiles.length);
       console.log('---');
       console.log(emailText);

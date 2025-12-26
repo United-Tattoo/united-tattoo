@@ -1,5 +1,8 @@
 ---
 // Editorial-style navigation with clean typography
+import { ADDRESS_LINE_1, ADDRESS_LINE_2 } from '../consts';
+import DoveMark from './DoveMark.astro';
+
 interface Props {
   currentPath?: string;
   hasAnnouncement?: boolean;
@@ -18,6 +21,9 @@ const isBookingPage = currentPath.startsWith("/booking");
     <a href="/" class="font-display text-2xl md:text-3xl font-normal tracking-tighter leading-none hover:opacity-70 transition-opacity italic">
       United Tattoo
     </a>
+    <span class="hidden lg:inline-flex items-center text-neutral-500/70">
+      <DoveMark class="w-6 h-6" />
+    </span>
     <span class="hidden lg:block text-neutral-600 mx-2">·</span>
     <span class="hidden lg:block text-xs text-neutral-500 tracking-wide">
       Fountain, Colorado
@@ -71,8 +77,8 @@ const isBookingPage = currentPath.startsWith("/booking");
   <div class="absolute bottom-12 text-center transform translate-y-4 opacity-0 transition-all duration-500 delay-500 mobile-footer">
     <p class="text-neutral-500 text-xs uppercase tracking-widest mb-4">Visit Us</p>
     <p class="text-neutral-400 text-sm font-light">
-      712 S Santa Fe Ave<br/>
-      Fountain, CO 80817
+      {ADDRESS_LINE_1}<br/>
+      {ADDRESS_LINE_2}
     </p>
   </div>
 </div>
