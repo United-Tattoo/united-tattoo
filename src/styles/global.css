@@ -74,8 +74,8 @@
     font-family: 'Geist Mono', monospace;
     font-size: 10px;
     text-transform: uppercase;
-    letter-spacing: 0.15em;
-    color: rgb(115 115 115);
+    letter-spacing: 0.2em;
+    color: rgb(163 163 163);
   }
 
   /* Prose styling for MDX content */
@@ -142,5 +142,22 @@
   .text-stroke {
     -webkit-text-stroke: 1px rgba(255, 255, 255, 0.3);
     color: transparent;
+  }
+
+  /* Vertical text for edge annotations */
+  .writing-mode-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: mixed;
+  }
+
+  /* Hero lighting & composition */
+  .hero-vignette {
+    background: radial-gradient(circle at 50% 50%, transparent 20%, #000 120%),
+                linear-gradient(120deg, rgba(255,255,255,0.03) 0%, transparent 40%);
+  }
+
+  .hero-dove-layer img {
+    mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 85%);
+    -webkit-mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 85%);
   }
 }
