@@ -16,16 +16,16 @@ const artists = await getCollection('artists');
       <div class="h-full border-r border-white/10 bg-[#050505] p-6 flex flex-col justify-between pointer-events-auto">
         <div class="hero-reveal">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500">
-            Chapter 01
+            The Collective 
           </span>
           <p class="font-mono text-xs text-white mt-2">United Tattoo</p>
         </div>
         <div class="hero-reveal">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-2">
-            Coordinates
+            Studio 
           </span>
-          <p class="font-mono text-xs text-neutral-400">[X] 38.68° N</p>
-          <p class="font-mono text-xs text-neutral-400">[Y] 104.70° W</p>
+          <p class="font-mono text-xs text-neutral-400">5160 Fontaine Blvd</p>
+          <p class="font-mono text-xs text-neutral-400">Fountain, CO 80817</p>
         </div>
       </div>
     </div>
@@ -35,36 +35,27 @@ const artists = await getCollection('artists');
       <div class="h-full border-l border-white/10 bg-[#050505] flex flex-col pointer-events-auto">
         <div class="hero-reveal flex-1 p-6 border-b border-white/10">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-4">
-            Active Ingredients
+            Hours 
           </span>
           <ul class="space-y-2">
             <li class="ingredient-item flex items-center justify-between group">
-              <span class="text-sm text-white font-mono">Ink</span>
-              <span class="text-xs text-neutral-600 group-hover:text-white transition-colors">100%</span>
+              <span class="text-sm text-white font-mono">Sun</span>
+              <span class="text-xs text-neutral-600 group-hover:text-white transition-colors">10am-6pm</span>
             </li>
             <li class="ingredient-item flex items-center justify-between group">
-              <span class="text-sm text-white font-mono">Skin</span>
-              <span class="text-xs text-neutral-600 group-hover:text-white transition-colors">Canvas</span>
+              <span class="text-sm text-white font-mono">Mon</span>
+              <span class="text-xs text-neutral-600 group-hover:text-white transition-colors">10am-6pm</span>
             </li>
-            <li class="ingredient-item flex items-center justify-between group">
-              <span class="text-sm text-white font-mono">Soul</span>
-              <span class="text-xs text-neutral-600 group-hover:text-white transition-colors">Infinite</span>
-            </li>
-          </ul>
+         </ul>
         </div>
         <div class="hero-reveal p-6">
           <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-4">
-            Status
           </span>
           <div class="flex items-center gap-2">
-            <span class="relative flex h-2 w-2">
-              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-            </span>
-            <span class="text-sm text-white font-mono uppercase">Booking Open</span>
+            <span class="text-sm text-white font-mono uppercase">Start your journey</span>
           </div>
           <a href="/booking" class="hero-cta block mt-6 w-full py-3 bg-white text-black text-center font-mono text-xs uppercase tracking-wider hover:bg-neutral-200 transition-colors">
-            Init Request
+            Book now 
           </a>
         </div>
       </div>
@@ -87,14 +78,13 @@ const artists = await getCollection('artists');
       <!-- Center: Main Title -->
       <div class="hero-main col-span-1 lg:col-span-7 p-6 lg:p-12 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-center min-h-[50vh] lg:min-h-[80vh]">
         <div class="mb-4 hero-reveal">
-           <span class="section-label">Creativity / Technicality</span>
+           <span class="section-label">Custom Designs / Flash</span>
         </div>
         <h1 class="hero-title text-7xl md:text-8xl lg:text-[9rem] leading-[0.85] font-normal tracking-tighter uppercase mb-8">
-          <span class="hero-title-line block overflow-hidden"><span class="inline-block">High Art</span></span>
-          <span class="hero-title-line block overflow-hidden"><span class="italic font-light text-neutral-500 inline-block">True Craft</span></span>
+          <span class="hero-title-line block overflow-hidden"><span class="inline-block">United</span></span>
+          <span class="hero-title-line block overflow-hidden"><span class="italic font-light text-neutral-500 inline-block">Tattoo</span></span>
         </h1>
         <p class="hero-reveal text-neutral-400 text-lg md:text-xl max-w-xl leading-relaxed font-light">
-          A collective of professional tattoo artists dedicated to creating exceptional custom work. We blend artistic vision with technical precision.
         </p>
       </div>
 
@@ -132,7 +122,7 @@ const artists = await getCollection('artists');
     <div class="artists-header grid grid-cols-1 lg:grid-cols-12 border-b border-white/10">
       <div class="hidden lg:block col-span-2"></div>
       <div class="col-span-1 lg:col-span-7 p-6 border-r border-white/10">
-        <h2 class="artists-title text-4xl md:text-5xl font-normal uppercase tracking-tight">The Collective</h2>
+        <h2 class="artists-title text-4xl md:text-5xl font-normal uppercase tracking-tight">The team</h2>
       </div>
       <div class="hidden lg:block col-span-3"></div>
     </div>
@@ -157,7 +147,7 @@ const artists = await getCollection('artists');
                 <div class="flex flex-col">
                   <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-1">Specialty</span>
                   <span class="font-mono text-sm text-neutral-300">
-                    {artist.data.specialties ? artist.data.specialties[0] : 'Custom Tattoo'}
+                    {artist.data.specialties ? artist.data.specialties[0] : 'Custom'}
                   </span>
                 </div>
 
@@ -190,7 +180,7 @@ const artists = await getCollection('artists');
       <div class="col-span-1 lg:col-span-7 p-6 border-r border-white/10 flex flex-col md:flex-row justify-between items-end gap-6">
         <h2 class="process-title text-4xl md:text-5xl font-normal uppercase tracking-tight">Methodology</h2>
         <p class="process-subtitle font-mono text-xs text-neutral-500 uppercase tracking-wide max-w-xs text-right">
-          Standard Operating Procedures for custom engagement
+          An overview of our process 
         </p>
       </div>
       <div class="hidden lg:block col-span-3"></div>
@@ -201,10 +191,10 @@ const artists = await getCollection('artists');
       <div class="hidden lg:block col-span-2"></div>
       <div class="process-grid col-span-1 lg:col-span-7 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 border-r border-white/10">
       {[
-        { num: '01', title: 'Consultation', desc: 'Concept alignment and placement analysis.' },
-        { num: '02', title: 'Design', desc: 'Custom drafting and iterative refinement.' },
-        { num: '03', title: 'Session', desc: 'Sterile environment execution and application.' },
-        { num: '04', title: 'Aftercare', desc: 'Healing protocols and preservation guidance.' }
+        { num: '01', title: 'Consultation', desc: 'Shaping your idea with an artist.' },
+        { num: '02', title: 'Design', desc: 'Your artist designs your custom piece.' },
+        { num: '03', title: 'Session', desc: 'You get your tattoo in a safe and clean environment.' },
+        { num: '04', title: 'Aftercare', desc: 'Healing & enjoying your new artwork.' }
       ].map((step, i) => (
         <div class={`process-step group p-8 border-b md:border-b-0 border-white/10 min-h-[300px] flex flex-col justify-between hover:bg-white/5 transition-colors duration-300 ${i < 3 ? 'lg:border-r md:border-r' : ''} ${i === 1 ? 'md:border-r-0 lg:border-r' : ''}`}>
           <div class="flex justify-between items-start">
@@ -227,6 +217,7 @@ const artists = await getCollection('artists');
     </div>
   </section>
 
+
   <!-- Footer: Data Sheet -->
   <footer class="footer-section bg-black relative z-20" data-scroll-section>
     <div class="grid grid-cols-1 lg:grid-cols-12">
@@ -241,7 +232,7 @@ const artists = await getCollection('artists');
 
         <div class="footer-reveal mt-8">
           <p class="font-mono text-xs text-neutral-400 max-w-xs mb-6">
-            Pushing boundaries in skin art. Based in Fountain, Colorado.
+            Inking beautiful tattoos. Based in Fountain, Colorado.
           </p>
           <div class="flex gap-4">
             <a href="#" class="footer-social w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
@@ -262,9 +253,8 @@ const artists = await getCollection('artists');
             [01] Location
           </span>
           <address class="not-italic font-mono text-sm text-neutral-300 space-y-1">
-            <p>712 S Santa Fe Ave</p>
+            <p>5160 Fontaine Blvd,</p>
             <p>Fountain, CO 80817</p>
-            <p class="text-neutral-500 mt-4">38.6826° N, 104.7005° W</p>
           </address>
         </div>
 
@@ -275,12 +265,32 @@ const artists = await getCollection('artists');
           </span>
           <ul class="font-mono text-sm text-neutral-300 space-y-2">
             <li class="flex justify-between">
-              <span>Tue - Sat</span>
-              <span>12pm - 8pm</span>
+              <span>Sun</span>
+              <span>10am-6pm</span>
             </li>
-            <li class="flex justify-between text-neutral-500">
-              <span>Sun - Mon</span>
-              <span>Closed</span>
+            <li class="flex justify-between">
+              <span>Mon</span>
+              <span>10am-6pm</span>
+            </li>
+            <li class="flex justify-between">
+              <span>Tue</span>
+              <span>10am-6pm</span>
+            </li>
+            <li class="flex justify-between">
+              <span>Wed</span>
+              <span>10am-6pm</span>
+            </li>
+            <li class="flex justify-between">
+              <span>Thu</span>
+              <span>10am-8pm</span>
+            </li>
+            <li class="flex justify-between">
+              <span>Fri</span>
+              <span>10am-8pm</span>
+            </li>
+            <li class="flex justify-between">
+              <span>Sat</span>
+              <span>10am-8pm</span>
             </li>
           </ul>
         </div>

@@ -20,7 +20,7 @@ interface Props {
 
 const { frontmatter, hideAnnouncement = false, removeMainPadding = false, hideFooter = false, announcement, ...props } = Astro.props;
 const title = props.title || frontmatter?.title || '';
-const description = props.description || frontmatter?.description || 'Professional tattoo studio in Fountain, CO';
+const description = props.description || frontmatter?.description || 'Tattoo studio in Fountain, CO';
 const currentPath = Astro.url.pathname;
 ---
 
