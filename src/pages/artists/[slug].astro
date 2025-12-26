@@ -1,8 +1,8 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import { getCollection, render } from 'astro:content';
-import { ADDRESS_LINE_1, ADDRESS_LINE_2, EMAIL, INSTAGRAM, PHONE_NUMBER } from '../../consts';
-import DoveMark from '../../components/DoveMark.astro';
+import { INSTAGRAM } from '../../consts';
+import EditorialFooter from '../../components/EditorialFooter.astro';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -377,93 +377,7 @@ const firstName = artist.data.name.split(' ')[0];
 
   </div>
 
-  <!-- Footer: Data Sheet -->
-  <footer class="footer-section bg-black relative z-20" data-scroll-section>
-    <div class="grid grid-cols-1 lg:grid-cols-12">
-      <!-- Left Column: Branding -->
-      <div class="footer-branding col-span-1 lg:col-span-4 p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-between min-h-[300px]">
-        <div class="footer-reveal">
-          <h2 class="footer-title text-6xl md:text-8xl font-display uppercase tracking-tighter leading-none mb-2">United</h2>
-          <span class="font-mono text-xs text-neutral-500 block">
-            © 2025 United Tattoo Collective
-          </span>
-        </div>
-
-        <div class="footer-reveal mt-8">
-          <p class="font-mono text-xs text-neutral-400 max-w-xs mb-6">
-            Inking beautiful tattoos. Based in Fountain, Colorado.
-          </p>
-          <div class="flex gap-4">
-            <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" class="footer-social w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
-              <iconify-icon icon="mdi:instagram"></iconify-icon>
-            </a>
-            <a href={`mailto:${EMAIL}`} class="footer-social w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
-              <iconify-icon icon="mdi:email"></iconify-icon>
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <!-- Right Column: Links Grid -->
-      <div class="col-span-1 lg:col-span-8 grid grid-cols-1 md:grid-cols-3">
-        <!-- Location -->
-        <div class="footer-col footer-reveal p-8 border-b md:border-b-0 md:border-r border-white/10">
-          <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-6">
-            [01] Location
-          </span>
-          <address class="not-italic font-mono text-sm text-neutral-300 space-y-1">
-          <p>{ADDRESS_LINE_1},</p>
-          <p>{ADDRESS_LINE_2}</p>
-          </address>
-        </div>
-
-        <!-- Hours -->
-        <div class="footer-col footer-reveal p-8 border-b md:border-b-0 md:border-r border-white/10">
-          <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-6">
-            [02] Hours
-          </span>
-          <ul class="font-mono text-sm text-neutral-300 space-y-2">
-            <li class="flex justify-between">
-              <span>Sun–Wed</span>
-              <span>10am–6pm</span>
-            </li>
-            <li class="flex justify-between">
-              <span>Thu–Sat</span>
-              <span>10am–8pm</span>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Sitemap -->
-        <div class="footer-col footer-reveal p-8">
-          <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-500 block mb-6">
-            [03] Directory
-          </span>
-          <ul class="font-mono text-sm space-y-2">
-            <li><a href="/artists" class="text-neutral-300 hover:text-white transition-colors">Artists</a></li>
-            <li><a href="/booking" class="text-neutral-300 hover:text-white transition-colors">Booking</a></li>
-            <li><a href="/faq" class="text-neutral-300 hover:text-white transition-colors">FAQ</a></li>
-            <li><a href="/privacy" class="text-neutral-500 hover:text-white transition-colors">Privacy</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- Bottom Bar -->
-    <div class="footer-bar border-t border-white/5 px-6 py-5 flex flex-col sm:flex-row justify-between items-center gap-4 bg-black/80">
-      <div class="flex items-center gap-3 font-mono text-[10px] text-neutral-500">
-        <span class="inline-flex items-center text-neutral-600">
-          <DoveMark class="w-4 h-4" />
-        </span>
-        <span class="tracking-wider">Freedom in ink</span>
-      </div>
-      <div class="flex items-center gap-6 font-mono text-[10px] text-neutral-600">
-        <a class="hover:text-white transition-colors" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">Instagram</a>
-        <a class="hover:text-white transition-colors hidden sm:inline" href={`mailto:${EMAIL}`}>{EMAIL}</a>
-        <a class="hover:text-white transition-colors" href={`tel:${PHONE_NUMBER.replace(/\s+/g, '')}`}>{PHONE_NUMBER}</a>
-      </div>
-    </div>
-  </footer>
+  <EditorialFooter />
 
   <!-- Lightbox Modal -->
   <div
