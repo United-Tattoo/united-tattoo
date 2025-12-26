@@ -1,18 +1,154 @@
 # Artists, Booking & Policy Pages Implementation
 
 **Date:** December 24, 2024 @ 14:36 UTC
-**Last Updated:** December 24, 2024 @ 16:45 UTC
+**Last Updated:** December 26, 2024 @ 19:00 UTC
 **Branch:** astro-migration-from-scratch
 
 ---
 
 ## Summary
 
-Implemented MDX-driven artist pages, a booking system with file uploads and Resend email integration, and policy/aftercare pages. **December 24 update:** Completed a full "Technical Manual" / "Brutalist Editorial" homepage redesign with GSAP + Lenis scroll animations, sticky pinned columns, and cinematic scroll-triggered reveals.
+Implemented MDX-driven artist pages, a booking system with file uploads and Resend email integration, and policy/aftercare pages. **December 24 update:** Completed a full "Technical Manual" / "Brutalist Editorial" homepage redesign with GSAP + Lenis scroll animations, sticky pinned columns, and cinematic scroll-triggered reveals. **December 26 update:** Major refactoring into modular components, artist page dramatic redesign, booking page editorial redesign, and custom dropdown components.
 
 ---
 
-## Latest Changes (Dec 24 - Technical Manual Redesign + Scroll Experience)
+## Latest Changes (Dec 26 - Modular Component Architecture)
+
+### Site-Wide Component Refactoring
+
+Extracted common UI patterns into reusable Astro components to eliminate code duplication and improve maintainability:
+
+#### New Components Created
+
+| Component | Purpose |
+|-----------|---------|
+| `EditorialFooter.astro` | Complex 12-column grid footer with branding, location, hours, and sitemap |
+| `SectionSidebar.astro` | Left sidebar content (section number, label, description) for 12-column layouts |
+| `FloatingCTA.astro` | Fixed floating call-to-action button with footer visibility toggle |
+| `ScrollIndicator.astro` | Scroll hint with horizontal/vertical orientation support |
+| `GridBackground.astro` | 12-column grid line background for hero sections |
+| `Breadcrumb.astro` | Consistent breadcrumb navigation |
+| `SectionHeader.astro` | Section headers with title and optional meta information |
+| `CustomSelect.astro` | Custom-styled dropdown to replace native `<select>` elements |
+
+#### Component Integration
+
+All components integrated across:
+- `src/pages/index.astro` - Homepage
+- `src/pages/artists/[slug].astro` - Artist detail pages
+- `src/pages/booking.astro` - Booking form page
+
+**Note:** Booking page form section sidebars were intentionally left inline due to unique mobile label display requirements.
+
+### Artist Page Dramatic Redesign
+
+Transformed the artist detail page from a standard layout to a cinematic, editorial experience:
+
+#### Hero Section Transformation
+- **Full-bleed background portrait** with grayscale filter and gradient overlay
+- **Massive split-line typography** for artist name (first name normal, last name italic)
+- **Object position adjusted** to `object-[center_20%]` for better portrait framing
+- **Scroll indicator** integrated at bottom of hero
+
+#### Layout Updates
+- 12-column grid with left sidebar for section labels
+- Consistent border treatments (`border-white/10` for sections, `border-white/5` for dividers)
+- Floating CTA that hides when footer is visible (Intersection Observer)
+- GSAP scroll-triggered animations for all sections
+
+### Booking Page Editorial Redesign
+
+Complete overhaul to match the established dark editorial aesthetic:
+
+#### New Layout Structure
+- **Full-bleed hero** with grid background and dove watermark
+- **Large split-line typography**: "Request a / Consultation"
+- **5 form sections** with left sidebars and consistent styling:
+  1. Artist Selection
+  2. Contact Information
+  3. Project Vision
+  4. Additional Details
+  5. Reference Images
+
+#### Custom Dropdown Component
+Created `CustomSelect.astro` to replace native browser dropdowns:
+- Custom styling matching site aesthetic
+- Hidden input for form submission
+- Click-to-open dropdown behavior
+- Keyboard navigation (Arrow keys, Enter, Escape)
+- Checkmark indicator for selected option
+- ARIA attributes for accessibility
+
+#### Form Styling
+- Black/50 backdrop blur inputs with white/10 borders
+- Monospace labels with uppercase tracking
+- Consistent focus states (`focus:border-white/30`)
+- Custom file upload zone with drag indication
+
+### Homepage Polish (Dec 26)
+
+Refined the existing homepage for cohesion:
+
+#### Border Standardization
+- `border-white/5` for internal dividers
+- `border-white/10` for major section borders
+
+#### Typography & Spacing
+- Unified label colors to `text-neutral-500`
+- Increased sidebar padding from `p-6` to `p-6 lg:p-8`
+- Polished mobile CTA button for more visual weight
+
+#### Interactive Improvements
+- **Floating CTA visibility** - Intersection Observer hides CTA when footer enters viewport
+- **Scroll indicator animation** - Added CSS keyframe animation (`scroll-pulse`)
+
+### New CSS Animations
+
+Added to `src/styles/global.css`:
+
+```css
+/* Subtle scroll indicator animation */
+.scroll-line {
+  animation: scroll-pulse 2s ease-in-out infinite;
+}
+
+@keyframes scroll-pulse {
+  0%, 100% {
+    opacity: 0.5;
+    transform: scaleX(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scaleX(1.2);
+  }
+}
+```
+
+### Files Created (Dec 26)
+
+```
+src/components/EditorialFooter.astro   - Reusable editorial footer component
+src/components/SectionSidebar.astro    - Left sidebar for section labels
+src/components/FloatingCTA.astro       - Fixed floating CTA with visibility logic
+src/components/ScrollIndicator.astro   - Scroll hint (horizontal/vertical)
+src/components/GridBackground.astro    - 12-column grid line background
+src/components/Breadcrumb.astro        - Consistent breadcrumb navigation
+src/components/SectionHeader.astro     - Section header with title/meta
+src/components/CustomSelect.astro      - Custom styled dropdown component
+```
+
+### Files Modified (Dec 26)
+
+```
+src/pages/index.astro           - Refactored to use new components
+src/pages/artists/[slug].astro  - Complete redesign + componentization
+src/pages/booking.astro         - Complete redesign + custom dropdowns
+src/styles/global.css           - Added scroll-pulse animation
+```
+
+---
+
+## Previous Changes (Dec 24 - Technical Manual Redesign + Scroll Experience)
 
 ### Homepage Complete Overhaul
 
@@ -212,6 +348,18 @@ src/pages/aftercare.mdx           - Updated to use .section-label and .prose-edi
 
 ## Files Created/Modified
 
+### New Files (Dec 26 - Modular Components)
+```
+src/components/EditorialFooter.astro   - Reusable 12-column footer
+src/components/SectionSidebar.astro    - Section label sidebar
+src/components/FloatingCTA.astro       - Floating CTA with visibility logic
+src/components/ScrollIndicator.astro   - Scroll hint component
+src/components/GridBackground.astro    - Grid line background
+src/components/Breadcrumb.astro        - Breadcrumb navigation
+src/components/SectionHeader.astro     - Section header component
+src/components/CustomSelect.astro      - Custom dropdown component
+```
+
 ### New Files (Dec 24 Update)
 ```
 src/components/Announcement.astro
@@ -234,7 +382,15 @@ src/pages/aftercare.mdx
 src/layouts/SiteLayout.astro
 ```
 
-### Modified Files
+### Modified Files (Dec 26)
+```
+src/pages/index.astro           - Refactored to use modular components
+src/pages/artists/[slug].astro  - Complete redesign + componentization
+src/pages/booking.astro         - Complete redesign + custom dropdowns
+src/styles/global.css           - Added scroll-pulse animation
+```
+
+### Modified Files (Dec 24)
 ```
 astro.config.mjs
 package.json
@@ -301,6 +457,16 @@ BOOKING_FROM_EMAIL=bookings@unitedtattoo.com
   - Lenis smooth scrolling enabled
   - Staggered reveals, parallax effects, and cinematic transitions
 
+- [x] **Custom Form Controls (Dec 26)**
+  - Replaced native dropdowns with custom CustomSelect component
+  - Keyboard navigation and ARIA accessibility
+  - Consistent styling with site aesthetic
+
+- [x] **Modular Component Architecture (Dec 26)**
+  - Extracted 8 reusable components from repeated code
+  - Consistent footer, sidebars, and UI elements across all pages
+  - Reduced code duplication significantly
+
 ### Content & Polish
 
 - [ ] **Review Copy**
@@ -331,6 +497,7 @@ BOOKING_FROM_EMAIL=bookings@unitedtattoo.com
 
 ## Testing Checklist
 
+### Core Functionality
 - [x] Homepage loads with artist grid from collection
 - [x] `/artists` page lists all artists
 - [x] `/artists/[slug]` pages render MDX content
@@ -348,12 +515,40 @@ BOOKING_FROM_EMAIL=bookings@unitedtattoo.com
 - [x] **404 page styled correctly**
 - [x] **Consistent nav/footer across all pages**
 - [ ] Mobile navigation (not implemented)
+
+### Scroll & Animation (Dec 24)
 - [x] **Lenis smooth scrolling works**
 - [x] **GSAP scroll animations trigger correctly**
 - [x] **Sticky columns stay fixed during scroll**
 - [x] **Sticky columns lock when footer approaches**
 - [x] **Artist hover reveals portrait image**
 - [x] **Homepage responsive on mobile**
+
+### Component Refactoring (Dec 26)
+- [x] **EditorialFooter renders correctly on all pages**
+- [x] **SectionSidebar displays section labels correctly**
+- [x] **FloatingCTA hides when footer is visible**
+- [x] **ScrollIndicator animates with pulse effect**
+- [x] **GridBackground shows 12-column lines**
+- [x] **Breadcrumb navigation works correctly**
+- [x] **SectionHeader displays titles and meta**
+- [x] **CustomSelect opens/closes dropdown**
+- [x] **CustomSelect keyboard navigation works**
+- [x] **CustomSelect updates hidden form input**
+
+### Artist Page Redesign (Dec 26)
+- [x] **Full-bleed hero with portrait background**
+- [x] **Hero portrait framed correctly (object-[center_20%])**
+- [x] **Split-line artist name typography**
+- [x] **Sections have proper GSAP animations**
+- [x] **Floating CTA visible until footer**
+
+### Booking Page Redesign (Dec 26)
+- [x] **Editorial hero with grid background**
+- [x] **Form sections render with sidebars**
+- [x] **Custom dropdowns replace native selects**
+- [x] **Form inputs styled consistently**
+- [x] **File upload zone styled**
 
 ---
 
@@ -377,6 +572,7 @@ BOOKING_FROM_EMAIL=bookings@unitedtattoo.com
 ### Animation Classes (GSAP-driven)
 
 ```css
+/* Homepage */
 .hero-reveal      /* Hero section staggered reveal targets */
 .hero-title       /* Main hero heading animation */
 .hero-cta         /* CTA button entrance */
@@ -386,6 +582,28 @@ BOOKING_FROM_EMAIL=bookings@unitedtattoo.com
 .process-num      /* Process number parallax */
 .footer-title     /* Footer title scale reveal */
 .footer-reveal    /* Footer content cascade */
+
+/* Artist Page (Dec 26) */
+.artist-hero-portrait   /* Hero portrait fade-in */
+.artist-hero-reveal     /* Hero content stagger */
+.artist-hero-title      /* Artist name reveal */
+.artist-hero-title-line /* Split-line text animation */
+.portfolio-reveal       /* Portfolio section */
+.flash-reveal           /* Flash section */
+.cta-section-reveal     /* CTA section reveal */
+
+/* Booking Page (Dec 26) */
+.booking-hero-reveal    /* Hero content stagger */
+.booking-section-reveal /* Form section reveals */
+```
+
+### CSS Keyframe Animations
+
+```css
+/* Scroll indicator pulse (Dec 26) */
+.scroll-line {
+  animation: scroll-pulse 2s ease-in-out infinite;
+}
 ```
 
 ### Color Palette
@@ -400,10 +618,38 @@ BOOKING_FROM_EMAIL=bookings@unitedtattoo.com
 
 ## Notes
 
+### Technical Notes
 - Astro 5 changed content collections significantly - now requires loaders and `content.config.ts` at `src/` level
 - The `output: 'hybrid'` option was removed in Astro 5; using `output: 'server'` with `prerender = true` on static pages
 - The booking form stores/handles files client-side before upload to avoid issues with FormData on multiple file inputs
 - Removed background grid utility to keep the aesthetic clean and gallery-like
+
+### Animation Integration (Dec 24)
 - **GSAP + Lenis Integration:** Lenis handles smooth scrolling, GSAP ScrollTrigger syncs via `lenis.on('scroll', ScrollTrigger.update)`
 - **Sticky Columns:** Use `position: fixed` with `z-30`, footer uses `z-20` so columns appear to "lock" as footer scrolls over them
 - **Homepage hides SiteFooter:** Uses custom embedded footer with `hideFooter={true}` prop on SiteLayout
+
+### Component Architecture (Dec 26)
+- **EditorialFooter:** Imports constants from `src/consts.ts` for address, email, phone, Instagram
+- **FloatingCTA:** Uses Intersection Observer to detect footer visibility and toggle CTA display
+- **CustomSelect:** Uses hidden `<input>` for form submission, custom button trigger, and dropdown list with ARIA attributes
+- **SectionSidebar:** Sticky positioning with `top-24` offset to account for fixed header
+- **Artist Page Layout:** Uses `removeMainPadding={true}` and `hideFooter={true}` on SiteLayout for full-bleed design
+- **Booking Form Sidebars:** Left inline due to unique mobile label requirements (shows section number + label on mobile)
+
+### Border Conventions
+- `border-white/5` - Internal dividers within sections
+- `border-white/10` - Major section borders and outer boundaries
+
+### Component Props Reference
+
+| Component | Key Props |
+|-----------|-----------|
+| `EditorialFooter` | None (uses consts.ts) |
+| `SectionSidebar` | `sectionNum`, `label`, `description?` |
+| `FloatingCTA` | `href`, `text`, `artistName?` |
+| `ScrollIndicator` | `orientation?` ('horizontal'/'vertical'), `class?` |
+| `GridBackground` | `opacity?` (e.g., 'opacity-40') |
+| `Breadcrumb` | `path[]` ({href, label}), `currentLabel`, `class?` |
+| `SectionHeader` | `title`, `meta?`, `class?` |
+| `CustomSelect` | `id`, `name`, `label`, `options[]`, `required?`, `placeholder?`, `hint?` |

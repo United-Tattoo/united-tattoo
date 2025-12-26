@@ -3,6 +3,11 @@ import SiteLayout from '../../layouts/SiteLayout.astro';
 import { getCollection, render } from 'astro:content';
 import { INSTAGRAM } from '../../consts';
 import EditorialFooter from '../../components/EditorialFooter.astro';
+import SectionSidebar from '../../components/SectionSidebar.astro';
+import FloatingCTA from '../../components/FloatingCTA.astro';
+import ScrollIndicator from '../../components/ScrollIndicator.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
 import fs from 'node:fs';
 import path from 'node:path';
 
@@ -58,13 +63,7 @@ const firstName = artist.data.name.split(' ')[0];
   removeMainPadding={true}
   hideFooter={true}
 >
-  <!-- Fixed Floating CTA (Desktop) -->
-  <div id="floating-cta" class="hidden lg:block fixed bottom-8 right-8 z-50 transition-all duration-300">
-    <a href={`/booking?artist=${artist.id}`} class="hero-cta group flex items-center gap-3 px-6 py-4 bg-white text-black font-mono text-xs uppercase tracking-[0.15em] hover:bg-neutral-100 transition-all shadow-2xl shadow-black/50">
-      <span>Book with {firstName}</span>
-      <span class="w-6 h-6 rounded-full border border-black/20 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors">→</span>
-    </a>
-  </div>
+  <FloatingCTA href={`/booking?artist=${artist.id}`} label={`Book with ${firstName}`} />
 
   <div class="relative main-content-wrapper">
 
@@ -88,13 +87,11 @@ const firstName = artist.data.name.split(' ')[0];
     <div class="relative z-10 w-full pb-12 lg:pb-20">
       <!-- Breadcrumb -->
       <div class="px-6 lg:px-16 mb-8">
-        <nav class="flex items-center gap-2 font-mono text-[10px] text-neutral-500">
-          <a href="/" class="hover:text-white transition-colors">Home</a>
-          <span class="text-neutral-700">·</span>
-          <a href="/artists" class="hover:text-white transition-colors">Artists</a>
-          <span class="text-neutral-700">·</span>
-          <span class="text-neutral-400">{artist.data.name}</span>
-        </nav>
+        <Breadcrumb items={[
+          { label: 'Home', href: '/' },
+          { label: 'Artists', href: '/artists' },
+          { label: artist.data.name }
+        ]} />
       </div>
 
       <!-- Name and Details -->
@@ -157,194 +154,153 @@ const firstName = artist.data.name.split(' ')[0];
     </div>
 
     <!-- Scroll indicator -->
-    <div class="absolute bottom-8 right-6 lg:right-16 z-20 artist-hero-scroll opacity-50 hover:opacity-80 transition-opacity">
-      <div class="flex flex-col items-center gap-2 text-neutral-500">
-        <span class="font-mono text-[9px] uppercase tracking-widest rotate-90 origin-center">Scroll</span>
-        <div class="w-px h-8 bg-gradient-to-b from-white/50 to-transparent"></div>
-      </div>
-    </div>
+    <ScrollIndicator orientation="vertical" position="right" class="artist-hero-scroll" />
   </section>
 
   <!-- About Section -->
   <section class="about-section relative z-20 border-t border-white/10" data-scroll-section>
-    <div class="grid grid-cols-1 lg:grid-cols-12">
-      <!-- Left Sidebar -->
-      <div class="hidden lg:block lg:col-span-2 border-r border-white/5 p-6 lg:p-8">
-        <div class="sticky top-24">
-          <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-2">About</span>
-          <span class="font-mono text-xs text-white">{firstName}</span>
-          <p class="font-mono text-[10px] text-neutral-500 mt-4 leading-relaxed">
-            Learn more about the artist and their approach.
-          </p>
+    <SectionSidebar
+      sectionNum="About"
+      label={firstName}
+      description="Learn more about the artist and their approach."
+    >
+      <!-- Header Row -->
+      <div class="about-header px-6 md:px-8 lg:px-12 py-10 md:py-14 border-b border-white/5">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+          <h2 class="about-title text-4xl md:text-5xl lg:text-6xl font-display italic tracking-tighter text-white">
+            About {firstName}
+          </h2>
         </div>
       </div>
 
-      <!-- Main Content -->
-      <div class="col-span-1 lg:col-span-10">
-        <!-- Header Row -->
-        <div class="about-header px-6 md:px-8 lg:px-12 py-10 md:py-14 border-b border-white/5">
-          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <h2 class="about-title text-4xl md:text-5xl lg:text-6xl font-display italic tracking-tighter text-white">
-              About {firstName}
-            </h2>
+      <!-- Bio Content -->
+      <div class="about-content px-6 md:px-8 lg:px-12 py-12 lg:py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+          <!-- Bio Text -->
+          <div class="about-bio prose-editorial max-w-none">
+            <Content />
           </div>
-        </div>
 
-        <!-- Bio Content -->
-        <div class="about-content px-6 md:px-8 lg:px-12 py-12 lg:py-16">
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
-            <!-- Bio Text -->
-            <div class="about-bio prose-editorial max-w-none">
-              <Content />
-            </div>
-
-            <!-- CTA Card -->
-            <div class="about-cta-card relative">
-              <div class="sticky top-24 p-8 lg:p-10 border border-white/10 bg-white/[0.02]">
-                <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-4">Ready to begin?</span>
-                <h3 class="text-2xl lg:text-3xl font-display italic tracking-tight text-white mb-4">
-                  Work with {firstName}
-                </h3>
-                <p class="font-mono text-xs text-neutral-400 leading-relaxed mb-8">
-                  Book a consultation to discuss your ideas. Include reference images for best results.
-                </p>
-                <a
-                  href={`/booking?artist=${artist.id}`}
-                  class="group flex items-center justify-center gap-3 w-full py-4 bg-white text-black font-mono text-xs uppercase tracking-[0.15em] hover:bg-neutral-100 transition-all"
-                >
-                  <span>Book a Session</span>
-                  <span class="w-5 h-5 rounded-full border border-black/20 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors text-[10px]">→</span>
-                </a>
-              </div>
+          <!-- CTA Card -->
+          <div class="about-cta-card relative">
+            <div class="sticky top-24 p-8 lg:p-10 border border-white/10 bg-white/[0.02]">
+              <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-4">Ready to begin?</span>
+              <h3 class="text-2xl lg:text-3xl font-display italic tracking-tight text-white mb-4">
+                Work with {firstName}
+              </h3>
+              <p class="font-mono text-xs text-neutral-400 leading-relaxed mb-8">
+                Book a consultation to discuss your ideas. Include reference images for best results.
+              </p>
+              <a
+                href={`/booking?artist=${artist.id}`}
+                class="group flex items-center justify-center gap-3 w-full py-4 bg-white text-black font-mono text-xs uppercase tracking-[0.15em] hover:bg-neutral-100 transition-all"
+              >
+                <span>Book a Session</span>
+                <span class="w-5 h-5 rounded-full border border-black/20 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors text-[10px]">→</span>
+              </a>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </SectionSidebar>
   </section>
 
   <!-- Portfolio Gallery Section -->
   {portfolioImages.length > 0 && (
     <section class="portfolio-section relative z-20 border-t border-white/10" data-scroll-section>
-      <div class="grid grid-cols-1 lg:grid-cols-12">
-        <!-- Left Sidebar -->
-        <div class="hidden lg:block lg:col-span-2 border-r border-white/5 p-6 lg:p-8">
-          <div class="sticky top-24">
-            <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Section 01</span>
-            <span class="font-mono text-xs text-white">Portfolio</span>
-            <p class="font-mono text-[10px] text-neutral-500 mt-4 leading-relaxed">
-              {portfolioImages.length} pieces of custom work.
-            </p>
+      <SectionSidebar
+        sectionNum="Section 01"
+        label="Portfolio"
+        description={`${portfolioImages.length} pieces of custom work.`}
+      >
+        <!-- Header Row -->
+        <div class="portfolio-header px-6 md:px-8 lg:px-12 py-10 md:py-14 border-b border-white/5">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <h2 class="portfolio-title text-4xl md:text-5xl lg:text-6xl font-normal uppercase tracking-tight">Portfolio</h2>
+            <span class="font-mono text-xs text-neutral-500 uppercase tracking-widest">{portfolioImages.length} pieces</span>
           </div>
         </div>
 
-        <!-- Main Content -->
-        <div class="col-span-1 lg:col-span-10">
-          <!-- Header Row -->
-          <div class="portfolio-header px-6 md:px-8 lg:px-12 py-10 md:py-14 border-b border-white/5">
-            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-              <h2 class="portfolio-title text-4xl md:text-5xl lg:text-6xl font-normal uppercase tracking-tight">Portfolio</h2>
-              <span class="font-mono text-xs text-neutral-500 uppercase tracking-widest">{portfolioImages.length} pieces</span>
-            </div>
-          </div>
-
-          <!-- Gallery Grid - Masonry-like with varying sizes -->
-          <div class="portfolio-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {portfolioImages.map((image, index) => (
-              <button
-                type="button"
-                class={`gallery-item group relative overflow-hidden bg-neutral-950 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/20 border-b border-r border-white/5 ${index % 7 === 0 ? 'md:col-span-2 md:row-span-2 aspect-square' : 'aspect-square'}`}
-                data-lightbox-trigger
-                data-image-src={image}
-                data-image-alt={`${artist.data.name} portfolio work ${index + 1}`}
-              >
-                <img
-                  src={image}
-                  alt={`${artist.data.name} portfolio work ${index + 1}`}
-                  class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                  loading="lazy"
-                />
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300"></div>
-                <!-- Hover overlay with number -->
-                <div class="absolute inset-0 flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <span class="font-mono text-xs text-white/80 bg-black/50 px-2 py-1 backdrop-blur-sm">
-                    {(index + 1).toString().padStart(2, '0')}
-                  </span>
-                </div>
-              </button>
-            ))}
-          </div>
+        <!-- Gallery Grid - Masonry-like with varying sizes -->
+        <div class="portfolio-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {portfolioImages.map((image, index) => (
+            <button
+              type="button"
+              class={`gallery-item group relative overflow-hidden bg-neutral-950 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/20 border-b border-r border-white/5 ${index % 7 === 0 ? 'md:col-span-2 md:row-span-2 aspect-square' : 'aspect-square'}`}
+              data-lightbox-trigger
+              data-image-src={image}
+              data-image-alt={`${artist.data.name} portfolio work ${index + 1}`}
+            >
+              <img
+                src={image}
+                alt={`${artist.data.name} portfolio work ${index + 1}`}
+                class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                loading="lazy"
+              />
+              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300"></div>
+              <!-- Hover overlay with number -->
+              <div class="absolute inset-0 flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <span class="font-mono text-xs text-white/80 bg-black/50 px-2 py-1 backdrop-blur-sm">
+                  {(index + 1).toString().padStart(2, '0')}
+                </span>
+              </div>
+            </button>
+          ))}
         </div>
-      </div>
+      </SectionSidebar>
     </section>
   )}
 
   <!-- Flash Gallery Section -->
   {flashImages.length > 0 && (
     <section class="flash-section relative z-20 border-t border-white/10" data-scroll-section>
-      <div class="grid grid-cols-1 lg:grid-cols-12">
-        <!-- Left Sidebar -->
-        <div class="hidden lg:block lg:col-span-2 border-r border-white/5 p-6 lg:p-8">
-          <div class="sticky top-24">
-            <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Section 02</span>
-            <span class="font-mono text-xs text-white">Flash</span>
-            <p class="font-mono text-[10px] text-neutral-500 mt-4 leading-relaxed">
-              Ready-to-tattoo designs.
-            </p>
-          </div>
-        </div>
-
-        <!-- Main Content -->
-        <div class="col-span-1 lg:col-span-10">
-          <!-- Header Row -->
-          <div class="flash-header px-6 md:px-8 lg:px-12 py-10 md:py-14 border-b border-white/5">
-            <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-              <div>
-                <h2 class="flash-title text-4xl md:text-5xl lg:text-6xl font-normal uppercase tracking-tight">Flash</h2>
-                <p class="font-mono text-xs text-neutral-500 mt-2">Available for walk-ins or quick booking</p>
-              </div>
-              <span class="font-mono text-xs text-neutral-500 uppercase tracking-widest">{flashImages.length} designs</span>
+      <SectionSidebar
+        sectionNum="Section 02"
+        label="Flash"
+        description="Ready-to-tattoo designs."
+      >
+        <!-- Header Row -->
+        <div class="flash-header px-6 md:px-8 lg:px-12 py-10 md:py-14 border-b border-white/5">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+              <h2 class="flash-title text-4xl md:text-5xl lg:text-6xl font-normal uppercase tracking-tight">Flash</h2>
+              <p class="font-mono text-xs text-neutral-500 mt-2">Available for walk-ins or quick booking</p>
             </div>
-          </div>
-
-          <!-- Gallery Grid -->
-          <div class="flash-grid grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
-            {flashImages.map((image, index) => (
-              <button
-                type="button"
-                class="gallery-item group relative aspect-square overflow-hidden bg-neutral-950 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/20 border-b border-r border-white/5"
-                data-lightbox-trigger
-                data-image-src={image}
-                data-image-alt={`${artist.data.name} flash design ${index + 1}`}
-              >
-                <img
-                  src={image}
-                  alt={`${artist.data.name} flash design ${index + 1}`}
-                  class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
-                  loading="lazy"
-                />
-                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors"></div>
-              </button>
-            ))}
+            <span class="font-mono text-xs text-neutral-500 uppercase tracking-widest">{flashImages.length} designs</span>
           </div>
         </div>
-      </div>
+
+        <!-- Gallery Grid -->
+        <div class="flash-grid grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          {flashImages.map((image, index) => (
+            <button
+              type="button"
+              class="gallery-item group relative aspect-square overflow-hidden bg-neutral-950 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/20 border-b border-r border-white/5"
+              data-lightbox-trigger
+              data-image-src={image}
+              data-image-alt={`${artist.data.name} flash design ${index + 1}`}
+            >
+              <img
+                src={image}
+                alt={`${artist.data.name} flash design ${index + 1}`}
+                class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
+              />
+              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors"></div>
+            </button>
+          ))}
+        </div>
+      </SectionSidebar>
     </section>
   )}
 
   <!-- Final CTA Section -->
   <section class="cta-section relative z-20 border-t border-white/10 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent" data-scroll-section>
-    <div class="grid grid-cols-1 lg:grid-cols-12">
-      <!-- Left Sidebar -->
-      <div class="hidden lg:block lg:col-span-2 border-r border-white/5 p-6 lg:p-8">
-        <div class="sticky top-24">
-          <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Start</span>
-          <span class="font-mono text-xs text-white">Your Journey</span>
-        </div>
-      </div>
-
-      <!-- Main Content -->
-      <div class="col-span-1 lg:col-span-10 px-6 md:px-8 lg:px-12 py-20 md:py-28 lg:py-36">
+    <SectionSidebar
+      sectionNum="Start"
+      label="Your Journey"
+    >
+      <div class="px-6 md:px-8 lg:px-12 py-20 md:py-28 lg:py-36">
         <div class="cta-content max-w-3xl">
           <span class="cta-label font-mono text-[10px] uppercase tracking-[0.3em] text-neutral-500 block mb-6">Ready to create something beautiful?</span>
           <h2 class="cta-title text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display italic tracking-tighter text-white mb-8 leading-[0.9]">
@@ -372,7 +328,7 @@ const firstName = artist.data.name.split(' ')[0];
           </div>
         </div>
       </div>
-    </div>
+    </SectionSidebar>
   </section>
 
   </div>

@@ -3,6 +3,11 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import { SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
 import EditorialFooter from '../components/EditorialFooter.astro';
+import SectionSidebar from '../components/SectionSidebar.astro';
+import FloatingCTA from '../components/FloatingCTA.astro';
+import ScrollIndicator from '../components/ScrollIndicator.astro';
+import GridBackground from '../components/GridBackground.astro';
+import SectionHeader from '../components/SectionHeader.astro';
 
 export const prerender = true;
 
@@ -11,24 +16,14 @@ const artists = await getCollection('artists');
 
 <SiteLayout title={SITE_DESCRIPTION} removeMainPadding={true} hideFooter={true}>
 
-  <!-- Fixed Floating CTA (Desktop) -->
-  <div id="floating-cta" class="hidden lg:block fixed bottom-8 right-8 z-50 transition-all duration-300">
-    <a href="/booking" class="hero-cta group flex items-center gap-3 px-6 py-4 bg-white text-black font-mono text-xs uppercase tracking-[0.15em] hover:bg-neutral-100 transition-all shadow-2xl shadow-black/50">
-      <span>Book a session</span>
-      <span class="w-6 h-6 rounded-full border border-black/20 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors">→</span>
-    </a>
-  </div>
+  <FloatingCTA href="/booking" label="Book a session" />
 
   <div class="relative main-content-wrapper">
 
   <!-- Hero Section: Balanced Composition -->
   <section class="hero-section min-h-screen relative flex flex-col" data-scroll-section>
     <!-- Grid Background -->
-    <div class="hero-grid absolute inset-0 grid grid-cols-6 md:grid-cols-12 pointer-events-none select-none z-0 opacity-40">
-      {Array.from({ length: 12 }).map((_, i) => (
-        <div class={`h-full border-r border-white/5 ${i === 0 ? 'border-l' : ''} ${i >= 6 ? 'hidden md:block' : ''}`}></div>
-      ))}
-    </div>
+    <GridBackground opacity={40} class="hero-grid" />
 
     <!-- Dove - Positioned Right, Smaller -->
     <div class="absolute right-0 top-0 bottom-0 w-full lg:w-2/3 z-0 pointer-events-none overflow-hidden">
@@ -94,132 +89,107 @@ const artists = await getCollection('artists');
     </div>
 
     <!-- Scroll Indicator -->
-    <div class="absolute bottom-8 left-6 lg:left-16 z-20 hero-reveal opacity-50 hover:opacity-80 transition-opacity">
-      <div class="flex items-center gap-3 text-neutral-500">
-        <div class="scroll-line w-8 h-px bg-gradient-to-r from-white/50 to-transparent"></div>
-        <span class="font-mono text-[9px] uppercase tracking-widest">Scroll</span>
-      </div>
-    </div>
+    <ScrollIndicator class="hero-reveal" />
   </section>
 
   <!-- Artists Section: The Index -->
   <section id="artists" class="artists-section relative z-20 border-t border-white/10" data-scroll-section>
-    <div class="grid grid-cols-1 lg:grid-cols-12">
-      <!-- Left Sidebar -->
-      <div class="hidden lg:block lg:col-span-2 border-r border-white/5 p-6 lg:p-8">
-        <div class="sticky top-24">
-          <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Section 01</span>
-          <span class="font-mono text-xs text-white">The Team</span>
-          <p class="font-mono text-[10px] text-neutral-500 mt-4 leading-relaxed">
-            {artists.length} artists in residence, each with their own unique style and specialty.
-          </p>
-        </div>
-      </div>
+    <SectionSidebar
+      sectionNum="Section 01"
+      label="The Team"
+      description={`${artists.length} artists in residence, each with their own unique style and specialty.`}
+    >
+      <!-- Header Row -->
+      <SectionHeader
+        title="The team"
+        meta={`${artists.length} artists`}
+        titleClass="artists-title"
+        class="artists-header"
+      />
 
-      <!-- Main Content -->
-      <div class="col-span-1 lg:col-span-10">
-        <!-- Header Row -->
-        <div class="artists-header px-6 md:px-8 py-10 md:py-14 border-b border-white/5">
-          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <h2 class="artists-title text-4xl md:text-5xl lg:text-6xl font-normal uppercase tracking-tight">The team</h2>
-            <span class="font-mono text-xs text-neutral-500 uppercase tracking-widest">{artists.length} artists</span>
-          </div>
-        </div>
-
-        <!-- Artists List -->
-        <div class="artists-list">
-          {artists.map((artist, index) => (
-            <div class="artist-row group relative border-b border-white/5 hover:bg-white/[0.02] transition-colors duration-300">
-              <a href={`/artists/${artist.id}`} class="block px-6 md:px-8 py-6 md:py-8 flex flex-col md:flex-row items-baseline md:items-center justify-between gap-4">
-                <div class="flex items-baseline gap-6 md:gap-8 md:w-1/2">
-                  <span class="font-mono text-sm text-neutral-700 group-hover:text-white transition-colors">
-                    {(index + 1).toString().padStart(2, '0')}
-                  </span>
-                  <h3 class="text-2xl md:text-3xl lg:text-4xl font-normal font-display italic text-white group-hover:translate-x-2 transition-transform duration-300">
-                    {artist.data.name}
-                  </h3>
-                </div>
-
-                <div class="flex items-center justify-between w-full md:w-auto gap-6 md:gap-10">
-                  <div class="flex flex-col">
-                    <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-600 mb-1">Specialty</span>
-                    <span class="font-mono text-sm text-neutral-300">
-                      {artist.data.specialties ? artist.data.specialties[0] : 'Custom'}
-                    </span>
-                  </div>
-
-                  <span class="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-300">
-                    ↗
-                  </span>
-                </div>
-              </a>
-
-              <!-- Hover Image Reveal (Desktop) -->
-              <div class="hidden lg:block absolute top-1/2 right-24 -translate-y-1/2 w-[180px] aspect-[3/4] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 bg-neutral-900 border border-white/5 rotate-2 group-hover:rotate-3 transition-transform shadow-2xl">
-                <img
-                  src={artist.data.portrait}
-                  alt={artist.data.name}
-                  class="w-full h-full object-cover grayscale"
-                />
+      <!-- Artists List -->
+      <div class="artists-list">
+        {artists.map((artist, index) => (
+          <div class="artist-row group relative border-b border-white/5 hover:bg-white/[0.02] transition-colors duration-300">
+            <a href={`/artists/${artist.id}`} class="block px-6 md:px-8 py-6 md:py-8 flex flex-col md:flex-row items-baseline md:items-center justify-between gap-4">
+              <div class="flex items-baseline gap-6 md:gap-8 md:w-1/2">
+                <span class="font-mono text-sm text-neutral-700 group-hover:text-white transition-colors">
+                  {(index + 1).toString().padStart(2, '0')}
+                </span>
+                <h3 class="text-2xl md:text-3xl lg:text-4xl font-normal font-display italic text-white group-hover:translate-x-2 transition-transform duration-300">
+                  {artist.data.name}
+                </h3>
               </div>
+
+              <div class="flex items-center justify-between w-full md:w-auto gap-6 md:gap-10">
+                <div class="flex flex-col">
+                  <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-600 mb-1">Specialty</span>
+                  <span class="font-mono text-sm text-neutral-300">
+                    {artist.data.specialties ? artist.data.specialties[0] : 'Custom'}
+                  </span>
+                </div>
+
+                <span class="w-9 h-9 rounded-full border border-white/20 flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-300">
+                  ↗
+                </span>
+              </div>
+            </a>
+
+            <!-- Hover Image Reveal (Desktop) -->
+            <div class="hidden lg:block absolute top-1/2 right-24 -translate-y-1/2 w-[180px] aspect-[3/4] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 bg-neutral-900 border border-white/5 rotate-2 group-hover:rotate-3 transition-transform shadow-2xl">
+              <img
+                src={artist.data.portrait}
+                alt={artist.data.name}
+                class="w-full h-full object-cover grayscale"
+              />
             </div>
-          ))}
-        </div>
+          </div>
+        ))}
       </div>
-    </div>
+    </SectionSidebar>
   </section>
 
   <!-- Process Section: The Methodology -->
   <section id="process" class="process-section relative z-20 border-t border-white/10" data-scroll-section>
-    <div class="grid grid-cols-1 lg:grid-cols-12">
-      <!-- Left Sidebar -->
-      <div class="hidden lg:block lg:col-span-2 border-r border-white/5 p-6 lg:p-8">
-        <div class="sticky top-24">
-          <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Section 02</span>
-          <span class="font-mono text-xs text-white">Methodology</span>
-          <p class="font-mono text-[10px] text-neutral-500 mt-4 leading-relaxed">
-            From first idea to healed artwork—our proven process.
-          </p>
-        </div>
-      </div>
+    <SectionSidebar
+      sectionNum="Section 02"
+      label="Methodology"
+      description="From first idea to healed artwork—our proven process."
+    >
+      <!-- Header -->
+      <SectionHeader
+        title="Methodology"
+        meta="4 steps"
+        titleClass="process-title"
+        class="process-header"
+      />
 
-      <!-- Main Content -->
-      <div class="col-span-1 lg:col-span-10">
-        <!-- Header -->
-        <div class="process-header px-6 md:px-8 py-10 md:py-14 border-b border-white/5">
-          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
-            <h2 class="process-title text-4xl md:text-5xl lg:text-6xl font-normal uppercase tracking-tight">Methodology</h2>
-            <span class="font-mono text-xs text-neutral-500 uppercase tracking-widest">4 steps</span>
-          </div>
-        </div>
-
-        <!-- Grid -->
-        <div class="process-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
-          {[
-            { num: '01', title: 'Consultation', desc: 'Share your vision. We\'ll shape your idea together and match you with the right artist.', icon: 'solar:chat-line-linear' },
-            { num: '02', title: 'Design', desc: 'Your artist creates a custom piece tailored to your body and style.', icon: 'solar:pen-new-square-linear' },
-            { num: '03', title: 'Session', desc: 'Get inked in our clean, comfortable studio with experienced professionals.', icon: 'ph:needle' },
-            { num: '04', title: 'Aftercare', desc: 'We guide you through healing so your artwork stays vibrant for life.', icon: 'solar:heart-linear' }
-          ].map((step, i) => (
-            <div class={`process-step group px-6 py-10 lg:py-12 min-h-[280px] flex flex-col justify-between hover:bg-white/[0.02] transition-colors duration-300 ${i < 3 ? 'border-b md:border-b lg:border-b-0 lg:border-r border-white/5' : 'border-b md:border-b-0 border-white/5'} ${i === 1 ? 'md:border-r border-white/5' : ''} ${i === 0 || i === 2 ? 'md:border-r border-white/5' : ''}`}>
-              <div class="flex justify-between items-start mb-6">
-                <span class="process-num font-mono text-4xl lg:text-5xl text-neutral-800 font-light group-hover:text-neutral-600 transition-colors">
-                  {step.num}
-                </span>
-                <iconify-icon icon={step.icon} class="text-neutral-700 group-hover:text-white transition-colors text-xl lg:text-2xl"></iconify-icon>
-              </div>
-
-              <div class="process-content">
-                <h3 class="font-display text-xl lg:text-2xl italic text-white mb-3">{step.title}</h3>
-                <p class="font-mono text-[11px] lg:text-xs text-neutral-500 leading-relaxed">
-                  {step.desc}
-                </p>
-              </div>
+      <!-- Grid -->
+      <div class="process-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+        {[
+          { num: '01', title: 'Consultation', desc: 'Share your vision. We\'ll shape your idea together and match you with the right artist.', icon: 'solar:chat-line-linear' },
+          { num: '02', title: 'Design', desc: 'Your artist creates a custom piece tailored to your body and style.', icon: 'solar:pen-new-square-linear' },
+          { num: '03', title: 'Session', desc: 'Get inked in our clean, comfortable studio with experienced professionals.', icon: 'ph:needle' },
+          { num: '04', title: 'Aftercare', desc: 'We guide you through healing so your artwork stays vibrant for life.', icon: 'solar:heart-linear' }
+        ].map((step, i) => (
+          <div class={`process-step group px-6 py-10 lg:py-12 min-h-[280px] flex flex-col justify-between hover:bg-white/[0.02] transition-colors duration-300 ${i < 3 ? 'border-b md:border-b lg:border-b-0 lg:border-r border-white/5' : 'border-b md:border-b-0 border-white/5'} ${i === 1 ? 'md:border-r border-white/5' : ''} ${i === 0 || i === 2 ? 'md:border-r border-white/5' : ''}`}>
+            <div class="flex justify-between items-start mb-6">
+              <span class="process-num font-mono text-4xl lg:text-5xl text-neutral-800 font-light group-hover:text-neutral-600 transition-colors">
+                {step.num}
+              </span>
+              <iconify-icon icon={step.icon} class="text-neutral-700 group-hover:text-white transition-colors text-xl lg:text-2xl"></iconify-icon>
             </div>
-          ))}
-        </div>
+
+            <div class="process-content">
+              <h3 class="font-display text-xl lg:text-2xl italic text-white mb-3">{step.title}</h3>
+              <p class="font-mono text-[11px] lg:text-xs text-neutral-500 leading-relaxed">
+                {step.desc}
+              </p>
+            </div>
+          </div>
+        ))}
       </div>
-    </div>
+    </SectionSidebar>
   </section>
 
 
