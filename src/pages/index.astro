@@ -13,7 +13,7 @@ const artists = await getCollection('artists');
 <SiteLayout title={SITE_DESCRIPTION} removeMainPadding={true} hideFooter={true}>
 
   <!-- Fixed Floating CTA (Desktop) -->
-  <div class="hidden lg:block fixed bottom-8 right-8 z-50">
+  <div id="floating-cta" class="hidden lg:block fixed bottom-8 right-8 z-50 transition-all duration-300">
     <a href="/booking" class="hero-cta group flex items-center gap-3 px-6 py-4 bg-white text-black font-mono text-xs uppercase tracking-[0.15em] hover:bg-neutral-100 transition-all shadow-2xl shadow-black/50">
       <span>Book a session</span>
       <span class="w-6 h-6 rounded-full border border-black/20 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors">→</span>
@@ -80,9 +80,12 @@ const artists = await getCollection('artists');
         </div>
 
         <!-- Mobile CTA -->
-        <div class="lg:hidden mt-8">
-          <a href="/booking" class="block w-full py-4 bg-white text-black text-center font-mono text-xs uppercase tracking-wider hover:bg-neutral-200 transition-colors">
-            Book a session
+        <div class="lg:hidden mt-10">
+          <a href="/booking" class="group block w-full py-5 bg-white text-black text-center font-mono text-sm uppercase tracking-[0.15em] hover:bg-neutral-100 transition-all shadow-lg shadow-white/10">
+            <span class="flex items-center justify-center gap-3">
+              <span>Book a session</span>
+              <span class="w-6 h-6 rounded-full border border-black/20 flex items-center justify-center text-xs">→</span>
+            </span>
           </a>
         </div>
       </div>
@@ -92,9 +95,9 @@ const artists = await getCollection('artists');
     </div>
 
     <!-- Scroll Indicator -->
-    <div class="absolute bottom-8 left-6 lg:left-16 z-20 hero-reveal">
-      <div class="flex items-center gap-3 text-neutral-600">
-        <div class="w-8 h-px bg-gradient-to-r from-white/40 to-transparent"></div>
+    <div class="absolute bottom-8 left-6 lg:left-16 z-20 hero-reveal opacity-50 hover:opacity-80 transition-opacity">
+      <div class="flex items-center gap-3 text-neutral-500">
+        <div class="scroll-line w-8 h-px bg-gradient-to-r from-white/50 to-transparent"></div>
         <span class="font-mono text-[9px] uppercase tracking-widest">Scroll</span>
       </div>
     </div>
@@ -104,11 +107,11 @@ const artists = await getCollection('artists');
   <section id="artists" class="artists-section relative z-20 border-t border-white/10" data-scroll-section>
     <div class="grid grid-cols-1 lg:grid-cols-12">
       <!-- Left Sidebar -->
-      <div class="hidden lg:block lg:col-span-2 border-r border-white/5 p-6">
+      <div class="hidden lg:block lg:col-span-2 border-r border-white/5 p-6 lg:p-8">
         <div class="sticky top-24">
-          <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-600 block mb-2">Section 01</span>
+          <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Section 01</span>
           <span class="font-mono text-xs text-white">The Team</span>
-          <p class="font-mono text-[10px] text-neutral-600 mt-4 leading-relaxed">
+          <p class="font-mono text-[10px] text-neutral-500 mt-4 leading-relaxed">
             {artists.length} artists in residence, each with their own unique style and specialty.
           </p>
         </div>
@@ -168,14 +171,14 @@ const artists = await getCollection('artists');
   </section>
 
   <!-- Process Section: The Methodology -->
-  <section id="process" class="process-section relative z-20 border-t border-white/5" data-scroll-section>
+  <section id="process" class="process-section relative z-20 border-t border-white/10" data-scroll-section>
     <div class="grid grid-cols-1 lg:grid-cols-12">
       <!-- Left Sidebar -->
-      <div class="hidden lg:block lg:col-span-2 border-r border-white/5 p-6">
+      <div class="hidden lg:block lg:col-span-2 border-r border-white/5 p-6 lg:p-8">
         <div class="sticky top-24">
-          <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-600 block mb-2">Section 02</span>
+          <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Section 02</span>
           <span class="font-mono text-xs text-white">Methodology</span>
-          <p class="font-mono text-[10px] text-neutral-600 mt-4 leading-relaxed">
+          <p class="font-mono text-[10px] text-neutral-500 mt-4 leading-relaxed">
             From first idea to healed artwork—our proven process.
           </p>
         </div>
@@ -316,17 +319,17 @@ const artists = await getCollection('artists');
     </div>
 
     <!-- Bottom Bar -->
-    <div class="footer-bar border-t border-white/10 p-4 flex justify-between items-center bg-neutral-900/50">
-      <div class="flex items-center gap-3 font-mono text-[10px] text-neutral-600">
-        <span class="inline-flex items-center text-neutral-500/70">
-          <DoveMark class="w-5 h-5" />
+    <div class="footer-bar border-t border-white/5 px-6 py-5 flex flex-col sm:flex-row justify-between items-center gap-4 bg-black/80">
+      <div class="flex items-center gap-3 font-mono text-[10px] text-neutral-500">
+        <span class="inline-flex items-center text-neutral-600">
+          <DoveMark class="w-4 h-4" />
         </span>
-        <span>Freedom in ink</span>
+        <span class="tracking-wider">Freedom in ink</span>
       </div>
-      <div class="flex items-center gap-4 font-mono text-[10px] text-neutral-600">
-        <a class="hover:text-neutral-300 transition-colors" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">Instagram</a>
-        <a class="hover:text-neutral-300 transition-colors" href={`mailto:${EMAIL}`}>{EMAIL}</a>
-        <a class="hover:text-neutral-300 transition-colors" href={`tel:${PHONE_NUMBER.replace(/\s+/g, '')}`}>{PHONE_NUMBER}</a>
+      <div class="flex items-center gap-6 font-mono text-[10px] text-neutral-600">
+        <a class="hover:text-white transition-colors" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">Instagram</a>
+        <a class="hover:text-white transition-colors hidden sm:inline" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+        <a class="hover:text-white transition-colors" href={`tel:${PHONE_NUMBER.replace(/\s+/g, '')}`}>{PHONE_NUMBER}</a>
       </div>
     </div>
   </footer>
@@ -511,5 +514,34 @@ const artists = await getCollection('artists');
 
     // Initialize when DOM is ready
     document.addEventListener('DOMContentLoaded', initAnimations);
+
+    // Hide floating CTA when footer is in view
+    const initFloatingCTA = () => {
+      const floatingCTA = document.getElementById('floating-cta');
+      const footer = document.querySelector('.footer-section');
+
+      if (!floatingCTA || !footer) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              floatingCTA.style.opacity = '0';
+              floatingCTA.style.pointerEvents = 'none';
+              floatingCTA.style.transform = 'translateY(20px)';
+            } else {
+              floatingCTA.style.opacity = '1';
+              floatingCTA.style.pointerEvents = 'auto';
+              floatingCTA.style.transform = 'translateY(0)';
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      observer.observe(footer);
+    };
+
+    document.addEventListener('DOMContentLoaded', initFloatingCTA);
   </script>
 </SiteLayout>

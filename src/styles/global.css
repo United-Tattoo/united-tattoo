@@ -160,4 +160,20 @@
     mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 85%);
     -webkit-mask-image: radial-gradient(circle at 50% 50%, black 40%, transparent 85%);
   }
+
+  /* Subtle scroll indicator animation */
+  .scroll-line {
+    animation: scroll-pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes scroll-pulse {
+    0%, 100% {
+      opacity: 0.5;
+      transform: scaleX(1);
+    }
+    50% {
+      opacity: 1;
+      transform: scaleX(1.2);
+    }
+  }
 }
