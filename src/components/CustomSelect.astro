@@ -1,0 +1,239 @@
+---
+interface Option {
+  value: string;
+  label: string;
+  selected?: boolean;
+}
+
+interface Props {
+  id: string;
+  name: string;
+  label: string;
+  options: Option[];
+  required?: boolean;
+  placeholder?: string;
+  hint?: string;
+}
+
+const { id, name, label, options, required = false, placeholder = 'Select an option...', hint } = Astro.props;
+
+const selectedOption = options.find(opt => opt.selected);
+const displayValue = selectedOption?.label || placeholder;
+const selectedValue = selectedOption?.value || '';
+---
+
+<div class="custom-select-wrapper" data-select-id={id}>
+  <label for={id} class="block font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-2">
+    {label}
+  </label>
+
+  <div class="custom-select relative">
+    <!-- Hidden input for form submission -->
+    <input
+      type="hidden"
+      id={id}
+      name={name}
+      value={selectedValue}
+      data-required={required ? 'true' : 'false'}
+    />
+
+    <!-- Trigger Button -->
+    <button
+      type="button"
+      class="custom-select-trigger w-full bg-black/50 backdrop-blur border border-white/10 px-4 py-4 text-left font-mono text-sm transition-all duration-200 hover:border-white/20 focus:border-white/30 focus:outline-none flex items-center justify-between gap-4"
+      aria-haspopup="listbox"
+      aria-expanded="false"
+      data-value={selectedValue}
+    >
+      <span class="custom-select-value truncate" data-placeholder={!selectedValue}>
+        {displayValue}
+      </span>
+      <span class="custom-select-arrow transition-transform duration-200">
+        <iconify-icon icon="solar:alt-arrow-down-linear" class="text-neutral-500"></iconify-icon>
+      </span>
+    </button>
+
+    <!-- Dropdown Menu -->
+    <div class="custom-select-dropdown absolute top-full left-0 right-0 mt-1 bg-neutral-950 border border-white/10 opacity-0 invisible translate-y-2 transition-all duration-200 z-50 max-h-[280px] overflow-y-auto">
+      <ul role="listbox" class="py-1">
+        {placeholder && (
+          <li
+            role="option"
+            data-value=""
+            class="custom-select-option px-4 py-3 font-mono text-sm text-neutral-500 cursor-pointer hover:bg-white/5 transition-colors"
+            aria-selected={!selectedValue}
+          >
+            {placeholder}
+          </li>
+        )}
+        {options.map((option) => (
+          <li
+            role="option"
+            data-value={option.value}
+            class={`custom-select-option px-4 py-3 font-mono text-sm cursor-pointer hover:bg-white/5 transition-colors flex items-center justify-between ${option.value === selectedValue ? 'text-white bg-white/5' : 'text-neutral-300'}`}
+            aria-selected={option.value === selectedValue}
+          >
+            <span>{option.label}</span>
+            {option.value === selectedValue && (
+              <iconify-icon icon="solar:check-bold" class="text-white text-xs"></iconify-icon>
+            )}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+
+  {hint && (
+    <p class="font-mono text-[10px] text-neutral-600 mt-2">{hint}</p>
+  )}
+</div>
+
+<style>
+  .custom-select-trigger[data-placeholder="true"] .custom-select-value,
+  .custom-select-value[data-placeholder="true"] {
+    color: rgb(115 115 115); /* neutral-500 */
+  }
+
+  .custom-select.open .custom-select-trigger {
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .custom-select.open .custom-select-arrow {
+    transform: rotate(180deg);
+  }
+
+  .custom-select.open .custom-select-dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+  }
+
+  .custom-select-dropdown::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .custom-select-dropdown::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .custom-select-dropdown::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+  }
+
+  .custom-select-dropdown::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+  }
+</style>
+
+<script>
+  // Initialize all custom selects on the page
+  function initCustomSelects() {
+    const selects = document.querySelectorAll('.custom-select');
+
+    selects.forEach((select) => {
+      const trigger = select.querySelector('.custom-select-trigger') as HTMLButtonElement;
+      const dropdown = select.querySelector('.custom-select-dropdown') as HTMLDivElement;
+      const options = select.querySelectorAll('.custom-select-option');
+      const hiddenInput = select.querySelector('input[type="hidden"]') as HTMLInputElement;
+      const valueDisplay = select.querySelector('.custom-select-value') as HTMLSpanElement;
+
+      if (!trigger || !dropdown || !hiddenInput || !valueDisplay) return;
+
+      // Toggle dropdown
+      trigger.addEventListener('click', (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+
+        // Close other open selects
+        document.querySelectorAll('.custom-select.open').forEach((s) => {
+          if (s !== select) {
+            s.classList.remove('open');
+            s.querySelector('.custom-select-trigger')?.setAttribute('aria-expanded', 'false');
+          }
+        });
+
+        const isOpen = select.classList.toggle('open');
+        trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+      });
+
+      // Handle option selection
+      options.forEach((option) => {
+        option.addEventListener('click', () => {
+          const value = (option as HTMLElement).dataset.value || '';
+          const label = option.textContent?.trim() || '';
+
+          // Update hidden input
+          hiddenInput.value = value;
+
+          // Update display
+          valueDisplay.textContent = label;
+          valueDisplay.dataset.placeholder = value ? 'false' : 'true';
+          trigger.dataset.value = value;
+
+          // Update selected state
+          options.forEach((opt) => {
+            const isSelected = (opt as HTMLElement).dataset.value === value;
+            opt.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+            opt.classList.toggle('text-white', isSelected);
+            opt.classList.toggle('bg-white/5', isSelected);
+            opt.classList.toggle('text-neutral-300', !isSelected);
+
+            // Toggle check icon
+            const checkIcon = opt.querySelector('iconify-icon[icon="solar:check-bold"]');
+            if (isSelected && !checkIcon) {
+              const icon = document.createElement('iconify-icon');
+              icon.setAttribute('icon', 'solar:check-bold');
+              icon.className = 'text-white text-xs';
+              opt.appendChild(icon);
+            } else if (!isSelected && checkIcon) {
+              checkIcon.remove();
+            }
+          });
+
+          // Close dropdown
+          select.classList.remove('open');
+          trigger.setAttribute('aria-expanded', 'false');
+
+          // Dispatch change event
+          hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+        });
+      });
+
+      // Keyboard navigation
+      trigger.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          trigger.click();
+        } else if (e.key === 'Escape') {
+          select.classList.remove('open');
+          trigger.setAttribute('aria-expanded', 'false');
+        } else if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+          e.preventDefault();
+          if (!select.classList.contains('open')) {
+            trigger.click();
+          }
+        }
+      });
+    });
+
+    // Close on outside click
+    document.addEventListener('click', (e) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.custom-select')) {
+        document.querySelectorAll('.custom-select.open').forEach((select) => {
+          select.classList.remove('open');
+          select.querySelector('.custom-select-trigger')?.setAttribute('aria-expanded', 'false');
+        });
+      }
+    });
+  }
+
+  // Initialize on DOM ready
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initCustomSelects);
+  } else {
+    initCustomSelects();
+  }
+</script>
+

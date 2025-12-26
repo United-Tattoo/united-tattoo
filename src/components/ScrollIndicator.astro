@@ -1,0 +1,42 @@
+---
+interface Props {
+  orientation?: 'horizontal' | 'vertical';
+  position?: 'left' | 'right';
+  class?: string;
+}
+
+const {
+  orientation = 'horizontal',
+  position = 'left',
+  class: className = ''
+} = Astro.props;
+
+const positionClasses = position === 'left'
+  ? 'left-6 lg:left-16'
+  : 'right-6 lg:right-16';
+---
+
+{orientation === 'horizontal' ? (
+  <div class:list={[
+    "absolute bottom-8 z-20 opacity-50 hover:opacity-80 transition-opacity",
+    positionClasses,
+    className
+  ]}>
+    <div class="flex items-center gap-3 text-neutral-500">
+      <div class="scroll-line w-8 h-px bg-gradient-to-r from-white/50 to-transparent"></div>
+      <span class="font-mono text-[9px] uppercase tracking-widest">Scroll</span>
+    </div>
+  </div>
+) : (
+  <div class:list={[
+    "absolute bottom-8 z-20 opacity-50 hover:opacity-80 transition-opacity",
+    positionClasses,
+    className
+  ]}>
+    <div class="flex flex-col items-center gap-2 text-neutral-500">
+      <span class="font-mono text-[9px] uppercase tracking-widest rotate-90 origin-center">Scroll</span>
+      <div class="w-px h-8 bg-gradient-to-b from-white/50 to-transparent"></div>
+    </div>
+  </div>
+)}
+

@@ -1,0 +1,21 @@
+---
+// A subtle announcement bar - editorial style, not "system status"
+interface Props {
+  message?: string;
+}
+
+const { message = "Now booking for February 2026" } = Astro.props;
+---
+
+<div class="fixed top-0 left-0 w-full h-8 bg-[#0a0a0a] border-b border-white/5 z-[70] flex items-center justify-center overflow-hidden">
+  <div class="flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-700">
+    <span class="relative flex h-1.5 w-1.5">
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white/40 opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
+    </span>
+    <p class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-400">
+      {message}
+    </p>
+  </div>
+</div>
+

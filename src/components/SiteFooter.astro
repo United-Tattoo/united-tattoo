@@ -1,0 +1,61 @@
+---
+// Clean editorial footer - no "system verified" or underscore language
+import { ADDRESS_LINE_1, ADDRESS_LINE_2, EMAIL, INSTAGRAM, PHONE_NUMBER } from '../consts';
+---
+
+<footer class="py-16 px-6 md:px-20 border-t border-white/5">
+  <div class="max-w-7xl mx-auto">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+      <!-- Brand -->
+      <div class="md:col-span-2 space-y-4">
+        <a href="/" class="font-display text-3xl italic tracking-tight">United Tattoo</a>
+        <p class="text-sm text-neutral-500 max-w-sm leading-relaxed">
+          Tattoo collective in Fountain, Colorado. Custom artwork, experienced artists, exceptional results.
+        </p>
+      </div>
+
+      <!-- Location -->
+      <div class="space-y-4">
+        <h4 class="text-xs uppercase tracking-widest text-neutral-500">Visit</h4>
+        <address class="text-sm text-neutral-400 not-italic leading-relaxed">
+          {ADDRESS_LINE_1} <br/>
+          {ADDRESS_LINE_2}
+        </address>
+        <div class="space-y-1">
+          <a href={`tel:${PHONE_NUMBER.replace(/\s+/g, '')}`} class="text-sm text-neutral-400 hover:text-white transition-colors">
+            {PHONE_NUMBER}
+          </a>
+          <br />
+          <a href={`mailto:${EMAIL}`} class="text-sm text-neutral-400 hover:text-white transition-colors">
+            {EMAIL}
+          </a>
+        </div>
+        <p class="text-sm text-neutral-500">
+          Thursday-Saturday: 10am–8pm <br/>
+          Sunday-Wednesday: 10am-6pm
+        </p>
+      </div>
+
+      <!-- Links -->
+      <div class="space-y-4">
+        <h4 class="text-xs uppercase tracking-widest text-neutral-500">Follow</h4>
+        <div class="flex flex-col gap-2">
+          <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" class="text-sm text-neutral-400 hover:text-white transition-colors">Instagram</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="flex flex-col md:flex-row justify-between items-center gap-6 pt-8 border-t border-white/5">
+      <p class="text-xs text-neutral-600">
+        © 2025 United Tattoo. All rights reserved.
+      </p>
+      <div class="flex items-center gap-8">
+        <a href="/privacy" class="text-xs text-neutral-600 hover:text-neutral-400 transition-colors">Privacy</a>
+        <a href="/terms" class="text-xs text-neutral-600 hover:text-neutral-400 transition-colors">Terms</a>
+        <a href="/aftercare" class="text-xs text-neutral-600 hover:text-neutral-400 transition-colors">Aftercare</a>
+      </div>
+    </div>
+  </div>
+</footer>
+

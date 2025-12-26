@@ -1,0 +1,718 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { getCollection, render } from 'astro:content';
+import { INSTAGRAM } from '../../consts';
+import EditorialFooter from '../../components/EditorialFooter.astro';
+import SectionSidebar from '../../components/SectionSidebar.astro';
+import FloatingCTA from '../../components/FloatingCTA.astro';
+import ScrollIndicator from '../../components/ScrollIndicator.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import SectionHeader from '../../components/SectionHeader.astro';
+import fs from 'node:fs';
+import path from 'node:path';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const artists = await getCollection('artists');
+  return artists.map((artist) => ({
+    params: { slug: artist.id },
+    props: { artist },
+  }));
+}
+
+const { artist } = Astro.props;
+const { Content } = await render(artist);
+
+// Read portfolio images from the public directory at build time
+const publicDir = path.join(process.cwd(), 'public');
+const portfolioPath = path.join(publicDir, artist.data.galleryDir, 'Portfolio');
+
+let portfolioImages: string[] = [];
+try {
+  if (fs.existsSync(portfolioPath)) {
+    const files = fs.readdirSync(portfolioPath);
+    portfolioImages = files
+      .filter((file) => /\.(jpg|jpeg|png|webp|avif|gif)$/i.test(file))
+      .map((file) => `/${artist.data.galleryDir}/Portfolio/${file}`);
+  }
+} catch (e) {
+  console.warn(`Could not read portfolio directory for ${artist.data.name}:`, e);
+}
+
+// Also check for flash sheets
+const flashPath = path.join(publicDir, artist.data.galleryDir, 'Flash');
+let flashImages: string[] = [];
+try {
+  if (fs.existsSync(flashPath)) {
+    const files = fs.readdirSync(flashPath);
+    flashImages = files
+      .filter((file) => /\.(jpg|jpeg|png|webp|avif|gif)$/i.test(file))
+      .map((file) => `/${artist.data.galleryDir}/Flash/${file}`);
+  }
+} catch (e) {
+  // No flash directory
+}
+
+const firstName = artist.data.name.split(' ')[0];
+---
+
+<SiteLayout
+  title={artist.data.name}
+  description={`View the portfolio and learn more about ${artist.data.name}, a resident artist at United Tattoo in Fountain, CO.`}
+  removeMainPadding={true}
+  hideFooter={true}
+>
+  <FloatingCTA href={`/booking?artist=${artist.id}`} label={`Book with ${firstName}`} />
+
+  <div class="relative main-content-wrapper">
+
+  <!-- Hero Section: Dramatic Full-Bleed Portrait -->
+  <section class="artist-hero relative min-h-[85vh] lg:min-h-screen flex items-end overflow-hidden" data-scroll-section>
+    <!-- Background Portrait -->
+    <div class="absolute inset-0 z-0">
+      <img
+        src={artist.data.portrait}
+        alt={artist.data.name}
+        class="artist-hero-image w-full h-full object-cover object-[center_20%]"
+      />
+      <!-- Dramatic gradient overlays -->
+      <div class="absolute inset-0 bg-gradient-to-t from-bg-deep via-bg-deep/60 to-transparent"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-bg-deep/80 via-transparent to-transparent lg:via-bg-deep/30"></div>
+      <!-- Subtle noise texture -->
+      <div class="absolute inset-0 opacity-[0.03] mix-blend-overlay" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%270 0 256 256%27 xmlns=%27http://www.w3.org/2000/svg%27%3E%3Cfilter id=%27noise%27%3E%3CfeTurbulence type=%27fractalNoise%27 baseFrequency=%270.8%27 numOctaves=%274%27/%3E%3C/filter%3E%3Crect width=%27100%25%27 height=%27100%25%27 filter=%27url(%23noise)%27/%3E%3C/svg%3E');"></div>
+    </div>
+
+    <!-- Hero Content -->
+    <div class="relative z-10 w-full pb-12 lg:pb-20">
+      <!-- Breadcrumb -->
+      <div class="px-6 lg:px-16 mb-8">
+        <Breadcrumb items={[
+          { label: 'Home', href: '/' },
+          { label: 'Artists', href: '/artists' },
+          { label: artist.data.name }
+        ]} />
+      </div>
+
+      <!-- Name and Details -->
+      <div class="px-6 lg:px-16">
+        <div class="max-w-4xl">
+          <!-- Label -->
+          <div class="artist-hero-label mb-4">
+            <span class="font-mono text-[10px] uppercase tracking-[0.3em] text-neutral-500">Resident Artist</span>
+          </div>
+
+          <!-- Name -->
+          <h1 class="artist-hero-title text-[15vw] md:text-[12vw] lg:text-[10vw] xl:text-[8vw] leading-[0.85] font-normal font-display tracking-tighter mb-6">
+            <span class="block overflow-hidden">
+              <span class="artist-name-line inline-block text-white">{firstName}</span>
+            </span>
+            <span class="block overflow-hidden">
+              <span class="artist-name-line inline-block italic text-neutral-500 font-light">{artist.data.name.split(' ').slice(1).join(' ')}</span>
+            </span>
+          </h1>
+
+          <!-- Specialties Tags -->
+          {artist.data.specialties && (
+            <div class="artist-hero-tags flex flex-wrap gap-2 mb-8">
+              {artist.data.specialties.map((specialty: string) => (
+                <span class="px-4 py-2 border border-white/10 bg-white/5 backdrop-blur-sm font-mono text-[10px] uppercase tracking-widest text-neutral-300">
+                  {specialty}
+                </span>
+              ))}
+            </div>
+          )}
+
+          <!-- Quick Stats Row -->
+          <div class="artist-hero-stats flex flex-wrap items-center gap-8 pt-6 border-t border-white/10">
+            {portfolioImages.length > 0 && (
+              <div>
+                <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-600 block mb-1">Portfolio</span>
+                <span class="font-mono text-sm text-white">{portfolioImages.length} pieces</span>
+              </div>
+            )}
+            {flashImages.length > 0 && (
+              <div>
+                <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-600 block mb-1">Flash</span>
+                <span class="font-mono text-sm text-white">{flashImages.length} designs</span>
+              </div>
+            )}
+            {artist.data.instagram && (
+              <a
+                href={`https://instagram.com/${artist.data.instagram.replace('@', '')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-2 font-mono text-sm text-neutral-400 hover:text-white transition-colors"
+              >
+                <iconify-icon icon="mdi:instagram" class="text-base"></iconify-icon>
+                <span>{artist.data.instagram}</span>
+              </a>
+            )}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <ScrollIndicator orientation="vertical" position="right" class="artist-hero-scroll" />
+  </section>
+
+  <!-- About Section -->
+  <section class="about-section relative z-20 border-t border-white/10" data-scroll-section>
+    <SectionSidebar
+      sectionNum="About"
+      label={firstName}
+      description="Learn more about the artist and their approach."
+    >
+      <!-- Header Row -->
+      <div class="about-header px-6 md:px-8 lg:px-12 py-10 md:py-14 border-b border-white/5">
+        <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+          <h2 class="about-title text-4xl md:text-5xl lg:text-6xl font-display italic tracking-tighter text-white">
+            About {firstName}
+          </h2>
+        </div>
+      </div>
+
+      <!-- Bio Content -->
+      <div class="about-content px-6 md:px-8 lg:px-12 py-12 lg:py-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+          <!-- Bio Text -->
+          <div class="about-bio prose-editorial max-w-none">
+            <Content />
+          </div>
+
+          <!-- CTA Card -->
+          <div class="about-cta-card relative">
+            <div class="sticky top-24 p-8 lg:p-10 border border-white/10 bg-white/[0.02]">
+              <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-4">Ready to begin?</span>
+              <h3 class="text-2xl lg:text-3xl font-display italic tracking-tight text-white mb-4">
+                Work with {firstName}
+              </h3>
+              <p class="font-mono text-xs text-neutral-400 leading-relaxed mb-8">
+                Book a consultation to discuss your ideas. Include reference images for best results.
+              </p>
+              <a
+                href={`/booking?artist=${artist.id}`}
+                class="group flex items-center justify-center gap-3 w-full py-4 bg-white text-black font-mono text-xs uppercase tracking-[0.15em] hover:bg-neutral-100 transition-all"
+              >
+                <span>Book a Session</span>
+                <span class="w-5 h-5 rounded-full border border-black/20 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors text-[10px]">→</span>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </SectionSidebar>
+  </section>
+
+  <!-- Portfolio Gallery Section -->
+  {portfolioImages.length > 0 && (
+    <section class="portfolio-section relative z-20 border-t border-white/10" data-scroll-section>
+      <SectionSidebar
+        sectionNum="Section 01"
+        label="Portfolio"
+        description={`${portfolioImages.length} pieces of custom work.`}
+      >
+        <!-- Header Row -->
+        <div class="portfolio-header px-6 md:px-8 lg:px-12 py-10 md:py-14 border-b border-white/5">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <h2 class="portfolio-title text-4xl md:text-5xl lg:text-6xl font-normal uppercase tracking-tight">Portfolio</h2>
+            <span class="font-mono text-xs text-neutral-500 uppercase tracking-widest">{portfolioImages.length} pieces</span>
+          </div>
+        </div>
+
+        <!-- Gallery Grid - Masonry-like with varying sizes -->
+        <div class="portfolio-grid grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+          {portfolioImages.map((image, index) => (
+            <button
+              type="button"
+              class={`gallery-item group relative overflow-hidden bg-neutral-950 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/20 border-b border-r border-white/5 ${index % 7 === 0 ? 'md:col-span-2 md:row-span-2 aspect-square' : 'aspect-square'}`}
+              data-lightbox-trigger
+              data-image-src={image}
+              data-image-alt={`${artist.data.name} portfolio work ${index + 1}`}
+            >
+              <img
+                src={image}
+                alt={`${artist.data.name} portfolio work ${index + 1}`}
+                class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                loading="lazy"
+              />
+              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors duration-300"></div>
+              <!-- Hover overlay with number -->
+              <div class="absolute inset-0 flex items-end p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <span class="font-mono text-xs text-white/80 bg-black/50 px-2 py-1 backdrop-blur-sm">
+                  {(index + 1).toString().padStart(2, '0')}
+                </span>
+              </div>
+            </button>
+          ))}
+        </div>
+      </SectionSidebar>
+    </section>
+  )}
+
+  <!-- Flash Gallery Section -->
+  {flashImages.length > 0 && (
+    <section class="flash-section relative z-20 border-t border-white/10" data-scroll-section>
+      <SectionSidebar
+        sectionNum="Section 02"
+        label="Flash"
+        description="Ready-to-tattoo designs."
+      >
+        <!-- Header Row -->
+        <div class="flash-header px-6 md:px-8 lg:px-12 py-10 md:py-14 border-b border-white/5">
+          <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+            <div>
+              <h2 class="flash-title text-4xl md:text-5xl lg:text-6xl font-normal uppercase tracking-tight">Flash</h2>
+              <p class="font-mono text-xs text-neutral-500 mt-2">Available for walk-ins or quick booking</p>
+            </div>
+            <span class="font-mono text-xs text-neutral-500 uppercase tracking-widest">{flashImages.length} designs</span>
+          </div>
+        </div>
+
+        <!-- Gallery Grid -->
+        <div class="flash-grid grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6">
+          {flashImages.map((image, index) => (
+            <button
+              type="button"
+              class="gallery-item group relative aspect-square overflow-hidden bg-neutral-950 cursor-pointer focus:outline-none focus:ring-2 focus:ring-white/20 border-b border-r border-white/5"
+              data-lightbox-trigger
+              data-image-src={image}
+              data-image-alt={`${artist.data.name} flash design ${index + 1}`}
+            >
+              <img
+                src={image}
+                alt={`${artist.data.name} flash design ${index + 1}`}
+                class="absolute inset-0 w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                loading="lazy"
+              />
+              <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors"></div>
+            </button>
+          ))}
+        </div>
+      </SectionSidebar>
+    </section>
+  )}
+
+  <!-- Final CTA Section -->
+  <section class="cta-section relative z-20 border-t border-white/10 bg-gradient-to-b from-transparent via-white/[0.01] to-transparent" data-scroll-section>
+    <SectionSidebar
+      sectionNum="Start"
+      label="Your Journey"
+    >
+      <div class="px-6 md:px-8 lg:px-12 py-20 md:py-28 lg:py-36">
+        <div class="cta-content max-w-3xl">
+          <span class="cta-label font-mono text-[10px] uppercase tracking-[0.3em] text-neutral-500 block mb-6">Ready to create something beautiful?</span>
+          <h2 class="cta-title text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-display italic tracking-tighter text-white mb-8 leading-[0.9]">
+            Let's work<br />together
+          </h2>
+          <p class="font-mono text-sm md:text-base text-neutral-400 leading-relaxed mb-12 max-w-xl">
+            {firstName} is currently accepting new clients. Submit your booking request with ideas, placement preferences, and any reference images.
+          </p>
+
+          <div class="flex flex-col sm:flex-row gap-4">
+            <a
+              href={`/booking?artist=${artist.id}`}
+              class="group flex items-center justify-center gap-3 px-10 py-5 bg-white text-black font-mono text-sm uppercase tracking-[0.15em] hover:bg-neutral-100 transition-all"
+            >
+              <span>Book with {firstName}</span>
+              <span class="w-6 h-6 rounded-full border border-black/20 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors text-xs">→</span>
+            </a>
+
+            <a
+              href="/artists"
+              class="flex items-center justify-center px-10 py-5 border border-white/10 text-white font-mono text-sm uppercase tracking-[0.15em] hover:bg-white/5 transition-all"
+            >
+              View All Artists
+            </a>
+          </div>
+        </div>
+      </div>
+    </SectionSidebar>
+  </section>
+
+  </div>
+
+  <EditorialFooter />
+
+  <!-- Lightbox Modal -->
+  <div
+    id="lightbox"
+    class="fixed inset-0 z-[100] bg-black/98 backdrop-blur-sm hidden items-center justify-center p-4 md:p-8"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Image viewer"
+  >
+    <button
+      id="lightbox-close"
+      class="absolute top-6 right-6 w-12 h-12 border border-white/20 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:border-white/40 transition-all"
+      aria-label="Close"
+    >
+      <iconify-icon icon="solar:close-circle-linear" class="text-2xl"></iconify-icon>
+    </button>
+    <button
+      id="lightbox-prev"
+      class="absolute left-6 top-1/2 -translate-y-1/2 w-12 h-12 border border-white/20 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:border-white/40 transition-all"
+      aria-label="Previous image"
+    >
+      <iconify-icon icon="solar:arrow-left-linear" class="text-xl"></iconify-icon>
+    </button>
+    <button
+      id="lightbox-next"
+      class="absolute right-6 top-1/2 -translate-y-1/2 w-12 h-12 border border-white/20 rounded-full flex items-center justify-center text-white/60 hover:text-white hover:border-white/40 transition-all"
+      aria-label="Next image"
+    >
+      <iconify-icon icon="solar:arrow-right-linear" class="text-xl"></iconify-icon>
+    </button>
+    <img
+      id="lightbox-image"
+      src=""
+      alt=""
+      class="max-h-[85vh] max-w-[85vw] object-contain shadow-2xl"
+    />
+  </div>
+
+  <!-- Scroll Animations -->
+  <script>
+    // Wait for GSAP to be available
+    const initAnimations = () => {
+      const gsap = window.gsap;
+      const ScrollTrigger = window.ScrollTrigger;
+
+      if (!gsap || !ScrollTrigger) {
+        setTimeout(initAnimations, 100);
+        return;
+      }
+
+      // Set initial states for hero
+      gsap.set('.artist-name-line', { y: '100%' });
+      gsap.set('.artist-hero-label', { opacity: 0, y: 20 });
+      gsap.set('.artist-hero-tags', { opacity: 0, y: 20 });
+      gsap.set('.artist-hero-stats', { opacity: 0, y: 20 });
+      gsap.set('.artist-hero-scroll', { opacity: 0 });
+      gsap.set('.artist-hero-image', { scale: 1.1 });
+
+      // Hero animation timeline
+      const heroTl = gsap.timeline({ delay: 0.3 });
+
+      heroTl
+        .to('.artist-hero-image', {
+          scale: 1,
+          duration: 1.8,
+          ease: 'power2.out'
+        })
+        .to('.artist-hero-label', {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out'
+        }, '-=1.4')
+        .to('.artist-name-line', {
+          y: '0%',
+          duration: 1.2,
+          stagger: 0.15,
+          ease: 'power4.out'
+        }, '-=1.2')
+        .to('.artist-hero-tags', {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out'
+        }, '-=0.6')
+        .to('.artist-hero-stats', {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out'
+        }, '-=0.4')
+        .to('.artist-hero-scroll', {
+          opacity: 0.5,
+          duration: 0.6,
+          ease: 'power2.out'
+        }, '-=0.2');
+
+      // Parallax on hero image
+      gsap.to('.artist-hero-image', {
+        yPercent: 15,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.artist-hero',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1
+        }
+      });
+
+      // About Section
+      gsap.set('.about-title', { opacity: 0, y: 40 });
+      gsap.set('.about-bio', { opacity: 0, y: 30 });
+      gsap.set('.about-cta-card', { opacity: 0, y: 40 });
+
+      gsap.to('.about-title', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.about-section',
+          start: 'top 80%'
+        }
+      });
+
+      gsap.to('.about-bio', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.about-content',
+          start: 'top 80%'
+        }
+      });
+
+      gsap.to('.about-cta-card', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.about-cta-card',
+          start: 'top 85%'
+        }
+      });
+
+      // Portfolio Section
+      gsap.set('.portfolio-title', { opacity: 0, y: 40 });
+      gsap.set('.portfolio-grid .gallery-item', { opacity: 0, y: 60 });
+
+      gsap.to('.portfolio-title', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.portfolio-section',
+          start: 'top 80%'
+        }
+      });
+
+      gsap.to('.portfolio-grid .gallery-item', {
+        opacity: 1,
+        y: 0,
+        stagger: 0.05,
+        duration: 0.6,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.portfolio-grid',
+          start: 'top 85%'
+        }
+      });
+
+      // Flash Section
+      gsap.set('.flash-title', { opacity: 0, y: 40 });
+      gsap.set('.flash-grid .gallery-item', { opacity: 0, scale: 0.9 });
+
+      gsap.to('.flash-title', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.flash-section',
+          start: 'top 80%'
+        }
+      });
+
+      gsap.to('.flash-grid .gallery-item', {
+        opacity: 1,
+        scale: 1,
+        stagger: 0.03,
+        duration: 0.5,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.flash-grid',
+          start: 'top 85%'
+        }
+      });
+
+      // CTA Section
+      gsap.set('.cta-label', { opacity: 0, y: 20 });
+      gsap.set('.cta-title', { opacity: 0, y: 60 });
+      gsap.set('.cta-content p', { opacity: 0, y: 30 });
+      gsap.set('.cta-content a', { opacity: 0, y: 20 });
+
+      const ctaTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.cta-section',
+          start: 'top 70%'
+        }
+      });
+
+      ctaTl
+        .to('.cta-label', {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out'
+        })
+        .to('.cta-title', {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: 'power4.out'
+        }, '-=0.4')
+        .to('.cta-content p', {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: 'power3.out'
+        }, '-=0.6')
+        .to('.cta-content a', {
+          opacity: 1,
+          y: 0,
+          stagger: 0.1,
+          duration: 0.5,
+          ease: 'power2.out'
+        }, '-=0.3');
+
+      // Footer Animations
+      gsap.set('.footer-title', { opacity: 0, scale: 0.9 });
+      gsap.set('.footer-reveal', { opacity: 0, y: 30 });
+      gsap.set('.footer-social', { opacity: 0, scale: 0.5 });
+
+      const footerTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.footer-section',
+          start: 'top 85%'
+        }
+      });
+
+      footerTl
+        .to('.footer-title', {
+          opacity: 1,
+          scale: 1,
+          duration: 1,
+          ease: 'power4.out'
+        })
+        .to('.footer-reveal', {
+          opacity: 1,
+          y: 0,
+          stagger: 0.08,
+          duration: 0.7,
+          ease: 'power3.out'
+        }, '-=0.7')
+        .to('.footer-social', {
+          opacity: 1,
+          scale: 1,
+          stagger: 0.1,
+          duration: 0.4,
+          ease: 'back.out(2)'
+        }, '-=0.4');
+
+      console.log('Artist page animations initialized');
+    };
+
+    // Initialize when DOM is ready
+    document.addEventListener('DOMContentLoaded', initAnimations);
+
+    // Hide floating CTA when footer is in view
+    const initFloatingCTA = () => {
+      const floatingCTA = document.getElementById('floating-cta');
+      const footer = document.querySelector('.footer-section');
+
+      if (!floatingCTA || !footer) return;
+
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              floatingCTA.style.opacity = '0';
+              floatingCTA.style.pointerEvents = 'none';
+              floatingCTA.style.transform = 'translateY(20px)';
+            } else {
+              floatingCTA.style.opacity = '1';
+              floatingCTA.style.pointerEvents = 'auto';
+              floatingCTA.style.transform = 'translateY(0)';
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      observer.observe(footer);
+    };
+
+    document.addEventListener('DOMContentLoaded', initFloatingCTA);
+
+    // Lightbox functionality
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImage = document.getElementById('lightbox-image') as HTMLImageElement;
+    const closeBtn = document.getElementById('lightbox-close');
+    const prevBtn = document.getElementById('lightbox-prev');
+    const nextBtn = document.getElementById('lightbox-next');
+    const triggers = document.querySelectorAll('[data-lightbox-trigger]');
+
+    let currentIndex = 0;
+    const images: { src: string; alt: string }[] = [];
+
+    triggers.forEach((trigger, index) => {
+      const src = trigger.getAttribute('data-image-src') || '';
+      const alt = trigger.getAttribute('data-image-alt') || '';
+      images.push({ src, alt });
+
+      trigger.addEventListener('click', () => {
+        currentIndex = index;
+        openLightbox();
+      });
+    });
+
+    function openLightbox() {
+      if (lightbox && lightboxImage && images[currentIndex]) {
+        lightboxImage.src = images[currentIndex].src;
+        lightboxImage.alt = images[currentIndex].alt;
+        lightbox.classList.remove('hidden');
+        lightbox.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeLightbox() {
+      if (lightbox) {
+        lightbox.classList.add('hidden');
+        lightbox.classList.remove('flex');
+        document.body.style.overflow = '';
+      }
+    }
+
+    function showPrev() {
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      if (lightboxImage && images[currentIndex]) {
+        lightboxImage.src = images[currentIndex].src;
+        lightboxImage.alt = images[currentIndex].alt;
+      }
+    }
+
+    function showNext() {
+      currentIndex = (currentIndex + 1) % images.length;
+      if (lightboxImage && images[currentIndex]) {
+        lightboxImage.src = images[currentIndex].src;
+        lightboxImage.alt = images[currentIndex].alt;
+      }
+    }
+
+    closeBtn?.addEventListener('click', closeLightbox);
+    prevBtn?.addEventListener('click', showPrev);
+    nextBtn?.addEventListener('click', showNext);
+
+    lightbox?.addEventListener('click', (e) => {
+      if (e.target === lightbox) closeLightbox();
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!lightbox?.classList.contains('flex')) return;
+      if (e.key === 'Escape') closeLightbox();
+      if (e.key === 'ArrowLeft') showPrev();
+      if (e.key === 'ArrowRight') showNext();
+    });
+  </script>
+</SiteLayout>

@@ -1,0 +1,81 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { getCollection } from 'astro:content';
+
+export const prerender = true;
+
+const artists = await getCollection('artists');
+---
+
+<SiteLayout title="Our Artists" description="Meet the talented artists at United Tattoo. Each brings unique skills and artistic vision to create exceptional custom tattoos.">
+  <!-- Page Header -->
+  <section class="px-6 md:px-20 mb-16">
+    <div class="max-w-7xl mx-auto">
+      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-white/5 pb-12">
+        <div>
+          <span class="section-label block mb-4">The Collective</span>
+          <h1 class="text-5xl md:text-7xl font-normal tracking-tighter text-white italic mb-4">Our Artists</h1>
+          <p class="text-neutral-400 text-base max-w-md leading-relaxed">
+            Each artist brings unique expertise and artistic vision to create exceptional custom work.
+          </p>
+        </div>
+        <span class="text-sm text-neutral-500">{artists.length} Artists</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- Artists Grid -->
+  <section class="px-6 md:px-20">
+    <div class="max-w-7xl mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {artists.map((artist) => (
+          <a href={`/artists/${artist.id}`} class="group relative aspect-[4/5] overflow-hidden bg-neutral-950">
+            <img
+              src={artist.data.portrait}
+              alt={artist.data.name}
+              class="absolute inset-0 w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 group-hover:scale-[1.02] transition-all duration-700 ease-out"
+            />
+
+            <!-- Gradient overlay -->
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
+
+            <!-- Info -->
+            <div class="absolute bottom-0 left-0 right-0 p-6">
+              <h3 class="text-2xl font-normal text-white italic tracking-tight mb-2">
+                {artist.data.name}
+              </h3>
+              {artist.data.specialties && (
+                <p class="text-sm text-neutral-400">
+                  {artist.data.specialties.slice(0, 3).join(' · ')}
+                </p>
+              )}
+            </div>
+
+            <!-- Hover indicator -->
+            <div class="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
+              <span class="text-xs text-white/60">View Portfolio →</span>
+            </div>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="px-6 md:px-20 mt-32">
+    <div class="max-w-7xl mx-auto">
+      <div class="glass-card p-12 md:p-16 text-center">
+        <span class="section-label block mb-6">Ready to Begin?</span>
+        <h2 class="text-4xl md:text-5xl font-normal italic tracking-tighter text-white mb-6">
+          Let's Create Something Exceptional
+        </h2>
+        <p class="text-neutral-400 text-base max-w-md mx-auto mb-10">
+          Submit a booking request and let's start planning your piece.
+        </p>
+        <a href="/booking" class="inline-block px-10 py-5 bg-white text-black text-sm font-medium tracking-wide hover:bg-neutral-200 transition-all">
+          Book a Session
+        </a>
+      </div>
+    </div>
+  </section>
+</SiteLayout>

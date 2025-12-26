@@ -1,0 +1,86 @@
+---
+import '../styles/global.css';
+import { SITE_TITLE } from '../consts';
+import Announcement from '../components/Announcement.astro';
+import HeaderNav from '../components/HeaderNav.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+interface Props {
+  title?: string;
+  description?: string;
+  frontmatter?: {
+    title?: string;
+    description?: string;
+  };
+  announcement?: string;
+  hideAnnouncement?: boolean;
+  removeMainPadding?: boolean;
+  hideFooter?: boolean;
+}
+
+const { frontmatter, hideAnnouncement = false, removeMainPadding = false, hideFooter = false, announcement, ...props } = Astro.props;
+const title = props.title || frontmatter?.title || '';
+const description = props.description || frontmatter?.description || 'Tattoo studio in Fountain, CO';
+const currentPath = Astro.url.pathname;
+---
+
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="generator" content={Astro.generator} />
+		<title>{title ? `${title} | ${SITE_TITLE}` : SITE_TITLE}</title>
+		<meta name="description" content={description} />
+		<!-- Fonts -->
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+		<!-- Icons -->
+		<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+	</head>
+	<body class="bg-bg-deep text-text-main selection:bg-white/20 selection:text-white">
+		<!-- Lenis + GSAP ScrollTrigger Setup -->
+		<script>
+			import Lenis from 'lenis';
+			import gsap from 'gsap';
+			import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+			// Register GSAP plugins
+			gsap.registerPlugin(ScrollTrigger);
+
+			// Initialize Lenis for smooth scrolling
+			const lenis = new Lenis({
+				duration: 1.2,
+				easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+				orientation: 'vertical',
+				smoothWheel: true,
+			});
+
+			// Sync Lenis with GSAP ScrollTrigger
+			lenis.on('scroll', ScrollTrigger.update);
+
+			gsap.ticker.add((time) => {
+				lenis.raf(time * 1000);
+			});
+
+			gsap.ticker.lagSmoothing(0);
+
+			// Make lenis globally available for other scripts
+			window.lenis = lenis;
+			window.gsap = gsap;
+			window.ScrollTrigger = ScrollTrigger;
+		</script>
+		<!-- Subtle background texture -->
+		<div class="fixed inset-0 noise pointer-events-none z-50"></div>
+
+		{!hideAnnouncement && <Announcement message={announcement} />}
+		<HeaderNav currentPath={currentPath} hasAnnouncement={!hideAnnouncement} />
+
+		<main class:list={[{ "pt-32 pb-24": !removeMainPadding }]}>
+			<slot />
+		</main>
+
+		{!hideFooter && <SiteFooter />}
+	</body>
+</html>

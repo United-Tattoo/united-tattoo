@@ -1,0 +1,721 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { getCollection } from 'astro:content';
+import CustomSelect from '../components/CustomSelect.astro';
+import EditorialFooter from '../components/EditorialFooter.astro';
+import SectionSidebar from '../components/SectionSidebar.astro';
+import ScrollIndicator from '../components/ScrollIndicator.astro';
+import GridBackground from '../components/GridBackground.astro';
+import Breadcrumb from '../components/Breadcrumb.astro';
+
+export const prerender = true;
+
+const artists = await getCollection('artists');
+const preselectedArtist = Astro.url.searchParams.get('artist') || '';
+
+// Prepare options for selects
+const artistOptions = [
+  ...artists.map((artist) => ({
+    value: artist.id,
+    label: artist.data.name,
+    selected: artist.id === preselectedArtist
+  })),
+  { value: 'no-preference', label: 'No preference', selected: false }
+];
+
+const contactOptions = [
+  { value: 'email', label: 'Email', selected: true },
+  { value: 'phone', label: 'Phone', selected: false },
+  { value: 'text', label: 'Text Message', selected: false }
+];
+
+const styleOptions = [
+  { value: 'traditional', label: 'Traditional', selected: false },
+  { value: 'neo-traditional', label: 'Neo-Traditional', selected: false },
+  { value: 'realism', label: 'Realism', selected: false },
+  { value: 'black-and-grey', label: 'Black and Grey', selected: false },
+  { value: 'fine-line', label: 'Fine Line', selected: false },
+  { value: 'blackwork', label: 'Blackwork', selected: false },
+  { value: 'japanese', label: 'Japanese', selected: false },
+  { value: 'chicano', label: 'Chicano', selected: false },
+  { value: 'geometric', label: 'Geometric', selected: false },
+  { value: 'illustrative', label: 'Illustrative', selected: false },
+  { value: 'script', label: 'Script/Lettering', selected: false },
+  { value: 'other', label: 'Other', selected: false }
+];
+
+const sizeOptions = [
+  { value: 'small', label: 'Small (2-3 inches)', selected: false },
+  { value: 'medium', label: 'Medium (4-6 inches)', selected: false },
+  { value: 'large', label: 'Large (7-10 inches)', selected: false },
+  { value: 'extra-large', label: 'Extra Large (11+ inches)', selected: false },
+  { value: 'half-sleeve', label: 'Half Sleeve', selected: false },
+  { value: 'full-sleeve', label: 'Full Sleeve', selected: false },
+  { value: 'back-piece', label: 'Back Piece', selected: false }
+];
+
+const budgetOptions = [
+  { value: 'under-200', label: 'Under $200', selected: false },
+  { value: '200-500', label: '$200 - $500', selected: false },
+  { value: '500-1000', label: '$500 - $1,000', selected: false },
+  { value: '1000-2000', label: '$1,000 - $2,000', selected: false },
+  { value: '2000-plus', label: '$2,000+', selected: false }
+];
+---
+
+<SiteLayout
+  title="Book a Session"
+  description="Request a tattoo appointment with one of our talented artists at United Tattoo in Fountain, CO."
+  removeMainPadding={true}
+  hideFooter={true}
+>
+  <!-- Hero Section -->
+  <section class="booking-hero-section min-h-[60vh] lg:min-h-[70vh] relative flex flex-col justify-end" data-scroll-section>
+    <!-- Grid Background -->
+    <GridBackground opacity={30} class="booking-hero-grid" />
+
+    <!-- Subtle Dove Background -->
+    <div class="absolute right-0 top-0 bottom-0 w-full lg:w-1/2 z-0 pointer-events-none overflow-hidden">
+      <div class="absolute inset-0 mix-blend-screen opacity-20">
+        <img src="/dove.png" alt="" class="w-full h-full object-contain object-right grayscale contrast-125" />
+      </div>
+      <div class="absolute inset-0 bg-gradient-to-r from-bg-deep via-bg-deep/90 to-transparent"></div>
+    </div>
+
+    <!-- Vignette -->
+    <div class="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-bg-deep via-transparent to-bg-deep/40"></div>
+
+    <!-- Hero Content -->
+    <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 pt-24 lg:pt-32 pb-16 lg:pb-24">
+      <!-- Left Sidebar (empty for balance) -->
+      <div class="hidden lg:block lg:col-span-2"></div>
+
+      <!-- Main Content -->
+      <div class="col-span-1 lg:col-span-10 px-6 md:px-12 lg:px-16">
+        <!-- Breadcrumb -->
+        <Breadcrumb
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Booking' }
+          ]}
+          class="booking-hero-reveal mb-8"
+        />
+
+        <!-- Label -->
+        <div class="booking-hero-reveal mb-4">
+          <span class="font-mono text-[10px] md:text-xs uppercase tracking-[0.3em] text-neutral-500">Request an Appointment</span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="booking-hero-title text-[12vw] md:text-[8vw] lg:text-[6vw] leading-[0.9] font-normal tracking-tighter uppercase mb-8">
+          <span class="booking-hero-title-line block overflow-hidden"><span class="inline-block text-white">Book a</span></span>
+          <span class="booking-hero-title-line block overflow-hidden"><span class="italic font-light text-neutral-500 inline-block">Session</span></span>
+        </h1>
+
+        <!-- Description -->
+        <p class="booking-hero-reveal text-neutral-400 text-base md:text-lg max-w-lg leading-relaxed font-light">
+          Tell us about your tattoo idea. Include reference images and details about placement and size. We'll get back to you within 24–48 hours.
+        </p>
+      </div>
+    </div>
+
+    <!-- Scroll Indicator -->
+    <ScrollIndicator class="booking-hero-reveal" />
+  </section>
+
+  <!-- Form Section -->
+  <section class="booking-form-section relative z-20 border-t border-white/10" data-scroll-section>
+    <form
+      id="booking-form"
+      action="/api/booking"
+      method="POST"
+      enctype="multipart/form-data"
+    >
+      <!-- Section 01: Artist Selection -->
+      <div class="form-section-wrapper grid grid-cols-1 lg:grid-cols-12 border-b border-white/10">
+        <!-- Left Sidebar -->
+        <div class="hidden lg:flex lg:col-span-2 border-r border-white/5 p-6 lg:p-8">
+          <div class="sticky top-24">
+            <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Section 01</span>
+            <span class="font-mono text-xs text-white">Artist</span>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-span-1 lg:col-span-10 p-6 md:p-8 lg:p-12">
+          <!-- Mobile Section Label -->
+          <div class="lg:hidden flex items-center gap-3 mb-6">
+            <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">01</span>
+            <span class="font-mono text-xs text-white">Select an Artist</span>
+          </div>
+
+<h2 class="form-section-title text-2xl md:text-3xl font-display italic text-white mb-6">Choose Your Artist</h2>
+
+          <div class="max-w-md">
+            <CustomSelect
+              id="artist"
+              name="artist"
+              label="Preferred Artist"
+              options={artistOptions}
+              required={true}
+              placeholder="Select an artist..."
+              hint="Not sure? Select 'No preference' and we'll match you with the best artist for your style."
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 02: Contact Information -->
+      <div class="form-section-wrapper grid grid-cols-1 lg:grid-cols-12 border-b border-white/10">
+        <!-- Left Sidebar -->
+        <div class="hidden lg:flex lg:col-span-2 border-r border-white/5 p-6 lg:p-8">
+          <div class="sticky top-24">
+            <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Section 02</span>
+            <span class="font-mono text-xs text-white">Contact</span>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-span-1 lg:col-span-10 p-6 md:p-8 lg:p-12">
+          <!-- Mobile Section Label -->
+          <div class="lg:hidden flex items-center gap-3 mb-6">
+            <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">02</span>
+            <span class="font-mono text-xs text-white">Your Information</span>
+          </div>
+
+          <h2 class="form-section-title text-2xl md:text-3xl font-display italic text-white mb-8">Your Information</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
+            <div class="form-field space-y-2">
+              <label for="name" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-500">Full Name</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                class="w-full bg-black/50 backdrop-blur border border-white/10 px-4 py-4 text-white placeholder:text-neutral-600 focus:border-white/30 focus:outline-none transition-colors font-mono text-sm"
+                placeholder="Your name"
+              />
+            </div>
+
+            <div class="form-field space-y-2">
+              <label for="email" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-500">Email</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                class="w-full bg-black/50 backdrop-blur border border-white/10 px-4 py-4 text-white placeholder:text-neutral-600 focus:border-white/30 focus:outline-none transition-colors font-mono text-sm"
+                placeholder="you@example.com"
+              />
+            </div>
+
+            <div class="form-field space-y-2">
+              <label for="phone" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-500">Phone Number</label>
+              <input
+                type="tel"
+                id="phone"
+                name="phone"
+                required
+                class="w-full bg-black/50 backdrop-blur border border-white/10 px-4 py-4 text-white placeholder:text-neutral-600 focus:border-white/30 focus:outline-none transition-colors font-mono text-sm"
+                placeholder="(555) 123-4567"
+              />
+            </div>
+
+            <div class="form-field">
+              <CustomSelect
+                id="preferred-contact"
+                name="preferredContact"
+                label="Preferred Contact"
+                options={contactOptions}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 03: Tattoo Details -->
+      <div class="form-section-wrapper grid grid-cols-1 lg:grid-cols-12 border-b border-white/10">
+        <!-- Left Sidebar -->
+        <div class="hidden lg:flex lg:col-span-2 border-r border-white/5 p-6 lg:p-8">
+          <div class="sticky top-24">
+            <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Section 03</span>
+            <span class="font-mono text-xs text-white">Design</span>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-span-1 lg:col-span-10 p-6 md:p-8 lg:p-12">
+          <!-- Mobile Section Label -->
+          <div class="lg:hidden flex items-center gap-3 mb-6">
+            <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">03</span>
+            <span class="font-mono text-xs text-white">About Your Tattoo</span>
+          </div>
+
+          <h2 class="form-section-title text-2xl md:text-3xl font-display italic text-white mb-8">About Your Tattoo</h2>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8 mb-8">
+            <div class="form-field">
+              <CustomSelect
+                id="style"
+                name="style"
+                label="Style"
+                options={styleOptions}
+                required={true}
+                placeholder="Select a style..."
+              />
+            </div>
+
+            <div class="form-field space-y-2">
+              <label for="placement" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-500">Body Placement</label>
+              <input
+                type="text"
+                id="placement"
+                name="placement"
+                required
+                class="w-full bg-black/50 backdrop-blur border border-white/10 px-4 py-4 text-white placeholder:text-neutral-600 focus:border-white/30 focus:outline-none transition-colors font-mono text-sm"
+                placeholder="e.g., Inner forearm, left side"
+              />
+            </div>
+
+            <div class="form-field">
+              <CustomSelect
+                id="size"
+                name="size"
+                label="Approximate Size"
+                options={sizeOptions}
+                required={true}
+                placeholder="Select a size..."
+              />
+            </div>
+
+            <div class="form-field">
+              <CustomSelect
+                id="budget"
+                name="budget"
+                label="Budget Range (optional)"
+                options={budgetOptions}
+                placeholder="Prefer not to say"
+              />
+            </div>
+          </div>
+
+          <div class="form-field space-y-2">
+            <label for="description" class="block font-mono text-[10px] uppercase tracking-widest text-neutral-500">Describe Your Idea</label>
+            <textarea
+              id="description"
+              name="description"
+              required
+              rows="6"
+              class="w-full bg-black/50 backdrop-blur border border-white/10 px-4 py-4 text-white placeholder:text-neutral-600 focus:border-white/30 focus:outline-none transition-colors resize-none font-mono text-sm leading-relaxed"
+              placeholder="Tell us about your tattoo idea. Include any specific elements, colors, or themes you want incorporated..."
+            ></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 04: Reference Images -->
+      <div class="form-section-wrapper grid grid-cols-1 lg:grid-cols-12 border-b border-white/10">
+        <!-- Left Sidebar -->
+        <div class="hidden lg:flex lg:col-span-2 border-r border-white/5 p-6 lg:p-8">
+          <div class="sticky top-24">
+            <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Section 04</span>
+            <span class="font-mono text-xs text-white">References</span>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-span-1 lg:col-span-10 p-6 md:p-8 lg:p-12">
+          <!-- Mobile Section Label -->
+          <div class="lg:hidden flex items-center gap-3 mb-6">
+            <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">04</span>
+            <span class="font-mono text-xs text-white">Reference Images</span>
+          </div>
+
+          <h2 class="form-section-title text-2xl md:text-3xl font-display italic text-white mb-4">Reference Images</h2>
+          <p class="font-mono text-[11px] text-neutral-500 mb-8">
+            Upload up to 5 reference images (max 10MB each). Accepted formats: JPG, PNG, WebP, GIF.
+          </p>
+
+          <div class="relative">
+            <input
+              type="file"
+              id="references"
+              name="references"
+              multiple
+              accept="image/jpeg,image/png,image/webp,image/gif"
+              class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
+            />
+            <div id="upload-zone" class="border border-dashed border-white/20 p-10 lg:p-16 text-center hover:border-white/40 hover:bg-white/[0.02] transition-all group">
+              <iconify-icon icon="solar:upload-minimalistic-bold" class="text-3xl text-neutral-600 group-hover:text-neutral-400 transition-colors mb-4"></iconify-icon>
+              <p class="font-mono text-sm text-neutral-400 group-hover:text-neutral-300 transition-colors mb-2">
+                Drag & drop images here or click to browse
+              </p>
+              <p class="font-mono text-[10px] text-neutral-600">
+                JPG, PNG, WebP, GIF · Max 5 files · 10MB each
+              </p>
+            </div>
+          </div>
+
+          <div id="file-list" class="space-y-2 mt-4 hidden">
+            <!-- File items will be added here via JavaScript -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Section 05: Terms & Submit -->
+      <div class="form-section-wrapper grid grid-cols-1 lg:grid-cols-12">
+        <!-- Left Sidebar -->
+        <div class="hidden lg:flex lg:col-span-2 border-r border-white/5 p-6 lg:p-8">
+          <div class="sticky top-24">
+            <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-2">Section 05</span>
+            <span class="font-mono text-xs text-white">Confirm</span>
+          </div>
+        </div>
+
+        <!-- Main Content -->
+        <div class="col-span-1 lg:col-span-10 p-6 md:p-8 lg:p-12">
+          <!-- Mobile Section Label -->
+          <div class="lg:hidden flex items-center gap-3 mb-6">
+            <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500">05</span>
+            <span class="font-mono text-xs text-white">Terms & Consent</span>
+          </div>
+
+          <h2 class="form-section-title text-2xl md:text-3xl font-display italic text-white mb-8">Terms & Consent</h2>
+
+          <div class="space-y-5 mb-12">
+            <label class="flex items-start gap-4 cursor-pointer group">
+              <div class="relative mt-0.5">
+                <input
+                  type="checkbox"
+                  name="acceptTerms"
+                  required
+                  class="peer sr-only"
+                />
+                <div class="w-5 h-5 border border-white/20 bg-black/50 peer-checked:bg-white peer-checked:border-white transition-all flex items-center justify-center">
+                  <iconify-icon icon="solar:check-bold" class="text-black text-xs opacity-0 peer-checked:opacity-100"></iconify-icon>
+                </div>
+              </div>
+              <span class="font-mono text-xs text-neutral-400 group-hover:text-neutral-300 transition-colors leading-relaxed">
+                I have read and agree to the <a href="/terms" class="text-white underline hover:no-underline" target="_blank">Terms of Service</a> and <a href="/privacy" class="text-white underline hover:no-underline" target="_blank">Privacy Policy</a>.
+              </span>
+            </label>
+
+            <label class="flex items-start gap-4 cursor-pointer group">
+              <div class="relative mt-0.5">
+                <input
+                  type="checkbox"
+                  name="acceptAge"
+                  required
+                  class="peer sr-only"
+                />
+                <div class="w-5 h-5 border border-white/20 bg-black/50 peer-checked:bg-white peer-checked:border-white transition-all flex items-center justify-center">
+                  <iconify-icon icon="solar:check-bold" class="text-black text-xs opacity-0 peer-checked:opacity-100"></iconify-icon>
+                </div>
+              </div>
+              <span class="font-mono text-xs text-neutral-400 group-hover:text-neutral-300 transition-colors leading-relaxed">
+                I confirm that I am 18 years of age or older, or will have a parent/guardian present at the appointment.
+              </span>
+            </label>
+
+            <label class="flex items-start gap-4 cursor-pointer group">
+              <div class="relative mt-0.5">
+                <input
+                  type="checkbox"
+                  name="acceptDeposit"
+                  class="peer sr-only"
+                />
+                <div class="w-5 h-5 border border-white/20 bg-black/50 peer-checked:bg-white peer-checked:border-white transition-all flex items-center justify-center">
+                  <iconify-icon icon="solar:check-bold" class="text-black text-xs opacity-0 peer-checked:opacity-100"></iconify-icon>
+                </div>
+              </div>
+              <span class="font-mono text-xs text-neutral-400 group-hover:text-neutral-300 transition-colors leading-relaxed">
+                I understand that a non-refundable deposit may be required to secure my appointment.
+              </span>
+            </label>
+          </div>
+
+          <!-- Submit Button -->
+          <div class="flex flex-col lg:flex-row lg:items-center gap-6">
+            <button
+              type="submit"
+              id="submit-btn"
+              class="group px-10 py-5 bg-white text-black font-mono text-xs uppercase tracking-[0.15em] hover:bg-neutral-100 transition-all flex items-center justify-center gap-4 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              <span id="submit-text">Submit Request</span>
+              <span class="w-6 h-6 rounded-full border border-black/20 flex items-center justify-center group-hover:bg-black group-hover:text-white transition-colors">
+                <iconify-icon id="submit-icon" icon="solar:arrow-right-bold" class="text-sm"></iconify-icon>
+                <iconify-icon id="loading-icon" icon="solar:refresh-bold" class="text-sm animate-spin hidden"></iconify-icon>
+              </span>
+            </button>
+
+            <p class="font-mono text-[10px] text-neutral-500">
+              We typically respond within 24–48 hours
+            </p>
+          </div>
+
+          <!-- Error Message -->
+          <div id="error-message" class="hidden mt-6 p-4 border border-red-500/30 bg-red-500/5">
+            <p class="font-mono text-xs text-red-400 text-center"></p>
+          </div>
+        </div>
+      </div>
+    </form>
+  </section>
+
+  <EditorialFooter />
+
+  <!-- Scripts -->
+  <script>
+    // File upload handling
+    const fileInput = document.getElementById('references') as HTMLInputElement;
+    const fileList = document.getElementById('file-list') as HTMLDivElement;
+    const uploadZone = document.getElementById('upload-zone') as HTMLDivElement;
+    const form = document.getElementById('booking-form') as HTMLFormElement;
+    const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+    const submitText = document.getElementById('submit-text') as HTMLSpanElement;
+    const submitIcon = document.getElementById('submit-icon') as HTMLElement;
+    const loadingIcon = document.getElementById('loading-icon') as HTMLElement;
+    const errorMessage = document.getElementById('error-message') as HTMLDivElement;
+
+    const MAX_FILES = 5;
+    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+
+    let selectedFiles: File[] = [];
+
+    fileInput?.addEventListener('change', () => {
+      const files = Array.from(fileInput.files || []);
+      handleFiles(files);
+    });
+
+    function handleFiles(files: File[]) {
+      const validFiles = files.filter(file => {
+        if (!file.type.match(/^image\/(jpeg|png|webp|gif)$/)) {
+          showError(`Invalid file type: ${file.name}. Only JPG, PNG, WebP, and GIF are allowed.`);
+          return false;
+        }
+        if (file.size > MAX_SIZE) {
+          showError(`File too large: ${file.name}. Maximum size is 10MB.`);
+          return false;
+        }
+        return true;
+      });
+
+      const totalFiles = selectedFiles.length + validFiles.length;
+      if (totalFiles > MAX_FILES) {
+        showError(`Too many files. Maximum is ${MAX_FILES} images.`);
+        const allowed = MAX_FILES - selectedFiles.length;
+        selectedFiles = [...selectedFiles, ...validFiles.slice(0, allowed)];
+      } else {
+        selectedFiles = [...selectedFiles, ...validFiles];
+      }
+
+      updateFileList();
+    }
+
+    function updateFileList() {
+      if (selectedFiles.length === 0) {
+        fileList.classList.add('hidden');
+        return;
+      }
+
+      fileList.classList.remove('hidden');
+      fileList.innerHTML = selectedFiles.map((file, index) => `
+        <div class="flex items-center justify-between bg-white/5 border border-white/10 px-4 py-3">
+          <div class="flex items-center gap-3">
+            <iconify-icon icon="solar:image-bold" class="text-neutral-400"></iconify-icon>
+            <span class="font-mono text-xs text-neutral-300 truncate max-w-[200px]">${file.name}</span>
+            <span class="font-mono text-[10px] text-neutral-500">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+          </div>
+          <button type="button" data-index="${index}" class="remove-file text-neutral-500 hover:text-red-400 transition-colors">
+            <iconify-icon icon="solar:close-circle-bold" class="text-lg"></iconify-icon>
+          </button>
+        </div>
+      `).join('');
+
+      document.querySelectorAll('.remove-file').forEach(btn => {
+        btn.addEventListener('click', (e) => {
+          const index = parseInt((e.currentTarget as HTMLElement).dataset.index || '0');
+          selectedFiles.splice(index, 1);
+          updateFileList();
+        });
+      });
+    }
+
+    function showError(message: string) {
+      const errorP = errorMessage.querySelector('p');
+      if (errorP) {
+        errorP.textContent = message;
+      }
+      errorMessage.classList.remove('hidden');
+      setTimeout(() => {
+        errorMessage.classList.add('hidden');
+      }, 5000);
+    }
+
+    // Form submission
+    form?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      submitBtn.disabled = true;
+      submitText.textContent = 'Sending...';
+      submitIcon.classList.add('hidden');
+      loadingIcon.classList.remove('hidden');
+      errorMessage.classList.add('hidden');
+
+      try {
+        const formData = new FormData(form);
+        formData.delete('references');
+        selectedFiles.forEach(file => {
+          formData.append('references', file);
+        });
+
+        const response = await fetch('/api/booking', {
+          method: 'POST',
+          body: formData,
+        });
+
+        const result = await response.json();
+
+        if (response.ok && result.success) {
+          window.location.href = '/booking/thanks';
+        } else {
+          showError(result.error || 'Something went wrong. Please try again.');
+          resetButton();
+        }
+      } catch (error) {
+        showError('Network error. Please check your connection and try again.');
+        resetButton();
+      }
+    });
+
+    function resetButton() {
+      submitBtn.disabled = false;
+      submitText.textContent = 'Submit Request';
+      submitIcon.classList.remove('hidden');
+      loadingIcon.classList.add('hidden');
+    }
+
+    // GSAP Animations
+    const initAnimations = () => {
+      const gsap = (window as any).gsap;
+      const ScrollTrigger = (window as any).ScrollTrigger;
+
+      if (!gsap || !ScrollTrigger) {
+        setTimeout(initAnimations, 100);
+        return;
+      }
+
+      // Hero animations
+      gsap.set('.booking-hero-title-line > span', { y: '100%' });
+      gsap.set('.booking-hero-reveal', { opacity: 0, y: 30 });
+
+      const heroTl = gsap.timeline({ delay: 0.3 });
+
+      heroTl
+        .to('.booking-hero-title-line > span', {
+          y: '0%',
+          duration: 1.2,
+          stagger: 0.15,
+          ease: 'power4.out'
+        })
+        .to('.booking-hero-reveal', {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          stagger: 0.1,
+          ease: 'power3.out'
+        }, '-=0.8');
+
+      // Hero parallax
+      gsap.to('.booking-hero-grid', {
+        yPercent: 30,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.booking-hero-section',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1
+        }
+      });
+
+      // Form sections animations
+      gsap.set('.form-section-wrapper', { opacity: 0, y: 60 });
+      gsap.set('.form-section-title', { opacity: 0, y: 30 });
+      gsap.set('.form-field', { opacity: 0, y: 20 });
+
+      gsap.utils.toArray('.form-section-wrapper').forEach((section: any, index: number) => {
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: section,
+            start: 'top 85%'
+          }
+        });
+
+        tl.to(section, {
+          opacity: 1,
+          y: 0,
+          duration: 0.8,
+          ease: 'power3.out'
+        });
+
+        const title = section.querySelector('.form-section-title');
+        if (title) {
+          tl.to(title, {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            ease: 'power3.out'
+          }, '-=0.5');
+        }
+
+        const fields = section.querySelectorAll('.form-field');
+        if (fields.length) {
+          tl.to(fields, {
+            opacity: 1,
+            y: 0,
+            stagger: 0.1,
+            duration: 0.5,
+            ease: 'power2.out'
+          }, '-=0.3');
+        }
+      });
+
+      // Footer animations
+      gsap.set('.footer-title', { opacity: 0, scale: 0.8 });
+      gsap.set('.footer-reveal', { opacity: 0, y: 40 });
+      gsap.set('.footer-social', { opacity: 0, scale: 0.5 });
+
+      const footerTl = gsap.timeline({
+        scrollTrigger: {
+          trigger: '.footer-section',
+          start: 'top 85%'
+        }
+      });
+
+      footerTl
+        .to('.footer-title', {
+          opacity: 1,
+          scale: 1,
+          duration: 1,
+          ease: 'power4.out'
+        })
+        .to('.footer-reveal', {
+          opacity: 1,
+          y: 0,
+          stagger: 0.1,
+          duration: 0.8,
+          ease: 'power3.out'
+        }, '-=0.6')
+        .to('.footer-social', {
+          opacity: 1,
+          scale: 1,
+          stagger: 0.1,
+          duration: 0.5,
+          ease: 'back.out(2)'
+        }, '-=0.4');
+    };
+
+    document.addEventListener('DOMContentLoaded', initAnimations);
+  </script>
+</SiteLayout>

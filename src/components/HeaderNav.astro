@@ -1,0 +1,152 @@
+---
+// Editorial-style navigation with clean typography
+import { ADDRESS_LINE_1, ADDRESS_LINE_2 } from '../consts';
+import DoveMark from './DoveMark.astro';
+
+interface Props {
+  currentPath?: string;
+  hasAnnouncement?: boolean;
+}
+
+const { currentPath = "", hasAnnouncement = false } = Astro.props;
+const isArtistsPage = currentPath.startsWith("/artists");
+const isBookingPage = currentPath.startsWith("/booking");
+---
+
+<nav id="main-nav" class:list={[
+  "fixed left-0 w-full px-6 py-4 flex justify-between items-center z-[60] bg-black/60 backdrop-blur-md border-b border-white/5 transition-all duration-300",
+  hasAnnouncement ? "top-8" : "top-0"
+]}>
+  <div class="flex items-center gap-4 relative z-[110]">
+    <a href="/" class="font-display text-2xl md:text-3xl font-normal tracking-tighter leading-none hover:opacity-70 transition-opacity italic">
+      United Tattoo
+    </a>
+    <span class="hidden lg:inline-flex items-center text-neutral-500/70">
+      <DoveMark class="w-6 h-6" />
+    </span>
+    <span class="hidden lg:block text-neutral-600 mx-2">·</span>
+    <span class="hidden lg:block text-xs text-neutral-500 tracking-wide">
+      Fountain, Colorado
+    </span>
+  </div>
+
+  <div class="hidden md:flex gap-8 items-center text-sm text-neutral-400">
+    <a
+      href="/artists"
+      class:list={[
+        "hover:text-white transition-colors",
+        { "text-white": isArtistsPage }
+      ]}
+    >
+      Artists
+    </a>
+    <a
+      href="/#process"
+      class="hover:text-white transition-colors"
+    >
+      Process
+    </a>
+    <a
+      href="/booking"
+      class:list={[
+        "px-5 py-2 bg-white text-black text-xs font-medium tracking-wide hover:bg-neutral-200 transition-all",
+        { "bg-neutral-200": isBookingPage }
+      ]}
+    >
+      Book a Session
+    </a>
+  </div>
+
+  <button id="mobile-menu-btn" class="md:hidden text-sm text-neutral-400 hover:text-white transition-colors uppercase tracking-widest relative z-[110]">
+    Menu
+  </button>
+</nav>
+
+<!-- Mobile Menu Overlay -->
+<div id="mobile-menu" class="fixed inset-0 z-[100] bg-neutral-950/95 backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-500 flex flex-col justify-center items-center">
+
+  <div class="absolute inset-0 noise opacity-[0.05] pointer-events-none"></div>
+
+  <nav class="relative z-10 flex flex-col items-center gap-10 text-center">
+    <a href="/" class="mobile-link text-4xl font-display italic text-white/80 hover:text-white transition-colors transform translate-y-4 opacity-0 transition-all duration-500 delay-100">Home</a>
+    <a href="/artists" class="mobile-link text-4xl font-display italic text-white/80 hover:text-white transition-colors transform translate-y-4 opacity-0 transition-all duration-500 delay-200">Artists</a>
+    <a href="/#process" class="mobile-link text-4xl font-display italic text-white/80 hover:text-white transition-colors transform translate-y-4 opacity-0 transition-all duration-500 delay-300">Process</a>
+    <a href="/booking" class="mobile-link text-4xl font-display italic text-white/80 hover:text-white transition-colors transform translate-y-4 opacity-0 transition-all duration-500 delay-400">Book a Session</a>
+  </nav>
+
+  <div class="absolute bottom-12 text-center transform translate-y-4 opacity-0 transition-all duration-500 delay-500 mobile-footer">
+    <p class="text-neutral-500 text-xs uppercase tracking-widest mb-4">Visit Us</p>
+    <p class="text-neutral-400 text-sm font-light">
+      {ADDRESS_LINE_1}<br/>
+      {ADDRESS_LINE_2}
+    </p>
+  </div>
+</div>
+
+<script>
+  const menuBtn = document.getElementById('mobile-menu-btn');
+  const mobileMenu = document.getElementById('mobile-menu');
+  const nav = document.getElementById('main-nav');
+  const mobileLinks = document.querySelectorAll('.mobile-link');
+  const mobileFooter = document.querySelector('.mobile-footer');
+  let isMenuOpen = false;
+
+  function toggleMenu() {
+    isMenuOpen = !isMenuOpen;
+
+    if (isMenuOpen) {
+      // Open menu
+      mobileMenu?.classList.remove('opacity-0', 'pointer-events-none');
+      mobileMenu?.classList.add('opacity-100', 'pointer-events-auto');
+
+      // Animate links
+      mobileLinks.forEach(link => {
+        link.classList.remove('translate-y-4', 'opacity-0');
+      });
+      mobileFooter?.classList.remove('translate-y-4', 'opacity-0');
+
+      if (menuBtn) {
+        menuBtn.textContent = 'Close';
+        menuBtn.classList.add('text-white');
+      }
+
+      // Remove nav background/border to blend with menu
+      nav?.classList.remove('bg-black/60', 'backdrop-blur-md', 'border-white/5', 'z-[60]');
+      nav?.classList.add('border-transparent', 'z-[110]');
+
+      document.body.style.overflow = 'hidden';
+    } else {
+      // Close menu
+      mobileMenu?.classList.add('opacity-0', 'pointer-events-none');
+      mobileMenu?.classList.remove('opacity-100', 'pointer-events-auto');
+
+      // Reset animations
+      mobileLinks.forEach(link => {
+        link.classList.add('translate-y-4', 'opacity-0');
+      });
+      mobileFooter?.classList.add('translate-y-4', 'opacity-0');
+
+      if (menuBtn) {
+        menuBtn.textContent = 'Menu';
+        menuBtn.classList.remove('text-white');
+      }
+
+      // Restore nav styles
+      setTimeout(() => {
+        nav?.classList.add('bg-black/60', 'backdrop-blur-md', 'border-white/5', 'z-[60]');
+        nav?.classList.remove('border-transparent', 'z-[110]');
+      }, 200); // Delay slightly to match fade out
+
+      document.body.style.overflow = '';
+    }
+  }
+
+  menuBtn?.addEventListener('click', toggleMenu);
+
+  // Close menu when clicking a link
+  mobileLinks.forEach(link => {
+    link.addEventListener('click', () => {
+      if (isMenuOpen) toggleMenu();
+    });
+  });
+</script>
