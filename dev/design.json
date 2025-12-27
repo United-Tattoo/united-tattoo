@@ -1,0 +1,362 @@
+{
+  "$schema": "United Tattoo Design System",
+  "version": "1.0.0",
+  "description": "Design system tokens for the United Tattoo website - documenting the current dark monochromatic implementation",
+  "lastUpdated": "2025-12-27",
+
+  "colors": {
+    "background": {
+      "deep": "#050505",
+      "description": "Primary near-black background used throughout the site"
+    },
+    "text": {
+      "main": "#e0e0e0",
+      "description": "Primary text color - light gray for readability on dark backgrounds"
+    },
+    "accent": {
+      "white": "#ffffff",
+      "description": "Pure white for CTAs, headings, and high-contrast elements"
+    },
+    "neutral": {
+      "50": "#fafafa",
+      "100": "#f5f5f5",
+      "200": "#e5e5e5",
+      "300": "#d4d4d4",
+      "400": "#a3a3a3",
+      "500": "#737373",
+      "600": "#525252",
+      "700": "#404040",
+      "800": "#262626",
+      "900": "#171717",
+      "950": "#0a0a0a",
+      "description": "Grayscale palette for various UI states and text hierarchy"
+    },
+    "opacity": {
+      "white-5": "rgba(255, 255, 255, 0.05)",
+      "white-10": "rgba(255, 255, 255, 0.1)",
+      "white-20": "rgba(255, 255, 255, 0.2)",
+      "white-30": "rgba(255, 255, 255, 0.3)",
+      "black-50": "rgba(0, 0, 0, 0.5)",
+      "black-60": "rgba(0, 0, 0, 0.6)",
+      "description": "Transparent overlay colors for borders, backgrounds, and glass effects"
+    },
+    "usage": {
+      "gridLines": "white-10",
+      "borders": "white-10",
+      "subtleBorders": "white-5",
+      "hoverBorders": "white-20",
+      "focusBorders": "white-30",
+      "formFieldBg": "black-50",
+      "navBg": "black-60"
+    }
+  },
+
+  "typography": {
+    "fontFamily": {
+      "display": "'Instrument Serif', serif",
+      "body": "'Inter', sans-serif",
+      "mono": "'Geist Mono', monospace",
+      "description": {
+        "display": "Editorial serif for headings and hero titles - elegant, sophisticated",
+        "body": "Clean sans-serif for paragraphs, UI elements - highly readable",
+        "mono": "Modern monospace for labels, metadata, section markers"
+      }
+    },
+    "fontSize": {
+      "xs": "0.75rem",
+      "sm": "0.875rem",
+      "base": "1rem",
+      "lg": "1.125rem",
+      "xl": "1.25rem",
+      "2xl": "1.5rem",
+      "3xl": "1.875rem",
+      "4xl": "2.25rem",
+      "5xl": "3rem",
+      "6xl": "3.75rem",
+      "7xl": "4.5rem",
+      "custom": {
+        "tiny-label": "0.625rem",
+        "hero-mobile": "14vw",
+        "hero-tablet": "10vw",
+        "hero-desktop": "8vw"
+      },
+      "description": "Font size scale - headings use 4xl-7xl, body uses base-xl, labels use xs and custom tiny sizes"
+    },
+    "fontWeight": {
+      "light": 300,
+      "normal": 400,
+      "medium": 500,
+      "semibold": 600,
+      "description": "Font weights - light for secondary text, normal for headings (Instrument Serif), medium for emphasis"
+    },
+    "lineHeight": {
+      "tight": 1.1,
+      "hero": 0.9,
+      "base": 1.6,
+      "relaxed": 1.7,
+      "prose": 1.75,
+      "description": "Line heights - tight/hero for headings, base/relaxed for body text, prose for editorial content"
+    },
+    "letterSpacing": {
+      "tighter": "-0.05em",
+      "normal": "0",
+      "wide": "0.15em",
+      "wider": "0.2em",
+      "widest": "0.3em",
+      "description": "Letter spacing - tighter for large headings, wide/wider/widest for uppercase mono labels"
+    },
+    "textTransform": {
+      "uppercase": {
+        "usage": ["section-labels", "buttons", "breadcrumbs", "hero-titles"],
+        "description": "Uppercase styling used for labels and emphasis"
+      }
+    }
+  },
+
+  "spacing": {
+    "scale": {
+      "0": "0",
+      "0.5": "0.125rem",
+      "1": "0.25rem",
+      "2": "0.5rem",
+      "3": "0.75rem",
+      "4": "1rem",
+      "5": "1.25rem",
+      "6": "1.5rem",
+      "8": "2rem",
+      "10": "2.5rem",
+      "12": "3rem",
+      "16": "4rem",
+      "20": "5rem",
+      "24": "6rem",
+      "32": "8rem",
+      "description": "Spacing scale based on Tailwind defaults - used for padding, margin, gaps"
+    },
+    "patterns": {
+      "sectionPadding": {
+        "mobile": "1.5rem",
+        "desktop": "3rem-4rem",
+        "description": "Standard vertical padding for page sections"
+      },
+      "pageMargins": {
+        "mobile": "1.5rem",
+        "tablet": "3rem",
+        "desktop": "4rem",
+        "description": "Horizontal page margins (px-6 md:px-12 lg:px-16)"
+      },
+      "cardPadding": "2rem-2.5rem",
+      "buttonPadding": {
+        "medium": "1.5rem 1rem",
+        "large": "2.5rem 1.25rem"
+      },
+      "formFieldPadding": "1rem",
+      "gridGap": {
+        "small": "0.5rem-1rem",
+        "medium": "1.5rem-2rem",
+        "large": "2.5rem-3rem"
+      }
+    }
+  },
+
+  "layout": {
+    "breakpoints": {
+      "sm": "640px",
+      "md": "768px",
+      "lg": "1024px",
+      "xl": "1280px",
+      "description": "Responsive breakpoints following Tailwind defaults"
+    },
+    "containers": {
+      "maxWidth": {
+        "sm": "640px",
+        "md": "768px",
+        "lg": "1024px",
+        "xl": "1280px",
+        "2xl": "1536px",
+        "3xl": "48rem",
+        "4xl": "56rem",
+        "7xl": "80rem"
+      },
+      "description": "Container max-widths - 7xl (80rem) is the primary content container"
+    },
+    "grid": {
+      "columns": 12,
+      "description": "12-column grid system with visual grid overlay component",
+      "patterns": {
+        "responsive": "grid-cols-1 md:grid-cols-2 lg:grid-cols-12",
+        "sidebar": "2 columns sidebar + 10 columns content"
+      }
+    },
+    "aspectRatios": {
+      "hero": "85vh-100vh",
+      "gallery": "varying (1:1, 3:4, 16:9)",
+      "description": "Common aspect ratios used in layouts"
+    }
+  },
+
+  "borders": {
+    "radius": {
+      "none": "0",
+      "full": "9999px",
+      "description": "Sharp corners throughout (radius: 0), except circular elements (full)"
+    },
+    "width": {
+      "default": "1px",
+      "description": "1px borders used consistently"
+    },
+    "color": {
+      "subtle": "white/5",
+      "standard": "white/10",
+      "hover": "white/20",
+      "focus": "white/30",
+      "description": "Border colors using white opacity variants"
+    },
+    "usage": {
+      "sectionSeparator": "border-t border-white/10",
+      "gridColumns": "border-r border-white/5",
+      "cards": "border border-white/10",
+      "inputs": "border-white/10 focus:border-white/30"
+    }
+  },
+
+  "effects": {
+    "backdropBlur": {
+      "md": "12px",
+      "xl": "24px",
+      "usage": {
+        "navigation": "backdrop-blur-md",
+        "glassCards": "backdrop-blur-xl",
+        "formInputs": "backdrop-blur"
+      }
+    },
+    "boxShadow": {
+      "2xl": "0 25px 50px -12px rgba(0, 0, 0, 0.25)",
+      "usage": {
+        "floatingCTA": "shadow-2xl shadow-black/50",
+        "galleryItems": "shadow-2xl"
+      },
+      "description": "Minimal shadow usage - primarily for floating elements"
+    },
+    "opacity": {
+      "levels": [0, 0.02, 0.05, 0.1, 0.2, 0.3, 0.5, 0.6, 1],
+      "description": "Common opacity values for layering and depth"
+    },
+    "filters": {
+      "grayscale": "100%",
+      "grayscalePartial": "30%",
+      "contrast": "125%",
+      "description": "Image filters applied to photos and backgrounds"
+    },
+    "mixBlendMode": {
+      "screen": "screen",
+      "usage": "Dove logo overlay with mix-blend-screen"
+    },
+    "noise": {
+      "opacity": "3%",
+      "description": "SVG noise texture overlay for subtle grain effect"
+    }
+  },
+
+  "animation": {
+    "transitions": {
+      "duration": {
+        "fast": "200ms",
+        "base": "300ms",
+        "slow": "500ms",
+        "slowest": "700ms"
+      },
+      "easing": {
+        "default": "ease-in-out",
+        "description": "Standard CSS transitions on hover states and UI changes"
+      },
+      "properties": ["all", "colors", "opacity", "transform"]
+    },
+    "gsap": {
+      "scrollAnimations": {
+        "heroReveal": {
+          "y": "100%",
+          "opacity": 0,
+          "stagger": "0.1s",
+          "easing": "power4.out"
+        },
+        "fadeIn": {
+          "y": "50px",
+          "opacity": 0,
+          "easing": "power3.out"
+        },
+        "imageScale": {
+          "from": 1.1,
+          "to": 1,
+          "easing": "power2.out"
+        }
+      },
+      "parallax": {
+        "gridBackground": "yPercent: 30",
+        "heroTitle": "yPercent: 20",
+        "imageBackground": "yPercent: 15",
+        "processNumbers": "yPercent: -30"
+      },
+      "stagger": {
+        "artistRows": "0.1s",
+        "processSteps": "0.15s",
+        "galleryItems": "0.05s",
+        "footerElements": "0.08-0.1s"
+      },
+      "easing": {
+        "power4Out": "power4.out",
+        "power3Out": "power3.out",
+        "power2Out": "power2.out",
+        "backOut": "back.out(2)"
+      }
+    },
+    "lenis": {
+      "duration": "1.2s",
+      "description": "Smooth scrolling with custom easing curve"
+    },
+    "hover": {
+      "imageScale": "1.02-1.1",
+      "duration": "500-700ms"
+    },
+    "keyframes": {
+      "ping": "animate-ping on announcement dot",
+      "pulse": "Scroll indicator opacity + scaleX animation"
+    }
+  },
+
+  "zIndex": {
+    "layers": {
+      "background": -1,
+      "base": 0,
+      "content": 1,
+      "navigation": 40,
+      "floatingCTA": 50,
+      "mobileMenu": 50,
+      "lightbox": 100
+    }
+  },
+
+  "aesthetic": {
+    "philosophy": [
+      "Gallery pacing - museum-quality spacing and generous whitespace",
+      "Editorial style - serif headlines, monospace metadata, minimal ornamentation",
+      "Dark and minimal - deep black backgrounds with high contrast white text",
+      "Texture and depth - noise overlays, backdrop blur, glass morphism",
+      "Sophistication through restraint - emphasis on typography and space over color"
+    ],
+    "visualMood": [
+      "Sophisticated",
+      "Modern",
+      "Clean",
+      "Professional but artistic",
+      "Gallery/museum atmosphere",
+      "Not loud or flashy"
+    ],
+    "keyElements": {
+      "gridSystem": "Strong vertical rhythm with 12-column visual grid and borders",
+      "sectionNumbering": "[01], [02] format in monospace font",
+      "noiseTexture": "3% opacity SVG for subtle grain",
+      "doveImagery": "Large background element with mask gradient, low opacity, grayscale",
+      "scrollExperience": "Smooth, continuous scrolling with parallax and reveals"
+    }
+  }
+}

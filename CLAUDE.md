@@ -31,6 +31,15 @@ pnpm commit          # AI-powered commit message generator
 pnpm convert:avif    # Convert images to AVIF format
 ```
 
+## Repository Change Documentation
+
+**MANDATORY**: Whenever making any change to the repository (implementations, bug fixes, refactoring, etc.), you MUST update `dev/continuity.md` with:
+- Details of the changes made
+- Next steps or follow-up actions required
+- Any context or decisions that should be preserved for future work
+
+This ensures continuity of work and helps maintain context across development sessions.
+
 ## Project Structure
 
 ```

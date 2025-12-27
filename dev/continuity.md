@@ -1,3 +1,118 @@
+# Continuity Log
+
+## Template for New Entries
+```
+## YYYY-MM-DD - <Milestone>
+
+### Changes Made
+- Created X, Y, Z files
+- Implemented feature A using pattern B
+
+### Decisions
+- Chose X over Y because...
+- Pattern for Z is...
+
+### How to Test
+1. Navigate to...
+2. Click...
+3. Verify...
+
+### Next Steps
+- [ ] Item 1
+- [ ] Item 2
+```
+
+## Example: postMessage Pattern (Reference)
+
+**Parent sends to iframe:**
+```typescript
+// lib/communication/iframe-controller.ts
+export function selectElement(iframe: HTMLIFrameElement, nodeId: string) {
+  iframe.contentWindow?.postMessage(
+    { type: 'SELECT_ELEMENT', payload: { nodeId } },
+    'http://localhost:4321' // Always explicit origin
+  )
+}
+```
+
+**Iframe sends to parent:**
+```typescript
+// Injected script in iframe
+window.parent.postMessage(
+  { type: 'ELEMENT_SELECTED', payload: { nodeId, rect, astroSource } },
+  'http://localhost:3000'
+)
+```
+
+**Parent receives:**
+```typescript
+// lib/communication/message-handler.ts
+window.addEventListener('message', (event) => {
+  if (event.origin !== 'http://localhost:4321') return
+  
+  switch (event.data.type) {
+    case 'ELEMENT_SELECTED':
+      handleElementSelected(event.data.payload)
+      break
+    // ... other handlers
+  }
+})
+```
+
+## Example: Zustand Store Pattern (Reference)
+```typescript
+// lib/store/editor-store.ts
+import { create } from 'zustand'
+
+interface EditorStore {
+  selectedElement: SelectedElement | null
+  setSelectedElement: (el: SelectedElement | null) => void
+}
+
+export const useEditorStore = create<EditorStore>((set) => ({
+  selectedElement: null,
+  setSelectedElement: (el) => set({ selectedElement: el }),
+}))
+```
+
+Usage:
+```typescript
+const selectedElement = useEditorStore((state) => state.selectedElement)
+const setSelectedElement = useEditorStore((state) => state.setSelectedElement)
+```
+
+## Example: File Update Pattern (Reference)
+```typescript
+// lib/astro/class-updater.ts
+import { parse, walk } from '@astrojs/compiler'
+
+export async function updateClasses(
+  filePath: string,
+  line: number,
+  col: number,
+  newClasses: string
+): Promise<string> {
+  const source = await fs.readFile(filePath, 'utf-8')
+  const ast = await parse(source)
+  
+  // Walk AST to find element at line:col
+  let targetNode = null
+  walk(ast, (node) => {
+    if (node.position?.start.line === line && 
+        node.position?.start.column === col) {
+      targetNode = node
+    }
+  })
+  
+  // Update class attribute in source string
+  // ... implementation
+  
+  return updatedSource
+}
+```
+
+---
+
 # Artists, Booking & Policy Pages Implementation
 
 **Date:** December 24, 2024 @ 14:36 UTC
