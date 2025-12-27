@@ -52,7 +52,7 @@ function loadEnv() {
 
 // Configuration
 const OPENROUTER_API_URL = 'https://openrouter.ai/api/v1';
-const MODEL_NAME = 'inception/mercury-coder';
+const MODEL_NAME = 'openrouter/auto';
 
 // Color codes for terminal output
 const colors = {
