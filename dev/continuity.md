@@ -113,6 +113,256 @@ export async function updateClasses(
 
 ---
 
+# Homepage Polish: Hybrid Dark + Warm Accents
+
+**Date:** December 27, 2024
+**Branch:** main
+
+---
+
+## Summary
+
+Polished the homepage with a **hybrid approach**: maintained the sophisticated dark monochrome aesthetic while strategically adding warm accent colors (burnt orange, terracotta, sage, moss) from the design system. This moderate redesign improved visual balance, fixed critical visibility issues, enhanced typography hierarchy, and added subtle micro-interactions—all without abandoning the established editorial foundation.
+
+---
+
+## Changes Made
+
+### 1. Color System Enhancement
+
+**Added warm accent colors to global CSS** (`src/styles/global.css`):
+- Burnt orange (#E67E50) - CTAs and primary accents
+- Terracotta (#D87850) - Hover states and interactive elements
+- Burnt dark (#b0471e) - Secondary accents
+- Sage (#a28f79) - Icons and subtle accents
+- Moss (#6f5c49) - Labels and metadata
+- Cream (#fff7ec) - Future use
+- Sand (#f2e3d0) - Future use
+
+**Updated `.section-label` utility**:
+- Changed color from neutral gray to moss color
+- Increased font size from 10px to 12px for better readability
+- Reduced tracking from 0.3em to 0.2em
+
+### 2. Critical Visibility Fixes
+
+**Process Section** (`src/pages/index.astro`):
+- Changed process numbers from `text-neutral-800` (invisible on black) to **burnt orange**
+- Changed process icons from `text-neutral-700` (too dark) to **sage color**
+- Increased process descriptions from 11px/xs to sm/base for better hierarchy
+- Updated border opacity from `white/5` to `white/10` for better visibility
+- Changed text color from `text-neutral-500` to `text-neutral-400` for improved readability
+
+### 3. Dove Image Enhancement
+
+**Hero Section**:
+- Increased dove opacity from 40% to 70% for better visibility
+- Adjusted gradient fade from `bg-deep/80` to `bg-deep/70` for softer transition
+- Kept grayscale filter per design preference
+- Image now has stronger presence while maintaining subtlety
+
+### 4. Strategic Color Accents
+
+**CTAs (Call-to-Action Buttons)**:
+- **Mobile CTA**: Changed from white background to burnt orange with burnt dark arrow icon
+- **FloatingCTA** (`src/components/FloatingCTA.astro`): Updated to burnt orange with terracotta hover state
+- Added warm glow shadow effect: `rgba(230, 126, 80, 0.3)`
+- Hover effects include color transition, lift animation, and enhanced shadow
+
+**Interactive Elements**:
+- Artist hover arrow: Changed from white border to filled terracotta background
+- Hero info bar: Added burnt orange top border accent
+- All CTAs now have consistent warm color treatment
+
+### 5. Labels & Metadata
+
+**Moss color applied throughout**:
+- Hero label: "Custom · Flash · Freedom"
+- Hero info bar labels: "Location", "Hours", "Artists"
+- Artist specialty labels: "Specialty"
+- All section labels now use the `.section-label` utility class
+
+**Spacing improvements**:
+- Hero info bar: Unified gap from 6/10 to consistent 8
+- Increased font sizes for better hierarchy (9px → 12px for labels)
+- Values increased from xs to sm for better readability
+
+### 6. Typography Refinements
+
+**Hero Title**:
+- Changed from viewport units (`14vw/10vw/8vw`) to fixed responsive sizes (`text-7xl/8xl/9xl`)
+- Changed tracking from `tracking-tighter` to `tracking-tight` for better balance
+- More predictable scaling across all device sizes
+
+**Label Tracking**:
+- Reduced from `0.3em` to `0.2em` across all labels for improved readability
+- Still maintains uppercase mono aesthetic without being too wide
+
+### 7. Spacing Consistency
+
+**Artists Section**:
+- Increased padding from `py-6 md:py-8` to `py-8 md:py-10` for more breathing room
+- Updated border from `white/5` to `white/10` for better visibility
+- More generous spacing improves visual hierarchy
+
+### 8. Micro-Interactions
+
+**Added hover effects** (`src/pages/index.astro` - style block):
+
+```css
+/* Artist name underline on hover */
+- Gradient underline (burnt orange → terracotta) slides in on hover
+- Animated with CSS keyframe for smooth appearance
+
+/* Mobile CTA hover effect */
+- Color changes to terracotta
+- Lifts 2px with enhanced shadow glow
+- Smooth transform and color transitions
+
+/* Process step hover enhancements */
+- Terracotta top border appears on hover
+- Process numbers scale up 10% and change to terracotta
+- Icons transition to white
+- Multiple simultaneous effects create premium feel
+```
+
+---
+
+## Files Modified
+
+```
+src/styles/global.css              - Added warm color variables, updated .section-label
+src/pages/index.astro               - Color accents, typography fixes, micro-interactions
+src/components/FloatingCTA.astro    - Burnt orange styling with hover effects
+```
+
+---
+
+## Design Decisions
+
+### Why Hybrid Approach?
+
+The homepage had a fully implemented dark monochrome aesthetic that worked well structurally. Rather than a complete color overhaul, strategic warm accents were added to:
+
+1. **Improve usability**: Fix invisible process numbers and too-dark icons
+2. **Guide attention**: Use color to highlight CTAs and interactive elements
+3. **Add warmth**: Introduce personality without overwhelming the dark editorial feel
+4. **Maintain sophistication**: Keep the refined, gallery-like atmosphere
+
+### Color Application Strategy
+
+**Where warm colors are used:**
+- CTAs: Burnt orange backgrounds (highest attention priority)
+- Hover states: Terracotta accents (interactive feedback)
+- Labels/metadata: Moss color (subtle hierarchy)
+- Icons: Sage color (visual interest without overwhelming)
+- Borders: Burnt orange for key dividers (visual organization)
+
+**Where dark monochrome is preserved:**
+- Background: Stays near-black
+- Main text: Stays white/neutral grays
+- Large imagery: Dove remains grayscale
+- Grid lines: Stay subtle white/10
+- Overall atmosphere: Dark, sophisticated, editorial
+
+### Typography Philosophy
+
+Fixed responsive sizes (`text-7xl/8xl/9xl`) chosen over viewport units because:
+- More predictable behavior across device sizes
+- Easier to maintain consistent scale
+- Better alignment with Tailwind's design system
+- Avoids awkward mid-breakpoint sizing
+
+---
+
+## Testing Checklist
+
+- [x] Warm color CSS variables render correctly
+- [x] Process numbers now visible (burnt orange)
+- [x] Process icons visible with sage color
+- [x] Dove image has better presence (70% opacity)
+- [x] Mobile CTA uses burnt orange background
+- [x] FloatingCTA shows burnt orange with terracotta hover
+- [x] All labels use moss color
+- [x] Hero info bar has burnt orange top border
+- [x] Artist specialty labels use moss color
+- [x] Hero title scales consistently across breakpoints
+- [x] Artist rows have more breathing room
+- [x] Artist hover arrow shows terracotta background
+- [x] Artist name underline animation works on hover
+- [x] Process step hover effects trigger correctly
+- [x] Border visibility improved throughout
+- [x] Typography hierarchy clearer with improved sizing
+
+---
+
+## Next Steps
+
+### Immediate Follow-ups
+- [ ] Test across multiple browsers (Chrome, Firefox, Safari)
+- [ ] Verify mobile experience on actual devices
+- [ ] Check color contrast for WCAG compliance
+- [ ] Get client feedback on warm accent color balance
+
+### Future Polish Opportunities
+- [ ] Consider adding warm color to footer elements
+- [ ] Explore adding subtle warm tints to additional images
+- [ ] Add more micro-interactions to other page sections
+- [ ] Implement color transitions during scroll animations
+
+### Design System Alignment
+- [ ] Document the hybrid color approach in DESIGN_SYSTEM_SUMMARY.md
+- [ ] Update color usage guidelines for future pages
+- [ ] Create utility classes for common warm accent patterns
+- [ ] Establish when to use dark vs. warm aesthetic on other pages
+
+---
+
+## Notes
+
+### Color Palette Applied
+
+From `DESIGN_SYSTEM_SUMMARY.md`, the following warm colors are now integrated:
+
+**Primary Accents:**
+- Burnt Orange (#E67E50) - CTAs, primary highlights
+- Terracotta (#D87850) - Hover states, secondary interactions
+- Burnt Dark (#b0471e) - Icon fills, darker accents
+
+**Subtle Accents:**
+- Sage (#a28f79) - Icons, calm accents
+- Moss (#6f5c49) - Labels, metadata, section identifiers
+
+**Reserved for Future:**
+- Cream (#fff7ec) - Potential light text alternative
+- Sand (#f2e3d0) - Potential background tint
+
+### Technical Implementation
+
+**CSS Custom Properties:**
+All warm colors added to `@theme` block in `global.css`, making them available as:
+- `var(--color-burnt-orange)`
+- `var(--color-terracotta)`
+- `var(--color-burnt-dark)`
+- `var(--color-sage)`
+- `var(--color-moss)`
+
+**Style Application:**
+Inline styles used for color application (`style="color: var(--color-moss)"`) because:
+- Ensures color override specificity
+- Works well with Astro component architecture
+- Maintains compatibility with existing Tailwind classes
+- Easy to update globally by changing CSS variables
+
+**Animation Approach:**
+Micro-interactions added via `<style>` block in index.astro rather than global.css because:
+- Keeps homepage-specific interactions scoped
+- Easier to maintain and debug
+- Prevents unintended effects on other pages
+- Clear separation of concerns
+
+---
+
 # Artists, Booking & Policy Pages Implementation
 
 **Date:** December 24, 2024 @ 14:36 UTC
