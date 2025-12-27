@@ -1,7 +1,7 @@
 {
   "$schema": "United Tattoo Design System",
-  "version": "1.0.0",
-  "description": "Design system tokens for the United Tattoo website - documenting the current dark monochromatic implementation",
+  "version": "1.1.0",
+  "description": "Design system tokens for the United Tattoo website - hybrid dark monochromatic with warm accent colors",
   "lastUpdated": "2025-12-27",
 
   "colors": {
@@ -31,6 +31,26 @@
       "950": "#0a0a0a",
       "description": "Grayscale palette for various UI states and text hierarchy"
     },
+    "warmAccents": {
+      "burntOrange": "#E67E50",
+      "terracotta": "#D87850",
+      "burntDark": "#b0471e",
+      "sage": "#a28f79",
+      "moss": "#6f5c49",
+      "cream": "#fff7ec",
+      "sand": "#f2e3d0",
+      "description": "Warm accent colors added Dec 27, 2024 - strategic use for CTAs, hover states, labels, and icons",
+      "usage": {
+        "burntOrange": "Primary CTAs, key highlights, accent borders",
+        "terracotta": "Hover states, secondary interactive elements",
+        "burntDark": "CTA icon fills, darker accents",
+        "sage": "Icons, calm accents, subtle color interest",
+        "moss": "Labels, metadata, section identifiers",
+        "cream": "Reserved for future light text use",
+        "sand": "Reserved for future background tints"
+      },
+      "philosophy": "Hybrid approach - maintain dark monochrome foundation while adding strategic warm accents for usability, visual interest, and brand personality"
+    },
     "opacity": {
       "white-5": "rgba(255, 255, 255, 0.05)",
       "white-10": "rgba(255, 255, 255, 0.1)",
@@ -47,7 +67,9 @@
       "hoverBorders": "white-20",
       "focusBorders": "white-30",
       "formFieldBg": "black-50",
-      "navBg": "black-60"
+      "navBg": "black-60",
+      "accentBorders": "burntOrange",
+      "hoverAccents": "terracotta"
     }
   },
 
@@ -74,13 +96,14 @@
       "5xl": "3rem",
       "6xl": "3.75rem",
       "7xl": "4.5rem",
+      "8xl": "6rem",
+      "9xl": "8rem",
       "custom": {
         "tiny-label": "0.625rem",
-        "hero-mobile": "14vw",
-        "hero-tablet": "10vw",
-        "hero-desktop": "8vw"
+        "section-label": "0.75rem"
       },
-      "description": "Font size scale - headings use 4xl-7xl, body uses base-xl, labels use xs and custom tiny sizes"
+      "description": "Font size scale - hero uses 7xl/8xl/9xl (fixed responsive), body uses base-xl, labels use xs (12px minimum)",
+      "updates": "Dec 27, 2024 - Changed hero from viewport units to fixed responsive sizes for predictable scaling. Standardized labels to xs (12px) minimum."
     },
     "fontWeight": {
       "light": 300,
@@ -99,11 +122,13 @@
     },
     "letterSpacing": {
       "tighter": "-0.05em",
+      "tight": "-0.025em",
       "normal": "0",
       "wide": "0.15em",
       "wider": "0.2em",
       "widest": "0.3em",
-      "description": "Letter spacing - tighter for large headings, wide/wider/widest for uppercase mono labels"
+      "description": "Letter spacing - tight for hero headings, wider (0.2em) for labels/metadata (Dec 27 update: reduced from widest)",
+      "updates": "Dec 27, 2024 - Labels changed from 0.3em to 0.2em for better readability. Hero titles use tight instead of tighter."
     },
     "textTransform": {
       "uppercase": {
@@ -317,9 +342,37 @@
       "imageScale": "1.02-1.1",
       "duration": "500-700ms"
     },
+    "microInteractions": {
+      "artistNameUnderline": {
+        "type": "gradient background animation",
+        "colors": "burntOrange → terracotta",
+        "animation": "underlineSlide 0.3s ease-out",
+        "description": "Gradient underline slides in from 0 to 100% width on artist name hover"
+      },
+      "ctaHover": {
+        "colorChange": "burntOrange → terracotta",
+        "transform": "translateY(-2px)",
+        "shadowEnhance": "rgba(230, 126, 80, 0.3) → 0.4",
+        "description": "CTAs lift and glow on hover with color transition"
+      },
+      "processStepHover": {
+        "borderReveal": "transparent → terracotta (top border)",
+        "numberScale": "1 → 1.1",
+        "numberColor": "burntOrange → terracotta",
+        "iconColor": "sage → white",
+        "description": "Multiple simultaneous effects create premium feel"
+      },
+      "artistArrow": {
+        "background": "transparent → terracotta",
+        "opacity": "0 → 1",
+        "description": "Terracotta circle appears behind arrow on hover"
+      },
+      "addedDate": "Dec 27, 2024"
+    },
     "keyframes": {
       "ping": "animate-ping on announcement dot",
-      "pulse": "Scroll indicator opacity + scaleX animation"
+      "pulse": "Scroll indicator opacity + scaleX animation",
+      "underlineSlide": "Background-size animation from 0 to 100% width"
     }
   },
 
@@ -341,7 +394,7 @@
       "Editorial style - serif headlines, monospace metadata, minimal ornamentation",
       "Dark and minimal - deep black backgrounds with high contrast white text",
       "Texture and depth - noise overlays, backdrop blur, glass morphism",
-      "Sophistication through restraint - emphasis on typography and space over color"
+      "Hybrid color approach (Dec 27) - dark monochrome foundation with strategic warm accents for usability and brand personality"
     ],
     "visualMood": [
       "Sophisticated",
@@ -349,14 +402,23 @@
       "Clean",
       "Professional but artistic",
       "Gallery/museum atmosphere",
-      "Not loud or flashy"
+      "Not loud or flashy",
+      "Warm without overwhelming (Dec 27)"
     ],
     "keyElements": {
       "gridSystem": "Strong vertical rhythm with 12-column visual grid and borders",
       "sectionNumbering": "[01], [02] format in monospace font",
       "noiseTexture": "3% opacity SVG for subtle grain",
-      "doveImagery": "Large background element with mask gradient, low opacity, grayscale",
-      "scrollExperience": "Smooth, continuous scrolling with parallax and reveals"
+      "doveImagery": "Large background element with mask gradient, 70% opacity, grayscale (Dec 27: increased from 40%)",
+      "scrollExperience": "Smooth, continuous scrolling with parallax and reveals",
+      "warmAccents": "Strategic use of burnt orange, terracotta, sage, moss for CTAs, hover states, labels, and icons (Dec 27)",
+      "microInteractions": "Subtle hover animations with color transitions and transforms (Dec 27)"
+    },
+    "colorStrategy": {
+      "foundation": "Dark monochrome (black, white, grays) for backgrounds, main text, and imagery",
+      "accents": "Warm colors (burnt orange family, sage, moss) for CTAs, interactive elements, and metadata",
+      "philosophy": "Maintain sophisticated dark editorial aesthetic while adding visual interest and improved usability through strategic color",
+      "addedDate": "Dec 27, 2024"
     }
   }
 }

@@ -220,11 +220,18 @@ Polished the homepage with a **hybrid approach**: maintained the sophisticated d
 - Smooth transform and color transitions
 
 /* Process step hover enhancements */
-- Terracotta top border appears on hover
+- Transparent 2px top border always present (prevents layout shift)
+- Border color transitions to terracotta on hover
 - Process numbers scale up 10% and change to terracotta
 - Icons transition to white
 - Multiple simultaneous effects create premium feel
 ```
+
+**Layout Shift Fix:**
+- Process cards originally added 2px border on hover, causing content to jump
+- **Solution**: All cards now have 2px transparent border by default
+- On hover, only border-color changes (not adding new border)
+- Smooth transition prevents any layout shifting
 
 ---
 
@@ -293,6 +300,20 @@ Fixed responsive sizes (`text-7xl/8xl/9xl`) chosen over viewport units because:
 - [x] Process step hover effects trigger correctly
 - [x] Border visibility improved throughout
 - [x] Typography hierarchy clearer with improved sizing
+- [x] **Process cards no longer shift on hover (transparent border fix)**
+
+---
+
+## Post-Polish Refinement
+
+**Layout Shift Fix (Dec 27, late afternoon):**
+- User reported layout shift when hovering over methodology cards
+- Root cause: 2px border being added on hover pushed content down
+- **Fix implemented**: Changed from adding border on hover to transitioning border-color
+  - All `.process-step` elements now have `border-top: 2px solid transparent`
+  - Hover state changes to `border-top-color: var(--color-terracotta)`
+  - Added smooth `transition: border-color 0.3s ease`
+- Result: Perfect stability, no layout jumping, smooth color transition
 
 ---
 
@@ -973,11 +994,21 @@ BOOKING_FROM_EMAIL=bookings@unitedtattoo.com
 
 ### Color Palette
 
+**Dark Monochrome Foundation:**
 - Background: `#050505` (near-black)
 - Text: `#e0e0e0` (light gray)
 - Accent: `#ffffff` (white)
 - Grid lines: `rgba(255, 255, 255, 0.1)`
-- Muted: Various gray shades for hierarchy
+- Neutrals: Various gray shades for hierarchy
+
+**Warm Accent Colors (Dec 27, 2024):**
+- Burnt Orange: `#E67E50` (CTAs, key highlights)
+- Terracotta: `#D87850` (Hover states, interactions)
+- Burnt Dark: `#b0471e` (CTA icon fills)
+- Sage: `#a28f79` (Icons, calm accents)
+- Moss: `#6f5c49` (Labels, metadata)
+- Cream: `#fff7ec` (Reserved)
+- Sand: `#f2e3d0` (Reserved)
 
 ---
 
