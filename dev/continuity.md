@@ -1,5 +1,71 @@
 # Continuity Log
 
+## 2026-01-01 - Mobile Nav, SEO & Testimonials
+
+### Changes Made
+
+#### 1. Mobile Navigation Logic
+- **Refactored `HeaderNav.astro` script**:
+  - Moved initialization to `DOMContentLoaded` to ensure DOM readiness.
+  - Implemented proper z-index management: Nav button stays `z-[110]` (clickable) while menu overlay is `z-[100]`.
+  - Added proper backdrop styling (`bg-neutral-950/98 backdrop-blur-xl`) for readability.
+  - Prevented body scroll when menu is open.
+
+#### 2. SEO & Structured Data Implementation
+- **Created `Schema.astro` component**:
+  - Dynamic JSON-LD generation.
+  - Generates `LocalBusiness` (TattooShop) schema for site-wide pages.
+  - Generates `Person` (Artist) schema for individual artist pages.
+- **Enhanced `SiteLayout.astro`**:
+  - Added Open Graph (OG) meta tags (title, description, image, type).
+  - Added Twitter Card meta tags.
+  - Integrated `Schema.astro` component into `<head>`.
+
+#### 3. Booking Form Enhancements
+- **Added "Availability" Field**:
+  - Inserted "Preferred Dates / Times" input in Section 03 of `booking.astro`.
+  - Updated API handler (`api/booking.ts`) to process and include this field in email notifications.
+
+#### 4. Artist Testimonials
+- **Updated Content Schema**:
+  - Added `testimonials` array (quote, client) to `src/content.config.ts`.
+- **Artist Page Update**:
+  - Conditionally renders a "Words" / "Client Experiences" section in `artists/[slug].astro`.
+  - Added sample testimonial to Amari Kyss's profile.
+
+### Files Created
+```
+src/components/Schema.astro             - JSON-LD structured data generator
+```
+
+### Files Modified
+```
+src/components/HeaderNav.astro          - Fixed mobile menu script & styles
+src/layouts/SiteLayout.astro            - Added OG tags & Schema component
+src/content.config.ts                   - Added testimonials to artist schema
+src/pages/artists/[slug].astro          - Added testimonials section
+src/content/artists/amari-kyss.mdx      - Added sample testimonial
+src/pages/booking.astro                 - Added availability input
+src/pages/api/booking.ts                - Handled new availability field
+```
+
+### Decisions
+- **Separate Schema Component**: Abstracted JSON-LD logic into `Schema.astro` to keep `SiteLayout` clean and allow for easy expansion of schema types in the future without cluttering the main layout.
+- **Availability Field**: Added as a simple text input rather than a complex date picker to allow for flexible natural language input (e.g., "Weekends in March", "Tuesdays after 4pm").
+
+### How to Test
+1. **Mobile Menu**: Shrink viewport, click "Menu", verify overlay opens and "Close" button works.
+2. **SEO**: Inspect source on homepage and artist pages to verify `<script type="application/ld+json">` and `<meta property="og:...">` tags.
+3. **Booking**: Submit a form with availability preference and check console logs (or email).
+4. **Testimonials**: Visit Amari Kyss's page and verify the "Client Words" section appears.
+
+### Next Steps
+- [ ] Add Heather's profile (Instagram: `https://www.instagram.com/heather.robyns.art/`)
+- [ ] Populate Kaori Cedre's bio and portfolio images
+- [ ] Add portrait images where missing (Kaori)
+- [ ] Verify all artist portfolio images are optimized (AVIF conversion)
+- [ ] Update footer social links to real URLs
+
 ## 2026-01-01 - Editorial Refinement & Dynamic Portfolio Layouts
 
 ### Changes Made

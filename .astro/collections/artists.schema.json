@@ -39,6 +39,25 @@
           "type": "string",
           "format": "email"
         },
+        "testimonials": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "quote": {
+                "type": "string"
+              },
+              "client": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "quote",
+              "client"
+            ],
+            "additionalProperties": false
+          }
+        },
         "$schema": {
           "type": "string"
         }

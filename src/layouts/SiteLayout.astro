@@ -4,24 +4,48 @@ import { SITE_TITLE } from '../consts';
 import Announcement from '../components/Announcement.astro';
 import HeaderNav from '../components/HeaderNav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
+import Schema from '../components/Schema.astro';
 
 interface Props {
   title?: string;
   description?: string;
+  image?: string;
+  type?: 'website' | 'article' | 'profile';
   frontmatter?: {
     title?: string;
     description?: string;
+    image?: string;
   };
   announcement?: string;
   hideAnnouncement?: boolean;
   removeMainPadding?: boolean;
   hideFooter?: boolean;
+  artistSchema?: {
+    name: string;
+    description: string;
+    image: string;
+    sameAs?: string[];
+  };
 }
 
-const { frontmatter, hideAnnouncement = false, removeMainPadding = false, hideFooter = false, announcement, ...props } = Astro.props;
+const { 
+  frontmatter, 
+  hideAnnouncement = false, 
+  removeMainPadding = false, 
+  hideFooter = false, 
+  announcement,
+  image = '/images/united-studio-main.jpg',
+  type = 'website',
+  artistSchema,
+  ...props 
+} = Astro.props;
+
 const title = props.title || frontmatter?.title || '';
 const description = props.description || frontmatter?.description || 'Tattoo studio in Fountain, CO';
 const currentPath = Astro.url.pathname;
+const siteUrl = Astro.site ? Astro.site.toString() : 'https://unitedtattoo.com';
+const canonicalUrl = new URL(currentPath, siteUrl).toString();
+const ogImage = new URL(image, siteUrl).toString();
 ---
 
 <html lang="en">
@@ -30,8 +54,36 @@ const currentPath = Astro.url.pathname;
 		<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
-		<title>{title ? `${title} | ${SITE_TITLE}` : SITE_TITLE}</title>
+		
+    <!-- SEO -->
+    <title>{title ? `${title} | ${SITE_TITLE}` : SITE_TITLE}</title>
 		<meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    <!-- Open Graph -->
+    <meta property="og:type" content={type} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:title" content={title ? `${title} | ${SITE_TITLE}` : SITE_TITLE} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image" />
+    <meta property="twitter:url" content={canonicalUrl} />
+    <meta property="twitter:title" content={title ? `${title} | ${SITE_TITLE}` : SITE_TITLE} />
+    <meta property="twitter:description" content={description} />
+    <meta property="twitter:image" content={ogImage} />
+
+    <!-- Schema.org JSON-LD -->
+    <Schema 
+      type={type} 
+      title={title} 
+      description={description} 
+      image={image} 
+      canonicalUrl={canonicalUrl}
+      artistData={artistSchema}
+    />
+
 		<!-- Fonts -->
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

@@ -57,13 +57,13 @@ const isBookingPage = currentPath.startsWith("/booking");
     </a>
   </div>
 
-  <button id="mobile-menu-btn" class="md:hidden text-sm text-neutral-400 hover:text-white transition-colors uppercase tracking-widest relative z-[110]">
+  <button id="mobile-menu-btn" class="md:hidden text-sm text-neutral-400 hover:text-white transition-colors uppercase tracking-widest relative z-[110]" aria-label="Toggle Menu">
     Menu
   </button>
 </nav>
 
 <!-- Mobile Menu Overlay -->
-<div id="mobile-menu" class="fixed inset-0 z-[100] bg-neutral-950/95 backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-500 flex flex-col justify-center items-center">
+<div id="mobile-menu" class="fixed inset-0 z-[100] bg-neutral-950/98 backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-500 flex flex-col justify-center items-center">
 
   <div class="absolute inset-0 noise opacity-[0.05] pointer-events-none"></div>
 
@@ -84,69 +84,80 @@ const isBookingPage = currentPath.startsWith("/booking");
 </div>
 
 <script>
-  const menuBtn = document.getElementById('mobile-menu-btn');
-  const mobileMenu = document.getElementById('mobile-menu');
-  const nav = document.getElementById('main-nav');
-  const mobileLinks = document.querySelectorAll('.mobile-link');
-  const mobileFooter = document.querySelector('.mobile-footer');
-  let isMenuOpen = false;
+  function initMobileMenu() {
+    const menuBtn = document.getElementById('mobile-menu-btn');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const nav = document.getElementById('main-nav');
+    const mobileLinks = document.querySelectorAll('.mobile-link');
+    const mobileFooter = document.querySelector('.mobile-footer');
+    let isMenuOpen = false;
 
-  function toggleMenu() {
-    isMenuOpen = !isMenuOpen;
+    if (!menuBtn || !mobileMenu) return;
 
-    if (isMenuOpen) {
-      // Open menu
-      mobileMenu?.classList.remove('opacity-0', 'pointer-events-none');
-      mobileMenu?.classList.add('opacity-100', 'pointer-events-auto');
+    function toggleMenu() {
+      isMenuOpen = !isMenuOpen;
 
-      // Animate links
-      mobileLinks.forEach(link => {
-        link.classList.remove('translate-y-4', 'opacity-0');
-      });
-      mobileFooter?.classList.remove('translate-y-4', 'opacity-0');
+      if (isMenuOpen) {
+        // Open menu
+        mobileMenu?.classList.remove('opacity-0', 'pointer-events-none');
+        mobileMenu?.classList.add('opacity-100', 'pointer-events-auto');
 
-      if (menuBtn) {
-        menuBtn.textContent = 'Close';
-        menuBtn.classList.add('text-white');
+        // Animate links
+        mobileLinks.forEach(link => {
+          link.classList.remove('translate-y-4', 'opacity-0');
+        });
+        mobileFooter?.classList.remove('translate-y-4', 'opacity-0');
+
+        if (menuBtn) {
+          menuBtn.textContent = 'Close';
+          menuBtn.classList.add('text-white');
+        }
+
+        // Ensure nav stays on top and blends
+        nav?.classList.remove('bg-black/60', 'backdrop-blur-md', 'border-white/5', 'z-[60]');
+        nav?.classList.add('border-transparent', 'z-[110]');
+
+        document.body.style.overflow = 'hidden';
+      } else {
+        // Close menu
+        mobileMenu?.classList.add('opacity-0', 'pointer-events-none');
+        mobileMenu?.classList.remove('opacity-100', 'pointer-events-auto');
+
+        // Reset animations
+        mobileLinks.forEach(link => {
+          link.classList.add('translate-y-4', 'opacity-0');
+        });
+        mobileFooter?.classList.add('translate-y-4', 'opacity-0');
+
+        if (menuBtn) {
+          menuBtn.textContent = 'Menu';
+          menuBtn.classList.remove('text-white');
+        }
+
+        // Restore nav styles
+        setTimeout(() => {
+          nav?.classList.add('bg-black/60', 'backdrop-blur-md', 'border-white/5', 'z-[60]');
+          nav?.classList.remove('border-transparent', 'z-[110]');
+        }, 200);
+
+        document.body.style.overflow = '';
       }
-
-      // Remove nav background/border to blend with menu
-      nav?.classList.remove('bg-black/60', 'backdrop-blur-md', 'border-white/5', 'z-[60]');
-      nav?.classList.add('border-transparent', 'z-[110]');
-
-      document.body.style.overflow = 'hidden';
-    } else {
-      // Close menu
-      mobileMenu?.classList.add('opacity-0', 'pointer-events-none');
-      mobileMenu?.classList.remove('opacity-100', 'pointer-events-auto');
-
-      // Reset animations
-      mobileLinks.forEach(link => {
-        link.classList.add('translate-y-4', 'opacity-0');
-      });
-      mobileFooter?.classList.add('translate-y-4', 'opacity-0');
-
-      if (menuBtn) {
-        menuBtn.textContent = 'Menu';
-        menuBtn.classList.remove('text-white');
-      }
-
-      // Restore nav styles
-      setTimeout(() => {
-        nav?.classList.add('bg-black/60', 'backdrop-blur-md', 'border-white/5', 'z-[60]');
-        nav?.classList.remove('border-transparent', 'z-[110]');
-      }, 200); // Delay slightly to match fade out
-
-      document.body.style.overflow = '';
     }
+
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      toggleMenu();
+    });
+
+    // Close menu when clicking a link
+    mobileLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (isMenuOpen) toggleMenu();
+      });
+    });
   }
 
-  menuBtn?.addEventListener('click', toggleMenu);
-
-  // Close menu when clicking a link
-  mobileLinks.forEach(link => {
-    link.addEventListener('click', () => {
-      if (isMenuOpen) toggleMenu();
-    });
-  });
+  // Run on load and on Astro page swaps (if View Transitions used later)
+  document.addEventListener('DOMContentLoaded', initMobileMenu);
+  document.addEventListener('astro:page-load', initMobileMenu);
 </script>

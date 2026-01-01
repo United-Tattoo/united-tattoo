@@ -1,0 +1,86 @@
+---
+import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+
+interface Props {
+  type?: 'website' | 'article' | 'profile';
+  title?: string;
+  description?: string;
+  image?: string;
+  canonicalUrl?: string;
+  artistData?: {
+    name: string;
+    description: string;
+    image: string;
+    sameAs?: string[];
+  };
+}
+
+const {
+  type = 'website',
+  title = SITE_TITLE,
+  description = SITE_DESCRIPTION,
+  image = '/images/united-studio-main.jpg',
+  canonicalUrl = Astro.url.href,
+  artistData
+} = Astro.props;
+
+const siteUrl = Astro.site ? Astro.site.toString() : 'https://unitedtattoo.com'; // Fallback if site not set in config
+
+// Base LocalBusiness Schema (United Tattoo)
+const localBusinessSchema = {
+  "@context": "https://schema.org",
+  "@type": "TattooShop",
+  "name": "United Tattoo",
+  "image": new URL('/images/united-studio-main.jpg', siteUrl).toString(),
+  "url": siteUrl,
+  "telephone": "+17193229679", // Placeholder, should be updated with real phone
+  "address": {
+    "@type": "PostalAddress",
+    "streetAddress": "6858 Indiana Ave", // Placeholder
+    "addressLocality": "Fountain",
+    "addressRegion": "CO",
+    "postalCode": "80817",
+    "addressCountry": "US"
+  },
+  "geo": {
+    "@type": "GeoCoordinates",
+    "latitude": 38.6922, // Placeholder
+    "longitude": -104.7008 // Placeholder
+  },
+  "openingHoursSpecification": [
+    {
+      "@type": "OpeningHoursSpecification",
+      "dayOfWeek": ["Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
+      "opens": "11:00",
+      "closes": "19:00"
+    }
+  ],
+  "priceRange": "$$"
+};
+
+// Person Schema (for Artist Pages)
+let schemaData = null;
+
+if (type === 'profile' && artistData) {
+  schemaData = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": artistData.name,
+    "description": artistData.description,
+    "image": new URL(artistData.image, siteUrl).toString(),
+    "url": canonicalUrl,
+    "jobTitle": "Tattoo Artist",
+    "worksFor": {
+      "@type": "TattooShop",
+      "name": "United Tattoo",
+      "url": siteUrl
+    },
+    "sameAs": artistData.sameAs || []
+  };
+} else {
+  // Default to LocalBusiness on other pages
+  schemaData = localBusinessSchema;
+}
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schemaData)} />

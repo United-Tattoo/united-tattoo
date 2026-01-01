@@ -17,6 +17,10 @@ const artists = defineCollection({
     twitch: z.string().optional(),
     portfolioUrl: z.string().url().optional(),
     bookingEmailCc: z.string().email().optional(),
+    testimonials: z.array(z.object({
+      quote: z.string(),
+      client: z.string(),
+    })).optional(),
   }),
 });
 

@@ -22,6 +22,7 @@ export const POST: APIRoute = async ({ request }) => {
     const placement = formData.get('placement') as string;
     const size = formData.get('size') as string;
     const budget = formData.get('budget') as string;
+    const availability = formData.get('availability') as string;
     const description = formData.get('description') as string;
     const acceptTerms = formData.get('acceptTerms');
     const acceptAge = formData.get('acceptAge');
@@ -138,6 +139,7 @@ export const POST: APIRoute = async ({ request }) => {
         <li><strong>Placement:</strong> ${escapeHtml(placement)}</li>
         <li><strong>Size:</strong> ${escapeHtml(size)}</li>
         <li><strong>Budget:</strong> ${escapeHtml(budget || 'Not specified')}</li>
+        <li><strong>Availability:</strong> ${escapeHtml(availability || 'Not specified')}</li>
       </ul>
 
       <h3>Description</h3>
@@ -174,6 +176,7 @@ Style: ${style}
 Placement: ${placement}
 Size: ${size}
 Budget: ${budget || 'Not specified'}
+Availability: ${availability || 'Not specified'}
 
 Description:
 ${description}
