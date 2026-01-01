@@ -1,5 +1,223 @@
 # Continuity Log
 
+## 2026-01-01 - Artist Portfolio Expansion & Booking Page Fix
+
+### Changes Made
+
+#### 1. Enhanced MDX Typography System
+- **Improved `.prose-editorial` styles** in `src/styles/global.css`:
+  - Increased h2 size from 1.75rem to 2rem with better spacing
+  - Enlarged h3 headings (0.75rem → 0.8125rem) with brighter color for hierarchy
+  - Improved paragraph line-height (1.75 → 1.8) for readability
+  - Added custom bullet points (→ arrows) for unordered lists
+  - Enhanced link hover states with smooth transitions
+  - Added blockquote styling with serif italic font and left border
+  - Better spacing throughout (margins, padding, first-child/last-child rules)
+
+#### 2. Artist Bio Content Updates
+- **Donovan Lankford** (`src/content/artists/donovan-lankford.mdx`):
+  - Reformatted bio with clear sections: Artistic Style, Philosophy
+  - Added bulleted specialty list with arrow markers
+  - Added Instagram: `donovantattoos`
+  - Removed redundant "About" heading (already in page template)
+
+- **John Lapides** (`src/content/artists/john-lapides.mdx`):
+  - Restructured content with Artistic Style and Experience & Recognition sections
+  - Added comprehensive social media links:
+    - Instagram: `spray.day`
+    - Facebook: `spray.day.tattoos`
+    - TikTok: `spray.day`
+    - Twitch: `spray_day`
+    - Venmo (in comment): `https://account.venmo.com/u/johnlapides`
+
+- **Steven 'Sole' Cedre** (`src/content/artists/steven-sole-cedre.mdx`):
+  - Complete setup with authentic bio content
+  - Added specialties: Color Realism, Cartoon Style
+  - Renamed directory: `Steven-Cedre` → `Steven-Sole-Cedre` to match MDX reference
+  - Added social links:
+    - Instagram: `solejunkiecustoms`
+    - TikTok: `solejunkie`
+    - Portfolio URL: `https://sole-tattoo.carrd.co/`
+  - Incorporated branded logo image in MDX content
+
+- **Amari Kyss** (`src/content/artists/amari-kyss.mdx`):
+  - Complete rewrite using authentic voice from GlossGenius site
+  - Fixed Instagram from incorrect `@1nkreaper` → `grimmtatt`
+  - Updated specialties: American Traditional, Black & Grey, Flash
+  - Added portfolio URL: `https://grimmtatts.glossgenius.com/`
+  - Used direct quotes: "quiet kind of magic", "thank you so much for being here..."
+  - Emphasized flash collection and collaborative approach
+
+- **Kaori Cedre** (`src/content/artists/kaori.mdx`):
+  - Updated name from "Kaori" to "Kaori Cedre"
+  - Renamed directory: `Kaori` → `Kaori-Cedre`
+  - Updated portrait path and gallery directory references
+  - Scaffold ready for portfolio images and bio content
+
+#### 3. Extended Artist Schema
+- **Added social media fields** to `src/content.config.ts`:
+  - `instagram` (string, optional) - Instagram handle
+  - `facebook` (string, optional) - Facebook page name
+  - `tiktok` (string, optional) - TikTok handle
+  - `twitch` (string, optional) - Twitch username
+  - `portfolioUrl` (URL, optional) - External portfolio website
+
+#### 4. Artist Page Template Enhancement
+- **Updated** `src/pages/artists/[slug].astro` to display all social links:
+  - Instagram with @ prefix
+  - Facebook with icon
+  - TikTok with @ prefix
+  - Twitch with icon
+  - Portfolio URL as "Portfolio Site" link
+  - All links open in new tabs with `rel="noopener noreferrer"`
+  - Consistent styling with hover transitions
+
+#### 5. Critical Bug Fix: Booking Page Dropdowns
+- **Root cause identified**: Noise texture overlay with `z-50` in `SiteLayout.astro` was visually blocking dropdowns
+- **First attempt**: Changed CustomSelect dropdown z-index from `z-50` → `z-[70]` (didn't work)
+- **Real issue**: Fixed positioned noise overlay created separate stacking context
+- **Solution**: Changed noise overlay z-index from `z-50` → `z-[-1]` in `src/layouts/SiteLayout.astro` line 75
+- **Result**: Noise texture now sits in true background, all interactive elements fully clickable
+
+### Files Created
+```
+None (all work was modifications to existing files)
+```
+
+### Files Modified
+```
+src/styles/global.css                        - Enhanced .prose-editorial typography
+src/content/artists/donovan-lankford.mdx      - Formatted bio, added Instagram
+src/content/artists/john-lapides.mdx          - Formatted bio, added all social links
+src/content/artists/steven-sole-cedre.mdx     - Complete setup with bio and links
+src/content/artists/amari-kyss.mdx            - Rewritten with authentic voice
+src/content/artists/kaori.mdx                 - Updated with last name
+src/content.config.ts                         - Added social media fields
+src/pages/artists/[slug].astro                - Display social media links
+src/components/CustomSelect.astro             - Increased dropdown z-index to z-[70]
+src/layouts/SiteLayout.astro                  - Fixed noise overlay z-index to z-[-1]
+public/artists/Steven-Cedre/                  - Renamed to Steven-Sole-Cedre/
+public/artists/Kaori/                         - Renamed to Kaori-Cedre/
+```
+
+### Decisions
+
+**MDX Typography Approach:**
+- Used custom arrow bullets (→) instead of default list markers for better brand consistency
+- Added blockquote styling for artist quotes to give them prominence
+- First-child/last-child margin rules prevent awkward spacing at section boundaries
+
+**Social Media Schema Design:**
+- Chose to store handles/usernames only (not full URLs) for Instagram, TikTok, etc.
+- Template builds full URLs using standard patterns (e.g., `https://instagram.com/${handle}`)
+- Allows for flexibility if social media URL structures change
+- `portfolioUrl` field stores complete URLs for external sites (validated as proper URLs)
+
+**Z-Index Fix Strategy:**
+- Initially tried raising dropdown z-index, but that didn't solve stacking context issue
+- Moving noise overlay to `z-[-1]` was cleanest solution because:
+  - Noise is purely decorative background texture
+  - Doesn't need to be above any content
+  - Maintains visual effect while ensuring no blocking
+  - `pointer-events-none` already present for click-through
+
+**Artist Content Voice:**
+- Preserved authentic voice for Amari (casual, warm, personal)
+- Used professional but personable tone for other artists
+- Included direct quotes to give personality
+- Maintained consistency in section structure across all artist pages
+
+### How to Test
+
+**MDX Typography:**
+1. Navigate to any artist page (e.g., `/artists/donovan-lankford`)
+2. Verify headings have proper hierarchy (h3 sections stand out)
+3. Check that bulleted lists show arrow markers (→)
+4. Verify blockquotes have italic serif styling with left border
+5. Test link hover states for smooth color transitions
+
+**Social Media Links:**
+1. Navigate to artist pages with social links
+2. Check Quick Stats Row in hero section shows all relevant icons
+3. Click each social link to verify correct URLs
+4. Steven Sole's page: Instagram, TikTok, Portfolio Site
+5. John Lapides' page: Instagram, Facebook, TikTok, Twitch
+6. Amari's page: Instagram, Portfolio Site
+7. Donovan's page: Instagram
+
+**Booking Page Dropdowns:**
+1. Navigate to `/booking`
+2. Click on any dropdown (Artist, Contact Method, Style, Size, Budget)
+3. Verify dropdown menu appears ABOVE all content (not behind)
+4. Verify options are clickable
+5. Select an option and verify it updates the display
+6. Test keyboard navigation (Tab, Arrow keys, Enter, Escape)
+
+**Kaori's Setup:**
+1. Navigate to `/artists/kaori-cedre`
+2. Verify page loads with placeholder content
+3. Check that directory structure exists at `public/artists/Kaori-Cedre/`
+4. Verify Portfolio and Flash subdirectories are present
+
+### Next Steps
+
+#### Immediate
+- [ ] Add Heather's profile (Instagram: `https://www.instagram.com/heather.robyns.art/`)
+- [ ] Populate Kaori Cedre's bio and portfolio images
+- [ ] Add portrait images where missing (Kaori)
+- [ ] Verify all artist portfolio images are optimized (AVIF conversion)
+
+#### Content Improvements
+- [ ] Add more detailed bios for artists with sparse content
+- [ ] Gather client testimonials for artist pages
+- [ ] Add "Featured Work" sections highlighting notable pieces
+- [ ] Create artist highlight videos or process clips
+
+#### Technical Enhancements
+- [ ] Add structured data (JSON-LD) for artist profiles
+- [ ] Implement social media meta tags with artist preview cards
+- [ ] Add analytics tracking for social link clicks
+- [ ] Consider adding YouTube links to schema for artists with video content
+
+#### Testing & Polish
+- [ ] Cross-browser testing for dropdown functionality
+- [ ] Mobile device testing for all artist pages
+- [ ] Accessibility audit for social links (ensure proper ARIA labels)
+- [ ] Performance testing with all artist images loaded
+
+### Notes
+
+**Artist Portfolio Assets:**
+- Steven Sole Cedre has 65+ portfolio images and 28 flash designs
+- His branded logo assets are in `/Bio/` subdirectory
+- Amari has 58 portfolio images and comprehensive flash collection
+- Directory naming convention: `artists/{Firstname}-{Lastname}` or `artists/{Firstname}-{Nickname}-{Lastname}`
+
+**Stacking Context Hierarchy:**
+Current z-index values after fixes:
+- `z-[-1]` - Noise texture overlay (background)
+- `z-10` - Hero content sections
+- `z-20` - Form sections, general content
+- `z-[60]` - Header navigation
+- `z-[70]` - Custom select dropdowns, announcement bar
+- `z-[100]` - Mobile menu overlay
+- `z-[110]` - Mobile menu items when open
+
+**Social Media URL Patterns:**
+- Instagram: `https://instagram.com/${handle}`
+- Facebook: `https://facebook.com/${page}`
+- TikTok: `https://www.tiktok.com/@${handle}`
+- Twitch: `https://twitch.tv/${username}`
+
+**MDX Content Best Practices:**
+- Use h3 (###) for section headings within artist bios
+- Use blockquotes (>) for artist quotes or testimonials
+- Use bulleted lists for specialties and approaches
+- Keep opening paragraph focused and engaging
+- Include personality and voice, not just facts
+
+---
+
 ## Template for New Entries
 ```
 ## YYYY-MM-DD - <Milestone>
