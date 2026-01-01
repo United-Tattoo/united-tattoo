@@ -40,22 +40,25 @@ const selectedValue = selectedOption?.value || '';
     <!-- Trigger Button -->
     <button
       type="button"
-      class="custom-select-trigger w-full bg-black/50 backdrop-blur border border-white/10 px-4 py-4 text-left font-mono text-sm transition-all duration-200 hover:border-white/20 focus:border-white/30 focus:outline-none flex items-center justify-between gap-4"
+      class="custom-select-trigger w-full bg-transparent border-b border-white/20 py-4 text-left font-mono text-sm transition-all duration-300 hover:border-white/40 focus:outline-none flex items-center justify-between gap-4 group"
       aria-haspopup="listbox"
       aria-expanded="false"
       data-value={selectedValue}
     >
-      <span class="custom-select-value truncate" data-placeholder={!selectedValue}>
+      <span class="custom-select-value truncate text-neutral-300 group-hover:text-white transition-colors" data-placeholder={!selectedValue}>
         {displayValue}
       </span>
-      <span class="custom-select-arrow transition-transform duration-200">
-        <iconify-icon icon="solar:alt-arrow-down-linear" class="text-neutral-500"></iconify-icon>
+      <span class="custom-select-arrow transition-transform duration-300">
+        <iconify-icon icon="solar:alt-arrow-down-linear" class="text-neutral-500 group-hover:text-neutral-300"></iconify-icon>
       </span>
     </button>
 
     <!-- Dropdown Menu -->
-    <div class="custom-select-dropdown absolute top-full left-0 right-0 mt-1 bg-neutral-950 border border-white/10 opacity-0 invisible translate-y-2 transition-all duration-200 z-[70] max-h-[280px] overflow-y-auto">
-      <ul role="listbox" class="py-1">
+    <div
+      class="custom-select-dropdown absolute top-full left-0 right-0 mt-2 bg-[#0a0a0a] border border-white/10 opacity-0 invisible translate-y-2 transition-all duration-300 z-[70] max-h-[300px] overflow-y-auto overscroll-contain shadow-2xl shadow-black/50"
+      data-lenis-prevent
+    >
+      <ul role="listbox" class="py-2">
         {placeholder && (
           <li
             role="option"
@@ -95,7 +98,7 @@ const selectedValue = selectedOption?.value || '';
   }
 
   .custom-select.open .custom-select-trigger {
-    border-color: rgba(255, 255, 255, 0.3);
+    border-color: var(--color-terracotta, #D87850);
   }
 
   .custom-select.open .custom-select-arrow {
