@@ -55,6 +55,19 @@ try {
 
 const firstName = artist.data.name.split(' ')[0];
 const lastName = artist.data.name.split(' ').slice(1).join(' ');
+
+// Schema Data
+const artistSchema = {
+  name: artist.data.name,
+  description: `Professional tattoo artist specializing in ${artist.data.specialties?.join(', ') || 'custom tattoos'}.`,
+  image: artist.data.portrait,
+  sameAs: [
+    artist.data.instagram ? `https://instagram.com/${artist.data.instagram.replace('@', '')}` : '',
+    artist.data.facebook ? `https://facebook.com/${artist.data.facebook}` : '',
+    artist.data.tiktok ? `https://tiktok.com/@${artist.data.tiktok.replace('@', '')}` : '',
+    artist.data.portfolioUrl || ''
+  ].filter(Boolean)
+};
 ---
 
 <SiteLayout
@@ -62,6 +75,9 @@ const lastName = artist.data.name.split(' ').slice(1).join(' ');
   description={`View the portfolio of ${artist.data.name} at United Tattoo.`}
   removeMainPadding={true}
   hideFooter={true}
+  type="profile"
+  artistSchema={artistSchema}
+  image={artist.data.portrait}
 >
   <FloatingCTA href={`/booking?artist=${artist.id}`} label={`Book with ${firstName}`} />
 

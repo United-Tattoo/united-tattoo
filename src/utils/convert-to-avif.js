@@ -34,11 +34,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 // Configuration
-const ASSETS_DIR = path.join(__dirname, '../assets');
 const DEFAULT_QUALITY = 65;
 
 // Parse command line arguments
 const args = process.argv.slice(2);
+
+// Check for directory argument (non-flag argument)
+const dirArg = args.find(arg => !arg.startsWith('--'));
+const TARGET_DIR = dirArg ? path.resolve(process.cwd(), dirArg) : path.join(process.cwd(), 'public');
+
 const options = {
   all: args.includes('--all'),
   jpeg: args.includes('--jpeg'),
@@ -96,9 +100,9 @@ try {
   process.exit(1);
 }
 
-// Check if assets directory exists
-if (!fs.existsSync(ASSETS_DIR)) {
-  console.error(`❌ Assets directory not found: ${ASSETS_DIR}`);
+// Check if target directory exists
+if (!fs.existsSync(TARGET_DIR)) {
+  console.error(`❌ Target directory not found: ${TARGET_DIR}`);
   process.exit(1);
 }
 
@@ -124,20 +128,34 @@ if (options.all) {
   });
 }
 
-// Get all image files in assets directory
-const allFiles = fs.readdirSync(ASSETS_DIR);
-const imageFiles = allFiles.filter(file => {
-  const ext = path.extname(file).toLowerCase();
-  return extensionsToProcess.includes(ext);
-});
+// Recursive function to get all image files
+function getFilesRecursive(dir) {
+  let results = [];
+  const list = fs.readdirSync(dir);
+  list.forEach(file => {
+    const filePath = path.join(dir, file);
+    const stat = fs.statSync(filePath);
+    if (stat && stat.isDirectory()) {
+      results = results.concat(getFilesRecursive(filePath));
+    } else {
+      const ext = path.extname(file).toLowerCase();
+      if (extensionsToProcess.includes(ext)) {
+        results.push(filePath);
+      }
+    }
+  });
+  return results;
+}
+
+const imageFiles = getFilesRecursive(TARGET_DIR);
 
 if (imageFiles.length === 0) {
-  console.log('ℹ️  No matching images found in assets directory');
+  console.log(`ℹ️  No matching images found in ${TARGET_DIR}`);
   process.exit(0);
 }
 
 console.log(`\n🎨 Converting ${imageFiles.length} image(s) to AVIF format`);
-console.log(`📁 Source: ${ASSETS_DIR}`);
+console.log(`📁 Source: ${TARGET_DIR} (Recursive)`);
 console.log(`⚙️  Quality: ${options.quality}`);
 console.log('');
 
@@ -146,26 +164,23 @@ let skipCount = 0;
 let errorCount = 0;
 
 // Convert each image
-imageFiles.forEach((file, index) => {
-  const inputPath = path.join(ASSETS_DIR, file);
-  const outputPath = path.join(ASSETS_DIR, path.basename(file, path.extname(file)) + '.avif');
+imageFiles.forEach((inputPath, index) => {
+  const dir = path.dirname(inputPath);
+  const ext = path.extname(inputPath);
+  const name = path.basename(inputPath, ext);
+  const outputPath = path.join(dir, name + '.avif');
 
   // Skip if AVIF already exists
   if (fs.existsSync(outputPath)) {
-    console.log(`⏭️  [${index + 1}/${imageFiles.length}] Skipping ${file} (AVIF already exists)`);
+    // console.log(`⏭️  [${index + 1}/${imageFiles.length}] Skipping ${path.basename(inputPath)}`);
     skipCount++;
     return;
   }
 
   try {
-    console.log(`🔄 [${index + 1}/${imageFiles.length}] Converting ${file}...`);
+    console.log(`🔄 [${index + 1}/${imageFiles.length}] Converting ${path.relative(TARGET_DIR, inputPath)}...`);
 
     // Run ffmpeg conversion
-    // -i: input file
-    // -c:v libaom-av1: use AV1 codec for AVIF
-    // -still-picture 1: encode as still image
-    // -crf: quality (0=best, 63=worst, 65 is good balance)
-    // -y: overwrite output file if it exists
     execSync(
       `ffmpeg -i "${inputPath}" -c:v libaom-av1 -still-picture 1 -crf ${100 - options.quality} -y "${outputPath}"`,
       { stdio: 'ignore' }
@@ -178,7 +193,7 @@ imageFiles.forEach((file, index) => {
     console.log(`   ✅ Created ${path.basename(outputPath)} (${(outputStats.size / 1024).toFixed(1)}KB, ${savings}% smaller)`);
     successCount++;
   } catch (error) {
-    console.error(`   ❌ Failed to convert ${file}: ${error.message}`);
+    console.error(`   ❌ Failed to convert ${path.relative(TARGET_DIR, inputPath)}: ${error.message}`);
     errorCount++;
   }
 });

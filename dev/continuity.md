@@ -60,11 +60,59 @@ src/pages/api/booking.ts                - Handled new availability field
 4. **Testimonials**: Visit Amari Kyss's page and verify the "Client Words" section appears.
 
 ### Next Steps
-- [ ] Add Heather's profile (Instagram: `https://www.instagram.com/heather.robyns.art/`)
-- [ ] Populate Kaori Cedre's bio and portfolio images
-- [ ] Add portrait images where missing (Kaori)
-- [ ] Verify all artist portfolio images are optimized (AVIF conversion)
+- [x] Add Heather's profile (Instagram: `https://www.instagram.com/heather.robyns.art/`)
+- [x] Populate Kaori Cedre's bio and portfolio images
+- [ ] Add portrait images where missing (Kaori & Heather)
+- [x] Verify all artist portfolio images are optimized (AVIF conversion)
 - [ ] Update footer social links to real URLs
+
+## 2026-01-01 - Artist Expansion, AVIF Optimization & SEO Refinement
+
+### Changes Made
+
+#### 1. Artist Scaffolding
+- **Heather Robyns**: Created `src/content/artists/heather-robyns.mdx` and initialized `public/artists/Heather-Robyns/` directory structure (Portfolio/Flash).
+- **Kaori Cedre**: Renamed `kaori.mdx` to `kaori-cedre.mdx`, cleaned up "TBD" content with professional "Building Portfolio" messaging, and synchronized folder naming.
+
+#### 2. Technical Tooling Upgrade
+- **Recursive AVIF Optimizer**: Completely overhauled `src/utils/convert-to-avif.js`.
+  - Added support for **recursive directory scanning**.
+  - Added support for **custom target directories** via CLI arguments (e.g., `node ... public`).
+  - Successfully optimized 300+ images in the `public/` directory, significantly reducing payload sizes.
+
+#### 3. SEO & Structured Data Completion
+- **Dynamic Person Schema**: Updated `src/pages/artists/[slug].astro` to construct and pass `artistSchema` to `SiteLayout`.
+  - Automatically generates `sameAs` arrays from Instagram, TikTok, Facebook, and Portfolio URLs.
+  - Ensures artist pages are indexed with rich profile data.
+- **Social Metadata Enhancement**: Enabled artist portraits as the primary `og:image` and `twitter:image` for their respective portfolio pages.
+
+### Files Created
+```
+src/content/artists/heather-robyns.mdx       - Heather's profile scaffold
+public/artists/Heather-Robyns/Portfolio/     - Directory structure
+public/artists/Heather-Robyns/Flash/         - Directory structure
+```
+
+### Files Modified
+```
+src/utils/convert-to-avif.js                 - Upgraded to recursive/targeted mode
+src/pages/artists/[slug].astro               - Implemented Schema.org and OG props
+src/content/artists/kaori-cedre.mdx          - Refined bio and file naming
+```
+
+### Decisions
+- **Upgrading Local Utilities**: Chose to enhance the existing AVIF script rather than using external tools to ensure a consistent, zero-cost optimization workflow as new artist assets are added.
+- **Artist Slug Consistency**: Enforced `kaori-cedre.mdx` naming to maintain a clean URL structure (`/artists/kaori-cedre`) consistent with other artists.
+
+### How to Test
+1. **New Pages**: Visit `/artists/heather-robyns` and `/artists/kaori-cedre` to verify they load without errors.
+2. **SEO**: Inspect source on an artist page; verify `ld+json` contains `Person` type with correct social links and `og:image` points to their portrait.
+3. **Performance**: Check network tab for `.avif` assets in the portfolio grids.
+
+### Next Steps
+- [ ] Replace placeholder portraits for Heather and Kaori with real assets.
+- [ ] Upload portfolio/flash images for Heather Robyns.
+- [ ] Update footer social links in `src/consts.ts` once real URLs are confirmed.
 
 ## 2026-01-01 - Editorial Refinement & Dynamic Portfolio Layouts
 
