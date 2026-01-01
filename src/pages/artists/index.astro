@@ -1,81 +1,162 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import { getCollection } from 'astro:content';
+import EditorialFooter from '../../components/EditorialFooter.astro';
+import GridBackground from '../../components/GridBackground.astro';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import ScrollIndicator from '../../components/ScrollIndicator.astro';
 
 export const prerender = true;
 
 const artists = await getCollection('artists');
+
+// Sort artists alphabetically or by some other criteria if needed
+const sortedArtists = artists.sort((a, b) => a.data.name.localeCompare(b.data.name));
 ---
 
-<SiteLayout title="Our Artists" description="Meet the talented artists at United Tattoo. Each brings unique skills and artistic vision to create exceptional custom tattoos.">
-  <!-- Page Header -->
-  <section class="px-6 md:px-20 mb-16">
-    <div class="max-w-7xl mx-auto">
-      <div class="flex flex-col md:flex-row justify-between items-start md:items-end gap-6 border-b border-white/5 pb-12">
-        <div>
-          <span class="section-label block mb-4">The Collective</span>
-          <h1 class="text-5xl md:text-7xl font-normal tracking-tighter text-white italic mb-4">Our Artists</h1>
-          <p class="text-neutral-400 text-base max-w-md leading-relaxed">
-            Each artist brings unique expertise and artistic vision to create exceptional custom work.
+<SiteLayout
+  title="The Collective"
+  description="Meet the resident artists at United Tattoo. A collective of distinct styles and shared dedication to the craft."
+  removeMainPadding={true}
+  hideFooter={true}
+>
+  <!-- Hero Section -->
+  <section class="artist-hero-section relative min-h-[50vh] lg:min-h-[60vh] flex flex-col justify-end px-6 md:px-12 lg:px-24 pb-24 pt-48" data-scroll-section>
+    <GridBackground opacity={20} />
+    
+    <div class="relative z-10 w-full">
+      <div class="artist-hero-reveal mb-8">
+        <Breadcrumb
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Artists' }
+          ]}
+        />
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+        <div class="lg:col-span-8">
+          <h1 class="text-[15vw] lg:text-[12vw] leading-[0.8] font-display font-medium tracking-tighter text-white uppercase mix-blend-difference">
+            <span class="artist-hero-title-line block overflow-hidden"><span class="inline-block">The</span></span>
+            <span class="artist-hero-title-line block overflow-hidden"><span class="inline-block italic text-neutral-500">Artists</span></span>
+          </h1>
+        </div>
+        
+        <div class="lg:col-span-4 artist-hero-reveal mb-2">
+          <p class="text-neutral-400 text-lg leading-relaxed font-light border-l border-terracotta/50 pl-6 max-w-sm">
+            A collective of distinct styles and shared dedication to the craft. 
+            <span class="block mt-4 font-mono text-xs uppercase tracking-widest text-terracotta">
+              {artists.length} Resident Artists
+            </span>
           </p>
         </div>
-        <span class="text-sm text-neutral-500">{artists.length} Artists</span>
       </div>
     </div>
+    
+    <ScrollIndicator class="artist-hero-reveal absolute bottom-12 right-6 lg:right-12" />
   </section>
 
-  <!-- Artists Grid -->
-  <section class="px-6 md:px-20">
-    <div class="max-w-7xl mx-auto">
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {artists.map((artist) => (
-          <a href={`/artists/${artist.id}`} class="group relative aspect-[4/5] overflow-hidden bg-neutral-950">
+  <!-- Artist Gallery -->
+  <section class="artist-list-section relative z-20 px-6 md:px-12 lg:px-24 pb-32" data-scroll-section>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-20 lg:gap-y-32">
+      {sortedArtists.map((artist, index) => (
+        <a href={`/artists/${artist.id}`} class="artist-card group block relative" data-index={index}>
+          <!-- Image Container -->
+          <div class="relative aspect-[3/4] overflow-hidden bg-white/5 mb-8">
+            <!-- Frame/Border Effect -->
+            <div class="absolute inset-0 border border-white/10 z-20 transition-colors duration-500 group-hover:border-white/30"></div>
+            
+            <!-- Image -->
             <img
               src={artist.data.portrait}
               alt={artist.data.name}
-              class="absolute inset-0 w-full h-full object-cover grayscale-[30%] group-hover:grayscale-0 group-hover:scale-[1.02] transition-all duration-700 ease-out"
+              class="absolute inset-0 w-full h-full object-cover grayscale-[20%] contrast-[1.1] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105 group-hover:grayscale-0"
             />
+            
+            <!-- Hover Overlay (Warmth) -->
+            <div class="absolute inset-0 bg-terracotta/0 mix-blend-overlay transition-colors duration-700 group-hover:bg-terracotta/20 z-10"></div>
+            
+            <!-- Corner Accents -->
+            <div class="absolute top-0 left-0 w-3 h-3 border-l border-t border-white/0 transition-all duration-500 group-hover:border-terracotta/80 z-30"></div>
+            <div class="absolute bottom-0 right-0 w-3 h-3 border-r border-b border-white/0 transition-all duration-500 group-hover:border-terracotta/80 z-30"></div>
+          </div>
 
-            <!-- Gradient overlay -->
-            <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent"></div>
-
-            <!-- Info -->
-            <div class="absolute bottom-0 left-0 right-0 p-6">
-              <h3 class="text-2xl font-normal text-white italic tracking-tight mb-2">
-                {artist.data.name}
-              </h3>
-              {artist.data.specialties && (
-                <p class="text-sm text-neutral-400">
-                  {artist.data.specialties.slice(0, 3).join(' · ')}
-                </p>
-              )}
+          <!-- Typography / Label -->
+          <div class="flex flex-col items-start relative overflow-hidden">
+            <h2 class="text-3xl lg:text-4xl font-display text-white group-hover:text-terracotta transition-colors duration-300">
+              {artist.data.name}
+            </h2>
+            
+            <div class="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-neutral-500 group-hover:text-neutral-300 transition-colors duration-300">
+              {artist.data.specialties && artist.data.specialties.slice(0, 2).map((specialty, i) => (
+                <span class="font-mono text-[10px] uppercase tracking-widest flex items-center gap-4">
+                  {specialty}
+                  {i < (artist.data.specialties?.slice(0, 2).length || 0) - 1 && (
+                    <span class="w-1 h-1 rounded-full bg-terracotta/50"></span>
+                  )}
+                </span>
+              ))}
             </div>
 
-            <!-- Hover indicator -->
-            <div class="absolute top-6 right-6 opacity-0 group-hover:opacity-100 transition-opacity">
-              <span class="text-xs text-white/60">View Portfolio →</span>
+            <!-- Hover "View" CTA -->
+            <div class="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-100">
+              <iconify-icon icon="solar:arrow-right-linear" class="text-2xl text-white"></iconify-icon>
             </div>
-          </a>
-        ))}
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA Section -->
-  <section class="px-6 md:px-20 mt-32">
-    <div class="max-w-7xl mx-auto">
-      <div class="glass-card p-12 md:p-16 text-center">
-        <span class="section-label block mb-6">Ready to Begin?</span>
-        <h2 class="text-4xl md:text-5xl font-normal italic tracking-tighter text-white mb-6">
-          Let's Create Something Exceptional
-        </h2>
-        <p class="text-neutral-400 text-base max-w-md mx-auto mb-10">
-          Submit a booking request and let's start planning your piece.
-        </p>
-        <a href="/booking" class="inline-block px-10 py-5 bg-white text-black text-sm font-medium tracking-wide hover:bg-neutral-200 transition-all">
-          Book a Session
+          </div>
         </a>
-      </div>
+      ))}
     </div>
   </section>
+
+  <EditorialFooter />
+
+  <script>
+    const initAnimations = () => {
+      const gsap = (window as any).gsap;
+      const ScrollTrigger = (window as any).ScrollTrigger;
+      
+      if (!gsap || !ScrollTrigger) {
+        setTimeout(initAnimations, 100);
+        return;
+      }
+
+      // Hero Animations
+      gsap.set('.artist-hero-title-line > span', { y: '100%' });
+      gsap.set('.artist-hero-reveal', { opacity: 0, y: 20 });
+      
+      const tl = gsap.timeline({ delay: 0.2 });
+      
+      tl.to('.artist-hero-title-line > span', {
+        y: '0%',
+        duration: 1.2,
+        stagger: 0.1,
+        ease: 'power4.out'
+      })
+      .to('.artist-hero-reveal', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        stagger: 0.1,
+        ease: 'power2.out'
+      }, '-=0.8');
+
+      // List Animations
+      const cards = document.querySelectorAll('.artist-card');
+      
+      cards.forEach((card, i) => {
+        gsap.from(card, {
+          y: 60,
+          opacity: 0,
+          duration: 1.2,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: card,
+            start: 'top 90%'
+          }
+        });
+      });
+    };
+
+    document.addEventListener('DOMContentLoaded', initAnimations);
+  </script>
 </SiteLayout>
