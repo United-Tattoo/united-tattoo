@@ -245,7 +245,8 @@ const artists = await getCollection('artists');
       const ScrollTrigger = window.ScrollTrigger;
 
       if (!gsap || !ScrollTrigger) {
-        setTimeout(initAnimations, 100);
+        // Retry if global GSAP isn't ready yet (rare with astro:page-load but possible)
+        setTimeout(initAnimations, 50);
         return;
       }
 
@@ -416,7 +417,7 @@ const artists = await getCollection('artists');
     };
 
     // Initialize when DOM is ready
-    document.addEventListener('DOMContentLoaded', initAnimations);
+    document.addEventListener('astro:page-load', initAnimations);
 
     // Hide floating CTA when footer is in view
     const initFloatingCTA = () => {
@@ -445,6 +446,6 @@ const artists = await getCollection('artists');
       observer.observe(footer);
     };
 
-    document.addEventListener('DOMContentLoaded', initFloatingCTA);
+    document.addEventListener('astro:page-load', initFloatingCTA);
   </script>
 </SiteLayout>

@@ -157,6 +157,6 @@ const sortedArtists = artists.sort((a, b) => a.data.name.localeCompare(b.data.na
       });
     };
 
-    document.addEventListener('DOMContentLoaded', initAnimations);
+    document.addEventListener('astro:page-load', initAnimations);
   </script>
 </SiteLayout>

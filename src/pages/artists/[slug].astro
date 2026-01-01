@@ -371,100 +371,127 @@ const artistSchema = {
       });
     };
     
-    document.addEventListener('DOMContentLoaded', initAnimations);
-
     // Lightbox Logic
-    const lightbox = document.getElementById('lightbox');
-    const lbImage = document.getElementById('lightbox-image') as HTMLImageElement;
-    const triggers = document.querySelectorAll('[data-lightbox-trigger]');
-    let currentIndex = 0;
-    const images: {src: string}[] = [];
+    const initLightbox = () => {
+      const lightbox = document.getElementById('lightbox');
+      const lbImage = document.getElementById('lightbox-image') as HTMLImageElement;
+      const triggers = document.querySelectorAll('[data-lightbox-trigger]');
+      const closeBtn = document.getElementById('lightbox-close');
+      const prevBtn = document.getElementById('lightbox-prev');
+      const nextBtn = document.getElementById('lightbox-next');
 
-    triggers.forEach((btn, idx) => {
-        images.push({ src: btn.getAttribute('data-image-src') || '' });
-        btn.addEventListener('click', () => {
-            currentIndex = idx;
-            openLightbox();
-        });
-    });
+      if (!lightbox || !lbImage) return;
 
-    function openLightbox() {
-        if(!lightbox || !lbImage) return;
-        updateImage();
-        lightbox.classList.remove('hidden');
-        // Force reflow
-        void lightbox.offsetWidth; 
-        lightbox.classList.remove('opacity-0');
-        document.body.style.overflow = 'hidden';
-    }
+      let currentIndex = 0;
+      const images: {src: string}[] = [];
 
-    function closeLightbox() {
-        if(!lightbox) return;
-        lightbox.classList.add('opacity-0');
-        setTimeout(() => {
-            lightbox.classList.add('hidden');
-            document.body.style.overflow = '';
-        }, 300);
-    }
+      triggers.forEach((btn, idx) => {
+          images.push({ src: btn.getAttribute('data-image-src') || '' });
+          btn.addEventListener('click', () => {
+              currentIndex = idx;
+              openLightbox();
+          });
+      });
 
-    function updateImage() {
-        if(!lbImage) return;
-        lbImage.src = images[currentIndex].src;
-    }
+      function openLightbox() {
+          if(!lightbox || !lbImage) return;
+          updateImage();
+          lightbox.classList.remove('hidden');
+          // Force reflow
+          void lightbox.offsetWidth; 
+          lightbox.classList.remove('opacity-0');
+          document.body.style.overflow = 'hidden';
+      }
 
-    document.getElementById('lightbox-close')?.addEventListener('click', closeLightbox);
-    document.getElementById('lightbox-prev')?.addEventListener('click', () => {
-        currentIndex = (currentIndex - 1 + images.length) % images.length;
-        updateImage();
-    });
-    document.getElementById('lightbox-next')?.addEventListener('click', () => {
-        currentIndex = (currentIndex + 1) % images.length;
-        updateImage();
-    });
+      function closeLightbox() {
+          if(!lightbox) return;
+          lightbox.classList.add('opacity-0');
+          setTimeout(() => {
+              lightbox.classList.add('hidden');
+              document.body.style.overflow = '';
+          }, 300);
+      }
+
+      function updateImage() {
+          if(!lbImage) return;
+          lbImage.src = images[currentIndex].src;
+      }
+
+      // Cleanup old listeners if needed (though DOM replacement handles most)
+      const newCloseBtn = closeBtn?.cloneNode(true);
+      if (closeBtn && newCloseBtn) {
+         closeBtn.parentNode?.replaceChild(newCloseBtn, closeBtn);
+         newCloseBtn.addEventListener('click', closeLightbox);
+      }
+
+      prevBtn?.addEventListener('click', () => {
+          currentIndex = (currentIndex - 1 + images.length) % images.length;
+          updateImage();
+      });
+      nextBtn?.addEventListener('click', () => {
+          currentIndex = (currentIndex + 1) % images.length;
+          updateImage();
+      });
+      
+      // Close on escape key
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && !lightbox.classList.contains('hidden')) {
+          closeLightbox();
+        }
+      });
+    };
 
     // Work Toggle Logic
-    const portfolioBtn = document.getElementById('show-portfolio');
-    const flashBtn = document.getElementById('show-flash');
-    const portfolioGrid = document.getElementById('portfolio-grid');
-    const flashGrid = document.getElementById('flash-grid');
+    const initWorkToggle = () => {
+      const portfolioBtn = document.getElementById('show-portfolio');
+      const flashBtn = document.getElementById('show-flash');
+      const portfolioGrid = document.getElementById('portfolio-grid');
+      const flashGrid = document.getElementById('flash-grid');
 
-    if (portfolioBtn && flashBtn && portfolioGrid && flashGrid) {
-        portfolioBtn.addEventListener('click', () => {
-            portfolioGrid.classList.remove('hidden');
-            // Small delay to allow display:block to apply before opacity transition
-            setTimeout(() => {
-                portfolioGrid.classList.remove('opacity-0');
-            }, 10);
-            
-            flashGrid.classList.add('opacity-0');
-            setTimeout(() => {
-                flashGrid.classList.add('hidden');
-            }, 500);
+      if (portfolioBtn && flashBtn && portfolioGrid && flashGrid) {
+          portfolioBtn.addEventListener('click', () => {
+              portfolioGrid.classList.remove('hidden');
+              // Small delay to allow display:block to apply before opacity transition
+              setTimeout(() => {
+                  portfolioGrid.classList.remove('opacity-0');
+              }, 10);
+              
+              flashGrid.classList.add('opacity-0');
+              setTimeout(() => {
+                  flashGrid.classList.add('hidden');
+              }, 500);
 
-            portfolioBtn.classList.add('text-white');
-            portfolioBtn.classList.remove('text-neutral-600');
-            
-            flashBtn.classList.add('text-neutral-600');
-            flashBtn.classList.remove('text-white');
-        });
+              portfolioBtn.classList.add('text-white');
+              portfolioBtn.classList.remove('text-neutral-600');
+              
+              flashBtn.classList.add('text-neutral-600');
+              flashBtn.classList.remove('text-white');
+          });
 
-        flashBtn.addEventListener('click', () => {
-            flashGrid.classList.remove('hidden');
-            setTimeout(() => {
-                flashGrid.classList.remove('opacity-0');
-            }, 10);
+          flashBtn.addEventListener('click', () => {
+              flashGrid.classList.remove('hidden');
+              setTimeout(() => {
+                  flashGrid.classList.remove('opacity-0');
+              }, 10);
 
-            portfolioGrid.classList.add('opacity-0');
-            setTimeout(() => {
-                portfolioGrid.classList.add('hidden');
-            }, 500);
+              portfolioGrid.classList.add('opacity-0');
+              setTimeout(() => {
+                  portfolioGrid.classList.add('hidden');
+              }, 500);
 
-            flashBtn.classList.add('text-white');
-            flashBtn.classList.remove('text-neutral-600');
-            
-            portfolioBtn.classList.add('text-neutral-600');
-            portfolioBtn.classList.remove('text-white');
-        });
-    }
+              flashBtn.classList.add('text-white');
+              flashBtn.classList.remove('text-neutral-600');
+              
+              portfolioBtn.classList.add('text-neutral-600');
+              portfolioBtn.classList.remove('text-white');
+          });
+      }
+    };
+
+    document.addEventListener('astro:page-load', () => {
+      initAnimations();
+      initLightbox();
+      initWorkToggle();
+    });
   </script>
 </SiteLayout>

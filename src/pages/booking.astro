@@ -350,143 +350,153 @@ const budgetOptions = [
   <EditorialFooter />
 
   <script>
-    // File upload and Form handling
-    const fileInput = document.getElementById('references') as HTMLInputElement;
-    const fileList = document.getElementById('file-list') as HTMLDivElement;
-    const uploadZone = document.getElementById('upload-zone') as HTMLDivElement;
-    const form = document.getElementById('booking-form') as HTMLFormElement;
-    const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
-    const submitText = document.getElementById('submit-text') as HTMLSpanElement;
-    const submitIcon = document.getElementById('submit-icon') as HTMLElement;
-    const loadingIcon = document.getElementById('loading-icon') as HTMLElement;
-    const errorMessage = document.getElementById('error-message') as HTMLDivElement;
+    const initBooking = () => {
+      // File upload and Form handling
+      const fileInput = document.getElementById('references') as HTMLInputElement;
+      const fileList = document.getElementById('file-list') as HTMLDivElement;
+      const uploadZone = document.getElementById('upload-zone') as HTMLDivElement;
+      const form = document.getElementById('booking-form') as HTMLFormElement;
+      const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+      const submitText = document.getElementById('submit-text') as HTMLSpanElement;
+      const submitIcon = document.getElementById('submit-icon') as HTMLElement;
+      const loadingIcon = document.getElementById('loading-icon') as HTMLElement;
+      const errorMessage = document.getElementById('error-message') as HTMLDivElement;
 
-    const MAX_FILES = 5;
-    const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-    let selectedFiles: File[] = [];
+      // Reset state on new page load
+      const MAX_FILES = 5;
+      const MAX_SIZE = 10 * 1024 * 1024; // 10MB
+      let selectedFiles: File[] = [];
 
-    fileInput?.addEventListener('change', () => {
-      const files = Array.from(fileInput.files || []);
-      handleFiles(files);
-    });
-
-    // Drag and drop visual feedback
-    uploadZone?.addEventListener('dragover', (e) => {
-      e.preventDefault();
-      uploadZone.classList.add('border-terracotta', 'bg-white/5');
-    });
-
-    uploadZone?.addEventListener('dragleave', (e) => {
-      e.preventDefault();
-      uploadZone.classList.remove('border-terracotta', 'bg-white/5');
-    });
-
-    uploadZone?.addEventListener('drop', (e) => {
-      e.preventDefault();
-      uploadZone.classList.remove('border-terracotta', 'bg-white/5');
-      if (e.dataTransfer?.files) {
-        handleFiles(Array.from(e.dataTransfer.files));
-      }
-    });
-
-    function handleFiles(files: File[]) {
-      const validFiles = files.filter(file => {
-        if (!file.type.match(/^image\/(jpeg|png|webp|gif)$/)) {
-          showError(`Invalid type: ${file.name}`);
-          return false;
+      function updateFileList() {
+        if (!fileList) return;
+        if (selectedFiles.length === 0) {
+          fileList.classList.add('hidden');
+          return;
         }
-        if (file.size > MAX_SIZE) {
-          showError(`Too large: ${file.name}`);
-          return false;
-        }
-        return true;
-      });
-
-      const totalFiles = selectedFiles.length + validFiles.length;
-      if (totalFiles > MAX_FILES) {
-        showError(`Max ${MAX_FILES} images allowed`);
-        const allowed = MAX_FILES - selectedFiles.length;
-        selectedFiles = [...selectedFiles, ...validFiles.slice(0, allowed)];
-      } else {
-        selectedFiles = [...selectedFiles, ...validFiles];
-      }
-      updateFileList();
-    }
-
-    function updateFileList() {
-      if (selectedFiles.length === 0) {
-        fileList.classList.add('hidden');
-        return;
-      }
-      fileList.classList.remove('hidden');
-      fileList.innerHTML = selectedFiles.map((file, index) => `
-        <div class="flex items-center justify-between bg-white/5 border border-white/10 px-4 py-3 group hover:border-white/20 transition-colors">
-          <div class="flex items-center gap-3">
-            <iconify-icon icon="solar:gallery-bold" class="text-neutral-500 group-hover:text-terracotta transition-colors"></iconify-icon>
-            <span class="font-mono text-xs text-neutral-300 truncate max-w-[200px]">${file.name}</span>
+        fileList.classList.remove('hidden');
+        fileList.innerHTML = selectedFiles.map((file, index) => `
+          <div class="flex items-center justify-between bg-white/5 border border-white/10 px-4 py-3 group hover:border-white/20 transition-colors">
+            <div class="flex items-center gap-3">
+              <iconify-icon icon="solar:gallery-bold" class="text-neutral-500 group-hover:text-terracotta transition-colors"></iconify-icon>
+              <span class="font-mono text-xs text-neutral-300 truncate max-w-[200px]">${file.name}</span>
+            </div>
+            <button type="button" data-index="${index}" class="remove-file text-neutral-500 hover:text-red-400 transition-colors p-1">
+              <iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon>
+            </button>
           </div>
-          <button type="button" data-index="${index}" class="remove-file text-neutral-500 hover:text-red-400 transition-colors p-1">
-            <iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon>
-          </button>
-        </div>
-      `).join('');
+        `).join('');
 
-      document.querySelectorAll('.remove-file').forEach(btn => {
-        btn.addEventListener('click', (e) => {
-          const index = parseInt((e.currentTarget as HTMLElement).dataset.index || '0');
-          selectedFiles.splice(index, 1);
-          updateFileList();
+        document.querySelectorAll('.remove-file').forEach(btn => {
+          btn.addEventListener('click', (e) => {
+            const index = parseInt((e.currentTarget as HTMLElement).dataset.index || '0');
+            selectedFiles.splice(index, 1);
+            updateFileList();
+          });
         });
-      });
-    }
-
-    function showError(message: string) {
-      const errorP = errorMessage.querySelector('p');
-      if (errorP) errorP.textContent = message;
-      errorMessage.classList.remove('hidden');
-      setTimeout(() => errorMessage.classList.add('hidden'), 5000);
-    }
-
-    form?.addEventListener('submit', async (e) => {
-      e.preventDefault();
-      submitBtn.disabled = true;
-      submitText.textContent = 'Processing...';
-      submitIcon.classList.add('hidden');
-      loadingIcon.classList.remove('hidden');
-      errorMessage.classList.add('hidden');
-
-      try {
-        const formData = new FormData(form);
-        formData.delete('references');
-        selectedFiles.forEach(file => formData.append('references', file));
-
-        const response = await fetch('/api/booking', { method: 'POST', body: formData });
-        const result = await response.json();
-
-        if (response.ok && result.success) {
-          window.location.href = '/booking/thanks';
-        } else {
-          showError(result.error || 'Something went wrong');
-          resetButton();
-        }
-      } catch (error) {
-        showError('Network error');
-        resetButton();
       }
-    });
 
-    function resetButton() {
-      submitBtn.disabled = false;
-      submitText.textContent = 'Send Request';
-      submitIcon.classList.remove('hidden');
-      loadingIcon.classList.add('hidden');
-    }
+      function showError(message: string) {
+        if (!errorMessage) return;
+        const errorP = errorMessage.querySelector('p');
+        if (errorP) errorP.textContent = message;
+        errorMessage.classList.remove('hidden');
+        setTimeout(() => errorMessage.classList.add('hidden'), 5000);
+      }
 
-    // Animations
-    const initAnimations = () => {
+      function handleFiles(files: File[]) {
+        const validFiles = files.filter(file => {
+          if (!file.type.match(/^image\/(jpeg|png|webp|gif)$/)) {
+            showError(`Invalid type: ${file.name}`);
+            return false;
+          }
+          if (file.size > MAX_SIZE) {
+            showError(`Too large: ${file.name}`);
+            return false;
+          }
+          return true;
+        });
+
+        const totalFiles = selectedFiles.length + validFiles.length;
+        if (totalFiles > MAX_FILES) {
+          showError(`Max ${MAX_FILES} images allowed`);
+          const allowed = MAX_FILES - selectedFiles.length;
+          selectedFiles = [...selectedFiles, ...validFiles.slice(0, allowed)];
+        } else {
+          selectedFiles = [...selectedFiles, ...validFiles];
+        }
+        updateFileList();
+      }
+
+      function resetButton() {
+        if (!submitBtn) return;
+        submitBtn.disabled = false;
+        if (submitText) submitText.textContent = 'Send Request';
+        if (submitIcon) submitIcon.classList.remove('hidden');
+        if (loadingIcon) loadingIcon.classList.add('hidden');
+      }
+
+      // Event Listeners
+      if (fileInput) {
+        fileInput.addEventListener('change', () => {
+          const files = Array.from(fileInput.files || []);
+          handleFiles(files);
+        });
+      }
+
+      if (uploadZone) {
+        uploadZone.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          uploadZone.classList.add('border-terracotta', 'bg-white/5');
+        });
+
+        uploadZone.addEventListener('dragleave', (e) => {
+          e.preventDefault();
+          uploadZone.classList.remove('border-terracotta', 'bg-white/5');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+          e.preventDefault();
+          uploadZone.classList.remove('border-terracotta', 'bg-white/5');
+          if (e.dataTransfer?.files) {
+            handleFiles(Array.from(e.dataTransfer.files));
+          }
+        });
+      }
+
+      if (form) {
+        form.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          if (submitBtn) submitBtn.disabled = true;
+          if (submitText) submitText.textContent = 'Processing...';
+          if (submitIcon) submitIcon.classList.add('hidden');
+          if (loadingIcon) loadingIcon.classList.remove('hidden');
+          if (errorMessage) errorMessage.classList.add('hidden');
+
+          try {
+            const formData = new FormData(form);
+            formData.delete('references');
+            selectedFiles.forEach(file => formData.append('references', file));
+
+            const response = await fetch('/api/booking', { method: 'POST', body: formData });
+            const result = await response.json();
+
+            if (response.ok && result.success) {
+              window.location.href = '/booking/thanks';
+            } else {
+              showError(result.error || 'Something went wrong');
+              resetButton();
+            }
+          } catch (error) {
+            showError('Network error');
+            resetButton();
+          }
+        });
+      }
+
+      // Animations
       const gsap = (window as any).gsap;
       const ScrollTrigger = (window as any).ScrollTrigger;
-      if (!gsap || !ScrollTrigger) { setTimeout(initAnimations, 100); return; }
+      if (!gsap || !ScrollTrigger) return;
 
       gsap.set('.booking-hero-title-line > span', { y: '100%' });
       gsap.set('.booking-hero-reveal', { opacity: 0, y: 20 });
@@ -505,6 +515,7 @@ const budgetOptions = [
         });
       });
     };
-    document.addEventListener('DOMContentLoaded', initAnimations);
+
+    document.addEventListener('astro:page-load', initBooking);
   </script>
 </SiteLayout>

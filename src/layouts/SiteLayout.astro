@@ -5,6 +5,7 @@ import Announcement from '../components/Announcement.astro';
 import HeaderNav from '../components/HeaderNav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import Schema from '../components/Schema.astro';
+import { ClientRouter } from 'astro:transitions';
 
 interface Props {
   title?: string;
@@ -54,6 +55,7 @@ const ogImage = new URL(image, siteUrl).toString();
 		<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
 		<meta name="viewport" content="width=device-width" />
 		<meta name="generator" content={Astro.generator} />
+    <ClientRouter />
 		
     <!-- SEO -->
     <title>{title ? `${title} | ${SITE_TITLE}` : SITE_TITLE}</title>
@@ -122,6 +124,12 @@ const ogImage = new URL(image, siteUrl).toString();
 			window.lenis = lenis;
 			window.gsap = gsap;
 			window.ScrollTrigger = ScrollTrigger;
+
+      // Handle View Transitions
+      document.addEventListener('astro:page-load', () => {
+        // Refresh ScrollTrigger on page load to ensure positions are correct
+        ScrollTrigger.refresh();
+      });
 		</script>
 		<!-- Subtle background texture -->
 		<div class="fixed inset-0 noise pointer-events-none z-[-1]"></div>
