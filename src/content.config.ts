@@ -12,6 +12,10 @@ const artists = defineCollection({
     galleryDir: z.string(),
     specialties: z.array(z.string()).optional(),
     instagram: z.string().optional(),
+    facebook: z.string().optional(),
+    tiktok: z.string().optional(),
+    twitch: z.string().optional(),
+    portfolioUrl: z.string().url().optional(),
     bookingEmailCc: z.string().email().optional(),
   }),
 });

@@ -22,6 +22,19 @@
         "instagram": {
           "type": "string"
         },
+        "facebook": {
+          "type": "string"
+        },
+        "tiktok": {
+          "type": "string"
+        },
+        "twitch": {
+          "type": "string"
+        },
+        "portfolioUrl": {
+          "type": "string",
+          "format": "uri"
+        },
         "bookingEmailCc": {
           "type": "string",
           "format": "email"

@@ -145,7 +145,51 @@ const firstName = artist.data.name.split(' ')[0];
                 class="flex items-center gap-2 font-mono text-sm text-neutral-400 hover:text-white transition-colors"
               >
                 <iconify-icon icon="mdi:instagram" class="text-base"></iconify-icon>
-                <span>{artist.data.instagram}</span>
+                <span>@{artist.data.instagram}</span>
+              </a>
+            )}
+            {artist.data.facebook && (
+              <a
+                href={`https://facebook.com/${artist.data.facebook}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-2 font-mono text-sm text-neutral-400 hover:text-white transition-colors"
+              >
+                <iconify-icon icon="mdi:facebook" class="text-base"></iconify-icon>
+                <span>Facebook</span>
+              </a>
+            )}
+            {artist.data.tiktok && (
+              <a
+                href={`https://www.tiktok.com/@${artist.data.tiktok.replace('@', '')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-2 font-mono text-sm text-neutral-400 hover:text-white transition-colors"
+              >
+                <iconify-icon icon="ic:baseline-tiktok" class="text-base"></iconify-icon>
+                <span>@{artist.data.tiktok}</span>
+              </a>
+            )}
+            {artist.data.twitch && (
+              <a
+                href={`https://twitch.tv/${artist.data.twitch.replace('@', '')}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-2 font-mono text-sm text-neutral-400 hover:text-white transition-colors"
+              >
+                <iconify-icon icon="mdi:twitch" class="text-base"></iconify-icon>
+                <span>Twitch</span>
+              </a>
+            )}
+            {artist.data.portfolioUrl && (
+              <a
+                href={artist.data.portfolioUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="flex items-center gap-2 font-mono text-sm text-neutral-400 hover:text-white transition-colors"
+              >
+                <iconify-icon icon="mdi:web" class="text-base"></iconify-icon>
+                <span>Portfolio Site</span>
               </a>
             )}
           </div>
