@@ -1,5 +1,56 @@
 # Continuity Log
 
+## 2026-01-01 - Editorial Refinement & Dynamic Portfolio Layouts
+
+### Changes Made
+
+#### 1. "Refined Editorial" Design System Implementation
+- **Overhauled Booking Page** (`src/pages/booking.astro`):
+  - Replaced boxy inputs with elegant **underlined inputs** and terracotta focus states.
+  - Implemented large display typography for section headers to create a "narrative" form experience.
+  - Added generous "gallery pacing" (whitespace) between major form sections.
+  - Redesigned the submit button as a high-contrast, magnetic-style block.
+- **Artists Index Redesign** (`src/pages/artists/index.astro`):
+  - Dramatic hero section with massive display typography ("THE ARTISTS").
+  - New gallery-style artist cards with "bloom" hover effects (grayscale to warm terracotta color).
+  - Minimalist metadata using mono-spaced typography.
+- **Artist Portfolio Refinement** (`src/pages/artists/[slug].astro`):
+  - Cinematic hero with split-line display typography.
+  - Added a sticky "Start a Project" card in the bio section for better conversion.
+
+#### 2. Dynamic Portfolio & Flash Experience
+- **Interlocking Masonry Grid**:
+  - Implemented a robust 6-column interlocking grid pattern for portfolio items.
+  - Uses a calculated sequence (Row 1: 4+2, Row 2: 2+2+2, Row 3: 3+3, Row 4: 2+4) to ensure visual variety without vertical gaps or "holes."
+  - Switched from uniform squares to varied aspect ratios (wide, tall, feature).
+- **Portfolio / Flash Toggle**:
+  - Added a persistent toggle switch to allow users to switch between "Portfolio" and "Flash" views.
+  - Reduces page length while maintaining high visibility for available designs.
+- **"Flash Sheet" Aesthetic**:
+  - Redesigned flash items to look like physical sheets pinned to a wall.
+  - Added paper-colored backgrounds (`#f2e3d0`), subtle random rotations, and "pin" graphics.
+  - Interactive hover effects (straighten + zoom).
+
+#### 3. Component & UX Improvements
+- **CustomSelect Refinement**:
+  - Switched to the new underlined aesthetic.
+  - **Critical Fix**: Added `data-lenis-prevent` and `overscroll-contain` to allow scrolling within the dropdown without Lenis interference.
+- **Enhanced MDX Styling**:
+  - Updated `.prose-editorial` in `global.css` with larger hierarchy and more "literary" feel.
+  - Custom list markers: Em-dashes (—) for unordered and numbered mono (01.) for ordered lists in terracotta.
+  - Improved blockquote styling with terracotta accent lines.
+
+### Decisions
+- **Underlined vs Boxed Inputs**: Chose underlined inputs to minimize visual clutter and lean into the high-end editorial/gallery aesthetic.
+- **Interlocking Pattern vs Auto-Masonry**: Chose a strict repeating pattern for the portfolio grid to ensure row alignment and eliminate the "ugly whitespace" common with basic CSS grid masonry.
+- **Flash Toggle**: Implemented as a toggle rather than separate sections to keep the "Flash" easily accessible without requiring users to scroll past 50+ portfolio images.
+
+### How to Test
+1. **Portfolio Grid**: Visit an artist page and verify that images of different sizes fit together perfectly without holes.
+2. **Flash Toggle**: Click "Flash" in the works section and verify the layout switches to the "flash sheet" view.
+3. **Dropdown Scrolling**: Open a long dropdown on the booking page and verify you can scroll the options using a mouse wheel or touch.
+4. **MDX**: Check the artist bios for refined typography and custom list markers.
+
 ## 2026-01-01 - Artist Portfolio Expansion & Booking Page Fix
 
 ### Changes Made
