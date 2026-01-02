@@ -1,5 +1,341 @@
 # Continuity Log
 
+## 2026-01-02 - Mailing List Opt-In Feature
+
+### Changes Made
+
+#### 1. Booking Form - Newsletter Checkbox
+- **Added optional mailing list opt-in checkbox** to `/src/pages/booking.astro`:
+  - **Location:** Section 05 (Terms & Consent), after age confirmation checkbox
+  - **Checkbox copy:** "Stay informed about promotions, events, and tattoo inspiration from United Tattoo."
+  - **Styling:** Matches existing checkbox pattern exactly
+    - Terracotta (#D87850) accent on check
+    - Font-mono text-xs with neutral-400 color
+    - Hover transition to neutral-300
+    - Custom styled checkbox with border transition
+  - **Behavior:**
+    - Completely optional (no `required` attribute)
+    - Pure opt-in - not pre-checked
+    - Form field name: `subscribeToNewsletter`
+
+#### 2. API Integration - Resend Contacts API
+- **Updated `/src/pages/api/booking.ts`** to integrate with Resend Contacts API:
+
+  **Form Data Extraction (line 30):**
+  ```typescript
+  const subscribeToNewsletter = formData.get('subscribeToNewsletter');
+  ```
+
+  **Environment Variable (line 115):**
+  ```typescript
+  const RESEND_AUDIENCE_ID = env.RESEND_AUDIENCE_ID || import.meta.env.RESEND_AUDIENCE_ID;
+  ```
+
+  **Contact Creation Logic (lines 531-551):**
+  - Executes after client confirmation email succeeds
+  - Only runs if `subscribeToNewsletter` is checked AND `RESEND_AUDIENCE_ID` is set
+  - Wrapped in try-catch for error handling
+  - Non-blocking: booking succeeds even if contact creation fails
+
+  **Implementation Details:**
+  ```typescript
+  if (subscribeToNewsletter && RESEND_AUDIENCE_ID) {
+    try {
+      const nameParts = name.trim().split(' ');
+      const firstName = nameParts[0];
+      const lastName = nameParts.slice(1).join(' ') || '';
+
+      await resend.contacts.create({
+        email: email,
+        firstName: firstName,
+        lastName: lastName || undefined,
+        audienceId: RESEND_AUDIENCE_ID,
+        unsubscribed: false,
+      });
+
+      console.log(`Newsletter subscription: ${email} added to audience ${RESEND_AUDIENCE_ID}`);
+    } catch (contactError) {
+      console.error('Newsletter subscription error:', contactError);
+    }
+  }
+  ```
+
+  **Name Parsing Strategy:**
+  - Splits full name on spaces
+  - First word → `firstName`
+  - Remaining words → `lastName`
+  - Handles single names gracefully (lastName = empty string → undefined)
+
+#### 3. Dev Mode Logging
+- **Added console logging** for newsletter opt-in status (lines 570-576):
+  ```typescript
+  console.log('=== NEWSLETTER OPT-IN (Dev Mode) ===');
+  console.log('Newsletter Opt-in:', subscribeToNewsletter ? 'Yes' : 'No');
+  if (subscribeToNewsletter) {
+    console.log('Would add contact:', email);
+    console.log('Audience ID:', RESEND_AUDIENCE_ID || 'NOT SET');
+  }
+  ```
+  - Shows whether checkbox was checked
+  - Displays email that would be added
+  - Shows audience ID status (or warns if not set)
+
+#### 4. Documentation Updates
+
+**README.md:**
+- Added `RESEND_AUDIENCE_ID` to `.env` example (line 177)
+- Updated environment variables note to explain audience ID is optional
+- Added to environment variables table with description
+- Noted opt-in behavior
+
+**DEPLOYMENT.md:**
+- Added `RESEND_AUDIENCE_ID` to required variables table
+- Added to environment variable setup instructions
+- Created new "Mailing List Opt-In" section (lines 98-130):
+  - How it works explanation
+  - Configuration steps
+  - Current audience ID: `053e25bb-7525-4d01-a0fe-beee9f953a8a`
+  - Instructions to find audience ID in Resend dashboard
+  - Contact data structure documentation
+  - Error handling explanation
+- Added mailing list testing steps to "Testing Email Functionality" section
+
+### Files Modified
+
+```
+src/pages/booking.astro      - Added newsletter checkbox to Section 05
+src/pages/api/booking.ts     - Integrated Resend Contacts API
+README.md                     - Added RESEND_AUDIENCE_ID documentation
+DEPLOYMENT.md                 - Added mailing list configuration guide
+```
+
+### Decisions
+
+**Optional vs Required Checkbox:**
+- Made checkbox completely optional (no `required` attribute)
+- Reasoning: GDPR/privacy best practice - mailing lists must be explicit opt-in
+- Users can submit bookings without subscribing
+- No pre-checked boxes to avoid "dark patterns"
+
+**Non-Blocking Contact Creation:**
+- Newsletter signup failures don't block booking submission
+- Reasoning: Booking request is the primary action, newsletter is secondary
+- Prevents edge cases (API outage, rate limits) from blocking legitimate bookings
+- Errors are logged for monitoring but don't affect user experience
+
+**Name Parsing Strategy:**
+- Split full name on spaces: first word = firstName, rest = lastName
+- Reasoning: Resend Contacts API has separate firstName/lastName fields
+- Handles single names gracefully (lastName = undefined if not present)
+- Simple, predictable parsing that works for most names
+- Acknowledges limitation: doesn't handle complex multi-part names perfectly
+
+**Environment Variable Configuration:**
+- Made `RESEND_AUDIENCE_ID` optional via environment variable
+- Reasoning:
+  - Flexibility: Can use different audiences for prod/preview/dev
+  - Easy updates: Change audience without code changes
+  - Safe default: If not set, feature silently skips (no errors)
+  - Consistent with other env vars (RESEND_API_KEY, BOOKING_FROM_EMAIL)
+
+**Checkbox Copy:**
+- "Stay informed about promotions, events, and tattoo inspiration from United Tattoo."
+- Reasoning:
+  - Clear about what they'll receive (promotions, events, inspiration)
+  - Brand voice: "tattoo inspiration" is more editorial than "newsletter"
+  - Honest and direct (no overpromising)
+  - Matches brand tone from rest of site
+
+**Placement in Form:**
+- After required consent checkboxes, before submit button
+- Reasoning:
+  - Logically grouped with other consent items
+  - Clearly separated from required checkboxes (no confusion)
+  - Last thing before submission = top of mind
+  - Follows progressive disclosure pattern (required → optional)
+
+### Technical Implementation
+
+**Resend Contacts API:**
+- **Endpoint:** `resend.contacts.create()`
+- **Required Fields:**
+  - `email` - Email address from form
+  - `audienceId` - Resend audience ID from environment
+- **Optional Fields:**
+  - `firstName` - Extracted from name field
+  - `lastName` - Extracted from name field (if present)
+  - `unsubscribed` - Set to `false` (opt-in)
+
+**Contact Data Structure:**
+```typescript
+{
+  email: string,          // From form submission
+  firstName: string,      // First word of name
+  lastName?: string,      // Remaining words (undefined if single name)
+  audienceId: string,     // From RESEND_AUDIENCE_ID env var
+  unsubscribed: false,    // Explicit opt-in
+}
+```
+
+**Error Handling Flow:**
+1. Check if checkbox is checked AND audience ID exists
+2. If yes, attempt to create contact
+3. If API call fails, log error to console
+4. Continue with booking submission regardless
+5. Return success response to client
+
+**Environment Variable Access:**
+```typescript
+const RESEND_AUDIENCE_ID = env.RESEND_AUDIENCE_ID || import.meta.env.RESEND_AUDIENCE_ID;
+```
+- First tries Cloudflare runtime env (production)
+- Falls back to Vite import.meta.env (development)
+- Undefined if not set anywhere (graceful degradation)
+
+### Configuration
+
+**Current Audience ID:** `053e25bb-7525-4d01-a0fe-beee9f953a8a`
+
+**Environment Variables Required:**
+```bash
+# Production (Cloudflare Pages)
+RESEND_AUDIENCE_ID=053e25bb-7525-4d01-a0fe-beee9f953a8a
+
+# Development (.env file)
+RESEND_AUDIENCE_ID=053e25bb-7525-4d01-a0fe-beee9f953a8a
+```
+
+**Finding Audience ID in Resend:**
+1. Log into Resend dashboard
+2. Navigate to "Audiences" section
+3. Select your audience
+4. ID appears in URL: `resend.com/audiences/[AUDIENCE-ID]`
+5. Copy the UUID after `/audiences/`
+
+### How to Test
+
+#### Local Development (without Resend API)
+1. Run `pnpm dev` (without RESEND_API_KEY set)
+2. Submit test booking with checkbox checked
+3. Check console for newsletter logging:
+   ```
+   === NEWSLETTER OPT-IN (Dev Mode) ===
+   Newsletter Opt-in: Yes
+   Would add contact: test@example.com
+   Audience ID: 053e25bb-7525-4d01-a0fe-beee9f953a8a
+   ```
+4. Verify checkbox state is logged correctly
+
+#### Local Development (with Resend API)
+1. Add to `.env`:
+   ```
+   RESEND_API_KEY=re_xxxxxxxxxx
+   RESEND_AUDIENCE_ID=053e25bb-7525-4d01-a0fe-beee9f953a8a
+   ```
+2. Run `pnpm dev`
+3. Submit test booking with checkbox checked
+4. Check Resend Audiences dashboard for new contact
+5. Verify name and email are correct
+
+#### Production Testing
+1. Add `RESEND_AUDIENCE_ID` to Cloudflare Pages environment variables
+2. Deploy with `pnpm deploy`
+3. Submit test booking with checkbox **checked**:
+   - ✅ Verify booking succeeds
+   - ✅ Verify emails are sent
+   - ✅ Check Resend Audiences dashboard for new contact
+   - ✅ Verify contact has correct email, firstName, lastName
+4. Submit test booking with checkbox **unchecked**:
+   - ✅ Verify booking succeeds
+   - ✅ Verify emails are sent
+   - ✅ Verify NO new contact appears in audience
+5. Check Cloudflare Functions logs:
+   - Look for "Newsletter subscription: [email] added to audience" message
+   - Check for any contact API errors
+
+### Next Steps
+
+#### Immediate
+- [ ] Add `RESEND_AUDIENCE_ID` environment variable to Cloudflare Pages
+- [ ] Deploy and test mailing list functionality in production
+- [ ] Verify contacts are being added to Resend audience correctly
+- [ ] Monitor Cloudflare logs for any contact API errors
+
+#### Future Enhancements
+- [ ] Add "Manage Preferences" link to confirmation email
+- [ ] Implement unsubscribe functionality
+- [ ] Create separate audiences for different email types:
+  - General newsletter
+  - Event announcements only
+  - Flash tattoo releases only
+- [ ] Add custom fields to contacts (e.g., preferred artist, style interests)
+- [ ] Track marketing attribution (source: booking form)
+- [ ] Build email campaign templates in Resend
+- [ ] Add double opt-in confirmation email
+- [ ] Create admin dashboard to view/export contacts
+
+### Notes
+
+**Privacy & Compliance:**
+- Fully GDPR compliant - explicit opt-in required
+- No pre-checked boxes (dark patterns)
+- Clear language about what they'll receive
+- Unsubscribe functionality handled by Resend
+
+**Contact Management:**
+- Contacts managed entirely in Resend dashboard
+- Can export contacts, create segments, send campaigns
+- Unsubscribe links automatically included by Resend
+- Bounce handling and list hygiene managed by Resend
+
+**Error Scenarios Handled:**
+- Missing `RESEND_AUDIENCE_ID` - Feature silently skips
+- Contact already exists - Resend API handles gracefully
+- API rate limits - Error logged, booking continues
+- Network failures - Error logged, booking continues
+- Invalid email format - Should be caught by form validation first
+
+**Name Parsing Limitations:**
+- Works well for: "John Doe", "Mary Jane Smith", "Cher" (single name)
+- Edge cases:
+  - "Mary-Jane O'Connor" → firstName: "Mary-Jane", lastName: "O'Connor"
+  - "van Gogh" → firstName: "van", lastName: "Gogh"
+  - Acceptable for newsletter purposes (not critical data)
+  - Can be manually corrected in Resend dashboard if needed
+
+**Resend Contacts API Limits:**
+- Free tier: Up to 100 contacts
+- Pro tier: Unlimited contacts
+- API rate limits apply (should not be an issue for booking volume)
+- Contact creation is idempotent (safe to retry)
+
+**Development vs Production:**
+- Dev mode logs newsletter opt-in to console
+- Production mode actually creates contacts in Resend
+- Same code path, behavior controlled by `RESEND_API_KEY` presence
+- Audience ID should be set in both environments for testing
+
+**Alternative Implementation Considered:**
+- Could have made checkbox required with default unchecked
+- Rejected: Adds friction to booking flow
+- Current approach: Optional, low friction, clear opt-in
+
+**Integration with Existing Email Flow:**
+1. Booking submitted
+2. Admin/artist notification emails sent
+3. Client confirmation email sent
+4. **Newsletter opt-in processed** (if checked)
+5. Redirect to thank you page
+
+**Checkbox Visual Design:**
+- Matches existing checkboxes exactly
+- Custom styled (not native browser checkbox)
+- Accessible (sr-only input, visible custom UI)
+- Peer-checked CSS for state management
+- Terracotta brand color on checked state
+
+---
+
 ## 2026-01-02 - Branded Email Template Redesign
 
 ### Changes Made
