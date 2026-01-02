@@ -63,7 +63,7 @@ const selectedValue = selectedOption?.value || '';
           <li
             role="option"
             data-value=""
-            class="custom-select-option px-4 py-3 font-mono text-sm text-neutral-500 cursor-pointer hover:bg-white/5 transition-colors"
+            class="custom-select-option px-4 py-4 font-mono text-sm text-neutral-500 cursor-pointer hover:bg-white/5 transition-colors"
             aria-selected={!selectedValue}
           >
             {placeholder}
@@ -73,7 +73,7 @@ const selectedValue = selectedOption?.value || '';
           <li
             role="option"
             data-value={option.value}
-            class={`custom-select-option px-4 py-3 font-mono text-sm cursor-pointer hover:bg-white/5 transition-colors flex items-center justify-between ${option.value === selectedValue ? 'text-white bg-white/5' : 'text-neutral-300'}`}
+            class={`custom-select-option px-4 py-4 font-mono text-sm cursor-pointer hover:bg-white/5 transition-colors flex items-center justify-between ${option.value === selectedValue ? 'text-white bg-white/5' : 'text-neutral-300'}`}
             aria-selected={option.value === selectedValue}
           >
             <span>{option.label}</span>
