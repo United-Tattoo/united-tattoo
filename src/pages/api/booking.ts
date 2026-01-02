@@ -27,6 +27,7 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
     const acceptTerms = formData.get('acceptTerms');
     const acceptAge = formData.get('acceptAge');
     const acceptDeposit = formData.get('acceptDeposit');
+    const subscribeToNewsletter = formData.get('subscribeToNewsletter');
 
     const escapeHtml = (input: string) =>
       input
@@ -111,6 +112,7 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
 
     const RESEND_API_KEY = env.RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
     const BOOKING_FROM_EMAIL = env.BOOKING_FROM_EMAIL || import.meta.env.BOOKING_FROM_EMAIL || 'bookings@yourdomain.com';
+    const RESEND_AUDIENCE_ID = env.RESEND_AUDIENCE_ID || import.meta.env.RESEND_AUDIENCE_ID;
 
     // Debug logging (remove after testing)
     console.log('Environment check:', {
@@ -525,6 +527,28 @@ This is an automated confirmation. Please do not reply to this email.
         console.error('Client confirmation email error:', clientError);
         // Don't fail the request if client email fails - admin email was sent successfully
       }
+
+      // Add to mailing list if opted in
+      if (subscribeToNewsletter && RESEND_AUDIENCE_ID) {
+        try {
+          const nameParts = name.trim().split(' ');
+          const firstName = nameParts[0];
+          const lastName = nameParts.slice(1).join(' ') || '';
+
+          await resend.contacts.create({
+            email: email,
+            firstName: firstName,
+            lastName: lastName || undefined,
+            audienceId: RESEND_AUDIENCE_ID,
+            unsubscribed: false,
+          });
+
+          console.log(`Newsletter subscription: ${email} added to audience ${RESEND_AUDIENCE_ID}`);
+        } catch (contactError) {
+          // Log but don't fail the booking if newsletter signup fails
+          console.error('Newsletter subscription error:', contactError);
+        }
+      }
     } else {
       // Dev mode: log the email instead of sending
       console.log('=== BOOKING REQUEST (Dev Mode) ===');
@@ -541,6 +565,14 @@ This is an automated confirmation. Please do not reply to this email.
       console.log('Would send email to:', email);
       console.log('From:', BOOKING_FROM_EMAIL);
       console.log('Subject: Booking Request Received - United Tattoo');
+      console.log('=================================');
+      console.log('');
+      console.log('=== NEWSLETTER OPT-IN (Dev Mode) ===');
+      console.log('Newsletter Opt-in:', subscribeToNewsletter ? 'Yes' : 'No');
+      if (subscribeToNewsletter) {
+        console.log('Would add contact:', email);
+        console.log('Audience ID:', RESEND_AUDIENCE_ID || 'NOT SET');
+      }
       console.log('=================================');
     }
 

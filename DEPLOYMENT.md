@@ -22,6 +22,7 @@ Configure these environment variables in your Cloudflare Pages dashboard:
 |----------|-------|-------|
 | `RESEND_API_KEY` | Your Resend API key (starts with `re_`) | Get from [resend.com/api-keys](https://resend.com/api-keys) |
 | `BOOKING_FROM_EMAIL` | `bookings@unitedtattoo.com` | Must be a verified sender domain in Resend |
+| `RESEND_AUDIENCE_ID` | `053e25bb-7525-4d01-a0fe-beee9f953a8a` | Resend audience for mailing list opt-ins (optional) |
 
 ### Setting Up Environment Variables in Cloudflare Pages
 
@@ -37,6 +38,8 @@ Configure these environment variables in your Cloudflare Pages dashboard:
        **Value:** `re_xxxxxxxxxx` (your actual API key)
      - **Variable name:** `BOOKING_FROM_EMAIL`
        **Value:** `bookings@unitedtattoo.com`
+     - **Variable name:** `RESEND_AUDIENCE_ID`
+       **Value:** `053e25bb-7525-4d01-a0fe-beee9f953a8a` (optional)
 
 3. **Deploy scope**
    - Set variables for **Production** environment
@@ -91,6 +94,40 @@ Clients automatically receive a confirmation email at the address they provide i
 - Welcoming message
 
 **No configuration needed** - this is automatic for all booking submissions.
+
+### Mailing List Opt-In
+
+The booking form includes an optional checkbox that allows clients to subscribe to the United Tattoo mailing list.
+
+**How it works:**
+- Checkbox appears in the booking form consent section
+- Completely optional - clients can submit without subscribing
+- If checked, client's email is added to your Resend audience
+- Uses Resend Contacts API to manage subscribers
+
+**Configuration:**
+1. Create an audience in Resend dashboard (or use existing)
+2. Get the audience ID from Resend
+3. Add `RESEND_AUDIENCE_ID` environment variable in Cloudflare Pages
+4. Contacts are automatically added when checkbox is checked
+
+**Current Audience ID:** `053e25bb-7525-4d01-a0fe-beee9f953a8a`
+
+**To find your Audience ID in Resend:**
+1. Go to **Audiences** in the Resend dashboard
+2. Select your audience
+3. The ID appears in the URL: `resend.com/audiences/[AUDIENCE-ID]`
+
+**Contact Data Stored:**
+- Email address (from form)
+- First name (extracted from name field)
+- Last name (extracted from name field)
+- Unsubscribed status: false (opt-in)
+
+**Error Handling:**
+- If contact creation fails, the booking still succeeds
+- Errors are logged to console for debugging
+- Newsletter signup is non-blocking
 
 ---
 
@@ -196,6 +233,14 @@ When `RESEND_API_KEY` is not set (local dev), the booking API will:
      - ✅ Admin notification to `ashtonjl.work@gmail.com`
      - ✅ Client confirmation to the submitted email
      - ✅ Artist notification (if artist has `bookingEmailCc`)
+
+4. **Test mailing list opt-in**
+   - Submit booking with mailing list checkbox **checked**
+     - ✅ Verify contact appears in Resend Audiences dashboard
+     - ✅ Check that name and email are correct
+   - Submit booking with checkbox **unchecked**
+     - ✅ Verify no new contact is added to audience
+   - Check Cloudflare logs for any contact API errors
 
 ---
 

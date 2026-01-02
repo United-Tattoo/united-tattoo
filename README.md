@@ -174,9 +174,10 @@ This is a from-scratch rebuild using Astro. The previous Next.js implementation 
    ```bash
    RESEND_API_KEY=re_xxxxxxxxxx
    BOOKING_FROM_EMAIL=bookings@unitedtattoo.com
+   RESEND_AUDIENCE_ID=your-audience-id-here
    ```
 
-   **Note:** `BOOKING_FROM_EMAIL` must be a verified sender domain in Resend. In development, the booking API will log emails to the console if `RESEND_API_KEY` is not set.
+   **Note:** `BOOKING_FROM_EMAIL` must be a verified sender domain in Resend. In development, the booking API will log emails to the console if `RESEND_API_KEY` is not set. `RESEND_AUDIENCE_ID` is optional - if set, users who opt-in to the mailing list will be added to this Resend audience.
 
    **Email Flow:**
    - Admin emails: `Christyl116@yahoo.com`, `ashtonjl.work@gmail.com` (hardcoded in API)
@@ -208,8 +209,11 @@ This is a from-scratch rebuild using Astro. The previous Next.js implementation 
 |----------|-------------|---------|
 | `RESEND_API_KEY` | Resend API key for sending booking emails | `re_xxxxxxxxxx` |
 | `BOOKING_FROM_EMAIL` | Sender email (must be verified in Resend) | `bookings@unitedtattoo.com` |
+| `RESEND_AUDIENCE_ID` | Resend audience ID for mailing list opt-ins (optional) | `053e25bb-7525-4d01...` |
 
-**Note:** If `RESEND_API_KEY` is not set, the booking API will log emails to the console instead of sending them (useful for local development).
+**Notes:**
+- If `RESEND_API_KEY` is not set, the booking API will log emails to the console instead of sending them (useful for local development).
+- `RESEND_AUDIENCE_ID` is optional. If set, users who check the mailing list opt-in checkbox will be added to this Resend audience.
 
 **Email Recipients:**
 - **Shop Admins:** `Christyl116@yahoo.com`, `ashtonjl.work@gmail.com` (configured in `/src/pages/api/booking.ts`)
