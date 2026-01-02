@@ -1,5 +1,260 @@
 # Continuity Log
 
+## 2026-01-02 - Branded Email Template Redesign
+
+### Changes Made
+
+#### 1. Client Confirmation Email - Complete Redesign
+- **Replaced plain HTML email with professional branded template**:
+  - **Visual Design:**
+    - Burnt Orange (#E67E50) header with "United Tattoo" branding in serif italic
+    - Monospace subtitle: "FOUNTAIN, COLORADO"
+    - Table-based layout for maximum email client compatibility
+    - Cream-colored (#fff7ec) booking details card with terracotta (#D87850) left border
+    - Clean 2-column data presentation
+    - Professional footer with subtle divider
+
+  - **Typography Hierarchy:**
+    - Headings: Georgia serif, 400 weight
+    - Body: Arial sans-serif, 15-16px
+    - Labels: Courier New monospace, 10px uppercase with 2px letter-spacing
+    - Data: Color-coded with moss (#6f5c49) labels and charcoal (#1c1915) values
+
+  - **Content Improvements:**
+    - Personalized greeting: "Thank You, [Name]"
+    - Organized booking summary in styled card
+    - Clear "What Happens Next?" section with 24-48 hour timeline
+    - Contact information section with **ink@united-tattoos.com** (burnt orange link)
+    - Removed personal email address (Christyl116@yahoo.com)
+    - Warm, collaborative closing message
+    - Footer disclaimer in muted moss color
+
+#### 2. Admin/Artist Notification Email - Enhanced Formatting
+- **Upgraded from basic HTML to structured, branded layout**:
+  - **Visual Design:**
+    - Same burnt orange header as client email for brand consistency
+    - Subtitle: "United Tattoo · Admin Notification"
+    - Section-based layout with numbered monospace labels:
+      - `01 // Client Contact`
+      - `02 // Artist Selection`
+      - `03 // Project Details`
+      - `04 // Reference Images`
+      - `05 // Consent`
+    - Client contact section prominently featured at top with cream background
+    - Terracotta borders for visual hierarchy
+
+  - **UX Improvements:**
+    - **Client contact info is FIRST** for easy response access
+    - Client email is clickable and highlighted in burnt orange
+    - All data in clean 2-column tables (label + value)
+    - Description in styled gray box with terracotta accent bar
+    - Reference image count clearly displayed
+    - Consent items use checkmarks (✓ Yes / ✗ No) for easy scanning
+    - Consistent padding and spacing throughout
+
+  - **Data Presentation:**
+    - Client contact: Name, email (clickable), phone, preferred contact method
+    - Artist selection: Bold display of selected artist
+    - Project details: Style, placement, size, budget, availability in table format
+    - Description: Full text in styled container with line breaks preserved
+    - Reference images: Count + "attached to this email" note
+    - Consent: Visual checkmarks for quick review
+
+#### 3. Contact Email Update
+- **Changed contact email throughout**:
+  - Removed: `Christyl116@yahoo.com` from client confirmation email
+  - Updated to: `ink@united-tattoos.com` as primary contact method
+  - Plain text email also updated to match
+  - Maintained warm, approachable tone while using shop email
+
+#### 4. Email Client Compatibility
+- **Technical Implementation:**
+  - Full HTML5 doctype with proper meta tags
+  - Table-based layout (not divs) for Outlook compatibility
+  - Inline CSS on all elements (email clients strip `<style>` tags)
+  - Role="presentation" on layout tables for accessibility
+  - Max-width: 600px container with centered alignment
+  - Fallback fonts for all typefaces:
+    - Georgia → serif
+    - Arial → sans-serif
+    - Courier New → monospace
+  - All colors use hex codes (no CSS variables in emails)
+  - Box-shadow for subtle elevation effect
+  - Proper text encoding with HTML escaping
+
+### Files Modified
+
+```
+src/pages/api/booking.ts     - Redesigned both email templates (HTML + plain text)
+```
+
+### Decisions
+
+**Table-Based Layout vs Modern CSS:**
+- Chose table-based layout for email compatibility
+- Reasoning: Outlook and older email clients don't support modern CSS (flexbox, grid)
+- Tables ensure consistent rendering across all email platforms
+- Industry standard for HTML email development
+
+**Inline CSS:**
+- All styles applied directly to elements via `style` attribute
+- Reasoning: Many email clients strip `<style>` tags and ignore external CSS
+- Inline styles guarantee visual consistency
+- Slightly verbose but ensures maximum compatibility
+
+**Brand Color Application:**
+- Burnt Orange for header (high impact, immediate brand recognition)
+- Terracotta for accents and borders (visual interest without overwhelming)
+- Moss for labels (subtle, readable)
+- Cream for background cards (warmth without harsh white)
+- Charcoal for body text (better readability than pure black)
+
+**Section Numbering Pattern:**
+- Used "01 // Label" format from booking form
+- Reasoning: Maintains brand consistency across touchpoints
+- Creates editorial, structured feel
+- Helps recipients quickly scan sections
+
+**Client Contact Prominence (Admin Email):**
+- Placed client contact section FIRST with highlighted background
+- Reasoning: Primary action for admin is to respond to client
+- Cream background + terracotta border draws immediate attention
+- Client email in burnt orange and clickable for one-click reply
+- Makes workflow faster and more efficient
+
+**Contact Email Change:**
+- Moved from personal email to shop email (ink@united-tattoos.com)
+- Reasoning: More professional, maintains boundaries
+- Centralizes communication through shop account
+- Easier to manage if staff changes
+
+**Font Fallbacks:**
+- Georgia → serif (common system font)
+- Arial → sans-serif (universal availability)
+- Courier New → monospace (built into all systems)
+- Reasoning: Ensures graceful degradation if web fonts fail
+- Email clients often don't load custom fonts
+- System fonts load instantly, no external requests
+
+### How to Test
+
+#### Test in Multiple Email Clients
+1. Send test booking via `/booking` form
+2. Check emails in:
+   - Gmail (web, iOS, Android)
+   - Outlook (desktop, web)
+   - Apple Mail (macOS, iOS)
+   - Yahoo Mail
+   - Any other clients you use
+
+#### Verify Visual Elements
+- **Client Confirmation:**
+  - Burnt orange header displays correctly
+  - "United Tattoo" in serif italic
+  - Booking details card has cream background + terracotta border
+  - All data appears in 2-column format
+  - Contact email shows as ink@united-tattoos.com
+  - Footer disclaimer is subtle and readable
+
+- **Admin Notification:**
+  - Same header style as client email
+  - Client contact section at top with cream background
+  - Section numbers (01-05) display in monospace
+  - Client email is clickable and orange
+  - Description box has gray background + terracotta bar
+  - Checkmarks (✓/✗) display for consent items
+  - Reference image count is clear
+
+#### Check Functionality
+- Click client email link in admin notification (should open mail client)
+- View on mobile devices (should be responsive)
+- Check plain text version (for clients that don't support HTML)
+- Verify all data from form appears correctly
+- Confirm reference images are actually attached to admin email
+
+#### Accessibility Testing
+- Use screen reader to test email structure
+- Verify role="presentation" on layout tables
+- Check color contrast ratios (should meet WCAG AA)
+- Ensure all links have clear anchor text
+
+### Next Steps
+
+#### Immediate
+- [ ] Test emails in all major email clients (Gmail, Outlook, Apple Mail)
+- [ ] Verify mobile responsiveness on actual devices
+- [ ] Get client feedback on email design and tone
+- [ ] Check spam scores (use mail-tester.com or similar)
+
+#### Future Enhancements
+- [ ] Add United Tattoo logo to email header (requires hosted image)
+- [ ] Consider adding social media links to footer
+- [ ] Implement email templates as reusable components
+- [ ] Create additional email templates (appointment reminders, confirmations)
+- [ ] Add email preview/testing workflow for development
+
+#### Design System Documentation
+- [ ] Document email color palette in DESIGN_SYSTEM_SUMMARY.md
+- [ ] Create email template guidelines for future communications
+- [ ] Establish tone/voice guidelines for client communications
+- [ ] Build library of reusable email components
+
+### Notes
+
+**Email Color Palette Applied:**
+- Header Background: Burnt Orange (#E67E50)
+- Accent Borders: Terracotta (#D87850)
+- Primary Text: Charcoal (#1c1915)
+- Label Text: Moss (#6f5c49)
+- Background Cards: Cream (#fff7ec)
+- Links: Burnt Orange (#E67E50)
+- Footer Text: Moss (#6f5c49)
+- Container Background: Light Gray (#f5f5f5)
+- Body Background: White (#ffffff)
+
+**Typography Specifications:**
+- H1 (Header): Georgia, 28px (client) / 22px (admin), italic (client only), white, 400 weight
+- H2: Georgia, 24px (client) / unused (admin), charcoal, 400 weight
+- H3: Georgia, 18px, charcoal, 400 weight
+- Section Labels: Courier New, 10px, uppercase, 2px letter-spacing, moss color
+- Body Text: Arial, 15-16px, charcoal, 1.7 line-height
+- Data Values: Arial, 14-15px, charcoal, 600 weight
+- Footer: Arial, 12px, moss color
+
+**Layout Specifications:**
+- Max Width: 600px (centered container)
+- Header Padding: 32px (client) / 24px (admin) horizontal, 32px/24px vertical
+- Section Padding: 24-40px horizontal, 24-32px vertical
+- Card Padding: 24px all sides
+- Border Radius: None (email compatibility)
+- Divider Color: Sand (#f2e3d0), 1px solid
+
+**Plain Text Email:**
+- Maintained same structure and content as HTML version
+- Updated contact email to ink@united-tattoos.com
+- Clean section headers with uppercase labels
+- Bullet points for list items
+- Proper spacing between sections
+
+**Email Sending Configuration:**
+- From: `United Tattoo <team@united-tattoos.com>` (branded sender)
+- To (Client): Form submitter's email
+- To (Admin): `Christyl116@yahoo.com`, `ashtonjl.work@gmail.com`
+- CC (Artist): Artist's `bookingEmailCc` if configured
+- Reply-To (Admin): Client's email for easy response
+- Subject (Client): "Booking Request Received - United Tattoo"
+- Subject (Admin): "New Booking Request: [Name] · [Style] · [Artist]"
+
+**Brand Voice Maintained:**
+- Professional yet warm and welcoming
+- Collaborative language ("we'll work with you", "bring your vision to life")
+- Clear, concise sentences
+- Enthusiastic but not over-the-top
+- Editorial tone matching website aesthetic
+- Respectful of client's artistic vision
+
+---
+
 ## 2026-01-02 - Booking Flow Email Notifications Setup
 
 ### Changes Made

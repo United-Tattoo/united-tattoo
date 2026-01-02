@@ -8,7 +8,7 @@ const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals, platform }) => {
   try {
     const formData = await request.formData();
 
@@ -103,9 +103,22 @@ export const POST: APIRoute = async ({ request }) => {
       })
     );
 
-    // Get environment variables
-    const RESEND_API_KEY = import.meta.env.RESEND_API_KEY;
-    const BOOKING_FROM_EMAIL = import.meta.env.BOOKING_FROM_EMAIL || 'bookings@yourdomain.com';
+    // Get environment variables (Cloudflare Workers runtime)
+    // Try multiple access patterns for Cloudflare env vars
+    const env = (platform?.env as Record<string, string>) ||
+                (locals?.runtime?.env as Record<string, string>) ||
+                {};
+
+    const RESEND_API_KEY = env.RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
+    const BOOKING_FROM_EMAIL = env.BOOKING_FROM_EMAIL || import.meta.env.BOOKING_FROM_EMAIL || 'bookings@yourdomain.com';
+
+    // Debug logging (remove after testing)
+    console.log('Environment check:', {
+      hasApiKey: !!RESEND_API_KEY,
+      fromEmail: BOOKING_FROM_EMAIL,
+      platformEnv: !!platform?.env,
+      localsEnv: !!locals?.runtime?.env
+    });
 
     // Shop admin emails
     const ADMIN_EMAILS = ['Christyl116@yahoo.com', 'ashtonjl.work@gmail.com'];
@@ -122,43 +135,159 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Build email content
     const emailHtml = `
-      <h1>New Booking Request</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>New Booking Request - United Tattoo</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f5f5f5;">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        <!-- Main Container -->
+        <table role="presentation" style="width: 100%; max-width: 600px; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
 
-      <h2>Artist Selection</h2>
-      <p><strong>Preferred Artist:</strong> ${escapeHtml(artistDisplayName)}</p>
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #E67E50; padding: 24px 40px;">
+              <h1 style="margin: 0; font-family: Georgia, serif; font-size: 22px; font-weight: 400; color: #ffffff;">
+                New Booking Request
+              </h1>
+              <p style="margin: 8px 0 0 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.9);">
+                United Tattoo · Admin Notification
+              </p>
+            </td>
+          </tr>
 
-      <h2>Contact Information</h2>
-      <ul>
-        <li><strong>Name:</strong> ${escapeHtml(name)}</li>
-        <li><strong>Email:</strong> ${escapeHtml(email)}</li>
-        <li><strong>Phone:</strong> ${escapeHtml(phone)}</li>
-        <li><strong>Preferred Contact:</strong> ${escapeHtml(preferredContact || 'Email')}</li>
-      </ul>
+          <!-- Client Contact (Prominent) -->
+          <tr>
+            <td style="padding: 32px 40px 24px 40px; background-color: #fff7ec; border-left: 4px solid #D87850;">
+              <p style="margin: 0 0 4px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
+                01 // Client Contact
+              </p>
+              <table role="presentation" style="width: 100%; border-collapse: collapse; margin-top: 12px;">
+                <tr>
+                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49; width: 35%;">Name</td>
+                  <td style="padding: 6px 0; font-size: 15px; color: #1c1915; font-weight: 600;">${escapeHtml(name)}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Email</td>
+                  <td style="padding: 6px 0; font-size: 15px; color: #E67E50; font-weight: 600;">
+                    <a href="mailto:${escapeHtml(email)}" style="color: #E67E50; text-decoration: none;">${escapeHtml(email)}</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Phone</td>
+                  <td style="padding: 6px 0; font-size: 15px; color: #1c1915; font-weight: 600;">${escapeHtml(phone)}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Preferred Contact</td>
+                  <td style="padding: 6px 0; font-size: 14px; color: #1c1915;">${escapeHtml(preferredContact || 'Email')}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
 
-      <h2>Project Details</h2>
-      <ul>
-        <li><strong>Style:</strong> ${escapeHtml(style)}</li>
-        <li><strong>Placement:</strong> ${escapeHtml(placement)}</li>
-        <li><strong>Size:</strong> ${escapeHtml(size)}</li>
-        <li><strong>Budget:</strong> ${escapeHtml(budget || 'Not specified')}</li>
-        <li><strong>Availability:</strong> ${escapeHtml(availability || 'Not specified')}</li>
-      </ul>
+          <!-- Artist Selection -->
+          <tr>
+            <td style="padding: 24px 40px; border-top: 1px solid #f2e3d0;">
+              <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
+                02 // Artist Selection
+              </p>
+              <p style="margin: 0; font-size: 16px; color: #1c1915; font-weight: 600;">
+                ${escapeHtml(artistDisplayName)}
+              </p>
+            </td>
+          </tr>
 
-      <h3>Description</h3>
-      <p>${escapeHtml(description).replace(/\n/g, '<br>')}</p>
+          <!-- Project Details -->
+          <tr>
+            <td style="padding: 24px 40px; border-top: 1px solid #f2e3d0;">
+              <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
+                03 // Project Details
+              </p>
+              <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49; width: 35%;">Style</td>
+                  <td style="padding: 6px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(style)}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Placement</td>
+                  <td style="padding: 6px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(placement)}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Size</td>
+                  <td style="padding: 6px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(size)}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Budget</td>
+                  <td style="padding: 6px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(budget || 'Not specified')}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Availability</td>
+                  <td style="padding: 6px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(availability || 'Not specified')}</td>
+                </tr>
+              </table>
 
-      <h2>Consent</h2>
-      <ul>
-        <li><strong>Accepted Terms:</strong> Yes</li>
-        <li><strong>Confirmed Age:</strong> Yes</li>
-        <li><strong>Understands Deposit:</strong> ${acceptDeposit ? 'Yes' : 'No'}</li>
-      </ul>
+              <div style="margin-top: 20px; padding: 16px; background-color: #f9f9f9; border-left: 2px solid #D87850;">
+                <p style="margin: 0 0 8px 0; font-size: 12px; color: #6f5c49; font-weight: 600; text-transform: uppercase;">Description</p>
+                <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #1c1915;">${escapeHtml(description).replace(/\n/g, '<br>')}</p>
+              </div>
+            </td>
+          </tr>
 
-      <h2>Reference Images</h2>
-      <p>${validFiles.length > 0 ? `${validFiles.length} image(s) attached` : 'No images attached'}</p>
+          <!-- Reference Images -->
+          <tr>
+            <td style="padding: 24px 40px; border-top: 1px solid #f2e3d0;">
+              <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
+                04 // Reference Images
+              </p>
+              <p style="margin: 0; font-size: 14px; color: #1c1915;">
+                ${validFiles.length > 0 ? `<strong>${validFiles.length} image(s) attached</strong> to this email` : '<em>No reference images provided</em>'}
+              </p>
+            </td>
+          </tr>
 
-      <hr>
-      <p><em>This booking request was submitted via the United Tattoo website.</em></p>
+          <!-- Consent Info -->
+          <tr>
+            <td style="padding: 24px 40px; border-top: 1px solid #f2e3d0;">
+              <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
+                05 // Consent
+              </p>
+              <table role="presentation" style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 4px 0; font-size: 13px; color: #6f5c49;">Accepted Terms</td>
+                  <td style="padding: 4px 0; font-size: 13px; color: #1c1915;">✓ Yes</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-size: 13px; color: #6f5c49;">Confirmed Age (18+)</td>
+                  <td style="padding: 4px 0; font-size: 13px; color: #1c1915;">✓ Yes</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; font-size: 13px; color: #6f5c49;">Understands Deposit</td>
+                  <td style="padding: 4px 0; font-size: 13px; color: #1c1915;">${acceptDeposit ? '✓ Yes' : '✗ No'}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 24px 40px; background-color: #f9f9f9; text-align: center; border-top: 1px solid #f2e3d0;">
+              <p style="margin: 0; font-size: 12px; line-height: 1.6; color: #6f5c49;">
+                <em>Submitted via unitedtattoo.com/booking</em>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
     `;
 
     const emailText = `
@@ -219,41 +348,139 @@ This booking request was submitted via the United Tattoo website.
 
       // Send confirmation email to client
       const clientEmailHtml = `
-        <h1>Thank You for Your Booking Request!</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmation - United Tattoo</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f5f5f5;">
+    <tr>
+      <td align="center" style="padding: 40px 20px;">
+        <!-- Main Container -->
+        <table role="presentation" style="width: 100%; max-width: 600px; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
 
-        <p>Hi ${escapeHtml(name)},</p>
+          <!-- Header -->
+          <tr>
+            <td style="background-color: #E67E50; padding: 32px 40px; text-align: center;">
+              <h1 style="margin: 0; font-family: Georgia, serif; font-size: 28px; font-weight: 400; font-style: italic; color: #ffffff; letter-spacing: 0.5px;">
+                United Tattoo
+              </h1>
+              <p style="margin: 8px 0 0 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.9);">
+                Fountain, Colorado
+              </p>
+            </td>
+          </tr>
 
-        <p>We've received your tattoo booking request and our team is excited to work with you! Here's a summary of what you submitted:</p>
+          <!-- Main Content -->
+          <tr>
+            <td style="padding: 40px 40px 32px 40px;">
+              <h2 style="margin: 0 0 16px 0; font-family: Georgia, serif; font-size: 24px; font-weight: 400; color: #1c1915;">
+                Thank You, ${escapeHtml(name)}
+              </h2>
+              <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.7; color: #1c1915;">
+                We've received your booking request and our team is excited to work with you! Here's a summary of what you submitted:
+              </p>
 
-        <h2>Your Request Details</h2>
-        <ul>
-          <li><strong>Preferred Artist:</strong> ${escapeHtml(artistDisplayName)}</li>
-          <li><strong>Style:</strong> ${escapeHtml(style)}</li>
-          <li><strong>Placement:</strong> ${escapeHtml(placement)}</li>
-          <li><strong>Size:</strong> ${escapeHtml(size)}</li>
-          ${budget ? `<li><strong>Budget:</strong> ${escapeHtml(budget)}</li>` : ''}
-          ${availability ? `<li><strong>Availability:</strong> ${escapeHtml(availability)}</li>` : ''}
-          ${validFiles.length > 0 ? `<li><strong>Reference Images:</strong> ${validFiles.length} image(s) uploaded</li>` : ''}
-        </ul>
+              <!-- Booking Details Card -->
+              <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #fff7ec; border-left: 3px solid #D87850; margin: 0 0 32px 0;">
+                <tr>
+                  <td style="padding: 24px;">
+                    <p style="margin: 0 0 4px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
+                      Your Request Details
+                    </p>
 
-        <h2>What Happens Next?</h2>
-        <p>Our team will review your request and get back to you within <strong>24-48 hours</strong>. We'll discuss your design ideas, answer any questions, and help you schedule your appointment.</p>
+                    <table role="presentation" style="width: 100%; border-collapse: collapse; margin-top: 16px;">
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top; width: 35%;">Preferred Artist</td>
+                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(artistDisplayName)}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top;">Style</td>
+                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(style)}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top;">Placement</td>
+                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(placement)}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top;">Size</td>
+                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(size)}</td>
+                      </tr>
+                      ${budget ? `
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top;">Budget</td>
+                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(budget)}</td>
+                      </tr>
+                      ` : ''}
+                      ${availability ? `
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top;">Availability</td>
+                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(availability)}</td>
+                      </tr>
+                      ` : ''}
+                      ${validFiles.length > 0 ? `
+                      <tr>
+                        <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top;">Reference Images</td>
+                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${validFiles.length} image(s) uploaded</td>
+                      </tr>
+                      ` : ''}
+                    </table>
+                  </td>
+                </tr>
+              </table>
 
-        <h2>Questions?</h2>
-        <p>If you need to reach us before then, feel free to contact us:</p>
-        <ul>
-          <li><strong>Email:</strong> <a href="mailto:Christyl116@yahoo.com">Christyl116@yahoo.com</a></li>
-          <li><strong>Phone:</strong> Check our website for current contact information</li>
-        </ul>
+              <!-- What's Next Section -->
+              <div style="margin: 0 0 32px 0; padding-bottom: 32px; border-bottom: 1px solid #f2e3d0;">
+                <h3 style="margin: 0 0 12px 0; font-family: Georgia, serif; font-size: 18px; font-weight: 400; color: #1c1915;">
+                  What Happens Next?
+                </h3>
+                <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #1c1915;">
+                  Our team will review your request and get back to you within <strong>24-48 hours</strong>. We'll discuss your design ideas, answer any questions, and help you schedule your appointment.
+                </p>
+              </div>
 
-        <p>We can't wait to bring your vision to life!</p>
+              <!-- Contact Section -->
+              <div style="margin: 0 0 32px 0;">
+                <h3 style="margin: 0 0 12px 0; font-family: Georgia, serif; font-size: 18px; font-weight: 400; color: #1c1915;">
+                  Questions?
+                </h3>
+                <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.7; color: #1c1915;">
+                  If you need to reach us before then, feel free to contact us:
+                </p>
+                <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #1c1915;">
+                  <strong>Email:</strong> <a href="mailto:ink@united-tattoos.com" style="color: #E67E50; text-decoration: none;">ink@united-tattoos.com</a>
+                </p>
+              </div>
 
-        <p>Best regards,<br>
-        <strong>United Tattoo</strong><br>
-        Fountain, CO</p>
+              <!-- Closing -->
+              <p style="margin: 0 0 8px 0; font-size: 16px; line-height: 1.7; color: #1c1915;">
+                We can't wait to bring your vision to life!
+              </p>
+              <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #1c1915;">
+                <strong>United Tattoo</strong><br>
+                Fountain, CO
+              </p>
+            </td>
+          </tr>
 
-        <hr>
-        <p style="font-size: 12px; color: #666;"><em>This is an automated confirmation. Please do not reply to this email.</em></p>
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 24px 40px; background-color: #f9f9f9; text-align: center; border-top: 1px solid #f2e3d0;">
+              <p style="margin: 0; font-size: 12px; line-height: 1.6; color: #6f5c49;">
+                <em>This is an automated confirmation. Please do not reply to this email.</em>
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
       `;
 
       const clientEmailText = `
@@ -274,8 +501,7 @@ Our team will review your request and get back to you within 24-48 hours. We'll 
 
 QUESTIONS?
 If you need to reach us before then, feel free to contact us:
-- Email: Christyl116@yahoo.com
-- Phone: Check our website for current contact information
+- Email: ink@united-tattoos.com
 
 We can't wait to bring your vision to life!
 
