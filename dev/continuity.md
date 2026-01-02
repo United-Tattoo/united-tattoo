@@ -1,5 +1,180 @@
 # Continuity Log
 
+## 2026-01-02 - Booking Flow Email Notifications Setup
+
+### Changes Made
+
+#### 1. Email Notification System Enhancement
+- **Updated `/src/pages/api/booking.ts`**:
+  - Changed admin email recipients from environment variable to hardcoded array: `['Christyl116@yahoo.com', 'ashtonjl.work@gmail.com']`
+  - Removed `BOOKING_TO_EMAIL` environment variable dependency
+  - Maintained artist CC functionality (sends to artist's `bookingEmailCc` if configured)
+  - **Added client confirmation email** that sends to form submitter with:
+    - Personalized greeting with client's name
+    - Summary of booking request details (artist, style, placement, size, etc.)
+    - Confirmation of uploaded reference images
+    - Next steps: "Our team will review your request and get back to you within 24-48 hours"
+    - Contact information for questions
+    - Professional, welcoming tone
+  - Client confirmation email failures don't block request success (admin email sent successfully is priority)
+
+#### 2. Documentation Updates
+- **Updated `README.md`**:
+  - Removed `BOOKING_TO_EMAIL` from environment variables section
+  - Added email flow explanation showing 3-email system (admin + artist + client)
+  - Documented admin emails are hardcoded in API
+  - Included instructions for adding `bookingEmailCc` to artist MDX files
+
+- **Created `DEPLOYMENT.md`**:
+  - Comprehensive guide for Cloudflare Pages deployment
+  - Environment variables setup instructions (Resend API key, sender email)
+  - Email configuration details (admin recipients, artist CC setup)
+  - Resend account setup walkthrough (domain verification, API key generation)
+  - Deployment methods (Git integration vs Wrangler CLI)
+  - Testing checklist for email functionality
+  - Troubleshooting section for common email issues
+  - Security notes (API key rotation, never commit secrets)
+
+### Email Flow Architecture
+
+**Three-Email System:**
+1. **Admin Notification** → `Christyl116@yahoo.com`, `ashtonjl.work@gmail.com`
+   - Full booking details with all form fields
+   - Reference images attached
+   - Client contact info for follow-up
+   - Reply-To header set to client's email
+
+2. **Artist Notification** → Artist's `bookingEmailCc` (if configured)
+   - Same content as admin notification
+   - Only sent if selected artist has email in MDX frontmatter
+   - Allows artists to review requests directly
+
+3. **Client Confirmation** → Form submitter's email
+   - Personalized thank you message
+   - Summary of what they submitted
+   - Next steps (24-48 hour response)
+   - Shop contact information
+   - Welcoming, professional tone
+
+### Files Modified
+
+```
+src/pages/api/booking.ts     - Updated email logic, added client confirmation
+README.md                     - Updated env vars section, added email flow docs
+```
+
+### Files Created
+
+```
+DEPLOYMENT.md                 - Comprehensive deployment and email setup guide
+```
+
+### Decisions
+
+**Hardcoded Admin Emails:**
+- Chose to hardcode admin emails (`Christyl116@yahoo.com`, `ashtonjl.work@gmail.com`) directly in the API code rather than using environment variables
+- Reasoning: These are stable, unlikely to change frequently, and simplifies deployment configuration
+- Easier to update by editing code and redeploying than managing env vars across environments
+
+**Client Email Failure Handling:**
+- Client confirmation email errors are logged but don't fail the request
+- Reasoning: Admin/artist notifications are priority - booking should succeed even if client confirmation fails
+- Prevents edge cases (invalid client email format) from blocking legitimate bookings
+
+**Artist Email Configuration:**
+- Artists opt-in to notifications by adding `bookingEmailCc` field to their MDX file
+- Reasoning: Not all artists may want direct notifications; shop admin can handle delegation
+- Allows flexible per-artist notification preferences
+
+**Environment Variables Simplification:**
+- Reduced from 3 env vars to 2 (removed `BOOKING_TO_EMAIL`)
+- Reasoning: Fewer configuration points = less room for deployment errors
+- API key and sender email are the only truly variable configuration items
+
+### How to Test
+
+#### Local Development
+1. Ensure `RESEND_API_KEY` is set in `.env` file (or omit for console logging)
+2. Set `BOOKING_FROM_EMAIL` to a verified Resend sender email
+3. Submit test booking via `/booking` form
+4. Check console output (dev mode) or Resend dashboard (with API key)
+5. Verify three emails would be sent (or logged):
+   - Admin notification to both admin emails
+   - Artist notification (if artist has `bookingEmailCc`)
+   - Client confirmation to submitted email
+
+#### Production (Cloudflare Pages)
+1. Set environment variables in Cloudflare Pages dashboard:
+   - `RESEND_API_KEY` - Your Resend API key
+   - `BOOKING_FROM_EMAIL` - Verified sender email (e.g., `bookings@unitedtattoo.com`)
+2. Submit test booking through live site
+3. Check all recipients receive emails
+4. Verify attachments are included in admin/artist emails
+5. Check Resend dashboard for delivery status
+
+### Next Steps
+
+#### Immediate
+- [x] Configure `RESEND_API_KEY` in Cloudflare Pages environment variables
+- [ ] Verify sender domain in Resend dashboard
+- [ ] Add `bookingEmailCc` to artist MDX files for artists who want notifications
+- [ ] Test end-to-end booking flow in production
+
+#### Future Enhancements (from `dev/Talk-with-christy.md`)
+- [ ] **Two-Stage Approval System**
+  - Admin dashboard for receptionist approval
+  - Artist approval interface
+  - Booking status tracking (pending/approved/denied)
+- [ ] **SMS Notifications** (Twilio integration)
+  - Text alerts for admins/artists on new booking
+  - Client confirmation text
+  - Appointment reminders (1 week, 24-48 hours)
+- [ ] **Database Integration** (Cloudflare D1)
+  - Store booking requests with status tracking
+  - Generate booking IDs for reference
+  - Support client portal for booking management
+- [ ] **Nextcloud Calendar Integration** (CalDAV)
+  - Sync approved bookings to shop calendar
+  - Check artist availability in real-time
+- [ ] **Alternative Artist Suggestions**
+  - Auto-suggest alternatives on denial based on style match + availability
+
+### Notes
+
+**Email HTML Templates:**
+- Both admin and client emails include HTML and plain text versions
+- HTML content uses inline styles for email client compatibility
+- All user input is HTML-escaped to prevent injection attacks
+- Email attachments only included for admin/artist (not client confirmation)
+
+**Artist MDX Configuration:**
+To enable booking notifications for an artist, add to frontmatter:
+
+```yaml
+---
+name: Christy Lumberg
+portrait: /artists/christy-lumberg-portrait.jpg
+galleryDir: artists/Christy-Lumberg
+bookingEmailCc: christy@example.com  # Add this line
+specialties:
+  - Fine Line
+  - Botanical
+---
+```
+
+**Resend Domain Verification:**
+- `BOOKING_FROM_EMAIL` must be from a verified domain in Resend
+- DNS records required: TXT, CNAME, or MX depending on verification method
+- Can take up to 24 hours for DNS propagation
+- Sandbox domain available for testing without verification
+
+**Development vs Production:**
+- Without `RESEND_API_KEY`: Emails logged to console (dev mode)
+- With `RESEND_API_KEY`: Actual emails sent via Resend API
+- Same code path, behavior controlled by environment variable presence
+
+---
+
 ## 2026-01-01 - Mobile Nav, SEO & Testimonials
 
 ### Changes Made
@@ -1432,3 +1607,42 @@ BOOKING_FROM_EMAIL=bookings@unitedtattoo.com
 | `Breadcrumb` | `path[]` ({href, label}), `currentLabel`, `class?` |
 | `SectionHeader` | `title`, `meta?`, `class?` |
 | `CustomSelect` | `id`, `name`, `label`, `options[]`, `required?`, `placeholder?`, `hint?` |
+
+## 2026-01-01 - Homepage UI/UX Refinement & Accessibility
+
+### Changes Made
+
+#### 1. Conversion & CTA Enhancements
+- **Desktop Hero CTA**: Added a "Book Consultation" button to the Hero Info Bar in `src/pages/index.astro`. This provides desktop users with a direct path to booking without using the main navigation.
+- **Footer "Ready to Book" Block**: Inserted a high-impact, full-width CTA block at the top of `src/components/EditorialFooter.astro`. Features a gradient text hover effect and a magnetic-style arrow button.
+
+#### 2. Visual Polish & Micro-Interactions
+- **Interactive Hero Parallax**: Implemented a mouse-move parallax effect for the hero "Dove" image in `src/pages/index.astro`. This adds depth and motion to the initial page load experience.
+- **Mobile Artist Avatars**: Updated the artist list on mobile to include circular portraits. This brings visual parity with the desktop hover-reveal effect for mobile users.
+- **Process Step Visuals**: Enhanced the methodology grid in `src/pages/index.astro` with defined borders (`gap-px`, `bg-white/5`) and consistent backgrounds, improving the "affordance" of the interactive steps.
+- **Hero Label Hierarchy**: Updated the "Custom · Flash · Freedom" label to `text-neutral-300` and `font-medium`. This improves legibility and balances the typographic weight against the massive hero title.
+
+#### 3. Accessibility & Contrast
+- **Footer Contrast Update**: Lightened `text-neutral-500` to `text-neutral-400` throughout `EditorialFooter.astro` to improve contrast ratios on the black background, ensuring compliance with legibility standards for metadata.
+
+### Files Modified
+```
+src/pages/index.astro                - Hero CTA, Parallax, Mobile Avatars, Process visuals
+src/components/EditorialFooter.astro - Added "Ready to Book" block, improved contrast
+```
+
+### Decisions
+- **Mobile Avatars**: Chose to include static avatars on mobile rather than attempting a touch-based reveal to ensure a fast, frictionless browsing experience on smaller screens.
+- **Footer CTA Placement**: Positioned the "Ready to Book" block before the main footer grid to act as a final "handshake" with the user before they exit the page.
+
+### How to Test
+1. **Desktop Hero**: Check the info bar for the new "Book Consultation" button.
+2. **Hero Parallax**: Move the mouse over the hero section and observe the dove image shifting subtly.
+3. **Mobile Artist List**: Shrink the viewport and verify that circular portraits appear next to artist names.
+4. **Footer**: Scroll to the bottom and verify the large "Book a session" block appears above the location/hours grid.
+5. **Contrast**: Verify that the small text in the footer is easier to read than before.
+
+### Next Steps
+- [ ] Add "Selected Works" masonry gallery to the homepage.
+- [ ] Implement client testimonials/social proof section.
+- [ ] Add dynamic texture/ink mask to the "United" hero title.

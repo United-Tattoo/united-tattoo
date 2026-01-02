@@ -105,8 +105,10 @@ export const POST: APIRoute = async ({ request }) => {
 
     // Get environment variables
     const RESEND_API_KEY = import.meta.env.RESEND_API_KEY;
-    const BOOKING_TO_EMAIL = import.meta.env.BOOKING_TO_EMAIL || 'ink@unitedtattoo.com';
     const BOOKING_FROM_EMAIL = import.meta.env.BOOKING_FROM_EMAIL || 'bookings@yourdomain.com';
+
+    // Shop admin emails
+    const ADMIN_EMAILS = ['Christyl116@yahoo.com', 'ashtonjl.work@gmail.com'];
 
     // Lookup artist (to notify both reception + artist, per booking flow)
     const artists = await getCollection('artists');
@@ -116,7 +118,7 @@ export const POST: APIRoute = async ({ request }) => {
       artist === 'no-preference' ? 'No preference' : (selectedArtist?.data.name || artist);
     const artistEmail = selectedArtist?.data.bookingEmailCc;
 
-    const recipients = artistEmail ? [BOOKING_TO_EMAIL, artistEmail] : [BOOKING_TO_EMAIL];
+    const recipients = artistEmail ? [...ADMIN_EMAILS, artistEmail] : ADMIN_EMAILS;
 
     // Build email content
     const emailHtml = `
@@ -196,6 +198,7 @@ This booking request was submitted via the United Tattoo website.
     if (RESEND_API_KEY) {
       const resend = new Resend(RESEND_API_KEY);
 
+      // Send notification to admin/artist
       const { error } = await resend.emails.send({
         from: BOOKING_FROM_EMAIL,
         to: recipients,
@@ -213,6 +216,89 @@ This booking request was submitted via the United Tattoo website.
           { status: 500, headers: { 'Content-Type': 'application/json' } }
         );
       }
+
+      // Send confirmation email to client
+      const clientEmailHtml = `
+        <h1>Thank You for Your Booking Request!</h1>
+
+        <p>Hi ${escapeHtml(name)},</p>
+
+        <p>We've received your tattoo booking request and our team is excited to work with you! Here's a summary of what you submitted:</p>
+
+        <h2>Your Request Details</h2>
+        <ul>
+          <li><strong>Preferred Artist:</strong> ${escapeHtml(artistDisplayName)}</li>
+          <li><strong>Style:</strong> ${escapeHtml(style)}</li>
+          <li><strong>Placement:</strong> ${escapeHtml(placement)}</li>
+          <li><strong>Size:</strong> ${escapeHtml(size)}</li>
+          ${budget ? `<li><strong>Budget:</strong> ${escapeHtml(budget)}</li>` : ''}
+          ${availability ? `<li><strong>Availability:</strong> ${escapeHtml(availability)}</li>` : ''}
+          ${validFiles.length > 0 ? `<li><strong>Reference Images:</strong> ${validFiles.length} image(s) uploaded</li>` : ''}
+        </ul>
+
+        <h2>What Happens Next?</h2>
+        <p>Our team will review your request and get back to you within <strong>24-48 hours</strong>. We'll discuss your design ideas, answer any questions, and help you schedule your appointment.</p>
+
+        <h2>Questions?</h2>
+        <p>If you need to reach us before then, feel free to contact us:</p>
+        <ul>
+          <li><strong>Email:</strong> <a href="mailto:Christyl116@yahoo.com">Christyl116@yahoo.com</a></li>
+          <li><strong>Phone:</strong> Check our website for current contact information</li>
+        </ul>
+
+        <p>We can't wait to bring your vision to life!</p>
+
+        <p>Best regards,<br>
+        <strong>United Tattoo</strong><br>
+        Fountain, CO</p>
+
+        <hr>
+        <p style="font-size: 12px; color: #666;"><em>This is an automated confirmation. Please do not reply to this email.</em></p>
+      `;
+
+      const clientEmailText = `
+Thank You for Your Booking Request!
+
+Hi ${name},
+
+We've received your tattoo booking request and our team is excited to work with you! Here's a summary of what you submitted:
+
+YOUR REQUEST DETAILS
+- Preferred Artist: ${artistDisplayName}
+- Style: ${style}
+- Placement: ${placement}
+- Size: ${size}${budget ? `\n- Budget: ${budget}` : ''}${availability ? `\n- Availability: ${availability}` : ''}${validFiles.length > 0 ? `\n- Reference Images: ${validFiles.length} image(s) uploaded` : ''}
+
+WHAT HAPPENS NEXT?
+Our team will review your request and get back to you within 24-48 hours. We'll discuss your design ideas, answer any questions, and help you schedule your appointment.
+
+QUESTIONS?
+If you need to reach us before then, feel free to contact us:
+- Email: Christyl116@yahoo.com
+- Phone: Check our website for current contact information
+
+We can't wait to bring your vision to life!
+
+Best regards,
+United Tattoo
+Fountain, CO
+
+---
+This is an automated confirmation. Please do not reply to this email.
+      `;
+
+      const { error: clientError } = await resend.emails.send({
+        from: BOOKING_FROM_EMAIL,
+        to: email,
+        subject: `Booking Request Received - United Tattoo`,
+        html: clientEmailHtml,
+        text: clientEmailText,
+      });
+
+      if (clientError) {
+        console.error('Client confirmation email error:', clientError);
+        // Don't fail the request if client email fails - admin email was sent successfully
+      }
     } else {
       // Dev mode: log the email instead of sending
       console.log('=== BOOKING REQUEST (Dev Mode) ===');
@@ -223,6 +309,12 @@ This booking request was submitted via the United Tattoo website.
       console.log('Attachments:', validFiles.length);
       console.log('---');
       console.log(emailText);
+      console.log('=================================');
+      console.log('');
+      console.log('=== CLIENT CONFIRMATION (Dev Mode) ===');
+      console.log('Would send email to:', email);
+      console.log('From:', BOOKING_FROM_EMAIL);
+      console.log('Subject: Booking Request Received - United Tattoo');
       console.log('=================================');
     }
 

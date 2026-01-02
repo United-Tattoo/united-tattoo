@@ -169,15 +169,19 @@ This is a from-scratch rebuild using Astro. The previous Next.js implementation 
    ```
 
 3. **Configure environment variables**
-   
+
    Create a `.env` file in the project root:
    ```bash
    RESEND_API_KEY=re_xxxxxxxxxx
-   BOOKING_TO_EMAIL=ink@unitedtattoo.com
    BOOKING_FROM_EMAIL=bookings@unitedtattoo.com
    ```
-   
+
    **Note:** `BOOKING_FROM_EMAIL` must be a verified sender domain in Resend. In development, the booking API will log emails to the console if `RESEND_API_KEY` is not set.
+
+   **Email Flow:**
+   - Admin emails: `Christyl116@yahoo.com`, `ashtonjl.work@gmail.com` (hardcoded in API)
+   - Artist CC: Artists with `bookingEmailCc` field in their MDX file will receive booking notifications
+   - Client confirmation: Submitter receives automated confirmation with booking summary and next steps
 
 4. **Run locally**
    ```bash
@@ -203,10 +207,14 @@ This is a from-scratch rebuild using Astro. The previous Next.js implementation 
 | Variable | Description | Example |
 |----------|-------------|---------|
 | `RESEND_API_KEY` | Resend API key for sending booking emails | `re_xxxxxxxxxx` |
-| `BOOKING_TO_EMAIL` | Primary recipient for booking requests | `ink@unitedtattoo.com` |
 | `BOOKING_FROM_EMAIL` | Sender email (must be verified in Resend) | `bookings@unitedtattoo.com` |
 
 **Note:** If `RESEND_API_KEY` is not set, the booking API will log emails to the console instead of sending them (useful for local development).
+
+**Email Recipients:**
+- **Shop Admins:** `Christyl116@yahoo.com`, `ashtonjl.work@gmail.com` (configured in `/src/pages/api/booking.ts`)
+- **Artist Notifications:** Add `bookingEmailCc` field to artist MDX files (e.g., `/src/content/artists/christy-lumberg.mdx`)
+- **Client Confirmation:** Automatically sent to the email address provided in the booking form
 
 </details>
 
