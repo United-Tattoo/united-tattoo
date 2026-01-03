@@ -1,5 +1,252 @@
 # Continuity Log
 
+## 2026-01-02 - Email Template Redesign
+
+### Changes Made
+
+#### 1. Email Template Overhaul
+- **Redesigned `src/content/email-template.html`**:
+  - Aligned with the new **Astro 5 "editorial" dark theme**.
+  - **Colors:**
+    - Background: `#050505` (bg-deep)
+    - Text: `#e0e0e0` (neutral-200)
+    - Accents: `#E67E50` (Burnt Orange), `#D87850` (Terracotta)
+    - Borders: `rgba(255, 255, 255, 0.1)` / `#262626`
+  - **Typography:**
+    - Headings: `Instrument Serif` (replacing Playfair Display)
+    - Body: `Inter` (replacing Space Grotesk/Arial mix)
+    - Eyebrow/Labels: `Space Grotesk` (maintained for mono/tech feel)
+  - **Layout:**
+    - Preserved the robust table-based structure for email client compatibility.
+    - Updated internal cards to dark theme (`#0f0f0f`, `#0a0a0a`).
+    - Added subtle borders to cards to maintain definition in dark mode.
+
+### Files Modified
+```
+src/content/email-template.html   - Complete style rewrite for dark mode
+```
+
+### Decisions
+- **Dark Mode for Emails:** Even though email clients can be tricky with dark mode, sticking to the brand's new dark aesthetic ensures a consistent experience from site to inbox. Used specific hex codes instead of CSS variables for maximum compatibility.
+- **Font Stack:** Swapped to `Instrument Serif` and `Inter` to match the website's new typography, while keeping `Space Grotesk` for that specific "technical/editorial" labeling style used in the original template.
+- **Glass Effect Fallback:** Since `backdrop-filter` fails in emails, used solid dark colors (`#0f0f0f`) with subtle borders (`#262626`) to mimic the "glass card" look of the website.
+
+### Next Steps
+- [ ] Verify email rendering in real-world clients (Gmail, Outlook, Apple Mail).
+- [ ] Check if `Instrument Serif` loads correctly in supported clients (Google Fonts import).
+
+---
+
+## 2026-01-02 - Calendar Integration Live + Minimalist Redesign
+
+### Changes Made
+
+#### 1. Nextcloud CalDAV Connectivity Testing
+- **Created `/dev/test-nextcloud-connection.js`** - Connectivity test script that:
+  - Tests HTTP connectivity to Nextcloud server
+  - Verifies DAV authentication
+  - Fetches and lists all available calendars
+- **Result:** Successfully connected to `https://portal.united-tattoos.com/remote.php/dav/calendars/` and found 14 calendars
+
+#### 2. Artist-to-Calendar Mapping
+- **Connected 8 artists to their Nextcloud calendars:**
+
+| Artist | Calendar ID | MDX File |
+|--------|-------------|----------|
+| Christy Lumberg | `christy-lumberg` | `christy-lumberg.mdx` (updated from `artist-christy-lumberg`) |
+| Amari Kyss | `amari-kyss` | `amari-kyss.mdx` (added calendarId, acceptingBookings, schedule, bufferMinutes) |
+| Steven Sole Cedre | `steven-cedre` | `steven-sole-cedre.mdx` (added calendarId, acceptingBookings, schedule, bufferMinutes) |
+| Heather Robyns | `heather-santistevan` | `heather-robyns.mdx` (added calendarId, acceptingBookings, schedule, bufferMinutes) |
+| John Lapides | `john-lapides` | `john-lapides.mdx` (added calendarId, acceptingBookings, schedule, bufferMinutes) |
+| Pako Martinez | `juan-martinez` | `pako-martinez.mdx` (added calendarId, acceptingBookings, schedule, bufferMinutes) |
+| Kaori Cedre | `kaori-cedre` | `kaori-cedre.mdx` (added calendarId, acceptingBookings, schedule, bufferMinutes) |
+| Donovan Lankford | `donovan-lankford` | `donovan-lankford.mdx` (added calendarId, acceptingBookings, schedule, bufferMinutes) |
+
+- **Unmatched calendars:** `angel-andrade`, `deziree-stanford`, `efrain-segoviano`, `shop-events`, `studio-events`, `test-artist`
+
+#### 3. Universal Availability (Temporary)
+- **Set all artists to 24/7 availability** until confirmed schedules are received:
+  ```yaml
+  schedule:
+    monday: "00:00-23:59"
+    tuesday: "00:00-23:59"
+    wednesday: "00:00-23:59"
+    thursday: "00:00-23:59"
+    friday: "00:00-23:59"
+    saturday: "00:00-23:59"
+    sunday: "00:00-23:59"
+  bufferMinutes: 30
+  ```
+- All artists set to `acceptingBookings: true`
+
+#### 4. Calendar Picker Visibility Fix
+- **Issue:** Calendar wasn't showing when artist was preselected via URL params
+- **Root cause:** `artist-changed` event fired before `initBooking` listener was attached
+- **Fix in `/src/pages/booking.astro` (lines 523-556):**
+  - Extracted artist change logic into reusable `handleArtistChange` function
+  - Added initialization check that calls `handleArtistChange` immediately if artist already has value
+
+#### 5. Calendar Position Relocation
+- **Moved calendar from Section 03 (Details) to Section 01 (Artist)** in `/src/pages/booking.astro`
+- Calendar now appears directly under artist select dropdown
+- Removed extra padding wrapper for cleaner integration
+
+#### 6. Minimalist Calendar Redesign
+- **Complete overhaul of `/src/components/CalendarPicker.astro`:**
+
+  **Size Reductions:**
+  - Removed container padding (was `p-6`, now minimal)
+  - Cell height: `h-8` (was `h-24`)
+  - Grid gap: `gap-0.5` (was `gap-1`)
+  - Max width: `max-w-md` (was `max-w-sm`, properly constrained)
+
+  **Visual Changes:**
+  - Removed large legend section
+  - Unavailable days: gray text, no background (`text-neutral-600 cursor-default`)
+  - Available days: white text, hover effect (`text-white hover:bg-white/10`)
+  - Selected day: highlight (`bg-white/20 border border-white/30`)
+  - Timezone notice kept (smaller text)
+
+  **Interaction Flow Changed:**
+  - Click date → time slots appear **inline below calendar** (NOT in modal)
+  - Moved time slots panel inside calendar wrapper for proper width constraint
+  - "Clear" button to deselect date
+
+  **Removed:**
+  - Modal dialog for time slots
+  - Large legend with color coding explanation
+  - Excess padding and spacing
+
+#### 7. Email Integration Verified
+- **Selected slots passed through correctly in `/src/pages/api/booking.ts`:**
+  - Line 26: Extracts `selected_slots` from form data
+  - Lines 30-48: Parses JSON and formats as "Choice #1: Fri, Jan 3 at 2:00 PM MT"
+  - Line 255: Admin email shows formatted availability
+  - Line 446: Client confirmation shows availability
+
+### Files Modified
+
+```
+src/pages/booking.astro              - Visibility fix, position change, removed wrapper
+src/components/CalendarPicker.astro  - Complete minimalist redesign
+src/content/artists/*.mdx            - All 8 artists: added calendarId, acceptingBookings, schedule, bufferMinutes
+dev/test-nextcloud-connection.js     - Created connectivity test script
+```
+
+### Files Created
+
+```
+dev/test-nextcloud-connection.js     - Nextcloud CalDAV connectivity test script
+```
+
+### Decisions
+
+**Artist Name to Calendar Matching:**
+- `heather-robyns` → `heather-santistevan` (matches email `hsantistevan12@gmail.com`)
+- `pako-martinez` → `juan-martinez` (Pako appears to be nickname for Juan)
+- Left unmatched: `angel-andrade`, `deziree-stanford`, `efrain-segoviano` (no corresponding MDX files)
+
+**Calendar ID Format:**
+- Changed from `artist-christy-lumberg` to `christy-lumberg` to match actual Nextcloud calendar names
+- All artist calendar IDs updated to match the pattern seen in test output
+
+**Inline Time Slots vs Modal:**
+- Chose inline display below calendar for:
+  - Less modal dialog noise
+  - Better mobile experience
+  - Users can see calendar and slots simultaneously
+  - Clearer "Clear" action to pick another date
+
+**Gray Days vs Legend:**
+- Removed legend to reduce visual noise
+- Gray text for unavailable days is intuitive enough
+- Users can see available dates at a glance
+
+**24/7 Availability:**
+- Set all artists to show all time slots until confirmed schedules are received
+- Reasoning: Better to show too many slots than block everything
+- Artists/receptionist can filter during booking approval
+
+### How to Test
+
+#### Calendar Visibility
+1. Navigate to `/booking?artist=christy-lumberg`
+2. Calendar should appear immediately under artist dropdown (no need to select artist)
+3. Calendar should show available dates (not all grayed out)
+
+#### Calendar Functionality
+1. Click a white (available) date
+2. Time slots should appear directly below the calendar (not in a modal)
+3. Click a time slot to select it (highlights with white background)
+4. Try multiple slots (up to 3)
+5. Click "Clear" to deselect and try another date
+
+#### Nextcloud Connection
+1. Run: `node dev/test-nextcloud-connection.js`
+2. Verify all 14 calendars are detected
+3. Check that mapped artists have their correct calendars
+
+#### Booking Submission
+1. Select an artist
+2. Pick a date and time slot
+3. Fill out rest of form
+4. Submit
+5. Check admin email contains formatted availability (e.g., "Choice #1: Fri, Jan 3 at 2:00 PM MT")
+
+### Next Steps
+
+#### Immediate
+- [ ] Update individual artist schedules once confirmed by each artist
+- [ ] Create MDX files for unmatched calendars (`angel-andrade`, `deziree-stanford`, `efrain-segoviano`) if they're active artists
+- [ ] Hide or remove `shop-events`, `studio-events`, `test-artist` calendars from alternatives
+- [ ] Set up environment variables in Cloudflare Pages:
+  - `NEXTCLOUD_CALDAV_URL`
+  - `NEXTCLOUD_USERNAME`
+  - `NEXTCLOUD_PASSWORD`
+  - `RESEND_API_KEY`
+  - `BOOKING_FROM_EMAIL`
+
+#### Future Enhancements
+- [ ] Add slot duration display (30 min slots shown)
+- [ ] Consider showing "X slots available" tooltip on hover
+- [ ] Add weekend vs weekday visual distinction
+- [ ] Artist-specific working hours (not all 24/7)
+- [ ] Buffer time visualization in calendar
+
+### Notes
+
+**Nextcloud Calendars Discovered:**
+```
+1. Amari-Kyss
+2. Shop-Events
+3. Steven-Cedre
+4. Studio-Events
+5. Test-Artist
+6. Angel-Andrade
+7. Christy-Lumberg
+8. Deziree-Stanford
+9. Heather-Santistevan
+10. John-Lapides
+11. Juan-Martinez
+12. Kaori-Cedre
+13. Donovan-Lankford
+14. Efrain-Segoviano
+```
+
+**Calendar API Endpoint:**
+- `/api/availability?artist={calendarId}`
+- Returns JSON with `slots` (array of date/time objects) and `alternatives` (array of similar artists)
+
+**Wrangler Secrets Required for Production:**
+```bash
+wrangler secret put RESEND_API_KEY
+wrangler secret put NEXTCLOUD_CALDAV_URL
+wrangler secret put NEXTCLOUD_USERNAME
+wrangler secret put NEXTCLOUD_PASSWORD
+```
+
+---
+
 ## 2026-01-02 - CalDAV Calendar Integration PRD
 
 ### Changes Made
