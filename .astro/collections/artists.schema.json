@@ -58,6 +58,109 @@
             "additionalProperties": false
           }
         },
+        "calendarId": {
+          "type": "string"
+        },
+        "acceptingBookings": {
+          "type": "boolean",
+          "default": true
+        },
+        "schedule": {
+          "type": "object",
+          "properties": {
+            "monday": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string",
+                  "const": "closed"
+                }
+              ]
+            },
+            "tuesday": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string",
+                  "const": "closed"
+                }
+              ]
+            },
+            "wednesday": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string",
+                  "const": "closed"
+                }
+              ]
+            },
+            "thursday": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string",
+                  "const": "closed"
+                }
+              ]
+            },
+            "friday": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string",
+                  "const": "closed"
+                }
+              ]
+            },
+            "saturday": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string",
+                  "const": "closed"
+                }
+              ]
+            },
+            "sunday": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "string",
+                  "const": "closed"
+                }
+              ]
+            }
+          },
+          "required": [
+            "monday",
+            "tuesday",
+            "wednesday",
+            "thursday",
+            "friday",
+            "saturday",
+            "sunday"
+          ],
+          "additionalProperties": false
+        },
+        "bufferMinutes": {
+          "type": "number",
+          "default": 30
+        },
         "$schema": {
           "type": "string"
         }

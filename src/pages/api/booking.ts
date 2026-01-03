@@ -22,7 +22,30 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
     const placement = formData.get('placement') as string;
     const size = formData.get('size') as string;
     const budget = formData.get('budget') as string;
-    const availability = formData.get('availability') as string;
+    const availabilityInput = formData.get('availability') as string;
+    const selectedSlotsJson = formData.get('selected_slots') as string;
+
+    let availability = availabilityInput;
+
+    if (selectedSlotsJson) {
+      try {
+        const slots = JSON.parse(selectedSlotsJson);
+        if (Array.isArray(slots) && slots.length > 0) {
+          const formatted = slots.map((s: any, i: number) => {
+             const date = new Date(s.date + 'T00:00:00');
+             const dateStr = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+             const [h, m] = s.startTime.split(':');
+             const d = new Date();
+             d.setHours(parseInt(h), parseInt(m));
+             const timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+             return `Choice #${i+1}: ${dateStr} at ${timeStr} MT`;
+          });
+          availability = formatted.join('\n');
+        }
+      } catch (e) {
+        console.error('Error parsing selected slots', e);
+      }
+    }
     const description = formData.get('description') as string;
     const acceptTerms = formData.get('acceptTerms');
     const acceptAge = formData.get('acceptAge');
@@ -229,7 +252,7 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Availability</td>
-                  <td style="padding: 6px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(availability || 'Not specified')}</td>
+                  <td style="padding: 6px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(availability || 'Not specified').replace(/\n/g, '<br>')}</td>
                 </tr>
               </table>
 
@@ -420,7 +443,7 @@ This booking request was submitted via the United Tattoo website.
                       ${availability ? `
                       <tr>
                         <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top;">Availability</td>
-                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(availability)}</td>
+                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(availability).replace(/\n/g, '<br>')}</td>
                       </tr>
                       ` : ''}
                       ${validFiles.length > 0 ? `

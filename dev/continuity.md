@@ -2364,3 +2364,63 @@ src/components/EditorialFooter.astro - Added "Ready to Book" block, improved con
 - [ ] Add "Selected Works" masonry gallery to the homepage.
 - [ ] Implement client testimonials/social proof section.
 - [ ] Add dynamic texture/ink mask to the "United" hero title.
+
+
+## 2026-01-02 - CalDAV Calendar Implementation
+
+### Changes Made
+
+#### 1. Backend Service Layer
+- **Created `src/services/caldav.ts`** - Handles CalDAV protocol communication using `tsdav` and `ical.js`.
+  - Implemented `fetchCalendarEvents` to retrieve busy times from Nextcloud.
+  - Added robust error handling and parsing logic.
+- **Created `src/services/calendar-cache.ts`** - Implements availability logic and caching.
+  - In-memory caching with 15-minute TTL.
+  - Logic to calculate available slots based on:
+    - Artist working hours (from MDX).
+    - CalDAV busy events.
+    - Buffer time (30 mins default).
+    - Timezone handling (Mountain Time).
+
+#### 2. API Endpoints
+- **Created `src/pages/api/availability.ts`** - Endpoint to fetch slots for a specific artist.
+  - Returns calculated available slots.
+  - Implements **Alternative Artists** logic: suggests similar artists if primary has <5 slots.
+- **Created `src/pages/api/validate-slot.ts`** - Real-time validation endpoint.
+  - Verifies slot availability against live CalDAV data before booking.
+- **Updated `src/pages/api/booking.ts`** - Enhanced booking submission handler.
+  - Extracts `selected_slots` from form data.
+  - Formats availability string for emails (Text & HTML versions).
+  - Maintains backward compatibility with manual text entry.
+
+#### 3. Frontend Components
+- **Created `src/components/CalendarPicker.astro`** - Interactive calendar UI.
+  - Month view with availability indicators.
+  - Slot selection modal (up to 3 preferences).
+  - Alternative artist suggestions display with "Switch" functionality.
+  - Dynamic updates based on artist selection.
+- **Updated `src/pages/booking.astro`** - Integrated CalendarPicker.
+  - Replaced text input with CalendarPicker + Manual Fallback toggle.
+  - Added logic to coordinate Artist Select change with Calendar refresh.
+  - Added logic to handle "Switch Artist" requests from the calendar component.
+
+#### 4. Configuration
+- **Updated `src/content.config.ts`** - Extended artist schema.
+  - Added `calendarId`, `acceptingBookings`, `schedule`, `bufferMinutes`.
+- **Updated `src/content/artists/christy-lumberg.mdx`** - Added sample calendar configuration.
+
+### Decisions
+- **In-Memory Cache**: Chose simple Map-based cache for v1. Cloudflare Workers are ephemeral, but this provides sufficient caching for hot functions without complex KV setup for now.
+- **Timezone Handling**: Enforced "America/Denver" for all slot calculations using `date-fns-tz` to ensure consistency with physical shop location.
+- **Fallback UI**: Kept the manual text input available via a "Can't find a time?" link to ensure booking flow is never blocked by technical issues or lack of slots.
+
+### How to Test
+1. **Booking Form**: Navigate to `/booking`. Select "Christy Lumberg". Verify calendar appears.
+2. **Slot Selection**: Click a green day, select slots. Verify they appear in "Your Selections".
+3. **Switch Artist**: Select an artist with no slots (if any configured) or mock low availability to see alternatives. Click "Switch". Verify dropdown updates.
+4. **Submission**: Submit booking with selected slots. Verify email contains formatted slot list.
+
+### Next Steps
+- [ ] Configure actual Nextcloud credentials in production environment.
+- [ ] Update all artist MDX files with their specific schedules and calendar IDs.
+- [ ] Monitor cache performance in production.

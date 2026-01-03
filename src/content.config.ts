@@ -21,6 +21,19 @@ const artists = defineCollection({
       quote: z.string(),
       client: z.string(),
     })).optional(),
+    // Calendar Integration Fields
+    calendarId: z.string().optional(), // Nextcloud calendar identifier
+    acceptingBookings: z.boolean().default(true),
+    schedule: z.object({
+      monday: z.union([z.string(), z.literal("closed")]),
+      tuesday: z.union([z.string(), z.literal("closed")]),
+      wednesday: z.union([z.string(), z.literal("closed")]),
+      thursday: z.union([z.string(), z.literal("closed")]),
+      friday: z.union([z.string(), z.literal("closed")]),
+      saturday: z.union([z.string(), z.literal("closed")]),
+      sunday: z.union([z.string(), z.literal("closed")]),
+    }).optional(),
+    bufferMinutes: z.number().default(30),
   }),
 });
 
