@@ -1,5 +1,75 @@
 # Continuity Log
 
+## 2026-01-02 - CalDAV Calendar Integration PRD
+
+### Changes Made
+
+#### 1. Product Requirements Document Created
+- **Created `/dev/prd-caldav-calendar-integration.md`** - Comprehensive PRD for Nextcloud CalDAV integration
+  - Detailed requirements from stakeholder interview (12 questions across 3 rounds)
+  - Feature integrates real-time artist availability into booking form Step 3
+  - Clients can select up to 3 ranked time slot preferences
+  - Hybrid caching strategy (15-min refresh + real-time validation)
+  - Alternative artist suggestions when primary artist unavailable
+  - Graceful fallback to text field on CalDAV errors
+  - 30-minute buffer time between appointments
+  - Mountain Time (MT) timezone only display
+  - Email-only storage (no database required for v1)
+
+#### 2. Key Feature Specifications
+- **Integration Point**: Step 3 (Project Details) of booking form
+- **Calendar UI**: Month view with available days highlighted, hover tooltips showing slot counts
+- **Selection Mechanism**: Up to 3 ranked preferences (1st/2nd/3rd choice)
+- **Availability Logic**: Combines working hours (from artist MDX), CalDAV free/busy, buffer time, and minimum duration
+- **Alternative Artists**: Shown below calendar when <5 slots available, matched by tattoo style
+- **Artist Configuration**: Schedule and buffer time stored in artist MDX frontmatter
+
+#### 3. Technical Architecture Defined
+- **CalDAV Library**: tsdav + ical.js
+- **Caching**: 15-minute TTL cache (JSON file storage for v1)
+- **Validation**: Real-time CalDAV check when client selects a slot
+- **Error Handling**: Falls back to existing text field if Nextcloud unreachable
+- **Data Flow**: Browser → Cached API → CalDAV Service → Nextcloud
+
+#### 4. Implementation Phases Outlined
+- Phase 1: Core CalDAV integration (Week 1-2)
+- Phase 2: Caching layer (Week 2)
+- Phase 3: Calendar UI component (Week 3)
+- Phase 4: Booking form integration (Week 3-4)
+- Phase 5: Alternative artists feature (Week 4)
+- Phase 6: Error handling & fallback (Week 4)
+- Phase 7: Polish & testing (Week 5)
+
+### Files Created
+```
+dev/prd-caldav-calendar-integration.md  - Full PRD with requirements, architecture, UI specs
+```
+
+### Stakeholder Requirements Gathered
+- **Interview Questions**: 12 questions across integration point, UX, technical setup, and edge cases
+- **Key Decisions**:
+  - One calendar per artist (already configured in Nextcloud)
+  - Show calendar during initial form submission (not post-approval)
+  - Artist/receptionist assigns duration during approval (no upfront blocking)
+  - Suggest alternative artists immediately when unavailable
+  - Store working hours in artist MDX frontmatter for easy editing
+
+### Next Steps
+- [ ] Review PRD with stakeholders for approval
+- [ ] Set up development environment variables (Nextcloud credentials)
+- [ ] Install dependencies: tsdav, ical.js
+- [ ] Begin Phase 1 implementation: CalDAV service module
+- [ ] Update artist MDX schema to include calendar fields (calendarId, schedule, bufferMinutes)
+- [ ] Test CalDAV connection to Nextcloud instance
+
+### Notes
+- PRD explicitly excludes v1 features: slot blocking, automated confirmation, database persistence, multi-timezone support
+- Estimated effort: 4-5 weeks (1 developer)
+- Dependencies: Nextcloud instance with artist calendars already configured (confirmed ready)
+- This feature maintains existing approval workflow - calendar enhances submission, doesn't replace receptionist/artist approval
+
+---
+
 ## 2026-01-02 - Premium Booking Experience
 
 ### Changes Made
