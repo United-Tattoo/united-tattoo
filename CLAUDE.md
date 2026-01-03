@@ -2,35 +2,6 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## Project Overview
-
-United Tattoo is a tattoo studio website for a shop in Fountain, CO. The project is currently in early development using Astro as a minimal static site generator.
-
-**Current Stack:**
-- Astro 5 (minimal setup)
-- Tailwind CSS 4
-- No deployment configuration yet
-
-**Project Status:** This is a from-scratch rebuild on the `astro-migration-from-scratch` branch. The previous Next.js version (with Payload CMS, NextAuth, D1 database, etc.) is archived on the `nextjs-archive` branch.
-
-## Common Commands
-
-All commands run from the project root:
-
-```bash
-# Development
-pnpm dev             # Start Astro dev server at localhost:4321
-
-# Build & Preview
-pnpm build           # Build for production to ./dist/
-pnpm preview         # Preview production build locally
-
-# Utilities
-pnpm astro           # Run Astro CLI commands
-pnpm commit          # AI-powered commit message generator
-pnpm convert:avif    # Convert images to AVIF format
-```
-
 ## Repository Change Documentation
 
 **MANDATORY**: Whenever making any change to the repository (implementations, bug fixes, refactoring, etc.), you MUST update `dev/continuity.md` with:
@@ -40,72 +11,132 @@ pnpm convert:avif    # Convert images to AVIF format
 
 This ensures continuity of work and helps maintain context across development sessions.
 
-## Project Structure
+## OVERVIEW
+
+**United Tattoo** - Tattoo studio website built with Astro 5, Tailwind CSS 4, TypeScript. Features artist portfolios, booking system (Resend email), GSAP/Lenis scroll animations. Deployed to Cloudflare Pages.
+
+## STRUCTURE
 
 ```
 united-tattoo/
 ├── src/
-│   ├── pages/           # File-based routing
-│   │   ├── index.astro  # Homepage (minimal scaffold)
-│   │   ├── contact.astro
-│   │   ├── 404.astro
-│   │   ├── llms.txt.ts  # LLM crawlable content
-│   │   └── rss.xml.js   # RSS feed
-│   └── utils/           # Utility scripts (image conversion, etc.)
-├── public/              # Static assets
-│   ├── artists/         # Artist-related content
-│   └── images/          # Static images
-├── dev/                 # Development notes and design references
-│   ├── Talk-with-christy.md  # Booking flow requirements
-│   └── design-refs/          # Design inspiration
-├── astro.config.mjs     # Minimal Astro config (no adapters yet)
-├── tsconfig.json        # TypeScript config
-└── package.json         # Project dependencies
+│   ├── components/     # 13 reusable Astro components
+│   ├── layouts/        # SiteLayout.astro (GSAP/Lenis init)
+│   ├── pages/          # File-based routing + API
+│   │   └── api/        # Server-side booking endpoint
+│   ├── styles/         # global.css (Tailwind 4 @theme)
+│   ├── content/        # MDX artist collections
+│   │   └── artists/    # 8 artist MDX files
+│   ├── utils/          # Utility scripts
+│   └── consts.ts       # Site constants
+├── dev/                # Design refs, continuity docs
+└── public/             # Static assets (images)
 ```
 
-## Planned Architecture
+## WHERE TO LOOK
 
-Based on `dev/Talk-with-christy.md`, the site will include:
+| Task | Location | Notes |
+|------|----------|-------|
+| Booking API | `src/pages/api/booking.ts` | Resend email, file uploads |
+| Artist content | `src/content/artists/*.mdx` | MDX with frontmatter |
+| Site layout | `src/layouts/SiteLayout.astro` | GSAP + Lenis init |
+| Styling | `src/styles/global.css` | Tailwind 4 @theme block |
+| Booking form | `src/pages/booking.astro` | Multi-step with file upload |
+| Artist pages | `src/pages/artists/[slug].astro` | Dynamic routing |
 
-1. **Artist Portfolios**: Artist pages with galleries and booking links
-2. **Booking System**: Complex multi-step booking flow with:
-   - Client form submission with reference images
-   - Receptionist approval layer
-   - Artist approval/veto capability
-   - Nextcloud calendar integration (CalDAV)
-   - Automated reminders (email + text)
-   - Client booking management UI
-   - Alternative artist suggestions on denial
-3. **Content Management**: Nextcloud WebDAV for artist content (not yet implemented)
-4. **Notifications**: Email + text notifications for booking workflow (not yet implemented)
+## CONVENTIONS
 
-**Out of Scope** (handled in-shop):
-- Deposits/payments
-- Medical intake forms
-- ID verification
-- Multi-session bookings
+### TypeScript
+- Extend `astro/tsconfigs/strict`
+- Props interface: `interface Props { title?: string; }`
+- Destructure with defaults: `const { title = "" } = Astro.props`
 
-## Current State
+### Astro Components
+- Frontmatter `---` at top
+- Import styles first: `import '../styles/global.css';`
+- Component imports before Astro imports
+- Client scripts in `<script>` tags at bottom
+- Use `astro:page-load` for View Transitions
 
-This is a minimal Astro starter with only basic pages. The architecture described above is planned but not yet implemented. The current codebase has:
+### Tailwind CSS 4
+- `@import "tailwindcss";` in global.css (NOT `@tailwind base;`)
+- Custom colors in `@theme` block with `--color-*` prefix
+- Semantic naming: `--color-bg-deep`, `--color-accent`
+- Warm palette: `--color-burnt-orange`, `--color-terracotta`, `--color-moss`
 
-- Basic Astro pages (mostly scaffolds)
-- No database integration
-- No authentication
-- No booking system
-- No Nextcloud/CalDAV integration
-- No deployment configuration
+### Imports Order
+```typescript
+import '../styles/global.css';
+import { CONSTANT } from '../consts';
+import Component from '../components/Component.astro';
+import { Another } from '../components/Another.astro';
+```
 
-## Legacy Next.js Version
+### File Naming
+- **Files:** kebab-case (`header-nav.astro`, `booking-api.ts`)
+- **Classes:** PascalCase (`HeaderNav`, `SiteLayout`)
+- **Constants:** SCREAMING_SNAKE_CASE (`SITE_TITLE`)
+- **Variables:** camelCase (`isBookingPage`, `toggleMenu`)
+- **Props:** camelCase (`currentPath`, `hasAnnouncement`)
 
-The previous implementation is on the `nextjs-archive` branch and included:
-- Full admin dashboard
-- NextAuth.js authentication
-- Cloudflare D1 database
-- Payload CMS
-- OpenNext deployment to Cloudflare Workers
+### CSS Classes
+- `.section-label` - mono-spaced metadata
+- `.prose-editorial` - MDX content styling
+- `.glass-card` - glass-morphism effects
 
-If you need to reference that implementation, check out that branch.
+## ANTI-PATTERNS (THIS PROJECT)
+
+- **Type safety:** NEVER use `as any`, `@ts-ignore`, `@ts-expect-error`
+- **Error handling:** NEVER empty catch blocks `catch(e) {}`
+- **Frontend visual changes:** ALWAYS delegate to frontend-ui-ux-engineer
+- **Testing:** NEVER delete failing tests to "pass"
+- **Git:** NEVER commit unless user explicitly asks
+- **Git:** NEVER run destructive commands (push --force, hard reset) without explicit request
+- **Git:** NEVER skip hooks (--no-verify) without explicit request
+- **Git:** NEVER commit secret files (.env, credentials.json)
+
+## Z-INDEX HIERARCHY
+
+| z-index | Layer |
+|---------|-------|
+| z-[-1] | Background textures (noise overlay) |
+| z-10 | Hero content |
+| z-20 | Footer, locked columns |
+| z-[60] | Header navigation |
+| z-[70] | Dropdowns, announcement bar |
+| z-[100] | Mobile menu overlay |
+| z-[110] | Mobile menu items when open |
+
+## COMMANDS
+
+```bash
+# Development
+pnpm dev              # Astro dev server at localhost:4321
+pnpm build            # Build to ./dist/
+pnpm preview          # Preview production locally
+pnpm deploy           # Build + Cloudflare Pages deploy
+
+# Utilities
+pnpm astro            # Run Astro CLI
+pnpm commit           # AI commit msg (needs OpenRouter API key)
+pnpm convert:avif     # Convert images to AVIF
+pnpm convert:avif:all # Convert all images
+```
+
+## ENVIRONMENT
+
+```env
+RESEND_API_KEY=re_...      # Booking email notifications
+BOOKING_FROM_EMAIL=...     # Verified sender domain
+```
+
+## NOTES
+
+- **No test infrastructure** - Manual testing only
+- **No CI/CD pipelines** - Manual or Cloudflare git integration
+- **Mobile nav** - Button exists but non-functional (per dev/continuity.md)
+- **Legal pages** - Need attorney review
+- **After changes:** Update `dev/continuity.md` with details
 
 ## Utility Scripts
 
@@ -129,11 +160,3 @@ Converts images to AVIF format using ffmpeg. Requires ffmpeg to be installed.
 - `pnpm convert:avif:jpeg` - Convert JPEG files only
 - `pnpm convert:avif:png` - Convert PNG files only
 - See `src/utils/README.md` for full documentation
-
-## Development Notes
-
-- The `.next/` directory exists in the working tree but should be ignored (legacy artifact)
-- Build output goes to `dist/` (not `astro/dist/`)
-- The project uses **pnpm** for package management
-- Design preferences documented in `dev/Talk-with-christy.md` and `dev/DESIGN_SYSTEM_SUMMARY.md`
-- Utility scripts require setup - see `src/utils/README.md`
