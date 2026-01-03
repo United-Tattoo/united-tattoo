@@ -107,6 +107,23 @@ const budgetOptions = [
     <ScrollIndicator class="booking-hero-reveal absolute bottom-12 right-12" />
   </section>
 
+  <!-- Progress Indicator -->
+  <div id="booking-progress" class="fixed top-0 left-0 right-0 z-[100] bg-bg-deep/90 backdrop-blur-sm border-b border-white/5 px-6 py-4 transform -translate-y-full transition-transform duration-500">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="font-mono text-xs text-neutral-500">YOUR BOOKING</span>
+        <span class="font-mono text-xs text-terracotta" id="progress-step-label">01 — ARTIST</span>
+      </div>
+      <div class="flex items-center gap-1" id="progress-dots">
+        <div class="w-2 h-2 rounded-full bg-terracotta transition-all duration-300" data-step="0"></div>
+        <div class="w-2 h-2 rounded-full bg-white/20 transition-all duration-300" data-step="1"></div>
+        <div class="w-2 h-2 rounded-full bg-white/20 transition-all duration-300" data-step="2"></div>
+        <div class="w-2 h-2 rounded-full bg-white/20 transition-all duration-300" data-step="3"></div>
+        <div class="w-2 h-2 rounded-full bg-white/20 transition-all duration-300" data-step="4"></div>
+      </div>
+    </div>
+  </div>
+
   <!-- Form Section -->
   <section class="booking-form-section relative z-20 pb-32" data-scroll-section>
     <form
@@ -288,14 +305,28 @@ const budgetOptions = [
               accept="image/jpeg,image/png,image/webp,image/gif"
               class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
             />
-            <div id="upload-zone" class="border border-dashed border-white/20 p-12 lg:p-20 text-center transition-all duration-300 group-hover:border-terracotta/50 group-hover:bg-white/[0.02]">
-              <div class="mb-6 inline-flex items-center justify-center w-16 h-16 rounded-full bg-white/5 border border-white/10 group-hover:scale-110 group-hover:border-terracotta/50 transition-all duration-300">
-                <iconify-icon icon="solar:upload-minimalistic-bold" class="text-2xl text-neutral-400 group-hover:text-terracotta transition-colors"></iconify-icon>
+            <div id="upload-zone" class="border border-dashed border-white/20 p-12 lg:p-16 text-center transition-all duration-500 group-hover:border-terracotta/50 group-hover:bg-white/[0.02] rounded-lg">
+              <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-white/5 border border-white/10 group-hover:scale-110 group-hover:border-terracotta/50 transition-all duration-500">
+                <iconify-icon icon="solar:upload-minimalistic-bold" class="text-3xl text-neutral-400 group-hover:text-terracotta transition-colors"></iconify-icon>
               </div>
-              <p class="font-display text-xl text-white mb-2">Click or drag images here</p>
-              <p class="font-mono text-xs text-neutral-500">Max 5 files (JPG, PNG, WebP) · 10MB limit</p>
+              <p class="font-display text-2xl text-white mb-3 group-hover:text-terracotta/80 transition-colors">Drop your inspiration</p>
+              <p class="font-mono text-xs text-neutral-500 tracking-widest uppercase">or click to browse · Max 5 images · 10MB each</p>
+              
+              <!-- File type badges -->
+              <div class="flex justify-center gap-3 mt-6">
+                <span class="px-3 py-1 bg-white/5 rounded-full font-mono text-[10px] text-neutral-500">JPG</span>
+                <span class="px-3 py-1 bg-white/5 rounded-full font-mono text-[10px] text-neutral-500">PNG</span>
+                <span class="px-3 py-1 bg-white/5 rounded-full font-mono text-[10px] text-neutral-500">WEBP</span>
+                <span class="px-3 py-1 bg-white/5 rounded-full font-mono text-[10px] text-neutral-500">HEIC</span>
+              </div>
             </div>
           </div>
+          
+          <!-- File Previews -->
+          <div id="file-previews" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-6 hidden">
+            <!-- Thumbnails will be inserted here -->
+          </div>
+          
           <div id="file-list" class="space-y-3 mt-6 hidden"></div>
         </div>
       </div>
@@ -342,15 +373,19 @@ const budgetOptions = [
             </label>
           </div>
 
-          <button
-            type="submit"
-            id="submit-btn"
-            class="w-full bg-white text-black font-mono text-sm uppercase tracking-[0.2em] py-6 hover:bg-terracotta hover:text-white transition-all duration-300 flex items-center justify-center gap-4 disabled:opacity-50 disabled:cursor-not-allowed group"
-          >
-            <span id="submit-text">Send Request</span>
-            <iconify-icon id="submit-icon" icon="solar:arrow-right-linear" class="text-lg group-hover:translate-x-1 transition-transform"></iconify-icon>
-            <iconify-icon id="loading-icon" icon="solar:refresh-bold" class="text-lg animate-spin hidden"></iconify-icon>
-          </button>
+            <button
+              type="submit"
+              id="submit-btn"
+              class="relative w-full bg-white text-black font-mono text-sm uppercase tracking-[0.2em] py-6 hover:bg-terracotta hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group overflow-hidden"
+            >
+              <span class="relative z-10 flex items-center justify-center gap-4">
+                <span id="submit-text">Send Request</span>
+                <iconify-icon id="submit-icon" icon="solar:arrow-right-linear" class="text-lg group-hover:translate-x-1 transition-transform"></iconify-icon>
+              </span>
+              <iconify-icon id="loading-icon" icon="solar:refresh-bold" class="relative z-10 text-lg animate-spin hidden"></iconify-icon>
+              <!-- Loading bar -->
+              <span id="loading-bar" class="absolute bottom-0 left-0 h-1 bg-terracotta transition-all duration-300" style="width: 0%"></span>
+            </button>
           
           <div id="error-message" class="hidden mt-8 p-4 border border-red-500/20 bg-red-500/5 text-center">
             <p class="font-mono text-xs text-red-400"></p>
@@ -360,12 +395,103 @@ const budgetOptions = [
     </form>
   </section>
 
+  <!-- Success Modal -->
+  <div id="success-modal" class="fixed inset-0 z-[200] bg-bg-deep/95 backdrop-blur-sm flex items-center justify-center opacity-0 invisible transition-all duration-700">
+    <div class="max-w-2xl mx-auto px-6 text-center transform scale-95 transition-all duration-700" id="success-content">
+      <!-- Success Icon with Ring Animation -->
+      <div class="mb-10 flex justify-center relative">
+        <div class="relative w-32 h-32">
+          <!-- Ring animation -->
+          <svg class="absolute inset-0 w-full h-full -rotate-90" viewBox="0 0 100 100">
+            <circle
+              id="success-ring"
+              cx="50"
+              cy="50"
+              r="46"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1"
+              class="text-terracotta/20"
+            />
+            <circle
+              id="success-ring-progress"
+              cx="50"
+              cy="50"
+              r="46"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              class="text-terracotta"
+              stroke-dasharray="289"
+              stroke-dashoffset="289"
+              stroke-linecap="round"
+            />
+          </svg>
+          <!-- Checkmark -->
+          <div class="absolute inset-0 flex items-center justify-center">
+            <iconify-icon id="success-check" icon="solar:check-circle-bold" class="text-6xl text-white opacity-0 scale-50 transition-all duration-500"></iconify-icon>
+          </div>
+        </div>
+      </div>
+
+      <span class="section-label block mb-6 opacity-0 transform translate-y-6 transition-all duration-600" id="success-label">Request Confirmed</span>
+
+      <h1 class="text-5xl md:text-6xl font-normal tracking-tighter text-white italic mb-6 opacity-0 transform translate-y-6 transition-all duration-600 delay-100" id="success-title">
+        Thank You
+      </h1>
+
+      <p class="text-neutral-400 text-base mb-4 leading-relaxed opacity-0 transform translate-y-6 transition-all duration-600 delay-200" id="success-message">
+        Your booking request has been received. We'll review your details and respond within 24–48 hours.
+      </p>
+
+      <p class="text-neutral-500 text-sm mb-12 opacity-0 transform translate-y-6 transition-all duration-600 delay-300" id="success-timing">
+        Expect a response via your preferred contact method.
+      </p>
+
+      <!-- What's Next -->
+      <div class="glass-card p-8 mb-10 text-left opacity-0 transform translate-y-6 transition-all duration-600 delay-400" id="success-next">
+        <h2 class="text-lg font-normal italic text-white mb-6">What Happens Next</h2>
+        <div class="space-y-5">
+          <div class="flex items-start gap-4">
+            <div class="w-6 h-6 rounded-full bg-terracotta/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <iconify-icon icon="solar:check-bold" class="text-xs text-terracotta"></iconify-icon>
+            </div>
+            <p class="text-sm text-neutral-300">Our reception desk reviews your request and reference images</p>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-6 h-6 rounded-full bg-terracotta/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <iconify-icon icon="solar:check-bold" class="text-xs text-terracotta"></iconify-icon>
+            </div>
+            <p class="text-sm text-neutral-300">Your selected artist reviews the details and reaches out to discuss your vision</p>
+          </div>
+          <div class="flex items-start gap-4">
+            <div class="w-6 h-6 rounded-full bg-terracotta/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+              <iconify-icon icon="solar:check-bold" class="text-xs text-terracotta"></iconify-icon>
+            </div>
+            <p class="text-sm text-neutral-300">We propose dates/times and confirm any deposit details</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4 opacity-0 transform translate-y-6 transition-all duration-600 delay-500" id="success-actions">
+        <a href="/" class="px-10 py-4 bg-white text-black text-sm font-medium tracking-[0.15em] uppercase hover:bg-terracotta hover:text-white transition-all duration-300">
+          Return Home
+        </a>
+        <a href="/artists" class="px-10 py-4 border border-white/20 text-white text-sm tracking-[0.15em] uppercase hover:bg-white/5 transition-all duration-300">
+          Browse Artists
+        </a>
+      </div>
+    </div>
+  </div>
+
   <EditorialFooter />
 
   <script>
     const initBooking = () => {
       // File upload and Form handling
       const fileInput = document.getElementById('references') as HTMLInputElement;
+      const filePreviews = document.getElementById('file-previews') as HTMLDivElement;
       const fileList = document.getElementById('file-list') as HTMLDivElement;
       const uploadZone = document.getElementById('upload-zone') as HTMLDivElement;
       const form = document.getElementById('booking-form') as HTMLFormElement;
@@ -374,24 +500,125 @@ const budgetOptions = [
       const submitIcon = document.getElementById('submit-icon') as HTMLElement;
       const loadingIcon = document.getElementById('loading-icon') as HTMLElement;
       const errorMessage = document.getElementById('error-message') as HTMLDivElement;
+      
+      // Progress indicator elements
+      const progressBar = document.getElementById('booking-progress') as HTMLDivElement;
+      const progressStepLabel = document.getElementById('progress-step-label') as HTMLSpanElement;
+      const progressDots = document.querySelectorAll('#progress-dots [data-step]');
+      
+      // Success modal elements
+      const successModal = document.getElementById('success-modal') as HTMLDivElement;
+      const successContent = document.getElementById('success-content') as HTMLDivElement;
 
       // Reset state on new page load
       const MAX_FILES = 5;
       const MAX_SIZE = 10 * 1024 * 1024; // 10MB
       let selectedFiles: File[] = [];
+      
+      const steps = [
+        { label: '01 — ARTIST', section: 0 },
+        { label: '02 — CONTACT', section: 1 },
+        { label: '03 — DETAILS', section: 2 },
+        { label: '04 — VISUALS', section: 3 },
+        { label: '05 — SUBMIT', section: 4 }
+      ];
+      
+      let currentSection = 0;
+
+      function updateProgress(sectionIndex: number) {
+        currentSection = sectionIndex;
+        
+        // Show progress bar
+        if (progressBar && progressBar.classList.contains('-translate-y-full')) {
+          progressBar.classList.remove('-translate-y-full');
+        }
+        
+        // Update label
+        if (progressStepLabel) {
+          progressStepLabel.textContent = steps[sectionIndex].label;
+        }
+        
+        // Update dots
+        progressDots.forEach((dot, index) => {
+          if (index <= sectionIndex) {
+            dot.classList.remove('bg-white/20');
+            dot.classList.add('bg-terracotta');
+            if (index === sectionIndex) {
+              dot.classList.add('scale-125');
+            } else {
+              dot.classList.remove('scale-125');
+            }
+          } else {
+            dot.classList.remove('bg-terracotta');
+            dot.classList.add('bg-white/20');
+            dot.classList.remove('scale-125');
+          }
+        });
+      }
+
+      function createThumbnail(file: File): Promise<string> {
+        return new Promise((resolve) => {
+          const reader = new FileReader();
+          reader.onload = (e) => resolve(e.target?.result as string);
+          reader.readAsDataURL(file);
+        });
+      }
+
+      async function updateFilePreviews() {
+        if (!filePreviews) return;
+        
+        if (selectedFiles.length === 0) {
+          filePreviews.classList.add('hidden');
+          filePreviews.innerHTML = '';
+          return;
+        }
+        
+        filePreviews.classList.remove('hidden');
+        
+        const thumbnails = await Promise.all(selectedFiles.map(async (file) => {
+          const src = await createThumbnail(file);
+          const ext = file.name.split('.').pop()?.toUpperCase() || 'IMG';
+          return `
+            <div class="relative group/file aspect-square bg-white/5 border border-white/10 rounded-lg overflow-hidden animate-fade-in">
+              <img src="${src}" alt="${file.name}" class="w-full h-full object-cover" />
+              <div class="absolute inset-0 bg-black/60 opacity-0 group-hover/file:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                <button type="button" data-remove class="p-2 bg-white/10 rounded-full text-white hover:bg-red-500/80 transition-colors" title="Remove">
+                  <iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon>
+                </button>
+              </div>
+              <div class="absolute bottom-0 left-0 right-0 bg-black/80 px-2 py-1">
+                <span class="font-mono text-[10px] text-neutral-300 truncate block">${file.name}</span>
+              </div>
+            </div>
+          `;
+        }));
+        
+        filePreviews.innerHTML = thumbnails.join('');
+        
+        // Add remove handlers
+        filePreviews.querySelectorAll('[data-remove]').forEach((btn, index) => {
+          btn.addEventListener('click', () => {
+            selectedFiles.splice(index, 1);
+            updateFilePreviews();
+            updateFileList();
+          });
+        });
+      }
 
       function updateFileList() {
         if (!fileList) return;
         if (selectedFiles.length === 0) {
           fileList.classList.add('hidden');
+          fileList.innerHTML = '';
           return;
         }
         fileList.classList.remove('hidden');
         fileList.innerHTML = selectedFiles.map((file, index) => `
-          <div class="flex items-center justify-between bg-white/5 border border-white/10 px-4 py-3 group hover:border-white/20 transition-colors">
+          <div class="flex items-center justify-between bg-white/5 border border-white/10 px-4 py-3 group hover:border-white/20 transition-all duration-300 opacity-0 animate-fade-in">
             <div class="flex items-center gap-3">
               <iconify-icon icon="solar:gallery-bold" class="text-neutral-500 group-hover:text-terracotta transition-colors"></iconify-icon>
               <span class="font-mono text-xs text-neutral-300 truncate max-w-[200px]">${file.name}</span>
+              <span class="font-mono text-[10px] text-neutral-600">${(file.size / 1024 / 1024).toFixed(1)} MB</span>
             </div>
             <button type="button" data-index="${index}" class="remove-file text-neutral-500 hover:text-red-400 transition-colors p-1">
               <iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon>
@@ -403,6 +630,7 @@ const budgetOptions = [
           btn.addEventListener('click', (e) => {
             const index = parseInt((e.currentTarget as HTMLElement).dataset.index || '0');
             selectedFiles.splice(index, 1);
+            updateFilePreviews();
             updateFileList();
           });
         });
@@ -413,7 +641,11 @@ const budgetOptions = [
         const errorP = errorMessage.querySelector('p');
         if (errorP) errorP.textContent = message;
         errorMessage.classList.remove('hidden');
-        setTimeout(() => errorMessage.classList.add('hidden'), 5000);
+        errorMessage.classList.add('animate-shake');
+        setTimeout(() => {
+          errorMessage.classList.add('hidden');
+          errorMessage.classList.remove('animate-shake');
+        }, 5000);
       }
 
       function handleFiles(files: File[]) {
@@ -437,6 +669,7 @@ const budgetOptions = [
         } else {
           selectedFiles = [...selectedFiles, ...validFiles];
         }
+        updateFilePreviews();
         updateFileList();
       }
 
@@ -446,6 +679,93 @@ const budgetOptions = [
         if (submitText) submitText.textContent = 'Send Request';
         if (submitIcon) submitIcon.classList.remove('hidden');
         if (loadingIcon) loadingIcon.classList.add('hidden');
+      }
+      
+      function showSuccessModal() {
+        if (!successModal || !successContent) return;
+        
+        // Show modal
+        successModal.classList.remove('opacity-0', 'invisible');
+        
+        // Trigger GSAP animations
+        const gsap = (window as any).gsap;
+        
+        if (gsap) {
+          // Ring draw animation
+          gsap.to('#success-ring-progress', {
+            strokeDashoffset: 0,
+            duration: 1,
+            ease: 'power2.inOut'
+          });
+          
+          // Checkmark reveal with bounce
+          gsap.to('#success-check', {
+            opacity: 1,
+            scale: 1,
+            duration: 0.5,
+            ease: 'back.out(2)',
+            delay: 0.8
+          });
+          
+          // Staggered content reveal
+          gsap.to('#success-label', {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            delay: 1
+          });
+          
+          gsap.to('#success-title', {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            delay: 1.1
+          });
+          
+          gsap.to('#success-message', {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            delay: 1.2
+          });
+          
+          gsap.to('#success-timing', {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            delay: 1.3
+          });
+          
+          gsap.to('#success-next', {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            delay: 1.4
+          });
+          
+          gsap.to('#success-actions', {
+            opacity: 1,
+            y: 0,
+            duration: 0.6,
+            delay: 1.5
+          });
+        } else {
+          // Fallback without GSAP
+          const ring = document.getElementById('success-ring-progress');
+          if (ring) (ring as HTMLElement).style.strokeDashoffset = '0';
+          
+          const elements = ['success-check', 'success-label', 'success-title', 'success-message', 'success-timing', 'success-next', 'success-actions'];
+          elements.forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) {
+              (el as HTMLElement).style.opacity = '1';
+              (el as HTMLElement).style.transform = 'translateY(0)';
+            }
+          });
+        }
+        
+        // Scroll to top smoothly
+        window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
       // Event Listeners
@@ -459,17 +779,20 @@ const budgetOptions = [
       if (uploadZone) {
         uploadZone.addEventListener('dragover', (e) => {
           e.preventDefault();
-          uploadZone.classList.add('border-terracotta', 'bg-white/5');
+          uploadZone.classList.add('border-terracotta', 'bg-white/10');
+          uploadZone.classList.remove('border-white/20');
         });
 
         uploadZone.addEventListener('dragleave', (e) => {
           e.preventDefault();
-          uploadZone.classList.remove('border-terracotta', 'bg-white/5');
+          uploadZone.classList.remove('border-terracotta', 'bg-white/10');
+          uploadZone.classList.add('border-white/20');
         });
 
         uploadZone.addEventListener('drop', (e) => {
           e.preventDefault();
-          uploadZone.classList.remove('border-terracotta', 'bg-white/5');
+          uploadZone.classList.remove('border-terracotta', 'bg-white/10');
+          uploadZone.classList.add('border-white/20');
           if (e.dataTransfer?.files) {
             handleFiles(Array.from(e.dataTransfer.files));
           }
@@ -480,10 +803,17 @@ const budgetOptions = [
         form.addEventListener('submit', async (e) => {
           e.preventDefault();
           if (submitBtn) submitBtn.disabled = true;
-          if (submitText) submitText.textContent = 'Processing...';
+          if (submitText) submitText.textContent = 'Sending...';
           if (submitIcon) submitIcon.classList.add('hidden');
           if (loadingIcon) loadingIcon.classList.remove('hidden');
           if (errorMessage) errorMessage.classList.add('hidden');
+          
+          // Animate loading bar
+          const loadingBar = document.getElementById('loading-bar') as HTMLElement;
+          if (loadingBar) {
+            loadingBar.style.width = '70%';
+            loadingBar.style.transition = 'width 1.5s ease-out';
+          }
 
           try {
             const formData = new FormData(form);
@@ -494,14 +824,23 @@ const budgetOptions = [
             const result = await response.json();
 
             if (response.ok && result.success) {
-              window.location.href = '/booking/thanks';
+              // Complete loading animation
+              if (loadingBar) {
+                loadingBar.style.width = '100%';
+                loadingBar.style.transition = 'width 0.3s ease-out';
+              }
+              
+              // Show success modal
+              setTimeout(() => showSuccessModal(), 400);
             } else {
               showError(result.error || 'Something went wrong');
               resetButton();
+              if (loadingBar) loadingBar.style.width = '0%';
             }
           } catch (error) {
             showError('Network error');
             resetButton();
+            if (loadingBar) loadingBar.style.width = '0%';
           }
         });
       }
@@ -518,17 +857,41 @@ const budgetOptions = [
       tl.to('.booking-hero-title-line > span', { y: '0%', duration: 1, stagger: 0.1, ease: 'power3.out' })
         .to('.booking-hero-reveal', { opacity: 1, y: 0, duration: 0.8, stagger: 0.05, ease: 'power2.out' }, '-=0.5');
 
-      gsap.utils.toArray('.form-section-wrapper').forEach((section: any) => {
+      gsap.utils.toArray('.form-section-wrapper').forEach((section: any, index: number) => {
         gsap.from(section, {
           opacity: 0,
-          y: 40,
+          y: 60,
           duration: 1,
           ease: 'power3.out',
-          scrollTrigger: { trigger: section, start: 'top 80%' }
+          scrollTrigger: { 
+            trigger: section, 
+            start: 'top 85%',
+            onEnter: () => updateProgress(index),
+            onEnterBack: () => updateProgress(index)
+          }
         });
       });
     };
 
     document.addEventListener('astro:page-load', initBooking);
   </script>
+  
+  <style>
+    @keyframes fade-in {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+    .animate-fade-in {
+      animation: fade-in 0.3s ease-out forwards;
+    }
+    
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-4px); }
+      75% { transform: translateX(4px); }
+    }
+    .animate-shake {
+      animation: shake 0.3s ease-out;
+    }
+  </style>
 </SiteLayout>
