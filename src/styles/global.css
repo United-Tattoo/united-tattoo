@@ -1,32 +1,63 @@
 @import "tailwindcss";
 
 @theme {
+    /* Typography - Editorial refined */
     --font-display: 'Instrument Serif', serif;
     --font-body: 'Inter', sans-serif;
     --font-mono: 'Geist Mono', monospace;
 
-    --color-bg-deep: #050505;
-    --color-text-main: #e0e0e0;
-    --color-accent: #ffffff;
-    --color-grid-line: rgba(255, 255, 255, 0.1);
+    /* Typography Scale - Strict sizing */
+    --text-display-xl: clamp(4rem, 15vw, 12rem);
+    --text-display-lg: clamp(3rem, 10vw, 8rem);
+    --text-display-md: clamp(2.5rem, 6vw, 5rem);
+    --text-heading-lg: clamp(2rem, 4vw, 3.5rem);
+    --text-heading-md: clamp(1.5rem, 3vw, 2.5rem);
+    --text-heading-sm: clamp(1.25rem, 2vw, 1.75rem);
+    --text-body-lg: 1.125rem;
+    --text-body-md: 1rem;
+    --text-body-sm: 0.875rem;
+    --text-label: 0.6875rem;
+    --text-micro: 0.625rem;
 
-    /* Warm accent colors - hybrid approach */
-    --color-burnt-orange: #E67E50;
-    --color-terracotta: #D87850;
-    --color-burnt-dark: #b0471e;
-    --color-sage: #a28f79;
-    --color-moss: #6f5c49;
-    --color-cream: #fff7ec;
-    --color-sand: #f2e3d0;
+    /* Cooled Foundation */
+    --color-bg-deep: #08080a;
+    --color-bg-elevated: #0c0c0e;
+    --color-bg-surface: #121214;
+    --color-text-main: #e4e4e7;
+    --color-text-secondary: #a1a1aa;
+    --color-text-muted: #71717a;
+    --color-accent: #fafafa;
+    --color-grid-line: rgba(255, 255, 255, 0.06);
+
+    /* Sage & Stone - Cool accent palette */
+    --color-sage: #9CAF94;
+    --color-sage-light: #B8C9B2;
+    --color-sage-dark: #7A9171;
+    --color-stone: #E8E4DE;
+    --color-stone-dark: #D4CFC7;
+    --color-charcoal: #2A2A2E;
+    --color-slate: #404044;
+
+    /* Legacy warm colors (deprecated - for transition) */
+    --color-burnt-orange: #9CAF94;
+    --color-terracotta: #B8C9B2;
+    --color-burnt-dark: #7A9171;
+    --color-moss: #71717a;
+    --color-cream: #E8E4DE;
+    --color-sand: #D4CFC7;
 }
 
 @layer base {
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Instrument+Serif:ital,wght@0,400;1,400&family=Geist+Mono:wght@300;400;500;600&display=swap');
 
     :root {
-        --bg-deep: #050505;
-        --text-main: #e0e0e0;
-        --grid-line: rgba(255, 255, 255, 0.1);
+        --bg-deep: #08080a;
+        --bg-elevated: #0c0c0e;
+        --bg-surface: #121214;
+        --text-main: #e4e4e7;
+        --text-secondary: #a1a1aa;
+        --text-muted: #71717a;
+        --grid-line: rgba(255, 255, 255, 0.06);
     }
 
     body {
@@ -87,10 +118,77 @@
     /* Editorial section label - subtle, not loud */
     .section-label {
         font-family: 'Geist Mono', monospace;
-        font-size: 12px;
+        font-size: var(--text-label);
         text-transform: uppercase;
         letter-spacing: 0.2em;
-        color: var(--color-moss);
+        color: var(--text-muted);
+    }
+
+    /* Button system */
+    .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.75rem;
+        background-color: var(--color-sage);
+        color: var(--bg-deep);
+        font-family: 'Geist Mono', monospace;
+        font-size: var(--text-label);
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .btn-primary:hover {
+        background-color: var(--color-sage-light);
+        transform: translateY(-2px);
+    }
+
+    .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem 1.75rem;
+        background-color: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        color: var(--text-main);
+        font-family: 'Geist Mono', monospace;
+        font-size: var(--text-label);
+        text-transform: uppercase;
+        letter-spacing: 0.15em;
+        transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .btn-secondary:hover {
+        background-color: rgba(255, 255, 255, 0.05);
+        border-color: rgba(255, 255, 255, 0.4);
+    }
+
+    /* Section numbering for editorial flow */
+    .section-number {
+        font-family: 'Geist Mono', monospace;
+        font-size: var(--text-display-md);
+        color: var(--color-sage);
+        opacity: 0.4;
+        line-height: 1;
+    }
+
+    /* Horizontal scroll container */
+    .horizontal-scroll {
+        display: flex;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .horizontal-scroll::-webkit-scrollbar {
+        display: none;
+    }
+
+    .horizontal-scroll-item {
+        flex: 0 0 100vw;
+        scroll-snap-align: start;
     }
 
     /* Prose styling for MDX content */
@@ -153,7 +251,7 @@
                 /* Em dash for editorial feel */
                 position: absolute;
                 left: 0;
-                color: var(--color-terracotta);
+                color: var(--color-sage);
                 font-weight: 400;
             }
         }
@@ -173,7 +271,7 @@
                 content: "0" counter(editorial-counter) ".";
                 position: absolute;
                 left: 0;
-                color: var(--color-terracotta);
+                color: var(--color-sage);
                 font-family: 'Geist Mono', monospace;
                 font-size: 0.75rem;
                 top: 0.3em;
@@ -190,8 +288,8 @@
         }
 
         & a:hover {
-            color: var(--color-terracotta);
-            text-decoration-color: var(--color-terracotta);
+            color: var(--color-sage);
+            text-decoration-color: var(--color-sage);
         }
 
         & strong {
@@ -202,7 +300,7 @@
         & blockquote {
             margin: 3rem 0;
             padding-left: 2rem;
-            border-left: 2px solid var(--color-terracotta);
+            border-left: 2px solid var(--color-sage);
             font-family: 'Instrument Serif', serif;
             font-style: italic;
             font-size: 1.5rem;
