@@ -3,18 +3,18 @@ import { ADDRESS_LINE_1, ADDRESS_LINE_2, EMAIL, INSTAGRAM, PHONE_NUMBER } from '
 import DoveMark from './DoveMark.astro';
 ---
 
-<footer class="footer-section bg-black relative z-20" data-scroll-section>
+<footer class="footer-section bg-bg-deep relative z-20" data-scroll-section>
   <!-- Ready to Book Block -->
-  <div class="border-b border-white/10">
+  <div class="border-b border-grid-line">
     <a href="/booking" class="group block relative overflow-hidden py-16 md:py-24 px-8 md:px-12 lg:px-16 hover:bg-white/[0.02] transition-colors duration-500">
       <div class="flex flex-col md:flex-row items-baseline justify-between gap-8">
         <div>
-          <span class="font-mono text-xs uppercase tracking-[0.2em] text-neutral-400 block mb-4">Start your journey</span>
-          <h3 class="font-display text-5xl md:text-7xl lg:text-8xl uppercase text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-white group-hover:via-neutral-400 group-hover:to-neutral-600 transition-all duration-500">
+          <span class="section-label block mb-4">Start your journey</span>
+          <h3 class="font-display text-5xl md:text-7xl lg:text-8xl uppercase text-white group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-sage-light group-hover:via-sage group-hover:to-sage-dark transition-all duration-500">
             Book a session
           </h3>
         </div>
-        <span class="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center text-white group-hover:bg-white group-hover:text-black group-hover:scale-110 transition-all duration-500">
+        <span class="w-16 h-16 rounded-full border border-white/20 flex items-center justify-center text-white group-hover:bg-sage group-hover:text-bg-deep group-hover:border-sage group-hover:scale-110 transition-all duration-500">
           <iconify-icon icon="solar:arrow-right-linear" class="text-2xl"></iconify-icon>
         </span>
       </div>
@@ -23,23 +23,23 @@ import DoveMark from './DoveMark.astro';
 
   <div class="grid grid-cols-1 lg:grid-cols-12">
     <!-- Left Column: Branding -->
-    <div class="footer-branding col-span-1 lg:col-span-4 p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-white/10 flex flex-col justify-between min-h-[300px]">
+    <div class="footer-branding col-span-1 lg:col-span-4 p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-grid-line flex flex-col justify-between min-h-[300px]">
       <div class="footer-reveal">
         <h2 class="footer-title text-6xl md:text-8xl font-display uppercase tracking-tighter leading-none mb-2">United</h2>
-        <span class="font-mono text-xs text-neutral-400 block">
-          © 2025 United Tattoo Collective
+        <span class="font-mono text-xs text-text-muted block">
+          2025 United Tattoo Collective
         </span>
       </div>
 
       <div class="footer-reveal mt-8">
-        <p class="font-mono text-xs text-neutral-400 max-w-xs mb-6">
+        <p class="font-mono text-xs text-text-muted max-w-xs mb-6">
           Inking beautiful tattoos. Based in Fountain, Colorado.
         </p>
         <div class="flex gap-4">
-          <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" class="footer-social w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
+          <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" class="footer-social w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-sage hover:text-bg-deep hover:border-sage transition-all">
             <iconify-icon icon="mdi:instagram"></iconify-icon>
           </a>
-          <a href={`mailto:${EMAIL}`} class="footer-social w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all">
+          <a href={`mailto:${EMAIL}`} class="footer-social w-10 h-10 border border-white/20 rounded-full flex items-center justify-center hover:bg-sage hover:text-bg-deep hover:border-sage transition-all">
             <iconify-icon icon="mdi:email"></iconify-icon>
           </a>
         </div>
@@ -49,22 +49,22 @@ import DoveMark from './DoveMark.astro';
     <!-- Right Column: Links Grid -->
     <div class="col-span-1 lg:col-span-8 grid grid-cols-1 md:grid-cols-3">
       <!-- Location -->
-      <div class="footer-col footer-reveal p-8 border-b md:border-b-0 md:border-r border-white/10">
-        <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-400 block mb-6">
-          [01] Location
+      <div class="footer-col footer-reveal p-8 border-b md:border-b-0 md:border-r border-grid-line">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-text-muted block mb-6">
+          <span class="text-sage/40">[01]</span> Location
         </span>
-        <address class="not-italic font-mono text-sm text-neutral-300 space-y-1">
+        <address class="not-italic font-mono text-sm text-text-secondary space-y-1">
           <p>{ADDRESS_LINE_1},</p>
           <p>{ADDRESS_LINE_2}</p>
         </address>
       </div>
 
       <!-- Hours -->
-      <div class="footer-col footer-reveal p-8 border-b md:border-b-0 md:border-r border-white/10">
-        <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-400 block mb-6">
-          [02] Hours
+      <div class="footer-col footer-reveal p-8 border-b md:border-b-0 md:border-r border-grid-line">
+        <span class="font-mono text-[10px] uppercase tracking-widest text-text-muted block mb-6">
+          <span class="text-sage/40">[02]</span> Hours
         </span>
-        <ul class="font-mono text-sm text-neutral-300 space-y-2">
+        <ul class="font-mono text-sm text-text-secondary space-y-2">
           <li class="flex justify-between">
             <span>Sun</span>
             <span>10am-6pm</span>
@@ -98,31 +98,31 @@ import DoveMark from './DoveMark.astro';
 
       <!-- Sitemap -->
       <div class="footer-col footer-reveal p-8">
-        <span class="font-mono text-[10px] uppercase tracking-widest text-neutral-400 block mb-6">
-          [03] Directory
+        <span class="font-mono text-[10px] uppercase tracking-widest text-text-muted block mb-6">
+          <span class="text-sage/40">[03]</span> Directory
         </span>
         <ul class="font-mono text-sm space-y-2">
-          <li><a href="/artists" class="text-neutral-300 hover:text-white transition-colors">Artists</a></li>
-          <li><a href="/booking" class="text-neutral-300 hover:text-white transition-colors">Booking</a></li>
-          <li><a href="/faq" class="text-neutral-300 hover:text-white transition-colors">FAQ</a></li>
-          <li><a href="/privacy" class="text-neutral-400 hover:text-white transition-colors">Privacy</a></li>
+          <li><a href="/artists" class="text-text-secondary hover:text-sage transition-colors">Artists</a></li>
+          <li><a href="/booking" class="text-text-secondary hover:text-sage transition-colors">Booking</a></li>
+          <li><a href="/faq" class="text-text-secondary hover:text-sage transition-colors">FAQ</a></li>
+          <li><a href="/privacy" class="text-text-muted hover:text-sage transition-colors">Privacy</a></li>
         </ul>
       </div>
     </div>
   </div>
 
   <!-- Bottom Bar -->
-  <div class="footer-bar border-t border-white/5 px-6 py-5 flex flex-col sm:flex-row justify-between items-center gap-4 bg-black/80">
-    <div class="flex items-center gap-3 font-mono text-[10px] text-neutral-400">
-      <span class="inline-flex items-center text-neutral-500">
+  <div class="footer-bar border-t border-grid-line px-6 py-5 flex flex-col sm:flex-row justify-between items-center gap-4 bg-bg-deep/80">
+    <div class="flex items-center gap-3 font-mono text-[10px] text-text-muted">
+      <span class="inline-flex items-center text-sage/60">
         <DoveMark class="w-4 h-4" />
       </span>
       <span class="tracking-wider">Freedom in ink</span>
     </div>
-    <div class="flex items-center gap-6 font-mono text-[10px] text-neutral-400">
-      <a class="hover:text-white transition-colors" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">Instagram</a>
-      <a class="hover:text-white transition-colors hidden sm:inline" href={`mailto:${EMAIL}`}>{EMAIL}</a>
-      <a class="hover:text-white transition-colors" href={`tel:${PHONE_NUMBER.replace(/\s+/g, '')}`}>{PHONE_NUMBER}</a>
+    <div class="flex items-center gap-6 font-mono text-[10px] text-text-muted">
+      <a class="hover:text-sage transition-colors" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a class="hover:text-sage transition-colors hidden sm:inline" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+      <a class="hover:text-sage transition-colors" href={`tel:${PHONE_NUMBER.replace(/\s+/g, '')}`}>{PHONE_NUMBER}</a>
     </div>
   </div>
 </footer>

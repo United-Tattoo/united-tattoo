@@ -20,81 +20,92 @@ const artists = await getCollection('artists');
 
   <div class="relative main-content-wrapper">
 
-  <!-- Hero Section: Balanced Composition -->
-  <section class="hero-section min-h-screen relative flex flex-col" data-scroll-section>
-    <!-- Grid Background -->
-    <GridBackground opacity={40} class="hero-grid" />
+  <!-- Hero Section: Dramatic Immersive Experience -->
+  <section class="hero-section min-h-[110vh] relative flex flex-col overflow-hidden" data-scroll-section>
+    <!-- Grid Background with parallax -->
+    <GridBackground opacity={40} class="hero-grid" data-speed="0.3" />
 
-    <!-- Dove - Positioned Right, Smaller -->
-    <div class="absolute right-0 top-0 bottom-0 w-full lg:w-2/3 z-0 pointer-events-none overflow-hidden">
-      <div class="absolute inset-0 mix-blend-screen opacity-70 hero-dove-layer">
-        <img src="/dove.png" alt="" class="w-full h-full object-contain object-right grayscale contrast-125" />
+    <!-- Dove - Positioned Right with Parallax Layers -->
+    <div class="absolute right-0 top-0 bottom-0 w-full lg:w-3/4 z-0 pointer-events-none overflow-hidden" data-speed="0.5">
+      <div class="absolute inset-0 mix-blend-screen opacity-60 hero-dove-layer" data-speed="0.7" data-parallax-layer="dove">
+        <img src="/dove.png" alt="" class="w-full h-full object-contain object-right grayscale contrast-125 scale-110" />
       </div>
-      <!-- Gradient fade to left - softer charcoal tones -->
-      <div class="absolute inset-0 bg-gradient-to-r from-bg-deep via-bg-deep/70 to-transparent"></div>
+      <!-- Gradient fade to left - deeper, more dramatic -->
+      <div class="absolute inset-0 bg-gradient-to-r from-bg-deep via-bg-deep/80 to-transparent"></div>
+      <!-- Additional depth layer -->
+      <div class="absolute inset-0 bg-gradient-to-t from-bg-deep/90 via-transparent to-bg-deep/40"></div>
     </div>
 
-    <!-- Vignette overlay -->
-    <div class="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-bg-deep via-transparent to-bg-deep/60"></div>
+    <!-- Atmospheric overlays for depth -->
+    <div class="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-bg-deep via-transparent to-bg-deep/70"></div>
+    <div class="absolute inset-0 z-[2] pointer-events-none bg-gradient-to-br from-transparent via-transparent to-bg-deep/50"></div>
 
     <!-- Hero Content Grid -->
-    <div class="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12 pt-24 lg:pt-32">
+    <div class="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12 pt-32 lg:pt-40">
       <!-- Left Content Column -->
-      <div class="col-span-1 lg:col-span-7 flex flex-col justify-end px-6 md:px-12 lg:px-16 pb-16 md:pb-24 lg:pb-32">
+      <div class="col-span-1 lg:col-span-8 flex flex-col justify-end px-6 md:px-12 lg:px-20 pb-20 md:pb-28 lg:pb-36">
         <!-- Label -->
-        <div class="hero-reveal mb-6">
-          <span class="font-mono text-xs uppercase tracking-[0.2em] text-neutral-300 font-medium">Custom · Flash · Freedom</span>
+        <div class="hero-reveal mb-8 lg:mb-10">
+          <span class="font-mono text-xs uppercase tracking-[0.25em] font-medium" style="color: var(--color-sage);">Custom · Flash · Freedom</span>
         </div>
 
-        <!-- Title -->
-        <h1 class="hero-title text-7xl md:text-8xl lg:text-9xl leading-[0.85] font-normal tracking-tight uppercase mb-8 md:mb-10">
-          <span class="hero-title-line block overflow-hidden"><span class="inline-block text-white">United</span></span>
-          <span class="hero-title-line block overflow-hidden"><span class="italic font-light text-neutral-500 inline-block">Tattoo</span></span>
+        <!-- Title - Dramatic Scale with Character Animation Ready -->
+        <h1 class="hero-title leading-[0.8] font-normal tracking-tighter uppercase mb-12 md:mb-16" style="font-size: var(--text-display-xl);">
+          <span class="hero-title-line block overflow-hidden">
+            <span class="title-word inline-block text-white" data-split-text>
+              <span class="title-char">U</span><span class="title-char">n</span><span class="title-char">i</span><span class="title-char">t</span><span class="title-char">e</span><span class="title-char">d</span>
+            </span>
+          </span>
+          <span class="hero-title-line block overflow-hidden mt-[-0.05em]">
+            <span class="title-word italic font-light inline-block" data-split-text style="color: var(--color-sage-light);">
+              <span class="title-char">T</span><span class="title-char">a</span><span class="title-char">t</span><span class="title-char">t</span><span class="title-char">o</span><span class="title-char">o</span>
+            </span>
+          </span>
         </h1>
 
         <!-- Tagline -->
-        <p class="hero-reveal text-neutral-400 text-base md:text-lg lg:text-xl max-w-lg leading-relaxed font-light mb-10">
+        <p class="hero-reveal text-neutral-400 text-lg md:text-xl lg:text-2xl max-w-2xl leading-relaxed font-light mb-14 lg:mb-16">
           A collective dedicated to the art of release. Where the timeless torch of tradition meets the modern expression of self.
         </p>
 
         <!-- Hero Info Bar -->
-        <div class="hero-reveal flex flex-wrap items-center gap-8 pt-6 border-t" style="border-color: var(--color-burnt-orange);">
+        <div class="hero-reveal flex flex-wrap items-center gap-10 lg:gap-12 pt-8 border-t" style="border-color: var(--color-sage-dark);">
           <div>
-            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-1" style="color: var(--color-moss);">Location</span>
+            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-2" style="color: var(--color-sage);">Location</span>
             <span class="font-mono text-sm text-white">Fountain, CO</span>
           </div>
           <div>
-            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-1" style="color: var(--color-moss);">Hours</span>
+            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-2" style="color: var(--color-sage);">Hours</span>
             <span class="font-mono text-sm text-white">Sun–Sat · 10am–8pm</span>
           </div>
           <div>
-            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-1" style="color: var(--color-moss);">Artists</span>
+            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-2" style="color: var(--color-sage);">Artists</span>
             <span class="font-mono text-sm text-white">{artists.length} in residence</span>
           </div>
           <div class="hidden lg:block ml-auto">
-             <a href="/booking" class="px-6 py-3 border border-white/20 hover:bg-white hover:text-black hover:border-white transition-all duration-300 font-mono text-xs uppercase tracking-widest">
+             <a href="/booking" class="hero-cta px-8 py-4 border transition-all duration-500 font-mono text-xs uppercase tracking-widest hover:translate-y-[-2px]" style="border-color: var(--color-sage-dark); color: var(--color-stone);">
                Book Consultation
              </a>
           </div>
         </div>
 
         <!-- Mobile CTA -->
-        <div class="lg:hidden mt-10">
-          <a href="/booking" class="group block w-full py-5 text-black text-center font-mono text-sm uppercase tracking-[0.15em] transition-all shadow-lg shadow-white/10" style="background-color: var(--color-burnt-orange);">
+        <div class="lg:hidden mt-12">
+          <a href="/booking" class="hero-cta group block w-full py-5 text-center font-mono text-sm uppercase tracking-[0.15em] transition-all duration-500 shadow-lg" style="background-color: var(--color-sage); color: var(--color-bg-deep);">
             <span class="flex items-center justify-center gap-3">
-              <span class="group-hover:translate-x-1 transition-transform">Book a session</span>
-              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs transition-colors" style="background-color: var(--color-burnt-dark); color: white;">→</span>
+              <span class="group-hover:translate-x-1 transition-transform duration-300">Book a session</span>
+              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs transition-colors" style="background-color: var(--color-sage-dark); color: white;">→</span>
             </span>
           </a>
         </div>
       </div>
 
       <!-- Right Column - Empty space for dove -->
-      <div class="hidden lg:block col-span-5"></div>
+      <div class="hidden lg:block col-span-4"></div>
     </div>
 
-    <!-- Scroll Indicator -->
-    <ScrollIndicator class="hero-reveal" />
+    <!-- Scroll Indicator with sage accent -->
+    <ScrollIndicator class="hero-reveal" style="--scroll-accent: var(--color-sage);" />
   </section>
 
   <!-- Artists Section: The Index -->
@@ -162,47 +173,65 @@ const artists = await getCollection('artists');
     </SectionSidebar>
   </section>
 
-  <!-- Process Section: The Methodology -->
-  <section id="process" class="process-section relative z-20 border-t border-white/10" data-scroll-section>
-    <SectionSidebar
-      sectionNum="Section 02"
-      label="Methodology"
-      description="From first idea to healed artwork—our proven process."
-    >
-      <!-- Header -->
-      <SectionHeader
-        title="Methodology"
-        meta="4 steps"
-        titleClass="process-title"
-        class="process-header"
-      />
+  <!-- Process Section: The Methodology - Horizontal Scroll Experience -->
+  <section id="process" class="process-section relative z-20 border-t border-white/10 overflow-hidden" data-scroll-section data-horizontal-scroll>
+    <!-- Section Header -->
+    <div class="px-6 md:px-12 lg:px-16 py-12 md:py-16 border-b border-white/5">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <div>
+          <span class="section-label block mb-4">Section 02</span>
+          <h2 class="process-title font-display text-4xl md:text-5xl lg:text-6xl italic text-white">Methodology</h2>
+        </div>
+        <p class="font-mono text-sm text-neutral-500 max-w-xs">From first idea to healed artwork—our proven process.</p>
+      </div>
+    </div>
 
-      <!-- Grid -->
-      <div class="process-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-white/5 border-l border-white/5">
-        {[
-          { num: '01', title: 'Consultation', desc: 'Share your vision. We\'ll shape your idea together and match you with the right artist.', icon: 'solar:chat-line-linear' },
-          { num: '02', title: 'Design', desc: 'Your artist creates a custom piece tailored to your body and style.', icon: 'solar:pen-new-square-linear' },
-          { num: '03', title: 'Session', desc: 'Get inked in our clean, comfortable studio with experienced professionals.', icon: 'ph:needle' },
-          { num: '04', title: 'Aftercare', desc: 'We guide you through healing so your artwork stays vibrant for life.', icon: 'solar:heart-linear' }
-        ].map((step, i) => (
-          <div class="process-step group px-6 py-10 lg:py-12 min-h-[280px] flex flex-col justify-between bg-bg-deep hover:bg-white/[0.02] transition-colors duration-300 border-b border-white/5 lg:border-b-0">
-            <div class="flex justify-between items-start mb-6">
-              <span class="process-num font-mono text-4xl lg:text-5xl font-light transition-colors" style="color: var(--color-burnt-orange);">
-                {step.num}
-              </span>
-              <iconify-icon icon={step.icon} class="group-hover:text-white transition-colors text-xl lg:text-2xl" style="color: var(--color-sage);"></iconify-icon>
+    <!-- Horizontal Scroll Container -->
+    <div class="horizontal-scroll process-scroll" data-horizontal-container>
+      {[
+        { num: '01', title: 'Consultation', desc: 'Share your vision. We shape your idea together and match you with the right artist.', icon: 'solar:chat-line-linear' },
+        { num: '02', title: 'Design', desc: 'Your artist creates a custom piece tailored to your body and style.', icon: 'solar:pen-new-square-linear' },
+        { num: '03', title: 'Session', desc: 'Get inked in our clean, comfortable studio with experienced professionals.', icon: 'ph:needle' },
+        { num: '04', title: 'Aftercare', desc: 'We guide you through healing so your artwork stays vibrant for life.', icon: 'solar:heart-linear' }
+      ].map((step, i) => (
+        <div class="horizontal-scroll-item process-panel relative flex flex-col min-h-[70vh] md:min-h-[80vh] border-r border-white/5">
+          <!-- Panel Inner Container -->
+          <div class="flex-1 flex flex-col px-8 md:px-16 lg:px-24 py-12 md:py-16">
+            <!-- Top Row: Number + Icon -->
+            <div class="flex justify-between items-start mb-auto">
+              <span class="section-number process-num">[{step.num}]</span>
+              <iconify-icon icon={step.icon} class="text-3xl md:text-4xl opacity-40 hover:opacity-100 transition-opacity" style="color: var(--color-sage);"></iconify-icon>
             </div>
 
-            <div class="process-content">
-              <h3 class="font-display text-xl lg:text-2xl italic text-white mb-3">{step.title}</h3>
-              <p class="font-mono text-sm lg:text-base text-neutral-400 leading-relaxed">
+            <!-- Center/Bottom Content -->
+            <div class="process-content mt-auto max-w-md">
+              <h3 class="font-display italic text-white mb-6" style="font-size: var(--text-heading-lg);">{step.title}</h3>
+              <p class="font-mono leading-relaxed text-neutral-400" style="font-size: var(--text-body-sm);">
                 {step.desc}
               </p>
             </div>
+
+            <!-- Step Indicator -->
+            <div class="mt-12 pt-8 border-t border-white/5">
+              <div class="flex items-center gap-4">
+                <span class="font-mono text-xs uppercase tracking-widest text-neutral-600">Step</span>
+                <div class="flex gap-2">
+                  {[1,2,3,4].map((dot) => (
+                    <span class={`w-2 h-2 rounded-full transition-colors ${dot === i + 1 ? 'bg-sage' : 'bg-white/10'}`}></span>
+                  ))}
+                </div>
+              </div>
+            </div>
           </div>
-        ))}
-      </div>
-    </SectionSidebar>
+        </div>
+      ))}
+    </div>
+
+    <!-- Scroll Hint (Mobile) -->
+    <div class="md:hidden px-6 py-4 border-t border-white/5 flex items-center justify-center gap-2 text-neutral-500">
+      <iconify-icon icon="solar:arrow-right-linear" class="text-sm"></iconify-icon>
+      <span class="font-mono text-xs uppercase tracking-widest">Swipe to explore</span>
+    </div>
   </section>
 
 
@@ -227,26 +256,80 @@ const artists = await getCollection('artists');
       }
     }
 
-    /* Mobile CTA hover effect */
-    .hero-section a[href="/booking"]:hover {
-      background-color: var(--color-terracotta) !important;
+    /* Hero CTA hover effects */
+    .hero-section .hero-cta:hover {
+      background-color: var(--color-sage) !important;
+      color: var(--color-bg-deep) !important;
+      border-color: var(--color-sage) !important;
       transform: translateY(-2px);
-      box-shadow: 0 10px 40px rgba(230, 126, 80, 0.3);
+      box-shadow: 0 10px 40px rgba(156, 175, 148, 0.25);
     }
 
-    /* Process step hover enhancements */
-    .process-step {
-      border-top: 2px solid transparent;
-      transition: border-color 0.3s ease;
+    /* Title character animation base styles */
+    .title-char {
+      display: inline-block;
+      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
-    .process-step:hover {
-      border-top-color: var(--color-terracotta);
+    .title-word:hover .title-char {
+      animation: charWave 0.6s ease-out forwards;
     }
 
-    .process-step:hover .process-num {
-      transform: scale(1.1);
-      color: var(--color-terracotta) !important;
+    .title-char:nth-child(1) { animation-delay: 0s; }
+    .title-char:nth-child(2) { animation-delay: 0.05s; }
+    .title-char:nth-child(3) { animation-delay: 0.1s; }
+    .title-char:nth-child(4) { animation-delay: 0.15s; }
+    .title-char:nth-child(5) { animation-delay: 0.2s; }
+    .title-char:nth-child(6) { animation-delay: 0.25s; }
+
+    @keyframes charWave {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+
+    /* Process horizontal scroll enhancements */
+    .process-scroll {
+      scroll-behavior: smooth;
+    }
+
+    .process-panel {
+      background: linear-gradient(180deg, var(--color-bg-deep) 0%, var(--color-bg-elevated) 100%);
+      transition: background 0.4s ease;
+    }
+
+    .process-panel:hover {
+      background: linear-gradient(180deg, var(--color-bg-elevated) 0%, var(--color-bg-surface) 100%);
+    }
+
+    .process-panel:hover .process-num {
+      opacity: 0.8;
+      transform: translateY(-4px);
+    }
+
+    .process-num {
+      transition: opacity 0.4s ease, transform 0.4s ease;
+    }
+
+    .process-panel .process-content h3 {
+      transition: color 0.3s ease;
+    }
+
+    .process-panel:hover .process-content h3 {
+      color: var(--color-sage-light);
+    }
+
+    /* Scroll snap for touch devices */
+    @media (hover: none) {
+      .process-scroll {
+        scroll-snap-type: x mandatory;
+      }
+    }
+
+    /* Desktop: larger panels with more breathing room */
+    @media (min-width: 1024px) {
+      .process-panel {
+        min-height: 85vh;
+      }
     }
   </style>
 
@@ -368,10 +451,13 @@ const artists = await getCollection('artists');
         }
       });
 
-      // Process Section Animations
-      gsap.set('.process-step', { opacity: 0, y: 80, scale: 0.95 });
+      // Process Section Animations - Horizontal Scroll
+      gsap.set('.process-panel', { opacity: 0, x: 100 });
       gsap.set('.process-title', { opacity: 0, y: 40 });
+      gsap.set('.process-num', { opacity: 0, scale: 0.8 });
+      gsap.set('.process-content', { opacity: 0, y: 30 });
 
+      // Header animation
       gsap.to('.process-title', {
         opacity: 1,
         y: 0,
@@ -383,31 +469,52 @@ const artists = await getCollection('artists');
         }
       });
 
-      gsap.to('.process-step', {
-        opacity: 1,
-        y: 0,
-        scale: 1,
-        stagger: 0.15,
-        duration: 1,
-        ease: 'power3.out',
+      // Panel reveal animation
+      const processTl = gsap.timeline({
         scrollTrigger: {
-          trigger: '.process-grid',
-          start: 'top 85%'
+          trigger: '.process-section',
+          start: 'top 70%'
         }
       });
 
-      // Process number parallax
-      gsap.utils.toArray('.process-num').forEach((num) => {
-        gsap.to(num, {
-          yPercent: -30,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: num,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1
-          }
-        });
+      processTl
+        .to('.process-panel', {
+          opacity: 1,
+          x: 0,
+          stagger: 0.1,
+          duration: 0.8,
+          ease: 'power3.out'
+        })
+        .to('.process-num', {
+          opacity: 0.4,
+          scale: 1,
+          stagger: 0.1,
+          duration: 0.6,
+          ease: 'back.out(1.5)'
+        }, '-=0.6')
+        .to('.process-content', {
+          opacity: 1,
+          y: 0,
+          stagger: 0.1,
+          duration: 0.6,
+          ease: 'power2.out'
+        }, '-=0.4');
+
+      // Horizontal scroll indicator - subtle X parallax on numbers
+      gsap.utils.toArray('.process-panel').forEach((panel, i) => {
+        const num = panel.querySelector('.process-num');
+        if (num) {
+          gsap.to(num, {
+            yPercent: -20,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: panel,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1
+            }
+          });
+        }
       });
 
       // Footer Animations

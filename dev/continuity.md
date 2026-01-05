@@ -1,5 +1,112 @@
 # Continuity Log
 
+## 2026-01-04 - Header & Footer Sage Color Palette Update
+
+### Changes Made
+
+#### 1. HeaderNav.astro Updates
+- **Logo**: Increased size from `text-2xl md:text-3xl` to `text-3xl md:text-4xl` for more presence
+- **Logo hover**: Changed from `hover:opacity-70` to `hover:text-sage` for consistent color scheme
+- **Nav links**: Updated hover states from `hover:text-white` to `hover:text-sage`
+- **Active link state**: Changed from `text-white` to `text-sage` for artists page
+- **CTA Button**: Replaced inline styles with `.btn-primary` class (uses sage background with dark text)
+- **Mobile menu button**: Updated hover to `hover:text-sage`
+- **Mobile menu links**: All hover states now use `hover:text-sage` instead of `hover:text-white`
+
+#### 2. EditorialFooter.astro Updates
+- **Background**: Changed from `bg-black` to `bg-bg-deep` (consistent with design system)
+- **Borders**: Updated all `border-white/10` to `border-grid-line` for cooler tones
+- **CTA "Book a Session" hover**: Changed gradient from neutral grays to sage gradient (`from-sage-light via-sage to-sage-dark`)
+- **CTA arrow button**: Hover now uses `bg-sage` with `text-bg-deep` instead of white
+- **Section numbers** ([01], [02], [03]): Wrapped in spans with `text-sage/40` for subtle sage accent
+- **Text colors**: Replaced `text-neutral-400/300` with semantic `text-text-muted` and `text-text-secondary`
+- **Directory links**: Hover states changed to `hover:text-sage`
+- **Social icons**: Hover states now use `bg-sage hover:text-bg-deep hover:border-sage`
+- **Bottom bar**: Updated DoveMark color to `text-sage/60`, all links use `hover:text-sage`
+- **Copyright**: Removed "©" symbol for cleaner aesthetic
+
+### Files Modified
+```
+src/components/HeaderNav.astro       - Cool tone palette, btn-primary CTA
+src/components/EditorialFooter.astro - Full sage color scheme integration
+```
+
+### Design Decisions
+- **Sage as primary accent**: Replaced all warm terracotta/white accents with the new `--color-sage` (#9CAF94) palette
+- **Semantic CSS variables**: Used `text-text-muted`, `text-text-secondary`, `border-grid-line` for maintainability
+- **Gradient direction**: CTA title gradient flows from `sage-light` through `sage` to `sage-dark` for depth
+- **Section numbers**: Low opacity sage (`/40`) keeps editorial feel without being too prominent
+
+### Next Steps
+- [ ] Verify header/footer render correctly across all pages
+- [ ] Test mobile menu on actual devices
+- [ ] Ensure footer grid lines align with homepage section borders
+
+---
+
+## 2026-01-04 - Homepage Process Section Horizontal Scroll Redesign
+
+### Changes Made
+
+#### 1. Complete Process/Methodology Section Overhaul
+- **File:** `/src/pages/index.astro` (lines 165-224)
+- **Transformed from:** 4-column grid layout
+- **Transformed to:** Horizontal scroll experience with full-viewport-width panels
+
+#### 2. New Layout Structure
+- **Section Header:** Standalone header with Section 02 label, title, and description
+- **Horizontal Scroll Container:** Uses `.horizontal-scroll` and `.horizontal-scroll-item` classes from global.css
+- **4 Full-Width Panels:** Each methodology step (Consultation, Design, Session, Aftercare) is now a viewport-width panel
+
+#### 3. Panel Design (Loka Sasmita-inspired)
+- **Large Section Numbers:** `[01]`, `[02]`, `[03]`, `[04]` using `.section-number` class with sage color
+- **Icon Placement:** Top-right with subtle opacity (40%) that increases on hover
+- **Typography:**
+  - Titles: `--text-heading-lg` (large serif italic)
+  - Descriptions: `--text-body-sm` (refined mono)
+- **Step Indicator:** Bottom of each panel shows progress dots (1-4)
+- **Generous Whitespace:** Panels are 70-85vh height with ample padding
+
+#### 4. Color Updates
+- Replaced `burnt-orange`/`terracotta` references with sage color palette
+- Uses CSS variables: `--color-sage`, `--color-sage-light`
+
+#### 5. CSS Enhancements (lines 255-298)
+- Panel gradient backgrounds transitioning on hover
+- Number lift animation on panel hover
+- Title color transition to sage-light on hover
+- Touch device scroll-snap support
+- Desktop panel height adjustments
+
+#### 6. GSAP Animation Updates (lines 419-483)
+- New animation targets: `.process-panel`, `.process-num`, `.process-content`
+- Staggered panel reveal from right (x: 100 -> 0)
+- Number scale-in with back easing
+- Content fade-up reveal
+- Subtle Y-parallax on section numbers during scroll
+
+#### 7. Mobile Support
+- Swipe hint indicator at bottom on mobile devices
+- Touch-friendly scroll-snap behavior
+
+### Files Modified
+```
+src/pages/index.astro  - Complete process section redesign (layout, styles, animations)
+```
+
+### Decisions
+- **Removed SectionSidebar wrapper:** The horizontal scroll experience required a more minimal structure without the locked sidebar pattern
+- **Native scroll instead of GSAP horizontal scroll:** Used CSS scroll-snap for performance and accessibility; GSAP handles reveal animations
+- **Retained Iconify icons:** Same icon set as before but repositioned to top-right corner
+
+### Next Steps
+- [ ] Test horizontal scroll experience on mobile devices (touch swipe)
+- [ ] Consider adding keyboard navigation for accessibility
+- [ ] Evaluate if GSAP ScrollTrigger horizontal scroll (pin + scrub) would enhance desktop experience
+- [ ] User testing to validate the "breathe" design approach
+
+---
+
 ## 2026-01-02 - Email Template Redesign
 
 ### Changes Made
