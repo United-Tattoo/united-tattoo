@@ -1,5 +1,454 @@
 # Continuity Log
 
+## 2026-01-05 - Homepage Reset & UI Refinements
+
+### Summary
+Reverted the dramatic artist cards and horizontal scroll methodology sections back to simpler, working layouts. The previous implementation had GSAP animation conflicts causing content to disappear. Also added button rounding and removed noise background from select pages.
+
+### Changes Made
+
+#### 1. Artists Section Reset (`/src/pages/index.astro`)
+- **Reverted** from full-bleed artist cards to list-based `.artist-row` layout
+- Each row: index number, avatar (mobile), serif italic name, specialty tag, arrow
+- Desktop hover image reveal (polaroid-style) preserved
+- Simpler, more reliable animations
+
+#### 2. Methodology Section Reset (`/src/pages/index.astro`)
+- **Reverted** from horizontal scroll panels to 4-column `.process-grid`
+- Each step: number, icon, title, description
+- Vertical scroll (standard behavior, no horizontal pinning)
+- Border-separated grid with hover highlights
+
+#### 3. GSAP Animation Fix
+- **Problem:** `gsap.set() + gsap.to()` pattern was hiding elements permanently when ScrollTrigger didn't fire correctly
+- **Solution:** Changed to `gsap.from()` with `immediateRender: false`
+- This keeps elements visible by default, only animating when ScrollTrigger activates
+- Applied to: `.artist-row`, `.artists-title`, `.process-step`, `.process-title`
+
+#### 4. Button Rounding (`/src/styles/global.css`)
+- Added `border-radius: 8px` to `.btn-primary` and `.btn-secondary`
+- Creates softer, more approachable button aesthetic
+
+#### 5. Noise Background Removal (`/src/layouts/SiteLayout.astro`)
+- Added `hideNoise?: boolean` prop to SiteLayout component
+- Conditionally renders noise overlay: `{!hideNoise && <div class="noise...`
+- Applied `hideNoise={true}` to:
+  - `/src/pages/index.astro` (homepage)
+  - `/src/pages/booking.astro` (booking page)
+
+#### 6. CSS Fallback Visibility Update (`/src/styles/global.css`)
+- Updated fallback visibility classes to match new element names:
+  ```css
+  .artist-row, .artists-title, .process-step, .process-title,
+  .process-num, .process-content, .hero-reveal, .hero-cta {
+    opacity: 1;
+  }
+  ```
+
+### Files Modified
+```
+src/pages/index.astro        - Reset artists & process sections, animations
+src/layouts/SiteLayout.astro - Added hideNoise prop
+src/pages/booking.astro      - Added hideNoise={true}
+src/styles/global.css        - Button rounding, fallback visibility
+```
+
+### Animation Pattern Reference
+```javascript
+// CORRECT: Elements visible by default, animate when triggered
+gsap.from('.artist-row', {
+  opacity: 0, y: 40, stagger: 0.08, duration: 0.6,
+  ease: 'power3.out',
+  immediateRender: false,
+  scrollTrigger: { trigger: '.artists-list', start: 'top 85%' }
+});
+
+// AVOID: Can hide elements if trigger doesn't fire
+gsap.set('.artist-row', { opacity: 0, y: 60 });
+gsap.to('.artist-row', { opacity: 1, y: 0, scrollTrigger: {...} });
+```
+
+### Next Steps
+- Consider enhanced hover interactions for artist rows
+- Explore subtle parallax effects that don't conflict with ScrollTrigger
+- Test across devices for animation performance
+
+---
+
+## 2026-01-05 - Artist Section Redesign (Homepage & Artists Index)
+
+### Changes Made
+
+#### 1. Homepage Artist Section (`/src/pages/index.astro`)
+- **Layout Transformation:** Changed from simple list rows to dramatic stacked gallery approach
+- **Alternating Layout:** Artist cards alternate left/right image placement on desktop
+- **Typography:** Large serif italic artist names using `--text-heading-lg` variable
+- **Specialty Tags:** Refined mono font with border pills instead of plain text
+- **Image Treatment:**
+  - 4:5 aspect ratio with grayscale-to-color hover effect
+  - Clip-path reveal animation on scroll
+  - Parallax effect using GSAP ScrollTrigger
+  - Corner accent borders on hover (sage color)
+- **GSAP Animations:**
+  - Section header fade-up with stagger
+  - Individual card timeline with clip-path image reveal
+  - Content slide-in from side
+  - Image parallax on scroll (yPercent: -15)
+- **Color Updates:** All warm colors (burnt-orange, terracotta) replaced with sage palette
+- **Added:** "View All Artists" CTA button at section bottom
+
+#### 2. Artists Index Page (`/src/pages/artists/index.astro`)
+- **Hero Section:**
+  - Increased height (60vh-70vh)
+  - Typography using `--text-display-lg` variable
+  - "The Collective" title with sage-light italic styling
+  - Added atmospheric gradient overlays for depth
+- **Gallery Grid:**
+  - Editorial masonry layout with featured cards (every 4th spans 2 columns)
+  - Responsive: 2 cols (mobile), 3 cols (tablet), 4 cols (desktop)
+  - Gap spacing scales with breakpoints
+- **Card Design:**
+  - Grayscale-to-color with sage overlay tint on hover
+  - Corner accents use sage color
+  - Index badges with bracketed numbers
+  - Floating sage CTA button on image hover
+  - Card lift effect (-8px translateY on hover)
+- **Typography:**
+  - Featured cards: `text-4xl lg:text-5xl`
+  - Standard cards: `text-2xl lg:text-3xl`
+  - Name underline animation with sage gradient
+- **GSAP Animations:**
+  - Hero title clip-reveal animation
+  - Gallery cards with individual ScrollTrigger timelines
+  - Clip-path image reveal (bottom-to-top)
+  - Content fade-up with stagger
+  - Subtle parallax on card images (yPercent: -10)
+
+#### 3. Style Updates
+- **New CSS Classes:**
+  - `.artist-gallery-grid` - Editorial masonry grid
+  - `.artist-card-featured` / `.artist-card-standard` - Grid span control
+  - `.artist-gallery-image-inner` - Zoom/clip animation wrapper
+  - `.artist-name-text` - Underline animation effect
+- **Direction RTL Trick:** Used `direction: rtl` for alternating layouts
+- **Hover Effects:** Card lift, image de-scale, corner accents, name underline
+
+### Data Attributes Added (GSAP-ready)
+```html
+<!-- Parallax elements -->
+data-speed="0.9"
+data-parallax-image
+
+<!-- Animation triggers -->
+data-animate="fade-up"
+data-animate="gallery-reveal"
+data-delay="0.1"
+data-index="0"
+
+<!-- Text splitting -->
+data-split-chars
+```
+
+### Files Modified
+```
+src/pages/index.astro - Artist section redesign (~lines 111-214, 284-323, 493-565)
+src/pages/artists/index.astro - Complete page redesign (298 lines)
+```
+
+### Next Steps
+- Test animations across different viewport sizes
+- Verify mobile responsiveness on actual devices
+- Consider adding hover cursor effects for gallery cards
+- Performance audit for parallax animations with many artists
+
+---
+
+## 2026-01-05 - GSAP Dramatic Animation System Implementation
+
+### Changes Made
+
+#### 1. Animation Constants & Utilities
+- **File:** `/src/layouts/SiteLayout.astro`
+- **Added:** Centralized animation constants exposed globally:
+  - `EASE`: smooth, dramatic, bounce, expo, elastic, inOut
+  - `DURATION`: fast (0.4s), normal (0.8s), slow (1.2s), dramatic (1.6s)
+  - `STAGGER`: fast (0.03s), normal (0.08s), slow (0.12s), dramatic (0.15s)
+- **Global Exposure:** `window.ANIMATION_EASE`, `window.ANIMATION_DURATION`, `window.ANIMATION_STAGGER`
+
+#### 2. Text Split Animation System
+- **Target Classes:** `.title-char` (character-level), `.title-word` (word-level)
+- **Character Reveals:** 3D rotateX from -90deg with Y-translate and opacity stagger
+- **Word Reveals:** Clip-path inset animation with Y-translate
+- **Trigger:** ScrollTrigger with `once: true` for performance
+
+#### 3. Parallax System
+- **Data Attribute:** `data-speed` (0.3=slow, 0.5=medium, 0.7=fast, 1.0=normal)
+- **Direction Support:** `data-parallax-direction="horizontal"` for X-axis movement
+- **Calculation:** `yPercent = (1 - speed) * 100` for natural depth effect
+- **Scrub:** 1.5 for smooth, buttery parallax
+
+#### 4. Section Reveal Animations
+- **Classes Added:**
+  - `.reveal-section` - Full section with child stagger
+  - `.reveal-item` - Individual items within sections
+  - `.reveal-up` - Simple fade-up (Y: 60px -> 0)
+  - `.reveal-fade` - Opacity-only reveal
+  - `.reveal-scale` - Scale with bounce easing
+- **All use:** ScrollTrigger with 80-85% viewport trigger
+
+#### 5. Horizontal Scroll Pinning
+- **Target:** `.horizontal-scroll[data-horizontal-container]`
+- **Behavior:** Pins section and translates X on scroll
+- **Desktop Only:** `window.innerWidth >= 1024`
+- **Scroll Distance:** `(items.length * viewportWidth) - viewportWidth`
+- **Features:** `anticipatePin`, `invalidateOnRefresh`
+
+#### 6. Image Reveal Animations
+- **Target Classes:** `.reveal-image`, `[data-reveal-image]`
+- **Reveal Types:**
+  - `scale` (default): Scale 1.1 -> 1 with blur effect
+  - `clip`: Clip-path inset(100% 0% 0% 0%) -> inset(0%)
+  - `slide`: Horizontal clip reveal with direction
+- **Gallery Support:** `.image-gallery`, `[data-image-gallery]` with stagger
+
+#### 7. Magnetic Cursor Effect
+- **Target Classes:** `.magnetic`, `[data-magnetic]`
+- **Auto-Applied To:** `.btn-primary`, `.btn-secondary` (unless `.no-magnetic`)
+- **Strength:** Configurable via `data-magnetic-strength` (default: 0.3)
+- **Desktop Only:** `window.innerWidth >= 1024`
+- **Return Animation:** Bounce easing for satisfying snap-back
+
+#### 8. Additional Features
+- **Smooth Scroll Links:** All `a[href^="#"]` use Lenis scrollTo
+- **Stagger Lines:** `.stagger-lines` > `.stagger-line` for text blocks
+- **Counter Animations:** `[data-counter]` with prefix/suffix support
+
+#### 9. Accessibility
+- **Reduced Motion:** Full `prefers-reduced-motion` support
+- **Fallback:** All elements immediately visible, Lenis disabled
+- **Check:** `window.matchMedia('(prefers-reduced-motion: reduce)').matches`
+
+#### 10. Performance & Lifecycle
+- **ScrollTrigger Cleanup:** `ScrollTrigger.getAll().forEach(trigger => trigger.kill())`
+- **View Transitions:** Reinitialize on `astro:page-load`
+- **Resize Handling:** Debounced `ScrollTrigger.refresh()` (250ms)
+- **RAF Wrapper:** Ensures DOM ready before animation init
+
+### Files Modified
+```
+src/layouts/SiteLayout.astro - Complete GSAP animation system (~660 lines)
+```
+
+### Usage Examples
+
+```html
+<!-- Text Split Animation -->
+<h1>
+  <span class="title-word" data-split-text>
+    <span class="title-char">H</span>
+    <span class="title-char">e</span>
+    <span class="title-char">l</span>
+    <span class="title-char">l</span>
+    <span class="title-char">o</span>
+  </span>
+</h1>
+
+<!-- Parallax Element -->
+<div data-speed="0.5">Moves at half scroll speed</div>
+
+<!-- Section Reveal -->
+<section class="reveal-section">
+  <div class="reveal-item">Child 1</div>
+  <div class="reveal-item">Child 2</div>
+</section>
+
+<!-- Image Reveal -->
+<img class="reveal-image" data-reveal-type="clip" src="..." />
+
+<!-- Magnetic Button -->
+<button class="btn-primary magnetic" data-magnetic-strength="0.4">Click</button>
+
+<!-- Counter -->
+<span data-counter="150" data-counter-suffix="+">0</span>
+```
+
+### Design Decisions
+- **Dramatic Easing:** `power4.out` creates impactful reveals without being jarring
+- **Stagger Timing:** Fast character stagger (0.03s) for readability, slower section stagger
+- **Parallax Depth:** Speed values < 1 move slower (background), > 1 move faster (foreground)
+- **Clip-Path Reveals:** More elegant than simple opacity for hero images
+- **Magnetic Subtlety:** 0.2-0.3 strength prevents disorienting movement
+
+### Next Steps
+- [ ] Add `.title-char` markup to additional page titles (booking, artists, etc.)
+- [ ] Apply `.reveal-section` classes to main content sections
+- [ ] Test horizontal scroll pinning on process section
+- [ ] Consider adding scroll progress indicator
+- [ ] Test animations on mobile Safari (known GSAP quirks)
+
+---
+
+## 2026-01-04 - Booking Page Redesign: Single-Column Intimate Flow
+
+### Changes Made
+
+#### 1. Layout Transformation
+- **File:** `/src/pages/booking.astro`
+- **Transformed from:** Dense multi-column grid layout (4-col sidebar, 8-col content)
+- **Transformed to:** Single-column centered flow with max-width of 40rem (640px)
+
+#### 2. Hero Section Overhaul
+- **Title:** Now uses `--text-display-lg` for dramatically large serif italic typography
+- **Structure:** Two-line "Begin Your / Journey" with reveal animations
+- **Subtitle:** Cleaner, more prominent positioning below title
+- **Removed:** Breadcrumb, GridBackground, ScrollIndicator components
+- **Layout:** Centered with form content for seamless flow
+
+#### 3. Form Section Redesign
+- **Section Numbers:** Prominent `[01]`, `[02]`, `[03]`, `[04]`, `[05]` format with `text-sage/60`
+- **Section Titles:** Large serif italic (`text-3xl md:text-4xl font-display italic`)
+- **Vertical Spacing:** Increased to `py-24` for massive breathing room between sections
+- **Field Spacing:** Increased to `space-y-10` within sections
+- **Single Column:** Removed all grid layouts within form sections
+
+#### 4. Color Palette Update
+- **Accent Colors:** All `terracotta`, `burnt-orange` replaced with `sage` palette
+- **Focus States:** Form inputs now focus to `--color-sage` border
+- **Checkboxes:** Now use `bg-sage` and `border-sage` when checked
+- **Progress Bar:** Uses `bg-sage` fill
+- **Upload Zone:** Hover states use `border-sage/50`
+- **Success Modal:** Ring and checkmarks now use `text-sage`
+
+#### 5. Progress Indicator Simplification
+- **Changed from:** Step-based indicator bar with dots and labels
+- **Changed to:** Simple scroll-based progress bar (fixed at top, 1px height)
+- **Behavior:** Fills based on scroll position for organic journey feel
+
+#### 6. Form Input Styling
+- **New `.booking-input` class:** Clean underline style with:
+  - Transparent background
+  - Bottom border only (1px solid rgba(255,255,255,0.2))
+  - Sage focus state
+  - Inter font family
+  - 1rem padding vertical
+- **Labels:** Use `.section-label` class for consistent mono styling
+
+#### 7. Submit Button
+- **Uses:** `.btn-primary` class from global.css
+- **Styling:** Full-width, centered, with arrow icon
+- **States:** Proper disabled and loading states preserved
+
+#### 8. Success Modal
+- **Colors:** All terracotta references updated to sage
+- **Ring:** Uses `text-sage/20` background and `text-sage` progress
+- **Next Steps Icons:** Use `bg-sage/20` and `text-sage`
+- **Buttons:** Use `.btn-primary` and `.btn-secondary` classes
+
+#### 9. Removed Components/Elements
+- `GridBackground` component
+- `ScrollIndicator` component
+- `Breadcrumb` component
+- Complex progress indicator with dots and step labels
+- Multi-column grid layouts
+- File type badges in upload zone
+
+#### 10. Animation Updates
+- **Hero:** Title lines reveal with stagger, subtitle fades in
+- **Sections:** Simple fade-up on scroll trigger
+- **Progress:** Scroll-based fill with requestAnimationFrame throttling
+
+### Files Modified
+```
+src/pages/booking.astro - Complete page redesign
+```
+
+### Design Philosophy
+- **Intimate Journey:** Form now feels like a personal conversation, not a bureaucratic process
+- **Breathing Room:** Generous whitespace lets each section stand on its own
+- **Typography-First:** Large serif titles guide the user through the journey
+- **Simplified Interactions:** Removed visual clutter to focus on content
+- **Mobile-First:** Single column works identically on all screen sizes
+
+### Next Steps
+- [ ] Test form submission end-to-end
+- [ ] Verify calendar picker integration still works
+- [ ] Test file upload functionality
+- [ ] Check GSAP animations on page load and scroll
+- [ ] Validate accessibility of new form layout
+
+---
+
+## 2026-01-04 - Homepage Hero Section Dramatic Redesign
+
+### Changes Made
+
+#### 1. Hero Section Layout & Typography (`/src/pages/index.astro` lines 23-109)
+- **Section height:** Increased from `min-h-screen` to `min-h-[110vh]` for more dramatic presence
+- **Typography scale:** Title now uses `var(--text-display-xl)` (clamp 4rem-15vw-12rem) instead of fixed text-7xl/8xl/9xl classes
+- **Leading:** Tightened from `leading-[0.85]` to `leading-[0.8]` for more impactful display
+- **Tracking:** Changed from `tracking-tight` to `tracking-tighter` for denser, bolder feel
+
+#### 2. Text Animation Preparation
+- **Character-level markup:** Title text now wrapped in individual `<span class="title-char">` elements for GSAP SplitText-style animations
+- **Data attributes:** Added `data-split-text` on `.title-word` spans for JS targeting
+- **Word-level classes:** Both "United" and "Tattoo" wrapped in `.title-word` spans for animation grouping
+
+#### 3. Parallax Layer System
+- **Grid Background:** Added `data-speed="0.3"` attribute for subtle parallax
+- **Dove container:** Added `data-speed="0.5"` on outer container
+- **Dove image layer:** Added `data-speed="0.7"` and `data-parallax-layer="dove"` for deeper parallax effect
+- **Image scaling:** Dove image now has `scale-110` class for parallax overflow room
+
+#### 4. Color Palette Migration (Sage & Stone)
+- **Label text:** Changed from `text-neutral-300` to `color: var(--color-sage)`
+- **"Tattoo" text:** Updated from `text-neutral-500` to `color: var(--color-sage-light)`
+- **Info bar border:** Changed from `--color-burnt-orange` to `--color-sage-dark`
+- **Info bar labels:** Updated from `--color-moss` to `--color-sage`
+- **Desktop CTA:** Border and text now use sage-dark/stone colors
+- **Mobile CTA:** Background changed from burnt-orange to sage; accent from burnt-dark to sage-dark
+
+#### 5. Atmospheric Depth Overlays
+- **Added second overlay:** New `bg-gradient-to-br from-transparent via-transparent to-bg-deep/50` for diagonal depth
+- **Deeper dove gradients:** Enhanced with additional `bg-gradient-to-t from-bg-deep/90 via-transparent to-bg-deep/40` layer
+- **Vignette intensity:** Adjusted from `to-bg-deep/60` to `to-bg-deep/70`
+
+#### 6. Spacing & Layout Adjustments
+- **Top padding:** Increased from `pt-24 lg:pt-32` to `pt-32 lg:pt-40`
+- **Bottom padding:** Increased from `pb-16 md:pb-24 lg:pb-32` to `pb-20 md:pb-28 lg:pb-36`
+- **Content column:** Widened from `col-span-7` to `col-span-8` (dove space reduced to col-span-4)
+- **Label margin:** Increased from `mb-6` to `mb-8 lg:mb-10`
+- **Title margin:** Increased from `mb-8 md:mb-10` to `mb-12 md:mb-16`
+- **Tagline margin:** Increased from `mb-10` to `mb-14 lg:mb-16`
+- **Info bar gaps:** Widened from `gap-8` to `gap-10 lg:gap-12`
+
+#### 7. CSS Additions (lines 259-288)
+- **Hero CTA hover:** New styles with sage background, shadow `rgba(156, 175, 148, 0.25)`
+- **Title character styles:** `.title-char` display inline-block with cubic-bezier transition
+- **Character wave animation:** Staggered `charWave` keyframes on `.title-word:hover`
+
+#### 8. Scroll Indicator
+- **Custom CSS variable:** Added `style="--scroll-accent: var(--color-sage);"` for sage-colored indicator
+
+### Files Modified
+```
+src/pages/index.astro  - Hero section complete redesign (lines 23-109, 259-288)
+```
+
+### Design Decisions
+- **Dramatic scale:** The display-xl typography creates immediate visual impact; visitors see "United Tattoo" as the dominant element
+- **Character animation prep:** Individual character spans allow for GSAP SplitText-style reveals, wave effects, or stagger animations without additional plugins
+- **Parallax depth:** Multiple `data-speed` attributes create a layered 3D effect as users scroll
+- **Sage color migration:** All warm tones (burnt-orange, terracotta, moss) replaced with cool sage palette for sophisticated, modern feel
+- **Generous whitespace:** Extra-tall hero (110vh) and increased padding give typography room to breathe
+
+### Next Steps
+- [ ] Add GSAP character-level stagger animation in SiteLayout.astro targeting `.title-char` elements
+- [ ] Implement scroll-driven parallax using `data-speed` attributes
+- [ ] Test responsive typography at all breakpoints
+- [ ] Verify ScrollIndicator accepts `--scroll-accent` custom property
+
+---
+
 ## 2026-01-04 - Header & Footer Sage Color Palette Update
 
 ### Changes Made
@@ -2778,3 +3227,129 @@ src/components/EditorialFooter.astro - Added "Ready to Book" block, improved con
 - [ ] Configure actual Nextcloud credentials in production environment.
 - [ ] Update all artist MDX files with their specific schedules and calendar IDs.
 - [ ] Monitor cache performance in production.
+
+---
+
+## Hero Section Redesign - January 2026
+
+### Changes Made
+Complete redesign of the homepage hero section (`src/pages/index.astro`).
+
+**Problems with previous design:**
+- Character-split spans for GSAP animation created visible gaps between letters
+- Typography felt messy and disconnected
+- Layout was cluttered with competing visual elements
+- Dove image competed for attention with title
+
+**New design - Editorial Raw aesthetic:**
+1. **Typography** - Clean Instrument Serif at 18vw scaling, no character splits
+   - "United" in white
+   - "Tattoo" in sage italic (`--color-sage`)
+2. **Layout** - Vertical hierarchy: location pill → title → tagline → info bar
+3. **Info bar** - Bottom-aligned with Open hours, Artists count, Style types + CTA
+4. **Dove** - Reduced to 7% opacity atmospheric texture in bottom right
+5. **Animations** - Simplified GSAP: title reveal + parallax on scroll
+
+### Files Modified
+- `src/pages/index.astro` - Hero HTML structure and CSS completely rewritten
+
+### Next Steps
+- [ ] Test on mobile viewports
+- [ ] Verify GSAP animations work smoothly
+- [ ] Consider adding subtle hover interactions on title
+
+### Methodology Section Redesign
+
+**Changes:**
+- Redesigned from 4-column grid to editorial timeline layout
+- Added SectionSidebar wrapper for sticky scrolling (matches Artists section)
+- Large outline numbers (text-stroke effect) for each step
+- Cleaner typography hierarchy: step number → italic title → description
+- Removed redundant bottom CTA (footer already has booking CTA)
+
+**New structure:**
+- Sticky left sidebar: "Section 02 / The Process"
+- Header block: "From idea to ink" title + subtitle
+- 4 steps with large outline numbers and content
+
+
+---
+
+## Methodology Section Typography & Background Update - January 2026
+
+### Changes Made
+Updated the methodology/process section (`src/pages/index.astro`) with improved typography and background images.
+
+**User feedback:**
+- Previous font style (with giant numbers) was preferred over simplified version
+- Requested background images from artist portfolios
+
+**Updates:**
+1. **Typography restored** - Giant Instrument Serif italic numbers returned:
+   - `text-[8rem] md:text-[10rem] lg:text-[12rem]`
+   - Sage colored at 40% opacity for visibility
+   - Step titles increased to `text-3xl md:text-4xl lg:text-5xl`
+   - Header title increased to `text-5xl md:text-6xl lg:text-7xl`
+
+2. **Background images added** - Flash tattoo designs from artist portfolios:
+   - Step 01 Consultation: Monstera (botanical/organic conversation)
+   - Step 02 Design: Bonsai (careful crafting)
+   - Step 03 Session: Beetle (precision)
+   - Step 04 Aftercare: Cactus (endurance)
+   - Images at 4% opacity (8% on hover), grayscale, positioned right
+   - Alternating sides (mirrored on even indices)
+
+3. **Layout** - Two-column grid on desktop:
+   - Giant number takes 4 columns (lg:col-span-4)
+   - Content takes 8 columns (lg:col-span-8)
+   - Increased vertical padding (py-16 md:py-20)
+
+### Files Modified
+- `src/pages/index.astro` - Process section markup
+
+### Next Steps
+- [ ] Test background image loading performance
+- [ ] Verify images display correctly on mobile
+- [ ] Consider adjusting opacity on different screen sizes
+
+---
+
+## Navigation Rework - January 2026
+
+### Changes Made
+Complete navigation overhaul with minimal design direction (`src/components/HeaderNav.astro`).
+
+**Desktop Navigation:**
+- Removed dove icon from nav
+- Removed "Fountain, Colorado" location text
+- Changed "Book a Session" button to simple "Book" text link
+- Simplified to: `United Tattoo` (left) | `Artists Process Book` (right)
+- Lighter background: `bg-neutral-950/80` with `backdrop-blur-sm`
+- Subtle underline hover effect on links
+- More compact padding
+
+**Mobile Navigation:**
+- Replaced "Menu"/"Close" text with hamburger icon (2 lines)
+- Hamburger animates to X when open (CSS transforms)
+- Removed noise texture from overlay
+- Cleaner overlay: `bg-neutral-950/95`
+- Smaller link text (text-2xl vs text-4xl)
+- Removed footer address section from menu
+- Current page indicator (white text for active page)
+
+**Accessibility:**
+- Added Escape key to close mobile menu
+- Click outside menu to close
+- `aria-expanded` attribute on menu button
+- Proper focus management
+
+**Technical Notes:**
+- Z-index: Nav z-[60] normal, z-[110] when menu open; overlay z-[100]
+- Maintains Astro View Transitions compatibility (`astro:page-load`)
+- Responsive breakpoint at `md` (768px)
+
+### Files Modified
+- `src/components/HeaderNav.astro` - Complete rewrite
+
+### Corrections
+- Updated CLAUDE.md note: Mobile nav IS functional (was marked as non-functional)

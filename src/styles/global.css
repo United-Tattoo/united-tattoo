@@ -136,6 +136,7 @@
         font-size: var(--text-label);
         text-transform: uppercase;
         letter-spacing: 0.15em;
+        border-radius: 8px;
         transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
@@ -156,6 +157,7 @@
         font-size: var(--text-label);
         text-transform: uppercase;
         letter-spacing: 0.15em;
+        border-radius: 8px;
         transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
     }
 
@@ -188,7 +190,22 @@
 
     .horizontal-scroll-item {
         flex: 0 0 100vw;
+        width: 100vw;
+        min-width: 100vw;
         scroll-snap-align: start;
+    }
+
+    /* Fallback visibility - ensures content visible if JS animations fail */
+    /* GSAP's gsap.set() will override these when animations initialize properly */
+    .artist-row,
+    .artists-title,
+    .process-step,
+    .process-title,
+    .process-num,
+    .process-content,
+    .hero-reveal,
+    .hero-cta {
+        opacity: 1;
     }
 
     /* Prose styling for MDX content */

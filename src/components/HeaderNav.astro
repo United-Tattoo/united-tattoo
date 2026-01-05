@@ -1,8 +1,5 @@
 ---
-// Editorial-style navigation with clean typography
-import { ADDRESS_LINE_1, ADDRESS_LINE_2 } from '../consts';
-import DoveMark from './DoveMark.astro';
-
+// Minimal navigation - clean and refined
 interface Props {
   currentPath?: string;
   hasAnnouncement?: boolean;
@@ -11,77 +8,176 @@ interface Props {
 const { currentPath = "", hasAnnouncement = false } = Astro.props;
 const isArtistsPage = currentPath.startsWith("/artists");
 const isBookingPage = currentPath.startsWith("/booking");
+const isProcessPage = currentPath.includes("#process") || currentPath === "/#process";
+const isHomePage = currentPath === "/" || currentPath === "";
 ---
 
 <nav id="main-nav" class:list={[
-  "fixed left-0 w-full px-6 py-4 flex justify-between items-center z-[60] bg-black/60 backdrop-blur-md border-b border-white/5 transition-all duration-300",
+  "fixed left-0 w-full px-5 md:px-8 py-4 flex justify-between items-center transition-all duration-300",
+  "bg-neutral-950/80 backdrop-blur-sm border-b border-white/[0.04] z-[60]",
   hasAnnouncement ? "top-8" : "top-0"
 ]}>
-  <div class="flex items-center gap-4 relative z-[110]">
-    <a href="/" class="font-display text-3xl md:text-4xl font-normal tracking-tighter leading-none hover:text-sage transition-colors italic">
-      United Tattoo
-    </a>
-    <span class="hidden lg:inline-flex items-center text-neutral-500/70">
-      <DoveMark class="w-6 h-6" />
-    </span>
-    <span class="hidden lg:block text-neutral-600 mx-2">·</span>
-    <span class="hidden lg:block text-xs text-neutral-500 tracking-wide">
-      Fountain, Colorado
-    </span>
-  </div>
+  <!-- Logo -->
+  <a href="/" class="nav-logo relative z-[110] font-display text-xl md:text-2xl tracking-tight text-white hover:text-sage transition-colors duration-300">
+    United Tattoo
+  </a>
 
-  <div class="hidden md:flex gap-8 items-center text-sm text-neutral-400">
+  <!-- Desktop Links -->
+  <div class="hidden md:flex items-center gap-8">
     <a
       href="/artists"
       class:list={[
-        "hover:text-sage transition-colors",
-        { "text-sage": isArtistsPage }
+        "nav-link text-[13px] tracking-wide transition-colors duration-300",
+        isArtistsPage ? "text-white" : "text-neutral-400 hover:text-white"
       ]}
     >
       Artists
     </a>
     <a
       href="/#process"
-      class="hover:text-sage transition-colors"
+      class:list={[
+        "nav-link text-[13px] tracking-wide transition-colors duration-300",
+        isProcessPage ? "text-white" : "text-neutral-400 hover:text-white"
+      ]}
     >
       Process
     </a>
     <a
       href="/booking"
       class:list={[
-        "btn-primary",
-        { "bg-sage-light": isBookingPage }
+        "nav-link text-[13px] tracking-wide transition-colors duration-300",
+        isBookingPage ? "text-white" : "text-neutral-400 hover:text-white"
       ]}
     >
-      Book a Session
+      Book
     </a>
   </div>
 
-  <button id="mobile-menu-btn" class="md:hidden text-sm text-neutral-400 hover:text-sage transition-colors uppercase tracking-widest relative z-[110]" aria-label="Toggle Menu">
-    Menu
+  <!-- Mobile Menu Button (Hamburger) -->
+  <button
+    id="mobile-menu-btn"
+    class="md:hidden relative z-[110] w-8 h-8 flex items-center justify-center group"
+    aria-label="Toggle Menu"
+    aria-expanded="false"
+  >
+    <div class="hamburger-icon">
+      <span class="hamburger-line hamburger-line-1"></span>
+      <span class="hamburger-line hamburger-line-2"></span>
+    </div>
   </button>
 </nav>
 
 <!-- Mobile Menu Overlay -->
-<div id="mobile-menu" class="fixed inset-0 z-[100] bg-neutral-950/98 backdrop-blur-xl opacity-0 pointer-events-none transition-all duration-500 flex flex-col justify-center items-center">
-
-  <div class="absolute inset-0 noise opacity-[0.05] pointer-events-none"></div>
-
-  <nav class="relative z-10 flex flex-col items-center gap-10 text-center">
-    <a href="/" class="mobile-link text-4xl font-display italic text-white/80 hover:text-sage transition-colors transform translate-y-4 opacity-0 transition-all duration-500 delay-100">Home</a>
-    <a href="/artists" class="mobile-link text-4xl font-display italic text-white/80 hover:text-sage transition-colors transform translate-y-4 opacity-0 transition-all duration-500 delay-200">Artists</a>
-    <a href="/#process" class="mobile-link text-4xl font-display italic text-white/80 hover:text-sage transition-colors transform translate-y-4 opacity-0 transition-all duration-500 delay-300">Process</a>
-    <a href="/booking" class="mobile-link text-4xl font-display italic text-white/80 hover:text-sage transition-colors transform translate-y-4 opacity-0 transition-all duration-500 delay-400">Book a Session</a>
+<div id="mobile-menu" class="fixed inset-0 z-[100] bg-neutral-950/95 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-300">
+  <nav class="h-full flex flex-col justify-center items-center gap-8">
+    <a
+      href="/"
+      class:list={[
+        "mobile-link text-2xl font-display tracking-tight transition-all duration-300 translate-y-3 opacity-0",
+        isHomePage ? "text-white" : "text-neutral-400 hover:text-white"
+      ]}
+      style="transition-delay: 50ms;"
+    >
+      Home
+    </a>
+    <a
+      href="/artists"
+      class:list={[
+        "mobile-link text-2xl font-display tracking-tight transition-all duration-300 translate-y-3 opacity-0",
+        isArtistsPage ? "text-white" : "text-neutral-400 hover:text-white"
+      ]}
+      style="transition-delay: 100ms;"
+    >
+      Artists
+    </a>
+    <a
+      href="/#process"
+      class:list={[
+        "mobile-link text-2xl font-display tracking-tight transition-all duration-300 translate-y-3 opacity-0",
+        isProcessPage ? "text-white" : "text-neutral-400 hover:text-white"
+      ]}
+      style="transition-delay: 150ms;"
+    >
+      Process
+    </a>
+    <a
+      href="/booking"
+      class:list={[
+        "mobile-link text-2xl font-display tracking-tight transition-all duration-300 translate-y-3 opacity-0",
+        isBookingPage ? "text-white" : "text-neutral-400 hover:text-white"
+      ]}
+      style="transition-delay: 200ms;"
+    >
+      Book
+    </a>
   </nav>
-
-  <div class="absolute bottom-12 text-center transform translate-y-4 opacity-0 transition-all duration-500 delay-500 mobile-footer">
-    <p class="text-neutral-500 text-xs uppercase tracking-widest mb-4">Visit Us</p>
-    <p class="text-neutral-400 text-sm font-light">
-      {ADDRESS_LINE_1}<br/>
-      {ADDRESS_LINE_2}
-    </p>
-  </div>
 </div>
+
+<style>
+  /* Hamburger Icon */
+  .hamburger-icon {
+    position: relative;
+    width: 20px;
+    height: 12px;
+  }
+
+  .hamburger-line {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: 1.5px;
+    background-color: currentColor;
+    color: #a3a3a3;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: center;
+  }
+
+  .hamburger-line-1 {
+    top: 0;
+  }
+
+  .hamburger-line-2 {
+    bottom: 0;
+  }
+
+  /* Hover state */
+  .group:hover .hamburger-line {
+    color: #fff;
+  }
+
+  /* Open state - X shape */
+  .menu-open .hamburger-line-1 {
+    top: 50%;
+    transform: translateY(-50%) rotate(45deg);
+    color: #fff;
+  }
+
+  .menu-open .hamburger-line-2 {
+    bottom: 50%;
+    transform: translateY(50%) rotate(-45deg);
+    color: #fff;
+  }
+
+  /* Nav link underline effect */
+  .nav-link {
+    position: relative;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    width: 0;
+    height: 1px;
+    background-color: currentColor;
+    transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+</style>
 
 <script>
   function initMobileMenu() {
@@ -89,75 +185,101 @@ const isBookingPage = currentPath.startsWith("/booking");
     const mobileMenu = document.getElementById('mobile-menu');
     const nav = document.getElementById('main-nav');
     const mobileLinks = document.querySelectorAll('.mobile-link');
-    const mobileFooter = document.querySelector('.mobile-footer');
     let isMenuOpen = false;
 
-    if (!menuBtn || !mobileMenu) return;
+    if (!menuBtn || !mobileMenu || !nav) return;
+
+    function openMenu() {
+      isMenuOpen = true;
+
+      // Update button state
+      menuBtn.classList.add('menu-open');
+      menuBtn.setAttribute('aria-expanded', 'true');
+
+      // Show overlay
+      mobileMenu.classList.remove('opacity-0', 'pointer-events-none');
+      mobileMenu.classList.add('opacity-100', 'pointer-events-auto');
+
+      // Animate links in
+      mobileLinks.forEach(link => {
+        link.classList.remove('translate-y-3', 'opacity-0');
+        link.classList.add('translate-y-0', 'opacity-100');
+      });
+
+      // Update nav - raise z-index and make transparent
+      nav.classList.remove('bg-neutral-950/80', 'border-white/[0.04]', 'z-[60]');
+      nav.classList.add('bg-transparent', 'border-transparent', 'z-[110]');
+
+      // Lock scroll
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeMenu() {
+      isMenuOpen = false;
+
+      // Update button state
+      menuBtn.classList.remove('menu-open');
+      menuBtn.setAttribute('aria-expanded', 'false');
+
+      // Hide overlay
+      mobileMenu.classList.add('opacity-0', 'pointer-events-none');
+      mobileMenu.classList.remove('opacity-100', 'pointer-events-auto');
+
+      // Reset link positions
+      mobileLinks.forEach(link => {
+        link.classList.add('translate-y-3', 'opacity-0');
+        link.classList.remove('translate-y-0', 'opacity-100');
+      });
+
+      // Restore nav background and z-index (delayed)
+      setTimeout(() => {
+        if (!isMenuOpen) {
+          nav.classList.add('bg-neutral-950/80', 'border-white/[0.04]', 'z-[60]');
+          nav.classList.remove('bg-transparent', 'border-transparent', 'z-[110]');
+        }
+      }, 150);
+
+      // Unlock scroll
+      document.body.style.overflow = '';
+    }
 
     function toggleMenu() {
-      isMenuOpen = !isMenuOpen;
-
       if (isMenuOpen) {
-        // Open menu
-        mobileMenu?.classList.remove('opacity-0', 'pointer-events-none');
-        mobileMenu?.classList.add('opacity-100', 'pointer-events-auto');
-
-        // Animate links
-        mobileLinks.forEach(link => {
-          link.classList.remove('translate-y-4', 'opacity-0');
-        });
-        mobileFooter?.classList.remove('translate-y-4', 'opacity-0');
-
-        if (menuBtn) {
-          menuBtn.textContent = 'Close';
-          menuBtn.classList.add('text-white');
-        }
-
-        // Ensure nav stays on top and blends
-        nav?.classList.remove('bg-black/60', 'backdrop-blur-md', 'border-white/5', 'z-[60]');
-        nav?.classList.add('border-transparent', 'z-[110]');
-
-        document.body.style.overflow = 'hidden';
+        closeMenu();
       } else {
-        // Close menu
-        mobileMenu?.classList.add('opacity-0', 'pointer-events-none');
-        mobileMenu?.classList.remove('opacity-100', 'pointer-events-auto');
-
-        // Reset animations
-        mobileLinks.forEach(link => {
-          link.classList.add('translate-y-4', 'opacity-0');
-        });
-        mobileFooter?.classList.add('translate-y-4', 'opacity-0');
-
-        if (menuBtn) {
-          menuBtn.textContent = 'Menu';
-          menuBtn.classList.remove('text-white');
-        }
-
-        // Restore nav styles
-        setTimeout(() => {
-          nav?.classList.add('bg-black/60', 'backdrop-blur-md', 'border-white/5', 'z-[60]');
-          nav?.classList.remove('border-transparent', 'z-[110]');
-        }, 200);
-
-        document.body.style.overflow = '';
+        openMenu();
       }
     }
 
+    // Button click
     menuBtn.addEventListener('click', (e) => {
       e.stopPropagation();
       toggleMenu();
     });
 
-    // Close menu when clicking a link
+    // Close on link click
     mobileLinks.forEach(link => {
       link.addEventListener('click', () => {
-        if (isMenuOpen) toggleMenu();
+        if (isMenuOpen) closeMenu();
       });
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && isMenuOpen) {
+        closeMenu();
+      }
+    });
+
+    // Close on click outside (on overlay background)
+    mobileMenu.addEventListener('click', (e) => {
+      if (e.target === mobileMenu) {
+        closeMenu();
+      }
     });
   }
 
-  // Run on load and on Astro page swaps (if View Transitions used later)
+  // Initialize on page load and Astro page transitions
   document.addEventListener('DOMContentLoaded', initMobileMenu);
   document.addEventListener('astro:page-load', initMobileMenu);
 </script>

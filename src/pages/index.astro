@@ -2,7 +2,6 @@
 import SiteLayout from '../layouts/SiteLayout.astro';
 import { SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
-import EditorialFooter from '../components/EditorialFooter.astro';
 import SectionSidebar from '../components/SectionSidebar.astro';
 import FloatingCTA from '../components/FloatingCTA.astro';
 import ScrollIndicator from '../components/ScrollIndicator.astro';
@@ -14,98 +13,92 @@ export const prerender = true;
 const artists = await getCollection('artists');
 ---
 
-<SiteLayout title={SITE_DESCRIPTION} removeMainPadding={true} hideFooter={true}>
+<SiteLayout title={SITE_DESCRIPTION} removeMainPadding={true} hideNoise={true}>
 
   <FloatingCTA href="/booking" label="Book a session" />
 
   <div class="relative main-content-wrapper">
 
-  <!-- Hero Section: Dramatic Immersive Experience -->
-  <section class="hero-section min-h-[110vh] relative flex flex-col overflow-hidden" data-scroll-section>
-    <!-- Grid Background with parallax -->
-    <GridBackground opacity={40} class="hero-grid" data-speed="0.3" />
+  <!-- Hero Section: Editorial Raw -->
+  <section class="hero-section min-h-svh relative flex flex-col" data-scroll-section>
 
-    <!-- Dove - Positioned Right with Parallax Layers -->
-    <div class="absolute right-0 top-0 bottom-0 w-full lg:w-3/4 z-0 pointer-events-none overflow-hidden" data-speed="0.5">
-      <div class="absolute inset-0 mix-blend-screen opacity-60 hero-dove-layer" data-speed="0.7" data-parallax-layer="dove">
-        <img src="/dove.png" alt="" class="w-full h-full object-contain object-right grayscale contrast-125 scale-110" />
-      </div>
-      <!-- Gradient fade to left - deeper, more dramatic -->
-      <div class="absolute inset-0 bg-gradient-to-r from-bg-deep via-bg-deep/80 to-transparent"></div>
-      <!-- Additional depth layer -->
-      <div class="absolute inset-0 bg-gradient-to-t from-bg-deep/90 via-transparent to-bg-deep/40"></div>
+    <!-- Subtle grid texture -->
+    <div class="absolute inset-0 hero-grid opacity-[0.03] pointer-events-none" data-speed="0.3">
+      <div class="absolute inset-0" style="background-image: linear-gradient(rgba(255,255,255,0.1) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.1) 1px, transparent 1px); background-size: 80px 80px;"></div>
     </div>
 
-    <!-- Atmospheric overlays for depth -->
-    <div class="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-bg-deep via-transparent to-bg-deep/70"></div>
-    <div class="absolute inset-0 z-[2] pointer-events-none bg-gradient-to-br from-transparent via-transparent to-bg-deep/50"></div>
+    <!-- Dove as atmospheric texture - bottom right, subtle -->
+    <div class="absolute bottom-0 right-0 w-[60vw] h-[70vh] pointer-events-none overflow-hidden hero-dove-layer" data-speed="0.5">
+      <img src="/dove.png" alt="" class="absolute bottom-0 right-0 w-full h-full object-contain object-right-bottom opacity-[0.07] grayscale" />
+    </div>
 
-    <!-- Hero Content Grid -->
-    <div class="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12 pt-32 lg:pt-40">
-      <!-- Left Content Column -->
-      <div class="col-span-1 lg:col-span-8 flex flex-col justify-end px-6 md:px-12 lg:px-20 pb-20 md:pb-28 lg:pb-36">
-        <!-- Label -->
-        <div class="hero-reveal mb-8 lg:mb-10">
-          <span class="font-mono text-xs uppercase tracking-[0.25em] font-medium" style="color: var(--color-sage);">Custom · Flash · Freedom</span>
+    <!-- Main content wrapper -->
+    <div class="relative z-10 flex-1 flex flex-col">
+
+      <!-- Top bar - location pill -->
+      <div class="hero-reveal px-6 md:px-10 lg:px-16 pt-32 lg:pt-40">
+        <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full border border-white/10 bg-white/[0.02]">
+          <span class="w-2 h-2 rounded-full bg-sage animate-pulse"></span>
+          <span class="font-mono text-xs uppercase tracking-widest text-neutral-400">Fountain, Colorado</span>
         </div>
+      </div>
 
-        <!-- Title - Dramatic Scale with Character Animation Ready -->
-        <h1 class="hero-title leading-[0.8] font-normal tracking-tighter uppercase mb-12 md:mb-16" style="font-size: var(--text-display-xl);">
+      <!-- Title block - the main event -->
+      <div class="flex-1 flex flex-col justify-center px-6 md:px-10 lg:px-16 py-12 lg:py-20">
+        <h1 class="hero-title">
           <span class="hero-title-line block overflow-hidden">
-            <span class="title-word inline-block text-white" data-split-text>
-              <span class="title-char">U</span><span class="title-char">n</span><span class="title-char">i</span><span class="title-char">t</span><span class="title-char">e</span><span class="title-char">d</span>
-            </span>
+            <span class="title-word" data-split-text>United</span>
           </span>
-          <span class="hero-title-line block overflow-hidden mt-[-0.05em]">
-            <span class="title-word italic font-light inline-block" data-split-text style="color: var(--color-sage-light);">
-              <span class="title-char">T</span><span class="title-char">a</span><span class="title-char">t</span><span class="title-char">t</span><span class="title-char">o</span><span class="title-char">o</span>
-            </span>
+          <span class="hero-title-line block overflow-hidden">
+            <span class="title-word title-word--italic" data-split-text>Tattoo</span>
           </span>
         </h1>
 
-        <!-- Tagline -->
-        <p class="hero-reveal text-neutral-400 text-lg md:text-xl lg:text-2xl max-w-2xl leading-relaxed font-light mb-14 lg:mb-16">
-          A collective dedicated to the art of release. Where the timeless torch of tradition meets the modern expression of self.
+        <!-- Tagline - tucked under title -->
+        <p class="hero-reveal hero-tagline mt-8 lg:mt-12 max-w-md text-neutral-500 text-base lg:text-lg leading-relaxed">
+          A collective dedicated to the art of permanent expression.
         </p>
+      </div>
 
-        <!-- Hero Info Bar -->
-        <div class="hero-reveal flex flex-wrap items-center gap-10 lg:gap-12 pt-8 border-t" style="border-color: var(--color-sage-dark);">
-          <div>
-            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-2" style="color: var(--color-sage);">Location</span>
-            <span class="font-mono text-sm text-white">Fountain, CO</span>
-          </div>
-          <div>
-            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-2" style="color: var(--color-sage);">Hours</span>
-            <span class="font-mono text-sm text-white">Sun–Sat · 10am–8pm</span>
-          </div>
-          <div>
-            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-2" style="color: var(--color-sage);">Artists</span>
-            <span class="font-mono text-sm text-white">{artists.length} in residence</span>
-          </div>
-          <div class="hidden lg:block ml-auto">
-             <a href="/booking" class="hero-cta px-8 py-4 border transition-all duration-500 font-mono text-xs uppercase tracking-widest hover:translate-y-[-2px]" style="border-color: var(--color-sage-dark); color: var(--color-stone);">
-               Book Consultation
-             </a>
-          </div>
-        </div>
+      <!-- Bottom bar - info + CTA -->
+      <div class="hero-reveal px-6 md:px-10 lg:px-16 pb-8 lg:pb-12">
+        <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 lg:gap-16 pt-8 border-t border-white/10">
 
-        <!-- Mobile CTA -->
-        <div class="lg:hidden mt-12">
-          <a href="/booking" class="hero-cta group block w-full py-5 text-center font-mono text-sm uppercase tracking-[0.15em] transition-all duration-500 shadow-lg" style="background-color: var(--color-sage); color: var(--color-bg-deep);">
-            <span class="flex items-center justify-center gap-3">
-              <span class="group-hover:translate-x-1 transition-transform duration-300">Book a session</span>
-              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs transition-colors" style="background-color: var(--color-sage-dark); color: white;">→</span>
+          <!-- Info clusters -->
+          <div class="flex flex-wrap gap-x-12 gap-y-6">
+            <div class="hero-info-block">
+              <span class="hero-info-label">Open</span>
+              <span class="hero-info-value">7 days · 10am–8pm</span>
+            </div>
+            <div class="hero-info-block">
+              <span class="hero-info-label">Artists</span>
+              <span class="hero-info-value">{artists.length} in residence</span>
+            </div>
+            <div class="hero-info-block">
+              <span class="hero-info-label">Style</span>
+              <span class="hero-info-value">Custom · Flash · Cover-ups</span>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <a href="/booking" class="hero-cta group inline-flex items-center gap-4">
+            <span class="hero-cta-text">Book a consultation</span>
+            <span class="hero-cta-arrow">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
             </span>
           </a>
         </div>
       </div>
 
-      <!-- Right Column - Empty space for dove -->
-      <div class="hidden lg:block col-span-4"></div>
     </div>
 
-    <!-- Scroll Indicator with sage accent -->
-    <ScrollIndicator class="hero-reveal" style="--scroll-accent: var(--color-sage);" />
+    <!-- Scroll hint -->
+    <div class="hero-reveal absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-neutral-600">
+      <span class="font-mono text-[10px] uppercase tracking-[0.3em]">Scroll</span>
+      <div class="w-px h-8 bg-gradient-to-b from-neutral-600 to-transparent"></div>
+    </div>
   </section>
 
   <!-- Artists Section: The Index -->
@@ -132,12 +125,12 @@ const artists = await getCollection('artists');
                 <span class="font-mono text-sm text-neutral-700 group-hover:text-white transition-colors">
                   {(index + 1).toString().padStart(2, '0')}
                 </span>
-                
+
                 <!-- Mobile Avatar -->
-                <img 
-                  src={artist.data.portrait} 
-                  alt="" 
-                  class="w-12 h-12 rounded-full object-cover lg:hidden border border-white/10" 
+                <img
+                  src={artist.data.portrait}
+                  alt=""
+                  class="w-12 h-12 rounded-full object-cover lg:hidden border border-white/10"
                 />
 
                 <h3 class="text-2xl md:text-3xl lg:text-4xl font-normal font-display italic text-white group-hover:translate-x-2 transition-transform duration-300">
@@ -147,13 +140,13 @@ const artists = await getCollection('artists');
 
               <div class="flex items-center justify-between w-full md:w-auto gap-6 md:gap-10">
                 <div class="flex flex-col">
-                  <span class="font-mono text-xs uppercase tracking-[0.2em] mb-1" style="color: var(--color-moss);">Specialty</span>
+                  <span class="font-mono text-xs uppercase tracking-[0.2em] mb-1" style="color: var(--color-sage);">Specialty</span>
                   <span class="font-mono text-sm text-neutral-300">
                     {artist.data.specialties ? artist.data.specialties[0] : 'Custom'}
                   </span>
                 </div>
 
-                <span class="w-9 h-9 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-300" style="background-color: var(--color-terracotta);">
+                <span class="w-9 h-9 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-300" style="background-color: var(--color-sage);">
                   ↗
                 </span>
               </div>
@@ -173,77 +166,64 @@ const artists = await getCollection('artists');
     </SectionSidebar>
   </section>
 
-  <!-- Process Section: The Methodology - Horizontal Scroll Experience -->
-  <section id="process" class="process-section relative z-20 border-t border-white/10 overflow-hidden" data-scroll-section data-horizontal-scroll>
-    <!-- Section Header -->
-    <div class="px-6 md:px-12 lg:px-16 py-12 md:py-16 border-b border-white/5">
-      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
-        <div>
-          <span class="section-label block mb-4">Section 02</span>
-          <h2 class="process-title font-display text-4xl md:text-5xl lg:text-6xl italic text-white">Methodology</h2>
-        </div>
-        <p class="font-mono text-sm text-neutral-500 max-w-xs">From first idea to healed artwork—our proven process.</p>
+  <!-- Process Section: Editorial Timeline with Sticky Sidebar -->
+  <section id="process" class="process-section relative z-20 border-t border-white/10" data-scroll-section>
+    <SectionSidebar
+      sectionNum="Section 02"
+      label="The Process"
+      description="Four steps from concept to healed artwork."
+    >
+      <!-- Section Header -->
+      <div class="process-header-block px-6 md:px-8 py-16 lg:py-24 border-b border-white/10">
+        <h2 class="process-title font-display text-5xl md:text-6xl lg:text-7xl italic text-white mb-6">
+          From idea to ink
+        </h2>
+        <p class="font-mono text-sm text-neutral-400 max-w-lg leading-relaxed">
+          Every piece begins with a conversation. Here's how we bring your vision to life.
+        </p>
       </div>
-    </div>
 
-    <!-- Horizontal Scroll Container -->
-    <div class="horizontal-scroll process-scroll" data-horizontal-container>
-      {[
-        { num: '01', title: 'Consultation', desc: 'Share your vision. We shape your idea together and match you with the right artist.', icon: 'solar:chat-line-linear' },
-        { num: '02', title: 'Design', desc: 'Your artist creates a custom piece tailored to your body and style.', icon: 'solar:pen-new-square-linear' },
-        { num: '03', title: 'Session', desc: 'Get inked in our clean, comfortable studio with experienced professionals.', icon: 'ph:needle' },
-        { num: '04', title: 'Aftercare', desc: 'We guide you through healing so your artwork stays vibrant for life.', icon: 'solar:heart-linear' }
-      ].map((step, i) => (
-        <div class="horizontal-scroll-item process-panel relative flex flex-col min-h-[70vh] md:min-h-[80vh] border-r border-white/5">
-          <!-- Panel Inner Container -->
-          <div class="flex-1 flex flex-col px-8 md:px-16 lg:px-24 py-12 md:py-16">
-            <!-- Top Row: Number + Icon -->
-            <div class="flex justify-between items-start mb-auto">
-              <span class="section-number process-num">[{step.num}]</span>
-              <iconify-icon icon={step.icon} class="text-3xl md:text-4xl opacity-40 hover:opacity-100 transition-opacity" style="color: var(--color-sage);"></iconify-icon>
-            </div>
+      <!-- Timeline Steps -->
+      <div class="process-timeline">
+        {[
+          { num: '01', title: 'Consultation', desc: 'Share your vision with us. We listen, ask questions, and help refine your concept. Then we match you with the artist whose style best fits your piece.' },
+          { num: '02', title: 'Design', desc: 'Your artist brings your idea to life on paper first. Expect revisions, collaboration, and a final design you\'re excited to wear forever.' },
+          { num: '03', title: 'Session', desc: 'The day arrives. Our studio is clean, comfortable, and calm. Your artist works with precision while you relax—or watch the magic happen.' },
+          { num: '04', title: 'Aftercare', desc: 'Healing is part of the art. We send you home with clear instructions and check in to make sure your new piece stays vibrant for life.' }
+        ].map((step, i) => (
+          <div class="process-step group relative overflow-hidden border-b border-white/10 hover:bg-white/[0.015] transition-colors duration-500">
+            <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-0 px-6 md:px-8 py-16 md:py-20">
+              <!-- Giant Number -->
+              <div class="lg:col-span-4 flex items-start">
+                <span class="process-giant-num font-display text-[8rem] md:text-[10rem] lg:text-[12rem] leading-none italic" style="color: var(--color-sage); opacity: 0.4;">
+                  {step.num}
+                </span>
+              </div>
 
-            <!-- Center/Bottom Content -->
-            <div class="process-content mt-auto max-w-md">
-              <h3 class="font-display italic text-white mb-6" style="font-size: var(--text-heading-lg);">{step.title}</h3>
-              <p class="font-mono leading-relaxed text-neutral-400" style="font-size: var(--text-body-sm);">
-                {step.desc}
-              </p>
-            </div>
-
-            <!-- Step Indicator -->
-            <div class="mt-12 pt-8 border-t border-white/5">
-              <div class="flex items-center gap-4">
-                <span class="font-mono text-xs uppercase tracking-widest text-neutral-600">Step</span>
-                <div class="flex gap-2">
-                  {[1,2,3,4].map((dot) => (
-                    <span class={`w-2 h-2 rounded-full transition-colors ${dot === i + 1 ? 'bg-sage' : 'bg-white/10'}`}></span>
-                  ))}
-                </div>
+              <!-- Content -->
+              <div class="lg:col-span-8 flex flex-col justify-center lg:pl-8">
+                <h3 class="font-display text-3xl md:text-4xl lg:text-5xl italic text-white mb-4 group-hover:text-sage-light transition-colors duration-300">
+                  {step.title}
+                </h3>
+                <p class="text-neutral-400 leading-relaxed text-base md:text-lg max-w-xl">
+                  {step.desc}
+                </p>
               </div>
             </div>
           </div>
-        </div>
-      ))}
-    </div>
-
-    <!-- Scroll Hint (Mobile) -->
-    <div class="md:hidden px-6 py-4 border-t border-white/5 flex items-center justify-center gap-2 text-neutral-500">
-      <iconify-icon icon="solar:arrow-right-linear" class="text-sm"></iconify-icon>
-      <span class="font-mono text-xs uppercase tracking-widest">Swipe to explore</span>
-    </div>
+        ))}
+      </div>
+    </SectionSidebar>
   </section>
 
 
   </div>
 
-  <EditorialFooter />
-
   <!-- Micro-interactions & Hover Styles -->
   <style>
     /* Artist name underline on hover */
     .artist-row:hover h3 {
-      background-image: linear-gradient(to right, var(--color-burnt-orange), var(--color-terracotta));
+      background-image: linear-gradient(to right, var(--color-sage), var(--color-sage-light));
       background-size: 0 2px;
       background-position: 0 100%;
       background-repeat: no-repeat;
@@ -256,80 +236,173 @@ const artists = await getCollection('artists');
       }
     }
 
-    /* Hero CTA hover effects */
-    .hero-section .hero-cta:hover {
-      background-color: var(--color-sage) !important;
-      color: var(--color-bg-deep) !important;
-      border-color: var(--color-sage) !important;
-      transform: translateY(-2px);
-      box-shadow: 0 10px 40px rgba(156, 175, 148, 0.25);
+    /* ========================================
+       HERO SECTION - Editorial Raw Design
+       ======================================== */
+
+    .hero-section {
+      background: linear-gradient(180deg, var(--color-bg-deep) 0%, #0a0a0c 100%);
     }
 
-    /* Title character animation base styles */
-    .title-char {
-      display: inline-block;
-      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    /* Hero Title - Bold editorial typography */
+    .hero-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(4rem, 18vw, 14rem);
+      line-height: 0.85;
+      letter-spacing: -0.04em;
+      color: #fff;
     }
 
-    .title-word:hover .title-char {
-      animation: charWave 0.6s ease-out forwards;
+    .title-word {
+      display: block;
+      transform-origin: left center;
     }
 
-    .title-char:nth-child(1) { animation-delay: 0s; }
-    .title-char:nth-child(2) { animation-delay: 0.05s; }
-    .title-char:nth-child(3) { animation-delay: 0.1s; }
-    .title-char:nth-child(4) { animation-delay: 0.15s; }
-    .title-char:nth-child(5) { animation-delay: 0.2s; }
-    .title-char:nth-child(6) { animation-delay: 0.25s; }
-
-    @keyframes charWave {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-8px); }
+    .title-word--italic {
+      font-style: italic;
+      color: var(--color-sage);
+      margin-top: -0.05em;
     }
 
-    /* Process horizontal scroll enhancements */
-    .process-scroll {
-      scroll-behavior: smooth;
+    /* Subtle hover effect on title */
+    .hero-title:hover .title-word {
+      transition: color 0.4s ease;
     }
 
-    .process-panel {
-      background: linear-gradient(180deg, var(--color-bg-deep) 0%, var(--color-bg-elevated) 100%);
-      transition: background 0.4s ease;
+    .hero-title:hover .title-word:not(.title-word--italic) {
+      color: var(--color-stone);
     }
 
-    .process-panel:hover {
-      background: linear-gradient(180deg, var(--color-bg-elevated) 0%, var(--color-bg-surface) 100%);
-    }
-
-    .process-panel:hover .process-num {
-      opacity: 0.8;
-      transform: translateY(-4px);
-    }
-
-    .process-num {
-      transition: opacity 0.4s ease, transform 0.4s ease;
-    }
-
-    .process-panel .process-content h3 {
-      transition: color 0.3s ease;
-    }
-
-    .process-panel:hover .process-content h3 {
+    .hero-title:hover .title-word--italic {
       color: var(--color-sage-light);
     }
 
-    /* Scroll snap for touch devices */
-    @media (hover: none) {
-      .process-scroll {
-        scroll-snap-type: x mandatory;
-      }
+    /* Info blocks */
+    .hero-info-block {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
     }
 
-    /* Desktop: larger panels with more breathing room */
-    @media (min-width: 1024px) {
-      .process-panel {
-        min-height: 85vh;
-      }
+    .hero-info-label {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.625rem;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--color-sage);
+    }
+
+    .hero-info-value {
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.8125rem;
+      color: #fff;
+    }
+
+    /* CTA Button */
+    .hero-cta {
+      padding: 1rem 1.5rem;
+      background: transparent;
+      border: 1px solid var(--color-sage-dark);
+      color: var(--color-stone);
+      font-family: 'Geist Mono', monospace;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .hero-cta-arrow {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      background: var(--color-sage-dark);
+      color: #fff;
+      transition: all 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .hero-cta:hover {
+      background: var(--color-sage);
+      border-color: var(--color-sage);
+      color: var(--color-bg-deep);
+      transform: translateY(-2px);
+    }
+
+    .hero-cta:hover .hero-cta-arrow {
+      background: var(--color-bg-deep);
+      color: var(--color-sage);
+      transform: translateX(4px);
+    }
+
+    /* Sage color utility */
+    .bg-sage {
+      background-color: var(--color-sage);
+    }
+
+    /* ========================================
+       PROCESS SECTION - Editorial Timeline
+       ======================================== */
+
+    .process-section {
+      background: linear-gradient(180deg, #0a0a0c 0%, var(--color-bg-deep) 100%);
+    }
+
+    /* Giant outline numbers */
+    .process-giant-num {
+      font-style: italic;
+      transition: all 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .process-step:hover .process-giant-num {
+      -webkit-text-stroke: 1px rgba(156, 175, 148, 0.6);
+      transform: scale(1.02);
+    }
+
+    /* Alternating layout backgrounds */
+    .process-step:nth-child(odd) {
+      background: transparent;
+    }
+
+    .process-step:nth-child(even) {
+      background: rgba(255, 255, 255, 0.01);
+    }
+
+    /* Text color utilities */
+    .text-sage {
+      color: var(--color-sage);
+    }
+
+    .text-sage-light {
+      color: var(--color-sage-light);
+    }
+
+    .group-hover\:text-sage-light:hover {
+      color: var(--color-sage-light);
+    }
+
+    /* Border color utilities */
+    .border-sage\/50 {
+      border-color: rgba(156, 175, 148, 0.5);
+    }
+
+    /* Process CTA */
+    .process-cta:hover {
+      box-shadow: 0 0 40px rgba(156, 175, 148, 0.2);
+    }
+
+    /* Background utilities */
+    .hover\:bg-sage:hover {
+      background-color: var(--color-sage);
+    }
+
+    .hover\:border-sage:hover {
+      border-color: var(--color-sage);
+    }
+
+    .hover\:text-bg-deep:hover {
+      color: var(--color-bg-deep);
     }
   </style>
 
@@ -347,209 +420,149 @@ const artists = await getCollection('artists');
       }
 
       // Set initial states for hero elements
-      gsap.set('.hero-title-line > span', { y: '100%' });
-      gsap.set('.hero-reveal', { opacity: 0, y: 30 });
-      gsap.set('.hero-cta', { opacity: 0, y: 20 });
-      gsap.set('.ingredient-item', { opacity: 0, x: -20 });
+      gsap.set('.hero-title-line .title-word', { y: '110%', opacity: 0 });
+      gsap.set('.hero-reveal', { opacity: 0, y: 20 });
+      gsap.set('.hero-cta', { opacity: 0, y: 15 });
 
-      // Parallax Mouse Effect for Hero Dove
-      const heroSection = document.querySelector('.hero-section');
-      const doveLayer = document.querySelector('.hero-dove-layer');
-      
-      if (heroSection && doveLayer) {
-        heroSection.addEventListener('mousemove', (e) => {
-          const xPos = (e.clientX / window.innerWidth - 0.5) * 20;
-          const yPos = (e.clientY / window.innerHeight - 0.5) * 20;
-          
-          gsap.to(doveLayer, {
-            x: xPos,
-            y: yPos,
-            duration: 1,
-            ease: 'power2.out'
-          });
-        });
-      }
-
-      // Hero Title Animation on Load
-      const heroTl = gsap.timeline({ delay: 0.3 });
+      // Hero Title Animation on Load - dramatic reveal
+      const heroTl = gsap.timeline({ delay: 0.2 });
 
       heroTl
-        .to('.hero-title-line > span', {
+        .to('.hero-title-line .title-word', {
           y: '0%',
-          duration: 1.2,
-          stagger: 0.15,
+          opacity: 1,
+          duration: 1.4,
+          stagger: 0.12,
           ease: 'power4.out'
         })
         .to('.hero-reveal', {
           opacity: 1,
           y: 0,
           duration: 0.8,
-          stagger: 0.1,
+          stagger: 0.08,
           ease: 'power3.out'
-        }, '-=0.8')
-        .to('.ingredient-item', {
-          opacity: 1,
-          x: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: 'power2.out'
-        }, '-=0.5')
+        }, '-=0.9')
         .to('.hero-cta', {
           opacity: 1,
           y: 0,
           duration: 0.6,
-          ease: 'power2.out'
-        }, '-=0.3');
+          ease: 'power3.out'
+        }, '-=0.5');
 
-      // Hero Parallax on Scroll
-      gsap.to('.hero-grid', {
-        yPercent: 30,
-        ease: 'none',
-        scrollTrigger: {
-          trigger: '.hero-section',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1
-        }
-      });
-
+      // Subtle parallax on scroll
       gsap.to('.hero-title', {
-        yPercent: 20,
+        yPercent: 15,
         ease: 'none',
         scrollTrigger: {
           trigger: '.hero-section',
           start: 'top top',
           end: 'bottom top',
-          scrub: 1
+          scrub: 1.5
         }
       });
 
-      // Artists Section Animations
-      gsap.set('.artist-row', { opacity: 0, y: 60 });
-      gsap.set('.artists-title', { opacity: 0, y: 40 });
+      gsap.to('.hero-dove-layer', {
+        yPercent: -10,
+        ease: 'none',
+        scrollTrigger: {
+          trigger: '.hero-section',
+          start: 'top top',
+          end: 'bottom top',
+          scrub: 1.5
+        }
+      });
 
-      gsap.to('.artists-title', {
-        opacity: 1,
-        y: 0,
+      // Artists Section Animations - using gsap.from with immediateRender: false
+      gsap.from('.artists-title', {
+        opacity: 0,
+        y: 40,
         duration: 0.8,
         ease: 'power3.out',
+        immediateRender: false,
         scrollTrigger: {
           trigger: '.artists-section',
           start: 'top 80%'
         }
       });
 
-      gsap.to('.artist-row', {
-        opacity: 1,
-        y: 0,
+      gsap.from('.artist-row', {
+        opacity: 0,
+        y: 40,
+        stagger: 0.08,
+        duration: 0.6,
+        ease: 'power3.out',
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: '.artists-list',
+          start: 'top 85%'
+        }
+      });
+
+      // Process Section Animations - using gsap.from with immediateRender: false
+      gsap.from('.process-title', {
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        ease: 'power3.out',
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: '.process-section',
+          start: 'top 80%'
+        }
+      });
+
+      gsap.from('.process-step', {
+        opacity: 0,
+        y: 60,
+        scale: 0.98,
         stagger: 0.1,
         duration: 0.8,
         ease: 'power3.out',
+        immediateRender: false,
         scrollTrigger: {
-          trigger: '.artists-list',
-          start: 'top 80%'
+          trigger: '.process-timeline',
+          start: 'top 85%'
         }
       });
 
-      // Process Section Animations - Horizontal Scroll
-      gsap.set('.process-panel', { opacity: 0, x: 100 });
-      gsap.set('.process-title', { opacity: 0, y: 40 });
-      gsap.set('.process-num', { opacity: 0, scale: 0.8 });
-      gsap.set('.process-content', { opacity: 0, y: 30 });
-
-      // Header animation
-      gsap.to('.process-title', {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '.process-section',
-          start: 'top 80%'
-        }
-      });
-
-      // Panel reveal animation
-      const processTl = gsap.timeline({
-        scrollTrigger: {
-          trigger: '.process-section',
-          start: 'top 70%'
-        }
-      });
-
-      processTl
-        .to('.process-panel', {
-          opacity: 1,
-          x: 0,
-          stagger: 0.1,
-          duration: 0.8,
-          ease: 'power3.out'
-        })
-        .to('.process-num', {
-          opacity: 0.4,
-          scale: 1,
-          stagger: 0.1,
-          duration: 0.6,
-          ease: 'back.out(1.5)'
-        }, '-=0.6')
-        .to('.process-content', {
-          opacity: 1,
-          y: 0,
-          stagger: 0.1,
-          duration: 0.6,
-          ease: 'power2.out'
-        }, '-=0.4');
-
-      // Horizontal scroll indicator - subtle X parallax on numbers
-      gsap.utils.toArray('.process-panel').forEach((panel, i) => {
-        const num = panel.querySelector('.process-num');
-        if (num) {
-          gsap.to(num, {
-            yPercent: -20,
-            ease: 'none',
-            scrollTrigger: {
-              trigger: panel,
-              start: 'top bottom',
-              end: 'bottom top',
-              scrub: 1
-            }
-          });
-        }
-      });
-
-      // Footer Animations
-      gsap.set('.footer-title', { opacity: 0, scale: 0.8 });
-      gsap.set('.footer-reveal', { opacity: 0, y: 40 });
-      gsap.set('.footer-social', { opacity: 0, scale: 0.5 });
-
-      const footerTl = gsap.timeline({
+      // Footer Animations - using gsap.from with immediateRender: false
+      gsap.from('.footer-title', {
+        opacity: 0,
+        scale: 0.8,
+        duration: 1,
+        ease: 'power4.out',
+        immediateRender: false,
         scrollTrigger: {
           trigger: '.footer-section',
           start: 'top 80%'
         }
       });
 
-      footerTl
-        .to('.footer-title', {
-          opacity: 1,
-          scale: 1,
-          duration: 1,
-          ease: 'power4.out'
-        })
-        .to('.footer-reveal', {
-          opacity: 1,
-          y: 0,
-          stagger: 0.1,
-          duration: 0.8,
-          ease: 'power3.out'
-        }, '-=0.6')
-        .to('.footer-social', {
-          opacity: 1,
-          scale: 1,
-          stagger: 0.1,
-          duration: 0.5,
-          ease: 'back.out(2)'
-        }, '-=0.4');
+      gsap.from('.footer-reveal', {
+        opacity: 0,
+        y: 40,
+        stagger: 0.1,
+        duration: 0.8,
+        ease: 'power3.out',
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: '.footer-section',
+          start: 'top 80%'
+        }
+      });
+
+      gsap.from('.footer-social', {
+        opacity: 0,
+        scale: 0.5,
+        stagger: 0.1,
+        duration: 0.5,
+        ease: 'back.out(2)',
+        immediateRender: false,
+        scrollTrigger: {
+          trigger: '.footer-section',
+          start: 'top 75%'
+        }
+      });
 
       console.log('Scroll animations initialized');
     };

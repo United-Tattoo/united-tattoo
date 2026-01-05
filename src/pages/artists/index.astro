@@ -20,12 +20,16 @@ const sortedArtists = artists.sort((a, b) => a.data.name.localeCompare(b.data.na
   removeMainPadding={true}
   hideFooter={true}
 >
-  <!-- Hero Section -->
-  <section class="artist-hero-section relative min-h-[50vh] lg:min-h-[60vh] flex flex-col justify-end px-6 md:px-12 lg:px-24 pb-24 pt-48" data-scroll-section>
-    <GridBackground opacity={20} />
-    
+  <!-- Hero Section - Dramatic Editorial -->
+  <section class="artist-hero-section relative min-h-[60vh] lg:min-h-[70vh] flex flex-col justify-end px-6 md:px-12 lg:px-24 pb-20 lg:pb-32 pt-48" data-scroll-section>
+    <GridBackground opacity={15} />
+
+    <!-- Atmospheric gradient overlays -->
+    <div class="absolute inset-0 bg-gradient-to-t from-bg-deep via-transparent to-bg-deep/50 z-[1] pointer-events-none"></div>
+    <div class="absolute inset-0 bg-gradient-to-r from-bg-deep/80 via-transparent to-transparent z-[2] pointer-events-none"></div>
+
     <div class="relative z-10 w-full">
-      <div class="artist-hero-reveal mb-8">
+      <div class="artist-hero-reveal mb-10">
         <Breadcrumb
           items={[
             { label: 'Home', href: '/' },
@@ -34,126 +38,258 @@ const sortedArtists = artists.sort((a, b) => a.data.name.localeCompare(b.data.na
         />
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-end">
         <div class="lg:col-span-8">
-          <h1 class="text-[15vw] lg:text-[12vw] leading-[0.8] font-display font-medium tracking-tighter text-white uppercase mix-blend-difference">
-            <span class="artist-hero-title-line block overflow-hidden"><span class="inline-block">The</span></span>
-            <span class="artist-hero-title-line block overflow-hidden"><span class="inline-block italic text-neutral-500">Artists</span></span>
+          <h1 class="leading-[0.85] font-display tracking-tight text-white" style="font-size: var(--text-display-lg);">
+            <span class="artist-hero-title-line block overflow-hidden">
+              <span class="inline-block font-normal">The</span>
+            </span>
+            <span class="artist-hero-title-line block overflow-hidden mt-[-0.05em]">
+              <span class="inline-block italic font-light" style="color: var(--color-sage-light);">Collective</span>
+            </span>
           </h1>
         </div>
-        
+
         <div class="lg:col-span-4 artist-hero-reveal mb-2">
-          <p class="text-neutral-400 text-lg leading-relaxed font-light border-l border-terracotta/50 pl-6 max-w-sm">
-            A collective of distinct styles and shared dedication to the craft. 
-            <span class="block mt-4 font-mono text-xs uppercase tracking-widest text-terracotta">
+          <p class="text-neutral-400 text-lg lg:text-xl leading-relaxed font-light border-l pl-6 max-w-md" style="border-color: var(--color-sage-dark);">
+            A collective of distinct styles and shared dedication to the craft.
+            <span class="block mt-6 font-mono text-xs uppercase tracking-[0.2em]" style="color: var(--color-sage);">
               {artists.length} Resident Artists
             </span>
           </p>
         </div>
       </div>
     </div>
-    
-    <ScrollIndicator class="artist-hero-reveal absolute bottom-12 right-6 lg:right-12" />
+
+    <ScrollIndicator class="artist-hero-reveal absolute bottom-8 right-6 lg:right-12" style="--scroll-accent: var(--color-sage);" />
   </section>
 
-  <!-- Artist Gallery -->
-  <section class="artist-list-section relative z-20 px-6 md:px-12 lg:px-24 pb-32" data-scroll-section>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-20 lg:gap-y-32">
-      {sortedArtists.map((artist, index) => (
-        <a href={`/artists/${artist.id}`} class="artist-card group block relative" data-index={index}>
-          <!-- Image Container -->
-          <div class="relative aspect-[3/4] overflow-hidden bg-white/5 mb-8">
-            <!-- Frame/Border Effect -->
-            <div class="absolute inset-0 border border-white/10 z-20 transition-colors duration-500 group-hover:border-white/30"></div>
-            
-            <!-- Image -->
-            <img
-              src={artist.data.portrait}
-              alt={artist.data.name}
-              class="absolute inset-0 w-full h-full object-cover grayscale-[20%] contrast-[1.1] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105 group-hover:grayscale-0"
-            />
-            
-            <!-- Hover Overlay (Warmth) -->
-            <div class="absolute inset-0 bg-terracotta/0 mix-blend-overlay transition-colors duration-700 group-hover:bg-terracotta/20 z-10"></div>
-            
-            <!-- Corner Accents -->
-            <div class="absolute top-0 left-0 w-3 h-3 border-l border-t border-white/0 transition-all duration-500 group-hover:border-terracotta/80 z-30"></div>
-            <div class="absolute bottom-0 right-0 w-3 h-3 border-r border-b border-white/0 transition-all duration-500 group-hover:border-terracotta/80 z-30"></div>
-          </div>
+  <!-- Artist Gallery - Editorial Masonry Layout -->
+  <section class="artist-gallery-section relative z-20 px-6 md:px-12 lg:px-16 py-20 lg:py-32 border-t border-white/10" data-scroll-section>
+    <!-- Gallery Grid - Editorial with varying sizes -->
+    <div class="artist-gallery-grid">
+      {sortedArtists.map((artist, index) => {
+        // Determine card size: every 3rd card is featured (larger)
+        const isFeatured = index % 4 === 0;
+        const cardClass = isFeatured ? 'artist-card-featured' : 'artist-card-standard';
 
-          <!-- Typography / Label -->
-          <div class="flex flex-col items-start relative overflow-hidden">
-            <h2 class="text-3xl lg:text-4xl font-display text-white group-hover:text-terracotta transition-colors duration-300">
-              {artist.data.name}
-            </h2>
-            
-            <div class="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-neutral-500 group-hover:text-neutral-300 transition-colors duration-300">
-              {artist.data.specialties && artist.data.specialties.slice(0, 2).map((specialty, i) => (
-                <span class="font-mono text-[10px] uppercase tracking-widest flex items-center gap-4">
-                  {specialty}
-                  {i < (artist.data.specialties?.slice(0, 2).length || 0) - 1 && (
-                    <span class="w-1 h-1 rounded-full bg-terracotta/50"></span>
-                  )}
+        return (
+          <a
+            href={`/artists/${artist.id}`}
+            class={`artist-gallery-card ${cardClass} group block relative`}
+            data-index={index}
+            data-animate="gallery-reveal"
+          >
+            <!-- Image Container -->
+            <div class="artist-gallery-image relative aspect-[3/4] overflow-hidden mb-6 lg:mb-8">
+              <!-- Frame Effect -->
+              <div class="absolute inset-0 border border-white/10 z-20 transition-all duration-700 group-hover:border-sage/50"></div>
+
+              <!-- Image with clip reveal -->
+              <div class="artist-gallery-image-inner absolute inset-0 overflow-hidden">
+                <img
+                  src={artist.data.portrait}
+                  alt={artist.data.name}
+                  class="w-full h-full object-cover grayscale contrast-[1.05] transition-all duration-1000 ease-out group-hover:grayscale-0 group-hover:scale-105"
+                  data-parallax-image
+                />
+              </div>
+
+              <!-- Hover Overlay - Sage tint -->
+              <div class="absolute inset-0 bg-sage/0 mix-blend-overlay transition-colors duration-700 group-hover:bg-sage/15 z-10"></div>
+
+              <!-- Gradient overlay on hover -->
+              <div class="absolute inset-0 bg-gradient-to-t from-bg-deep/70 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700 z-10"></div>
+
+              <!-- Corner Accents - Sage -->
+              <div class="absolute top-0 left-0 w-4 h-4 border-l-2 border-t-2 border-transparent transition-all duration-500 group-hover:border-sage z-30"></div>
+              <div class="absolute bottom-0 right-0 w-4 h-4 border-r-2 border-b-2 border-transparent transition-all duration-500 group-hover:border-sage z-30"></div>
+
+              <!-- Index Badge -->
+              <span class="absolute bottom-3 left-3 font-mono text-[10px] tracking-widest text-white/30 z-30 group-hover:text-white/60 transition-colors duration-500">
+                [{(index + 1).toString().padStart(2, '0')}]
+              </span>
+
+              <!-- View CTA on hover -->
+              <div class="absolute bottom-3 right-3 opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500 z-30">
+                <span class="w-10 h-10 rounded-full flex items-center justify-center text-bg-deep transition-all duration-300" style="background-color: var(--color-sage);">
+                  <iconify-icon icon="solar:arrow-right-up-linear" class="text-base"></iconify-icon>
                 </span>
-              ))}
+              </div>
             </div>
 
-            <!-- Hover "View" CTA -->
-            <div class="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-100">
-              <iconify-icon icon="solar:arrow-right-linear" class="text-2xl text-white"></iconify-icon>
+            <!-- Typography / Label -->
+            <div class="artist-gallery-content flex flex-col items-start relative">
+              <h2 class={`font-display italic text-white mb-3 leading-[0.95] transition-colors duration-500 group-hover:text-sage-light ${isFeatured ? 'text-4xl lg:text-5xl' : 'text-2xl lg:text-3xl'}`}>
+                <span class="artist-name-text">{artist.data.name}</span>
+              </h2>
+
+              <div class="flex flex-wrap gap-2 text-neutral-500 group-hover:text-neutral-400 transition-colors duration-300">
+                {artist.data.specialties && artist.data.specialties.slice(0, 2).map((specialty, i) => (
+                  <span class="font-mono text-[10px] uppercase tracking-[0.15em] flex items-center gap-2">
+                    {specialty}
+                    {i < (artist.data.specialties?.slice(0, 2).length || 0) - 1 && (
+                      <span class="w-1 h-1 rounded-full" style="background-color: var(--color-sage);"></span>
+                    )}
+                  </span>
+                ))}
+              </div>
             </div>
-          </div>
-        </a>
-      ))}
+          </a>
+        );
+      })}
     </div>
   </section>
 
   <EditorialFooter />
 
+  <style>
+    /* Editorial Masonry Grid */
+    .artist-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2rem 1.5rem;
+    }
+
+    @media (min-width: 768px) {
+      .artist-gallery-grid {
+        grid-template-columns: repeat(3, 1fr);
+        gap: 3rem 2rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .artist-gallery-grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 4rem 2.5rem;
+      }
+
+      /* Featured cards span 2 columns */
+      .artist-card-featured {
+        grid-column: span 2;
+      }
+
+      .artist-card-featured .artist-gallery-image {
+        aspect-ratio: 4/5;
+      }
+    }
+
+    /* Card hover effects */
+    .artist-gallery-card {
+      transform: translateY(0);
+      transition: transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .artist-gallery-card:hover {
+      transform: translateY(-8px);
+    }
+
+    /* Image inner zoom */
+    .artist-gallery-image-inner {
+      transform: scale(1.05);
+      transition: transform 1.2s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .artist-gallery-card:hover .artist-gallery-image-inner {
+      transform: scale(1);
+    }
+
+    /* Name underline effect */
+    .artist-name-text {
+      background-image: linear-gradient(to right, var(--color-sage-light), var(--color-sage));
+      background-size: 0 2px;
+      background-position: 0 100%;
+      background-repeat: no-repeat;
+      transition: background-size 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .artist-gallery-card:hover .artist-name-text {
+      background-size: 100% 2px;
+    }
+  </style>
+
   <script>
     const initAnimations = () => {
       const gsap = (window as any).gsap;
       const ScrollTrigger = (window as any).ScrollTrigger;
-      
+
       if (!gsap || !ScrollTrigger) {
         setTimeout(initAnimations, 100);
         return;
       }
 
       // Hero Animations
-      gsap.set('.artist-hero-title-line > span', { y: '100%' });
-      gsap.set('.artist-hero-reveal', { opacity: 0, y: 20 });
-      
-      const tl = gsap.timeline({ delay: 0.2 });
-      
-      tl.to('.artist-hero-title-line > span', {
-        y: '0%',
-        duration: 1.2,
-        stagger: 0.1,
-        ease: 'power4.out'
-      })
-      .to('.artist-hero-reveal', {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: 'power2.out'
-      }, '-=0.8');
+      gsap.set('.artist-hero-title-line > span', { y: '110%' });
+      gsap.set('.artist-hero-reveal', { opacity: 0, y: 30 });
 
-      // List Animations
-      const cards = document.querySelectorAll('.artist-card');
-      
+      const heroTl = gsap.timeline({ delay: 0.2 });
+
+      heroTl
+        .to('.artist-hero-title-line > span', {
+          y: '0%',
+          duration: 1.4,
+          stagger: 0.15,
+          ease: 'power4.out'
+        })
+        .to('.artist-hero-reveal', {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          stagger: 0.1,
+          ease: 'power3.out'
+        }, '-=1');
+
+      // Gallery Card Animations - Staggered reveal with clip path
+      gsap.set('.artist-gallery-card', { opacity: 0, y: 60 });
+      gsap.set('.artist-gallery-image-inner', { clipPath: 'inset(100% 0% 0% 0%)' });
+      gsap.set('.artist-gallery-content', { opacity: 0, y: 20 });
+
+      const cards = document.querySelectorAll('.artist-gallery-card');
+
       cards.forEach((card, i) => {
-        gsap.from(card, {
-          y: 60,
-          opacity: 0,
-          duration: 1.2,
-          ease: 'power3.out',
+        const imageInner = card.querySelector('.artist-gallery-image-inner');
+        const content = card.querySelector('.artist-gallery-content');
+
+        const cardTl = gsap.timeline({
           scrollTrigger: {
             trigger: card,
             start: 'top 90%'
           }
         });
+
+        cardTl
+          .to(card, {
+            opacity: 1,
+            y: 0,
+            duration: 1,
+            ease: 'power3.out'
+          })
+          .to(imageInner, {
+            clipPath: 'inset(0% 0% 0% 0%)',
+            duration: 1.2,
+            ease: 'power4.out'
+          }, '-=0.7')
+          .to(content, {
+            opacity: 1,
+            y: 0,
+            duration: 0.8,
+            ease: 'power2.out'
+          }, '-=0.5');
+
+        // Subtle parallax on scroll for images
+        const img = card.querySelector('[data-parallax-image]');
+        if (img) {
+          gsap.to(img, {
+            yPercent: -10,
+            ease: 'none',
+            scrollTrigger: {
+              trigger: card,
+              start: 'top bottom',
+              end: 'bottom top',
+              scrub: 1
+            }
+          });
+        }
       });
     };
 
