@@ -1,5 +1,50 @@
 # Continuity Log
 
+## 2026-03-04 - Artist Profile Updates: Heather Santistevan & Kaori Cedre
+
+### Changes Made
+
+#### 1. Heather Santistevan (formerly Heather Robyns) — Full Rename + Profile
+- **Renamed** `src/content/artists/heather-robyns.mdx` -> `heather-santistevan.mdx`
+  - URL changed from `/artists/heather-robyns` to `/artists/heather-santistevan`
+- **Updated frontmatter:** name, portrait, galleryDir, specialties (Watercolor, Fine Line, Illustrative)
+- **Wrote bio** from `Heather-Santistevan/Bio/Bio for Heather Santistevan.docx` content
+- **Portrait:** Converted `HS HEADSHOT.png` -> `public/artists/heather-santistevan-portrait.avif` + `.jpg`
+- **Portfolio:** Converted 31 images (17 HS*.jpg/png + 14 Facebook screenshots) to AVIF in `public/artists/Heather-Santistevan/Portfolio/`
+- **Removed** old `public/artists/Heather-Robyns/` directory
+- Skipped 4 mp4 videos (gallery doesn't support video)
+- Flash folder empty — no flash images to process
+
+#### 2. Kaori Cedre — Profile Content + Images
+- **Updated frontmatter** in `src/content/artists/kaori-cedre.mdx`:
+  - Added `instagram: oh_kei_tats`
+  - Updated specialties: Illustrative, Black & Grey Realism, Script, Fine Line, Neo-Traditional
+- **Wrote bio** from completed questionnaire (`Kaori/EDIT ME.md`)
+- **Portfolio:** Unzipped and converted 6 images to AVIF in `public/artists/Kaori-Cedre/Portfolio/`
+- **Flash:** Unzipped and converted 6 images to AVIF in `public/artists/Kaori-Cedre/Flash/`
+- Portrait still placeholder — no portrait photo was provided
+
+### Files Modified
+```
+src/content/artists/heather-robyns.mdx -> src/content/artists/heather-santistevan.mdx (renamed + rewritten)
+src/content/artists/kaori-cedre.mdx (frontmatter + body updated)
+public/artists/heather-santistevan-portrait.avif (new)
+public/artists/heather-santistevan-portrait.jpg (new)
+public/artists/Heather-Santistevan/Portfolio/*.avif (31 new files)
+public/artists/Kaori-Cedre/Portfolio/*.avif (6 new files)
+public/artists/Kaori-Cedre/Flash/*.avif (6 new files)
+public/artists/Heather-Robyns/ (deleted)
+```
+
+### Next Steps
+- [ ] Get a portrait photo from Kaori to replace placeholder
+- [ ] Get Heather's actual working hours for schedule config
+- [ ] Get Kaori's actual working hours for schedule config
+- [ ] Heather has no flash images yet — add when available
+- [ ] Consider adding video support to gallery for Heather's mp4 portfolio pieces
+
+---
+
 ## 2026-01-02 - Email Template Redesign
 
 ### Changes Made
