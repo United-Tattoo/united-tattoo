@@ -3,8 +3,6 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import { getCollection } from 'astro:content';
 import CustomSelect from '../components/CustomSelect.astro';
 import EditorialFooter from '../components/EditorialFooter.astro';
-import ScrollIndicator from '../components/ScrollIndicator.astro';
-import GridBackground from '../components/GridBackground.astro';
 import Breadcrumb from '../components/Breadcrumb.astro';
 import CalendarPicker from '../components/CalendarPicker.astro';
 
@@ -69,17 +67,27 @@ const budgetOptions = [
   removeMainPadding={true}
   hideFooter={true}
 >
-  <!-- Hero Section -->
-  <section class="booking-hero-section relative min-h-[70vh] flex flex-col justify-center px-6 md:px-12 lg:px-24 pt-32 pb-24 overflow-hidden" data-scroll-section>
-    <!-- Background Elements -->
-    <div class="absolute inset-0 z-0 pointer-events-none">
-      <GridBackground opacity={20} />
-      <div class="absolute inset-0 bg-gradient-to-b from-bg-deep via-transparent to-bg-deep/80"></div>
-    </div>
+  <div class="relative max-w-[1800px] mx-auto border-l border-r border-border">
 
-    <!-- Content -->
-    <div class="relative z-10 max-w-7xl mx-auto w-full">
-      <div class="booking-hero-reveal mb-12">
+  <!-- Persistent page grid lines -->
+  <div class="page-grid-lines absolute inset-0 z-[1] pointer-events-none hidden lg:block">
+    <div class="absolute top-0 bottom-0 left-[25%] w-px bg-border/40"></div>
+    <div class="absolute top-0 bottom-0 left-[50%] w-px bg-border/15"></div>
+    <div class="absolute top-0 bottom-0 left-[75%] w-px bg-border/40"></div>
+  </div>
+
+  <!-- Section Title Banner -->
+  <section class="relative z-20 border-b border-border py-20 md:py-28 lg:py-36 overflow-hidden" data-scroll-section>
+    <div class="grid-dot" style="left:25%;top:0"></div>
+    <div class="grid-dot" style="left:50%;top:0"></div>
+    <div class="grid-dot" style="left:75%;top:0"></div>
+    <div class="grid-dot" style="left:25%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
+    <div class="grid-dot" style="left:50%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
+    <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
+    <div class="absolute inset-0 noise pointer-events-none"></div>
+
+    <div class="relative z-10 px-6 md:px-10 lg:px-16 pt-20">
+      <div class="booking-hero-reveal mb-6">
         <Breadcrumb
           items={[
             { label: 'Home', href: '/' },
@@ -88,24 +96,11 @@ const budgetOptions = [
         />
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24 items-end">
-        <div class="lg:col-span-8">
-          <h1 class="booking-hero-title text-[12vw] md:text-[10vw] lg:text-[11vw] leading-[0.85] font-sans font-semibold font-medium tracking-tighter text-foreground uppercase mb-8">
-            <span class="booking-hero-title-line block overflow-hidden"><span class="inline-block">Start</span></span>
-            <span class="booking-hero-title-line block overflow-hidden"><span class="inline-block text-muted-foreground italic">Your</span></span>
-            <span class="booking-hero-title-line block overflow-hidden"><span class="inline-block">Project</span></span>
-          </h1>
-        </div>
-
-        <div class="lg:col-span-4 booking-hero-reveal">
-          <p class="text-muted-foreground text-lg leading-relaxed font-light max-w-md border-l border-primary/50 pl-6">
-            Tell us about your idea. We'll match you with the right artist and help bring your vision to life.
-          </p>
-        </div>
-      </div>
+      <h1 class="booking-hero-title text-center font-sans text-6xl md:text-8xl lg:text-[10rem] font-extralight text-foreground tracking-tight leading-none">
+        <span class="booking-hero-title-line block overflow-hidden"><span class="inline-block">Book a Session</span></span>
+      </h1>
+      <p class="text-center font-mono text-[10px] text-muted-foreground/60 mt-5 uppercase tracking-[0.3em]">Tell us about your idea</p>
     </div>
-    
-    <ScrollIndicator class="booking-hero-reveal absolute bottom-12 right-12" />
   </section>
 
   <!-- Progress Indicator -->
@@ -138,7 +133,7 @@ const budgetOptions = [
       <div class="form-section-wrapper relative z-[50] py-12 md:py-20 lg:py-32 border-t border-border grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
         <div class="lg:col-span-4">
           <span class="font-mono text-xs uppercase tracking-[0.2em] text-primary block mb-4">01 // Artist</span>
-          <h2 class="text-4xl md:text-5xl font-sans font-semibold text-foreground">Who are you looking to work with?</h2>
+          <h2 class="text-4xl md:text-5xl font-sans font-extralight text-foreground tracking-tight">Who are you looking to work with?</h2>
         </div>
         <div class="lg:col-span-8 lg:pt-8">
           <CustomSelect
@@ -180,10 +175,10 @@ const budgetOptions = [
       <div class="form-section-wrapper relative z-[40] py-12 md:py-20 lg:py-32 border-t border-border grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
         <div class="lg:col-span-4">
           <span class="font-mono text-xs uppercase tracking-[0.2em] text-primary block mb-4">02 // Contact</span>
-          <h2 class="text-4xl md:text-5xl font-sans font-semibold text-foreground">How can we reach you?</h2>
+          <h2 class="text-4xl md:text-5xl font-sans font-extralight text-foreground tracking-tight">How can we reach you?</h2>
         </div>
         <div class="lg:col-span-8 lg:pt-8">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 md:gap-y-16">
             <div class="form-field group">
               <label for="name" class="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2 group-focus-within:text-foreground transition-colors">Full Name</label>
               <input
@@ -236,10 +231,10 @@ const budgetOptions = [
       <div class="form-section-wrapper relative z-[30] py-12 md:py-20 lg:py-32 border-t border-border grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
         <div class="lg:col-span-4">
           <span class="font-mono text-xs uppercase tracking-[0.2em] text-primary block mb-4">03 // Details</span>
-          <h2 class="text-4xl md:text-5xl font-sans font-semibold text-foreground">Tell us about the piece</h2>
+          <h2 class="text-4xl md:text-5xl font-sans font-extralight text-foreground tracking-tight">Tell us about the piece</h2>
         </div>
         <div class="lg:col-span-8 lg:pt-8">
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16 mb-16">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 md:gap-y-16 mb-16">
             <div class="form-field">
               <CustomSelect
                 id="style"
@@ -303,7 +298,7 @@ const budgetOptions = [
       <div class="form-section-wrapper relative z-[20] py-12 md:py-20 lg:py-32 border-t border-border grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
         <div class="lg:col-span-4">
           <span class="font-mono text-xs uppercase tracking-[0.2em] text-primary block mb-4">04 // Visuals</span>
-          <h2 class="text-4xl md:text-5xl font-sans font-semibold text-foreground">Reference Images</h2>
+          <h2 class="text-4xl md:text-5xl font-sans font-extralight text-foreground tracking-tight">Reference Images</h2>
           <p class="mt-6 text-muted-foreground font-light leading-relaxed">
             Upload up to 5 images to help us understand your vision. These can be photos of other tattoos, artwork, or placement photos.
           </p>
@@ -322,7 +317,7 @@ const budgetOptions = [
               <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-secondary border border-border group-hover:scale-110 group-hover:border-primary/50 transition-all duration-500">
                 <iconify-icon icon="solar:upload-minimalistic-bold" class="text-3xl text-muted-foreground group-hover:text-primary transition-colors"></iconify-icon>
               </div>
-              <p class="font-sans font-semibold text-2xl text-foreground mb-3 group-hover:text-primary/80 transition-colors">Drop your inspiration</p>
+              <p class="font-sans font-extralight text-2xl text-foreground mb-3 group-hover:text-primary/80 transition-colors tracking-tight">Drop your inspiration</p>
               <p class="font-mono text-xs text-muted-foreground tracking-widest uppercase">or click to browse · Max 5 images · 10MB each</p>
               
               <!-- File type badges -->
@@ -449,7 +444,7 @@ const budgetOptions = [
 
       <span class="section-label block mb-6 opacity-0 transform translate-y-6 transition-all duration-600" id="success-label">Request Confirmed</span>
 
-      <h1 class="text-5xl md:text-6xl font-normal tracking-tighter text-foreground italic mb-6 opacity-0 transform translate-y-6 transition-all duration-600 delay-100" id="success-title">
+      <h1 class="text-5xl md:text-6xl font-extralight tracking-tight text-foreground mb-6 opacity-0 transform translate-y-6 transition-all duration-600 delay-100" id="success-title">
         Thank You
       </h1>
 
@@ -499,6 +494,8 @@ const budgetOptions = [
   </div>
 
   <EditorialFooter />
+
+  </div>
 
   <script>
     const initBooking = () => {

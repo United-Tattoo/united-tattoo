@@ -7,17 +7,71 @@ interface Props {
 const { href, label } = Astro.props;
 ---
 
-<div id="floating-cta" class="hidden lg:block fixed bottom-8 right-8 z-50 transition-all duration-300">
-  <a href={href} class="hero-cta group flex items-center gap-3 px-6 py-4 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.15em] transition-all shadow-2xl shadow-primary/30">
+<div id="floating-cta" class="fixed z-50 transition-all duration-300 bottom-0 left-0 right-0 lg:bottom-8 lg:left-auto lg:right-8 lg:w-auto">
+  <a href={href} class="hero-cta group flex items-center justify-center lg:justify-start gap-3 px-6 py-4 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.15em] transition-all shadow-2xl shadow-primary/30 w-full lg:w-auto">
     <span class="group-hover:translate-x-1 transition-transform">{label}</span>
     <span class="w-6 h-6 rounded-full flex items-center justify-center bg-primary-foreground text-primary transition-all">→</span>
   </a>
 </div>
 
 <style>
-  #floating-cta a:hover {
-    filter: brightness(1.1);
-    transform: translateY(-2px);
-    box-shadow: 0 25px 60px oklch(from var(--primary) l c h / 0.4);
+  @media (min-width: 1024px) {
+    #floating-cta a:hover {
+      filter: brightness(1.1);
+      transform: translateY(-2px);
+      box-shadow: 0 25px 60px oklch(from var(--primary) l c h / 0.4);
+    }
+  }
+
+  /* Safe area padding for iOS home bar */
+  @supports (padding-bottom: env(safe-area-inset-bottom)) {
+    @media (max-width: 1023px) {
+      #floating-cta a {
+        padding-bottom: calc(1rem + env(safe-area-inset-bottom));
+      }
+    }
   }
 </style>
+
+<script>
+  function initFloatingCTA() {
+    const cta = document.getElementById('floating-cta');
+    if (!cta) return;
+
+    const hero = document.querySelector('.hero-section, .artist-hero');
+    const footer = document.querySelector('.footer-section');
+
+    let heroVisible = !!hero;
+    let footerVisible = false;
+
+    const update = () => {
+      if (heroVisible || footerVisible) {
+        cta.style.opacity = '0';
+        cta.style.pointerEvents = 'none';
+        cta.style.transform = 'translateY(20px)';
+      } else {
+        cta.style.opacity = '1';
+        cta.style.pointerEvents = 'auto';
+        cta.style.transform = 'translateY(0)';
+      }
+    };
+
+    if (hero) {
+      new IntersectionObserver((entries) => {
+        heroVisible = entries[0].isIntersecting;
+        update();
+      }, { threshold: 0.15 }).observe(hero);
+    }
+
+    if (footer) {
+      new IntersectionObserver((entries) => {
+        footerVisible = entries[0].isIntersecting;
+        update();
+      }, { threshold: 0.1 }).observe(footer);
+    }
+
+    update();
+  }
+
+  document.addEventListener('astro:page-load', initFloatingCTA);
+</script>
