@@ -31,11 +31,7 @@ yarn-error.log*
 Thumbs.db
 
 # IDE/Editor
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
+.vscode/
 .idea/
 *.swp
 *.swo
@@ -46,6 +42,7 @@ Thumbs.db
 # Cache directories
 .cache/
 .turbo/
+
 
 # Large binary assets (avoid committing raw media dumps)
 temp/
@@ -79,8 +76,7 @@ next-env.d.ts
 .opencode/
 .playwright-mcp/
 dist/
-GEMINI.md
-AGENTS.md
+dogfood-output/
 
 # Calendar cache
 .calendar-cache/

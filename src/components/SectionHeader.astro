@@ -16,8 +16,8 @@ const {
 } = Astro.props;
 
 const titleVariantClass = variant === 'uppercase'
-  ? 'font-normal uppercase tracking-tight'
-  : 'font-sans font-semibold italic tracking-tighter';
+  ? 'uppercase tracking-tight'
+  : 'italic tracking-tighter';
 ---
 
 <div class:list={[
@@ -26,14 +26,14 @@ const titleVariantClass = variant === 'uppercase'
 ]}>
   <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
     <h2 class:list={[
-      "text-4xl md:text-5xl lg:text-6xl text-foreground",
+      "text-4xl md:text-5xl lg:text-6xl text-foreground font-extralight",
       titleVariantClass,
       titleClass
     ]}>
       {title}
     </h2>
     {meta && (
-      <span class="font-mono text-xs text-muted-foreground uppercase tracking-widest">
+      <span class="font-mono text-[10px] text-primary/60 uppercase tracking-[0.2em]">
         {meta}
       </span>
     )}

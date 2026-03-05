@@ -1,1 +1,0 @@
-let paths=window.location.pathname.split("/");{const t=document.createElement("link");t.rel="stylesheet",t.href="https://assets.slater.app/slater/17411/49802.css?v=505173",document.head.appendChild(t)}import("https://assets.slater.app/slater/17411/49655.js?v=912047"),import("https://assets.slater.app/slater/17411/49467.js?v=168661");

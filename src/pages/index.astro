@@ -3,17 +3,14 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import { SITE_DESCRIPTION } from '../consts';
 import { getCollection } from 'astro:content';
 import EditorialFooter from '../components/EditorialFooter.astro';
-import SectionSidebar from '../components/SectionSidebar.astro';
 import FloatingCTA from '../components/FloatingCTA.astro';
-import ScrollIndicator from '../components/ScrollIndicator.astro';
-import GridBackground from '../components/GridBackground.astro';
-import SectionHeader from '../components/SectionHeader.astro';
 import fs from 'node:fs';
 import path from 'node:path';
 
 export const prerender = true;
 
 const artists = await getCollection('artists');
+const featuredArtists = artists.slice(0, 4);
 
 // Collect portfolio images from all artists for the marquee & showcase
 const publicDir = path.join(process.cwd(), 'public');
@@ -49,93 +46,138 @@ const showcaseImages = shuffled.slice(0, 6);
 
   <FloatingCTA href="/booking" label="Book a session" />
 
-  <div class="relative main-content-wrapper">
+  <div class="relative main-content-wrapper max-w-[1800px] mx-auto border-l border-r border-border">
 
-  <!-- Hero Section: Balanced Composition -->
-  <section class="hero-section min-h-screen relative flex flex-col" data-scroll-section>
-    <!-- Grid Background -->
-    <GridBackground opacity={40} class="hero-grid" />
+  <!-- Persistent page grid lines -->
+  <div class="page-grid-lines absolute inset-0 z-[1] pointer-events-none hidden lg:block">
+    <div class="absolute top-0 bottom-0 left-[25%] w-px bg-border/40"></div>
+    <div class="absolute top-0 bottom-0 left-[50%] w-px bg-border/15"></div>
+    <div class="absolute top-0 bottom-0 left-[75%] w-px bg-border/40"></div>
+  </div>
 
-    <!-- Exterior Photo -->
-    <div class="absolute right-0 top-0 bottom-0 w-full lg:w-3/5 z-0 pointer-events-none overflow-hidden hero-photo-wrap">
-      <div class="absolute inset-0 hero-photo-layer">
-        <img src="/images/united-exterior.avif" alt="United Tattoo storefront" class="w-full h-full object-cover object-center" />
+  <!-- Hero Section -->
+  <section class="hero-section min-h-screen relative flex flex-col overflow-hidden" data-scroll-section>
+
+    <!-- Full-bleed B&W photo -->
+    <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden hero-photo-wrap">
+      <div class="absolute inset-0 hero-photo-layer scale-[1.03]">
+        <img src="/images/united-exterior.avif" alt="United Tattoo storefront" class="w-full h-full object-cover object-center grayscale brightness-[0.35] contrast-[1.1]" />
       </div>
-      <!-- Gradient fade to left -->
-      <div class="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/20"></div>
-      <!-- Bottom fade -->
-      <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
-      <!-- Warm color wash to match site palette -->
-      <div class="absolute inset-0 mix-blend-multiply opacity-20" style="background: linear-gradient(135deg, var(--primary), transparent 60%);"></div>
+      <!-- Dark overlay -->
+      <div class="absolute inset-0 bg-black/40"></div>
     </div>
 
-    <!-- Top vignette -->
-    <div class="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-b from-background/70 via-transparent to-transparent"></div>
+    <!-- Grid overlay: inset frame with internal divisions -->
+    <div class="absolute z-[1] pointer-events-none" style="top:88px;left:32px;right:32px;bottom:32px;">
+      <!-- Outer frame -->
+      <div class="absolute inset-0 border border-white/[0.10]"></div>
+      <!-- Vertical dividers (wider center column ~50%) -->
+      <div class="absolute top-0 bottom-0 left-[25%] w-px bg-white/[0.10]"></div>
+      <div class="absolute top-0 bottom-0 left-[75%] w-px bg-white/[0.10]"></div>
+      <!-- Horizontal divider -->
+      <div class="absolute left-0 right-0 top-[60%] h-px bg-white/[0.10]"></div>
+      <!-- Dots: outer frame corners -->
+      <div class="hero-grid-dot" style="left:0;top:0"></div>
+      <div class="hero-grid-dot" style="left:100%;top:0"></div>
+      <div class="hero-grid-dot" style="left:0;top:100%"></div>
+      <div class="hero-grid-dot" style="left:100%;top:100%"></div>
+      <!-- Dots: top edge -->
+      <div class="hero-grid-dot" style="left:25%;top:0"></div>
+      <div class="hero-grid-dot" style="left:75%;top:0"></div>
+      <!-- Dots: bottom edge -->
+      <div class="hero-grid-dot" style="left:25%;top:100%"></div>
+      <div class="hero-grid-dot" style="left:75%;top:100%"></div>
+      <!-- Dots: left edge -->
+      <div class="hero-grid-dot" style="left:0;top:60%"></div>
+      <!-- Dots: right edge -->
+      <div class="hero-grid-dot" style="left:100%;top:60%"></div>
+      <!-- Dots: center intersections -->
+      <div class="hero-grid-dot" style="left:25%;top:60%"></div>
+      <div class="hero-grid-dot" style="left:75%;top:60%"></div>
+    </div>
 
-    <!-- Hero Content Grid -->
-    <div class="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12 pt-24 lg:pt-32">
-      <!-- Left Content Column -->
-      <div class="col-span-1 lg:col-span-7 flex flex-col justify-end px-6 md:px-12 lg:px-16 pb-16 md:pb-24 lg:pb-32">
-        <!-- Label -->
-        <div class="hero-reveal mb-6">
-          <span class="font-mono text-xs uppercase tracking-[0.2em] text-secondary-foreground font-medium">Custom · Flash · Freedom</span>
+    <!-- Film grain -->
+    <div class="absolute inset-0 z-[2] pointer-events-none hero-grain"></div>
+
+    <!-- Hero Content: centered title, bottom info -->
+    <div class="relative z-10 flex-1 flex flex-col">
+
+      <!-- Title area: positioned on the horizontal grid line, left-aligned in center column -->
+      <div class="absolute inset-0 z-10 flex flex-col" style="top:88px;left:32px;right:32px;bottom:32px;">
+        <div class="relative flex-1">
+          <!-- Title sits just above the horizontal line at 60% -->
+          <div class="absolute left-[25%] px-6 md:px-10" style="bottom: 40%;">
+            <h1 class="hero-title text-5xl md:text-7xl lg:text-8xl tracking-tight text-white" style="font-family: 'Outfit', sans-serif; font-weight: 200;">
+              <span class="hero-title-line block overflow-hidden">
+                <span class="inline-block">United Tattoo</span>
+              </span>
+            </h1>
+            <div class="hero-reveal w-12 h-px bg-primary/40 mt-5"></div>
+          </div>
         </div>
+      </div>
 
-        <!-- Title -->
-        <h1 class="hero-title text-7xl md:text-8xl lg:text-9xl leading-[0.85] font-semibold tracking-tight uppercase mb-8 md:mb-10">
-          <span class="hero-title-line block overflow-hidden"><span class="inline-block text-foreground">United</span></span>
-          <span class="hero-title-line block overflow-hidden"><span class="italic font-light text-muted-foreground inline-block">Tattoo</span></span>
-        </h1>
+      <!-- Spacer for bottom of hero -->
+      <div class="pb-8 md:pb-10"></div>
+    </div>
+  </section>
 
-        <!-- Tagline -->
-        <p class="hero-reveal text-muted-foreground text-base md:text-lg lg:text-xl max-w-lg leading-relaxed font-light mb-10">
-          A collective dedicated to the art of release. Where the timeless torch of tradition meets the modern expression of self.
-        </p>
+  <section class="studio-intro relative z-20 border-t border-b border-border" data-scroll-section>
+    <!-- Grid dots -->
+    <div class="grid-dot" style="left:25%;top:0"></div>
+    <div class="grid-dot" style="left:50%;top:0"></div>
+    <div class="grid-dot" style="left:75%;top:0"></div>
+    <div class="grid-dot" style="left:25%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
+    <div class="grid-dot" style="left:50%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
+    <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
 
-        <!-- Hero Info Bar -->
-        <div class="hero-reveal flex flex-wrap items-center gap-8 pt-6 border-t border-primary">
-          <div>
-            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-1 text-muted-foreground">Location</span>
-            <span class="font-mono text-sm text-foreground">Fountain, CO</span>
-          </div>
-          <div>
-            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-1 text-muted-foreground">Hours</span>
-            <span class="font-mono text-sm text-foreground">Sun–Sat · 10am–8pm</span>
-          </div>
-          <div>
-            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-1 text-muted-foreground">Artists</span>
-            <span class="font-mono text-sm text-foreground">{artists.length} in residence</span>
-          </div>
-          <div class="hidden lg:block ml-auto">
-             <a href="/booking" class="px-6 py-3 border border-input hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300 font-mono text-xs uppercase tracking-widest">
-               Book Consultation
-             </a>
-          </div>
-        </div>
+    <!-- Ghost logo -->
+    <div class="studio-ghost-image" aria-hidden="true">
+      <img src="/images/united-logo-full.avif" alt="" loading="lazy" />
+    </div>
 
-        <!-- Mobile CTA -->
-        <div class="lg:hidden mt-10">
-          <a href="/booking" class="group block w-full py-5 bg-primary text-primary-foreground text-center font-mono text-sm uppercase tracking-[0.15em] transition-all shadow-lg shadow-primary/20">
-            <span class="flex items-center justify-center gap-3">
-              <span class="group-hover:translate-x-1 transition-transform">Book a session</span>
-              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs bg-primary-foreground text-primary transition-colors">→</span>
-            </span>
+    <!-- Two-column editorial layout -->
+    <div class="intro-layout">
+      <!-- Left: statement -->
+      <div class="intro-statement">
+        <span class="intro-kicker intro-reveal">Custom work, built with you</span>
+        <h2 class="intro-headline intro-reveal">
+          Bring your idea. We will shape it into a tattoo that fits your body and still reads years from now.
+        </h2>
+        <div class="intro-actions intro-reveal">
+          <a href="/booking" class="intro-cta-primary">
+            <span>Request booking</span>
+            <span class="intro-cta-arrow" aria-hidden="true">→</span>
           </a>
+          <a href="/artists" class="intro-cta-secondary">View artists</a>
         </div>
       </div>
 
-      <!-- Right Column - Space for exterior photo -->
-      <div class="hidden lg:block col-span-5"></div>
+      <!-- Right: metadata sidebar -->
+      <div class="intro-sidebar">
+        <div class="intro-meta-stack">
+          <div class="intro-meta intro-reveal">
+            <span class="intro-meta-label">Location</span>
+            <span class="intro-meta-value">Fountain, CO</span>
+          </div>
+          <div class="intro-meta intro-reveal">
+            <span class="intro-meta-label">Studio</span>
+            <span class="intro-meta-value">{artists.length} Artists in Residence</span>
+          </div>
+          <div class="intro-meta intro-reveal">
+            <span class="intro-meta-label">Hours</span>
+            <span class="intro-meta-value">Sun — Sat, 10a–8p</span>
+          </div>
+        </div>
+      </div>
     </div>
-
-    <!-- Scroll Indicator -->
-    <ScrollIndicator class="hero-reveal" />
   </section>
 
   <!-- Work Marquee: Infinite Scroll Strip -->
   <section class="marquee-section relative z-20 overflow-hidden border-t border-border py-8 md:py-12" data-scroll-section>
-    <!-- Warm ambient glow behind marquee -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full opacity-[0.07] pointer-events-none" style="background: radial-gradient(ellipse, var(--primary), transparent 70%);"></div>
+    <div class="grid-dot" style="left:25%;top:0"></div>
+    <div class="grid-dot" style="left:50%;top:0"></div>
+    <div class="grid-dot" style="left:75%;top:0"></div>
 
     <!-- Row 1 - scrolls left -->
     <div class="marquee-track mb-4">
@@ -162,96 +204,96 @@ const showcaseImages = shuffled.slice(0, 6);
     </div>
   </section>
 
+  <!-- Section Title Banner: Artists -->
+  <div class="section-banner relative z-20 border-t border-b border-border py-16 md:py-20 lg:py-28 overflow-hidden" data-scroll-section>
+    <!-- Grid dots at intersections -->
+    <div class="grid-dot" style="left:25%;top:0"></div>
+    <div class="grid-dot" style="left:50%;top:0"></div>
+    <div class="grid-dot" style="left:75%;top:0"></div>
+    <div class="grid-dot" style="left:25%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
+    <div class="grid-dot" style="left:50%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
+    <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
+    <!-- Subtle noise bg -->
+    <div class="absolute inset-0 noise pointer-events-none"></div>
+    <h2 class="artists-title relative text-center font-sans text-6xl md:text-8xl lg:text-[10rem] font-extralight text-foreground tracking-tight leading-none">The Team</h2>
+    <p class="relative text-center font-mono text-[10px] text-muted-foreground/60 mt-5 uppercase tracking-[0.3em]">{artists.length} artists in residence</p>
+  </div>
+
   <!-- Artists Section: The Index -->
-  <section id="artists" class="artists-section relative z-20 border-t border-border" data-scroll-section>
-    <SectionSidebar
-      sectionNum="Section 01"
-      label="The Team"
-      description={`${artists.length} artists in residence, each with their own unique style and specialty.`}
-    >
-      <!-- Header Row -->
-      <SectionHeader
-        title="The team"
-        meta={`${artists.length} artists`}
-        titleClass="artists-title"
-        class="artists-header"
-      />
+  <section id="artists" class="artists-section relative z-20" data-scroll-section>
+    <div class="artists-list">
+      {artists.map((artist, index) => (
+        <div class="artist-row group relative border-b border-border hover:bg-secondary/50 transition-colors duration-300">
+          <a href={`/artists/${artist.id}`} class="block px-6 md:px-10 lg:px-16 py-8 md:py-10 flex flex-col md:flex-row items-baseline md:items-center justify-between gap-4">
+            <div class="flex items-center md:items-baseline gap-4 md:gap-8 md:w-1/2">
+              <span class="font-mono text-sm text-muted-foreground/40 group-hover:text-primary/60 transition-colors tabular-nums">
+                {(index + 1).toString().padStart(2, '0')}
+              </span>
 
-      <!-- Artists List -->
-      <div class="artists-list">
-        {artists.map((artist, index) => (
-          <div class="artist-row group relative border-b border-border hover:bg-secondary transition-colors duration-300">
-            <a href={`/artists/${artist.id}`} class="block px-6 md:px-8 py-8 md:py-10 flex flex-col md:flex-row items-baseline md:items-center justify-between gap-4">
-              <div class="flex items-center md:items-baseline gap-4 md:gap-8 md:w-1/2">
-                <span class="font-mono text-sm text-muted-foreground/40 group-hover:text-foreground transition-colors">
-                  {(index + 1).toString().padStart(2, '0')}
-                </span>
-                
-                <!-- Mobile Avatar -->
-                <img 
-                  src={artist.data.portrait} 
-                  alt="" 
-                  class="w-12 h-12 rounded-full object-cover lg:hidden border border-border" 
-                />
-
-                <h3 class="text-2xl md:text-3xl lg:text-4xl font-semibold font-sans text-foreground group-hover:translate-x-2 transition-transform duration-300">
-                  {artist.data.name}
-                </h3>
-              </div>
-
-              <div class="flex items-center justify-between w-full md:w-auto gap-6 md:gap-10">
-                <div class="flex flex-col">
-                  <span class="font-mono text-xs uppercase tracking-[0.2em] mb-1 text-muted-foreground">Specialty</span>
-                  <span class="font-mono text-sm text-secondary-foreground">
-                    {artist.data.specialties ? artist.data.specialties[0] : 'Custom'}
-                  </span>
-                </div>
-
-                <span class="w-9 h-9 rounded-full flex items-center justify-center text-primary-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 bg-primary">
-                  ↗
-                </span>
-              </div>
-            </a>
-
-            <!-- Hover Image Reveal (Desktop) -->
-            <div class="hidden lg:block absolute top-1/2 right-24 -translate-y-1/2 w-[180px] aspect-[3/4] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 bg-card border border-border rotate-2 group-hover:rotate-3 transition-transform shadow-2xl">
+              <!-- Mobile Avatar -->
               <img
                 src={artist.data.portrait}
-                alt={artist.data.name}
-                class="w-full h-full object-cover grayscale"
+                alt=""
+                class="w-12 h-12 rounded-full object-cover lg:hidden border border-border"
               />
+
+              <h3 class="text-2xl md:text-3xl lg:text-4xl font-extralight font-sans text-foreground group-hover:translate-x-2 transition-transform duration-300">
+                {artist.data.name}
+              </h3>
             </div>
+
+            <div class="flex items-center justify-between w-full md:w-auto gap-6 md:gap-10">
+              <div class="flex flex-col">
+                <span class="font-mono text-[10px] uppercase tracking-[0.2em] mb-1 text-muted-foreground/60">Specialty</span>
+                <span class="font-mono text-sm text-secondary-foreground">
+                  {artist.data.specialties ? artist.data.specialties[0] : 'Custom'}
+                </span>
+              </div>
+
+              <span class="w-9 h-9 rounded-full flex items-center justify-center text-primary-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 bg-primary">
+                ↗
+              </span>
+            </div>
+          </a>
+
+          <!-- Hover Image Reveal (Desktop) -->
+          <div class="hidden lg:block absolute top-1/2 right-24 -translate-y-1/2 w-[180px] aspect-[3/4] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 bg-card border border-border rotate-2 group-hover:rotate-3 transition-transform shadow-2xl">
+            <img
+              src={artist.data.portrait}
+              alt={artist.data.name}
+              class="w-full h-full object-cover grayscale"
+            />
           </div>
-        ))}
-      </div>
-    </SectionSidebar>
+        </div>
+      ))}
+    </div>
   </section>
 
+  <!-- Section Title Banner: Work -->
+  <div class="section-banner relative z-20 border-t border-b border-border py-16 md:py-20 lg:py-28 overflow-hidden" data-scroll-section>
+    <div class="grid-dot" style="left:25%;top:0"></div>
+    <div class="grid-dot" style="left:50%;top:0"></div>
+    <div class="grid-dot" style="left:75%;top:0"></div>
+    <div class="grid-dot" style="left:25%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
+    <div class="grid-dot" style="left:50%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
+    <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
+    <div class="absolute inset-0 noise pointer-events-none"></div>
+    <h2 class="showcase-title relative text-center font-sans text-6xl md:text-8xl lg:text-[10rem] font-extralight text-foreground tracking-tight leading-none">Recent Work</h2>
+    <div class="relative flex justify-center mt-5">
+      <a href="/artists" class="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/60 hover:text-foreground transition-colors group">
+        View all artists
+        <span class="w-5 h-5 rounded-full border border-border flex items-center justify-center group-hover:bg-foreground group-hover:text-background transition-all text-[9px]">→</span>
+      </a>
+    </div>
+  </div>
+
   <!-- Featured Work: Visual Showcase -->
-  <section class="showcase-section relative z-20 border-t border-border py-16 md:py-24 px-6 md:px-12 lg:px-16" data-scroll-section>
-    <!-- Ambient warm glow -->
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-[0.04] pointer-events-none" style="background: radial-gradient(ellipse, var(--primary), transparent 70%);"></div>
-
-    <div class="max-w-7xl mx-auto">
-      <div class="flex items-baseline justify-between mb-12">
-        <div>
-          <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground block mb-3">Recent Work</span>
-          <h2 class="showcase-title font-sans text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground">From the chair</h2>
-        </div>
-        <a href="/artists" class="hidden md:flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors group">
-          View all artists
-          <span class="w-6 h-6 rounded-full border border-input flex items-center justify-center group-hover:bg-foreground group-hover:text-background transition-all text-[10px]">→</span>
-        </a>
-      </div>
-
-      <!-- Bento Grid -->
-      <div class="showcase-grid grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
-        {showcaseImages.map((img, i) => (
-          <div class:list={[
-            "showcase-item group relative overflow-hidden",
-            i === 0 ? "row-span-2" : "",
-            i === 3 ? "md:col-span-2" : ""
-          ]}>
+  <section class="showcase-section relative z-20" data-scroll-section>
+    <!-- Bordered image cells grid -->
+    <div class="showcase-grid grid grid-cols-2 md:grid-cols-3">
+      {showcaseImages.map((img, i) => (
+        <div class="showcase-item group relative border-b border-r border-border p-2 md:p-3">
+          <div class="relative overflow-hidden aspect-[4/5]">
             <img
               src={img.src}
               alt={`Tattoo by ${img.artist}`}
@@ -261,61 +303,60 @@ const showcaseImages = shuffled.slice(0, 6);
             <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <span class="absolute bottom-3 left-3 font-mono text-[10px] uppercase tracking-widest text-white/90 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">{img.artist}</span>
           </div>
-        ))}
-      </div>
+        </div>
+      ))}
     </div>
   </section>
 
-  <!-- Process Section: The Methodology -->
-  <section id="process" class="process-section relative z-20 border-t border-border" data-scroll-section>
-    <!-- Ambient warm glow behind methodology -->
-    <div class="absolute bottom-0 left-1/4 w-[800px] h-[400px] rounded-full opacity-[0.03] pointer-events-none" style="background: radial-gradient(ellipse, var(--primary), transparent 60%);"></div>
+  <!-- Section Title Banner: Process -->
+  <div class="section-banner relative z-20 border-t border-b border-border py-16 md:py-20 lg:py-28 overflow-hidden" data-scroll-section>
+    <div class="grid-dot" style="left:25%;top:0"></div>
+    <div class="grid-dot" style="left:50%;top:0"></div>
+    <div class="grid-dot" style="left:75%;top:0"></div>
+    <div class="grid-dot" style="left:25%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
+    <div class="grid-dot" style="left:50%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
+    <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
+    <div class="absolute inset-0 noise pointer-events-none"></div>
+    <h2 class="process-title relative text-center font-sans text-6xl md:text-8xl lg:text-[10rem] font-extralight text-foreground tracking-tight leading-none">The Process</h2>
+    <p class="relative text-center font-mono text-[10px] text-muted-foreground/60 mt-5 uppercase tracking-[0.3em]">From idea to ink</p>
+  </div>
 
-    <SectionSidebar
-      sectionNum="Section 02"
-      label="Methodology"
-      description="From first idea to healed artwork—our proven process."
-    >
-      <!-- Header -->
-      <SectionHeader
-        title="Methodology"
-        meta="4 steps"
-        titleClass="process-title"
-        class="process-header"
-      />
+  <!-- Process Section: Bordered Grid -->
+  <section id="process" class="process-section relative z-20" data-scroll-section>
+    <div class="process-grid grid grid-cols-1 md:grid-cols-2">
+      {[
+        { num: '01', title: 'Consultation', desc: 'Share your vision. We shape your idea together and match you with the right artist.' },
+        { num: '02', title: 'Design', desc: 'Your artist creates a custom piece tailored to your body and style.' },
+        { num: '03', title: 'Session', desc: 'Get inked in our clean, comfortable studio with experienced professionals.' },
+        { num: '04', title: 'Aftercare', desc: 'We guide you through healing so your artwork stays vibrant for life.' }
+      ].map((step, i) => (
+        <div class="process-step group relative border-b border-r border-border p-8 md:p-12 lg:p-16 flex flex-col justify-between min-h-[280px] md:min-h-[360px] hover:bg-secondary/20 transition-colors duration-500">
+          <!-- Corner dot -->
+          <div class="absolute top-0 right-0 w-1.5 h-1.5 rounded-full bg-primary/25 translate-x-1/2 -translate-y-1/2"></div>
 
-      <!-- Grid -->
-      <div class="process-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border border-l border-border">
-        {[
-          { num: '01', title: 'Consultation', desc: 'Share your vision. We\'ll shape your idea together and match you with the right artist.', icon: 'solar:chat-line-linear' },
-          { num: '02', title: 'Design', desc: 'Your artist creates a custom piece tailored to your body and style.', icon: 'solar:pen-new-square-linear' },
-          { num: '03', title: 'Session', desc: 'Get inked in our clean, comfortable studio with experienced professionals.', icon: 'ph:needle' },
-          { num: '04', title: 'Aftercare', desc: 'We guide you through healing so your artwork stays vibrant for life.', icon: 'solar:heart-linear' }
-        ].map((step, i) => (
-          <div class="process-step group px-6 py-10 lg:py-12 min-h-[280px] flex flex-col justify-between bg-background hover:bg-secondary transition-colors duration-300 border-b border-border lg:border-b-0">
-            <div class="flex justify-between items-start mb-6">
-              <span class="process-num font-mono text-4xl lg:text-5xl font-light transition-colors text-primary">
-                {step.num}
-              </span>
-              <iconify-icon icon={step.icon} class="group-hover:text-foreground transition-colors text-xl lg:text-2xl text-muted-foreground"></iconify-icon>
-            </div>
-
-            <div class="process-content">
-              <h3 class="font-sans text-xl lg:text-2xl font-semibold text-foreground mb-3">{step.title}</h3>
-              <p class="font-mono text-sm lg:text-base text-muted-foreground leading-relaxed">
-                {step.desc}
-              </p>
-            </div>
+          <div class="flex items-start justify-between">
+            <span class="process-num font-mono text-[11px] text-primary/40 tabular-nums tracking-wider">
+              {step.num}
+            </span>
           </div>
-        ))}
-      </div>
-    </SectionSidebar>
+
+          <div>
+            <h3 class="font-sans text-3xl md:text-4xl lg:text-5xl font-extralight text-foreground tracking-tight mb-5">
+              {step.title}
+            </h3>
+            <p class="font-mono text-sm text-muted-foreground leading-relaxed max-w-sm">
+              {step.desc}
+            </p>
+          </div>
+        </div>
+      ))}
+    </div>
   </section>
 
 
-  </div>
-
   <EditorialFooter />
+
+  </div>
 
   <!-- Micro-interactions & Hover Styles -->
   <style>
@@ -400,17 +441,23 @@ const showcaseImages = shuffled.slice(0, 6);
     }
 
     /* === Showcase Grid === */
-    .showcase-item {
-      aspect-ratio: 1;
-      border-radius: 2px;
+    .showcase-item:nth-child(3n) {
+      border-right: none;
     }
 
-    .showcase-item.row-span-2 {
-      aspect-ratio: auto;
+    @media (max-width: 767px) {
+      .showcase-item:nth-child(3n) {
+        border-right: 1px solid var(--border);
+      }
+      .showcase-item:nth-child(2n) {
+        border-right: none;
+      }
     }
 
-    .showcase-item img {
-      border-radius: 2px;
+    /* === Section Banners === */
+    .section-banner {
+      position: relative;
+      background: oklch(from var(--background) l c h / 0.95);
     }
 
     /* Artist name underline on hover */
@@ -428,6 +475,57 @@ const showcaseImages = shuffled.slice(0, 6);
       }
     }
 
+    /* Grid intersection dots */
+    .hero-grid-dot {
+      position: absolute;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--ring);
+      opacity: 0.5;
+      transform: translate(-50%, -50%);
+    }
+
+    .grid-dot {
+      position: absolute;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--primary);
+      opacity: 0.35;
+      transform: translate(-50%, -50%);
+      z-index: 5;
+    }
+
+    /* Film grain */
+    .hero-grain {
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
+      opacity: 0.035;
+      mix-blend-mode: overlay;
+    }
+
+    /* Info column separator */
+    .hero-info-col {
+      position: relative;
+    }
+
+    .hero-info-col + .hero-info-col::before {
+      content: '';
+      position: absolute;
+      left: -1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 1px;
+      height: 24px;
+      background: oklch(from var(--foreground) l c h / 0.1);
+    }
+
+    @media (min-width: 768px) {
+      .hero-info-col + .hero-info-col::before {
+        left: -1.5rem;
+      }
+    }
+
     /* Mobile CTA hover effect */
     .hero-section a[href="/booking"]:hover {
       filter: brightness(1.15);
@@ -435,20 +533,243 @@ const showcaseImages = shuffled.slice(0, 6);
       box-shadow: 0 10px 40px oklch(from var(--primary) l c h / 0.3);
     }
 
-    /* Process step hover enhancements */
-    .process-step {
-      border-top: 2px solid transparent;
-      transition: border-color 0.3s ease;
+    /* Process grid: remove right border on right column */
+    .process-step:nth-child(2n) {
+      border-right: none;
     }
 
-    .process-step:hover {
-      border-top-color: var(--primary);
+    @media (max-width: 767px) {
+      .process-step {
+        border-right: none !important;
+      }
     }
 
+    /* Process step hover */
     .process-step:hover .process-num {
-      transform: scale(1.1);
       color: var(--ring) !important;
     }
+
+    /* Column container */
+    .main-content-wrapper {
+      position: relative;
+    }
+
+    /* === Studio Intro === */
+    .studio-intro {
+      position: relative;
+      background: var(--background);
+    }
+
+    .studio-ghost-image {
+      position: absolute;
+      right: clamp(1rem, 3vw, 3rem);
+      top: 50%;
+      transform: translateY(-50%);
+      width: min(38vw, 520px);
+      pointer-events: none;
+      z-index: 1;
+      opacity: 0.05;
+      mask-image: radial-gradient(circle at center, black 34%, transparent 78%);
+      -webkit-mask-image: radial-gradient(circle at center, black 34%, transparent 78%);
+    }
+
+    .studio-ghost-image img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      filter: grayscale(1) contrast(1.05);
+    }
+
+    @media (max-width: 1023px) {
+      .studio-ghost-image {
+        width: min(62vw, 420px);
+        right: 0.5rem;
+        opacity: 0.03;
+      }
+    }
+
+    /* Layout */
+    .intro-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      position: relative;
+      z-index: 2;
+    }
+
+    @media (min-width: 1024px) {
+      .intro-layout {
+        grid-template-columns: 1fr 280px;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .intro-layout {
+        grid-template-columns: 1fr 320px;
+      }
+    }
+
+    /* Left: statement */
+    .intro-statement {
+      padding: 2.5rem 1.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    @media (min-width: 768px) {
+      .intro-statement {
+        padding: 3.5rem 2.5rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .intro-statement {
+        padding: 4.5rem 4rem 4.5rem clamp(2.5rem, 5vw, 5rem);
+      }
+    }
+
+    .intro-kicker {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.28em;
+      color: oklch(from var(--ring) l c h / 0.65);
+      margin-bottom: 1.5rem;
+    }
+
+    .intro-headline {
+      font-family: var(--font-sans);
+      font-weight: 200;
+      font-size: clamp(1.6rem, 3.2vw, 2.6rem);
+      line-height: 1.35;
+      letter-spacing: -0.01em;
+      color: var(--foreground);
+      max-width: 600px;
+      margin-bottom: 2.5rem;
+    }
+
+    .intro-actions {
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+    }
+
+    .intro-cta-primary {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.7rem 1.4rem;
+      background: oklch(from var(--primary) l c h / 0.95);
+      color: var(--primary-foreground);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      border: 1px solid var(--primary);
+      transition: all 0.3s ease;
+    }
+
+    .intro-cta-primary:hover {
+      filter: brightness(1.1);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 20px oklch(from var(--primary) l c h / 0.2);
+    }
+
+    .intro-cta-arrow {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      background: oklch(from var(--primary-foreground) l c h / 0.15);
+      font-size: 10px;
+      transition: transform 0.3s ease;
+    }
+
+    .intro-cta-primary:hover .intro-cta-arrow {
+      transform: translateX(2px);
+    }
+
+    .intro-cta-secondary {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--muted-foreground);
+      padding: 0.7rem 0;
+      border-bottom: 1px solid oklch(from var(--border) l c h / 0.7);
+      transition: all 0.3s ease;
+    }
+
+    .intro-cta-secondary:hover {
+      color: var(--foreground);
+      border-color: var(--foreground);
+    }
+
+    /* Right: sidebar */
+    .intro-sidebar {
+      display: flex;
+      flex-direction: row;
+      gap: 1.5rem;
+      padding: 0 1.5rem 2rem;
+      align-items: flex-start;
+    }
+
+    @media (min-width: 1024px) {
+      .intro-sidebar {
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+        border-left: 1px solid var(--border);
+        justify-content: space-between;
+      }
+    }
+
+    .intro-meta-stack {
+      display: flex;
+      gap: 1.5rem;
+      flex: 1;
+    }
+
+    @media (min-width: 1024px) {
+      .intro-meta-stack {
+        flex-direction: column;
+        gap: 0;
+      }
+    }
+
+    .intro-meta {
+      flex: 1;
+    }
+
+    @media (min-width: 1024px) {
+      .intro-meta {
+        padding: 1.25rem 1.5rem;
+        border-bottom: 1px solid oklch(from var(--border) l c h / 0.5);
+      }
+    }
+
+    .intro-meta-label {
+      display: block;
+      font-family: var(--font-mono);
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.22em;
+      color: oklch(from var(--muted-foreground) l c h / 0.45);
+      margin-bottom: 0.35rem;
+    }
+
+    .intro-meta-value {
+      display: block;
+      font-family: var(--font-sans);
+      font-size: 13px;
+      font-weight: 300;
+      color: var(--foreground);
+      letter-spacing: 0.01em;
+    }
+
   </style>
 
   <!-- Scroll Animations -->
@@ -465,9 +786,9 @@ const showcaseImages = shuffled.slice(0, 6);
       }
 
       // Set initial states for hero elements
-      gsap.set('.hero-title-line > span', { y: '100%' });
+      gsap.set('.hero-title-line > span', { y: '110%' });
       gsap.set('.hero-reveal', { opacity: 0, y: 30 });
-      gsap.set('.hero-cta', { opacity: 0, y: 20 });
+      gsap.set('.intro-reveal', { opacity: 0, y: 22 });
 
       // Subtle parallax on hero exterior photo
       const heroSection = document.querySelector('.hero-section');
@@ -475,64 +796,61 @@ const showcaseImages = shuffled.slice(0, 6);
 
       if (heroSection && photoLayer) {
         heroSection.addEventListener('mousemove', (e) => {
-          const xPos = (e.clientX / window.innerWidth - 0.5) * 8;
+          const xPos = (e.clientX / window.innerWidth - 0.5) * 12;
           const yPos = (e.clientY / window.innerHeight - 0.5) * 8;
 
           gsap.to(photoLayer, {
             x: xPos,
             y: yPos,
-            duration: 1.2,
+            duration: 1.8,
             ease: 'power2.out'
           });
         });
       }
 
-      // Hero photo reveal
-      gsap.set('.hero-photo-wrap', { scale: 1.1, opacity: 0 });
+      // Hero photo reveal - cinematic fade up
+      gsap.set('.hero-photo-wrap', { scale: 1.15, opacity: 0 });
       gsap.to('.hero-photo-wrap', {
         scale: 1,
         opacity: 1,
-        duration: 1.8,
-        ease: 'power2.out',
+        duration: 2.4,
+        ease: 'power3.out',
         delay: 0.1
       });
 
       // Hero Title Animation on Load
-      const heroTl = gsap.timeline({ delay: 0.3 });
+      const heroTl = gsap.timeline({ delay: 0.4 });
 
       heroTl
+        // Title lines sweep up
         .to('.hero-title-line > span', {
           y: '0%',
-          duration: 1.2,
-          stagger: 0.15,
+          duration: 1.4,
+          stagger: 0.2,
           ease: 'power4.out'
         })
+        // Reveal elements stagger in
         .to('.hero-reveal', {
           opacity: 1,
           y: 0,
-          duration: 0.8,
-          stagger: 0.1,
+          duration: 1,
+          stagger: 0.12,
           ease: 'power3.out'
-        }, '-=0.8')
-        .to('.hero-cta', {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          ease: 'power2.out'
-        }, '-=0.3');
+        }, '-=0.8');
 
-      // Hero Parallax on Scroll
-      gsap.to('.hero-grid', {
-        yPercent: 30,
-        ease: 'none',
+      gsap.to('.intro-reveal', {
+        opacity: 1,
+        y: 0,
+        stagger: 0.08,
+        duration: 0.8,
+        ease: 'power3.out',
         scrollTrigger: {
-          trigger: '.hero-section',
-          start: 'top top',
-          end: 'bottom top',
-          scrub: 1
+          trigger: '.studio-intro',
+          start: 'top 82%'
         }
       });
 
+      // Hero Parallax on Scroll
       gsap.to('.hero-title', {
         yPercent: 20,
         ease: 'none',
@@ -544,26 +862,29 @@ const showcaseImages = shuffled.slice(0, 6);
         }
       });
 
-      // Artists Section Animations
-      gsap.set('.artist-row', { opacity: 0, y: 60 });
-      gsap.set('.artists-title', { opacity: 0, y: 40 });
-
-      gsap.to('.artists-title', {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '.artists-section',
-          start: 'top 80%'
-        }
+      // Section Banner Animations
+      gsap.utils.toArray('.section-banner h2').forEach((title) => {
+        gsap.set(title, { opacity: 0, y: 40 });
+        gsap.to(title, {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: title.closest('.section-banner'),
+            start: 'top 85%'
+          }
+        });
       });
+
+      // Artists Section Animations
+      gsap.set('.artist-row', { opacity: 0, y: 40 });
 
       gsap.to('.artist-row', {
         opacity: 1,
         y: 0,
-        stagger: 0.1,
-        duration: 0.8,
+        stagger: 0.08,
+        duration: 0.7,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: '.artists-list',
@@ -572,26 +893,14 @@ const showcaseImages = shuffled.slice(0, 6);
       });
 
       // Showcase Section Animations
-      gsap.set('.showcase-title', { opacity: 0, y: 30 });
-      gsap.set('.showcase-item', { opacity: 0, y: 40, scale: 0.95 });
-
-      gsap.to('.showcase-title', {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '.showcase-section',
-          start: 'top 80%'
-        }
-      });
+      gsap.set('.showcase-item', { opacity: 0, y: 30, scale: 0.97 });
 
       gsap.to('.showcase-item', {
         opacity: 1,
         y: 0,
         scale: 1,
-        stagger: 0.1,
-        duration: 0.8,
+        stagger: 0.08,
+        duration: 0.7,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: '.showcase-grid',
@@ -600,45 +909,18 @@ const showcaseImages = shuffled.slice(0, 6);
       });
 
       // Process Section Animations
-      gsap.set('.process-step', { opacity: 0, y: 80, scale: 0.95 });
-      gsap.set('.process-title', { opacity: 0, y: 40 });
-
-      gsap.to('.process-title', {
-        opacity: 1,
-        y: 0,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '.process-section',
-          start: 'top 80%'
-        }
-      });
+      gsap.set('.process-step', { opacity: 0, y: 30 });
 
       gsap.to('.process-step', {
         opacity: 1,
         y: 0,
-        scale: 1,
-        stagger: 0.15,
-        duration: 1,
+        stagger: 0.1,
+        duration: 0.8,
         ease: 'power3.out',
         scrollTrigger: {
           trigger: '.process-grid',
           start: 'top 85%'
         }
-      });
-
-      // Process number parallax
-      gsap.utils.toArray('.process-num').forEach((num) => {
-        gsap.to(num, {
-          yPercent: -30,
-          ease: 'none',
-          scrollTrigger: {
-            trigger: num,
-            start: 'top bottom',
-            end: 'bottom top',
-            scrub: 1
-          }
-        });
       });
 
       // Footer Animations
@@ -681,31 +963,50 @@ const showcaseImages = shuffled.slice(0, 6);
     // Initialize when DOM is ready
     document.addEventListener('astro:page-load', initAnimations);
 
-    // Hide floating CTA when footer is in view
+    // Hide floating CTA when hero or footer is in view
     const initFloatingCTA = () => {
       const floatingCTA = document.getElementById('floating-cta');
       const footer = document.querySelector('.footer-section');
+      const hero = document.querySelector('.hero-section');
 
-      if (!floatingCTA || !footer) return;
+      if (!floatingCTA) return;
 
-      const observer = new IntersectionObserver(
-        (entries) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              floatingCTA.style.opacity = '0';
-              floatingCTA.style.pointerEvents = 'none';
-              floatingCTA.style.transform = 'translateY(20px)';
-            } else {
-              floatingCTA.style.opacity = '1';
-              floatingCTA.style.pointerEvents = 'auto';
-              floatingCTA.style.transform = 'translateY(0)';
-            }
-          });
-        },
-        { threshold: 0.1 }
-      );
+      let heroVisible = true;
+      let footerVisible = false;
 
-      observer.observe(footer);
+      const updateVisibility = () => {
+        if (heroVisible || footerVisible) {
+          floatingCTA.style.opacity = '0';
+          floatingCTA.style.pointerEvents = 'none';
+          floatingCTA.style.transform = 'translateY(20px)';
+        } else {
+          floatingCTA.style.opacity = '1';
+          floatingCTA.style.pointerEvents = 'auto';
+          floatingCTA.style.transform = 'translateY(0)';
+        }
+      };
+
+      if (hero) {
+        const heroObserver = new IntersectionObserver(
+          (entries) => {
+            heroVisible = entries[0].isIntersecting;
+            updateVisibility();
+          },
+          { threshold: 0.15 }
+        );
+        heroObserver.observe(hero);
+      }
+
+      if (footer) {
+        const footerObserver = new IntersectionObserver(
+          (entries) => {
+            footerVisible = entries[0].isIntersecting;
+            updateVisibility();
+          },
+          { threshold: 0.1 }
+        );
+        footerObserver.observe(footer);
+      }
     };
 
     document.addEventListener('astro:page-load', initFloatingCTA);
