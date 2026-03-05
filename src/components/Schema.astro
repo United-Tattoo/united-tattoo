@@ -19,7 +19,7 @@ const {
   type = 'website',
   title = SITE_TITLE,
   description = SITE_DESCRIPTION,
-  image = '/images/united-studio-main.jpg',
+  image = '/images/united-studio-main.avif',
   canonicalUrl = Astro.url.href,
   artistData
 } = Astro.props;
@@ -31,7 +31,7 @@ const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "TattooShop",
   "name": "United Tattoo",
-  "image": new URL('/images/united-studio-main.jpg', siteUrl).toString(),
+  "image": new URL('/images/united-studio-main.avif', siteUrl).toString(),
   "url": siteUrl,
   "telephone": "+17193229679", // Placeholder, should be updated with real phone
   "address": {
