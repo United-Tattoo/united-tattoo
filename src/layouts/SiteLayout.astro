@@ -131,9 +131,6 @@ const ogImage = new URL(image, siteUrl).toString();
         ScrollTrigger.refresh();
       });
 		</script>
-		<!-- Subtle background texture -->
-		<div class="fixed inset-0 noise pointer-events-none z-[-1]"></div>
-
 		{!hideAnnouncement && <Announcement message={announcement} />}
 		<HeaderNav currentPath={currentPath} hasAnnouncement={!hideAnnouncement} />
 

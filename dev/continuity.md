@@ -1,5 +1,53 @@
 # Continuity Log
 
+## 2026-03-04 - Homepage Visual Overhaul: Added Life
+
+### Changes Made (`src/pages/index.astro`)
+
+1. **Scrolling Work Marquee** — Added between hero and artists section
+   - Two rows of real portfolio images scrolling in opposite directions (CSS-only infinite animation)
+   - Pulls images dynamically from all artist `galleryDir/Portfolio/` folders at build time (max 5 per artist)
+   - Pauses on hover, shows artist credit overlay
+   - Masked edges for clean fade-in/out
+   - Subtle warm ambient glow behind the strip
+
+2. **"From the Chair" Featured Work Mosaic** — Added between artists and methodology
+   - Bento grid layout with 6 curated portfolio images (asymmetric: first image spans 2 rows, 4th spans 2 cols)
+   - Hover reveals artist name + zoom effect
+   - "View all artists" link in header
+   - GSAP scroll-triggered staggered reveal animation
+
+3. **Ambient Warm Glows** — Added subtle radial gradient orbs (terracotta/burnt-orange at very low opacity) behind marquee, showcase, and methodology sections to break up flat black backgrounds
+
+4. **Build-time Image Collection** — Added `fs`/`path` imports to frontmatter to scan portfolio directories, collecting `.avif` files from each artist's gallery for the marquee and showcase
+
+### Technical Notes
+- Marquee is pure CSS animation (`marquee-left`/`marquee-right` keyframes), no JS needed
+- Images are duplicated in the marquee HTML for seamless infinite scroll (`[...row, ...row]`)
+- Showcase grid uses GSAP ScrollTrigger for entrance animations (opacity + y + scale stagger)
+- All images use `loading="lazy"` for performance
+
+---
+
+## 2026-03-04 - UI Polish Pass & Grain Removal
+
+### Changes Made
+
+1. **Announcement bar** (`src/components/Announcement.astro`) — Made booking month dynamic using `new Date().toLocaleString()` instead of hardcoded "February 2026"
+2. **Copyright year** — Made dynamic (`new Date().getFullYear()`) in both `EditorialFooter.astro` and `SiteFooter.astro`
+3. **FAQ 404 fix** (`src/components/EditorialFooter.astro`) — Changed dead `/faq` link to `/aftercare` in footer directory
+4. **GSAP dead code** (`src/pages/index.astro`) — Removed `.ingredient-item` animation references (class doesn't exist in DOM)
+5. **Booking form contrast** (`src/pages/booking.astro`) — Changed placeholder text from `neutral-700` to `neutral-500` for better readability
+6. **Grain/noise removal** — Removed noise texture overlay from `SiteLayout.astro` (global background) and `HeaderNav.astro` (mobile menu)
+
+### Still Needs Attention (Content from Christy)
+
+- **Kaori Cedre** — Still using `placeholder-user.jpg` as portrait. Needs a real photo.
+- **Pako Martinez** — Portrait file (`pako-martinez-portrait.jpg`) is an anchor tattoo, not a face photo.
+- **Steven Sole Cedre** — Portrait file (`steven-sole-cedre.jpg`) is a pin-up tattoo, not a face photo.
+
+---
+
 ## 2026-03-04 - Artist Profile Updates: Heather Santistevan & Kaori Cedre
 
 ### Changes Made

@@ -8,10 +8,41 @@ import FloatingCTA from '../components/FloatingCTA.astro';
 import ScrollIndicator from '../components/ScrollIndicator.astro';
 import GridBackground from '../components/GridBackground.astro';
 import SectionHeader from '../components/SectionHeader.astro';
+import fs from 'node:fs';
+import path from 'node:path';
 
 export const prerender = true;
 
 const artists = await getCollection('artists');
+
+// Collect portfolio images from all artists for the marquee & showcase
+const publicDir = path.join(process.cwd(), 'public');
+const allPortfolioImages: { src: string; artist: string }[] = [];
+
+for (const artist of artists) {
+  const portfolioPath = path.join(publicDir, artist.data.galleryDir, 'Portfolio');
+  try {
+    if (fs.existsSync(portfolioPath)) {
+      const files = fs.readdirSync(portfolioPath)
+        .filter((file) => /\.avif$/i.test(file))
+        .slice(0, 5); // max 5 per artist
+      for (const file of files) {
+        allPortfolioImages.push({
+          src: `/${artist.data.galleryDir}/Portfolio/${file}`,
+          artist: artist.data.name,
+        });
+      }
+    }
+  } catch (_e) { /* skip */ }
+}
+
+// Shuffle deterministically and split into two rows for marquee
+const shuffled = allPortfolioImages.sort((a, b) => a.src.localeCompare(b.src));
+const marqueeRow1 = shuffled.filter((_, i) => i % 2 === 0).slice(0, 10);
+const marqueeRow2 = shuffled.filter((_, i) => i % 2 === 1).slice(0, 10);
+
+// Pick 6 varied images for the featured work mosaic
+const showcaseImages = shuffled.slice(0, 6);
 ---
 
 <SiteLayout title={SITE_DESCRIPTION} removeMainPadding={true} hideFooter={true}>
@@ -97,6 +128,36 @@ const artists = await getCollection('artists');
     <ScrollIndicator class="hero-reveal" />
   </section>
 
+  <!-- Work Marquee: Infinite Scroll Strip -->
+  <section class="marquee-section relative z-20 overflow-hidden border-t border-white/10 py-8 md:py-12" data-scroll-section>
+    <!-- Warm ambient glow behind marquee -->
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full opacity-[0.07] pointer-events-none" style="background: radial-gradient(ellipse, var(--color-burnt-orange), transparent 70%);"></div>
+
+    <!-- Row 1 - scrolls left -->
+    <div class="marquee-track mb-4">
+      <div class="marquee-scroll">
+        {[...marqueeRow1, ...marqueeRow1].map((img) => (
+          <div class="marquee-item">
+            <img src={img.src} alt={`Tattoo by ${img.artist}`} loading="lazy" />
+            <span class="marquee-credit">{img.artist}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Row 2 - scrolls right -->
+    <div class="marquee-track marquee-reverse">
+      <div class="marquee-scroll">
+        {[...marqueeRow2, ...marqueeRow2].map((img) => (
+          <div class="marquee-item">
+            <img src={img.src} alt={`Tattoo by ${img.artist}`} loading="lazy" />
+            <span class="marquee-credit">{img.artist}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- Artists Section: The Index -->
   <section id="artists" class="artists-section relative z-20 border-t border-white/10" data-scroll-section>
     <SectionSidebar
@@ -162,8 +223,50 @@ const artists = await getCollection('artists');
     </SectionSidebar>
   </section>
 
+  <!-- Featured Work: Visual Showcase -->
+  <section class="showcase-section relative z-20 border-t border-white/10 py-16 md:py-24 px-6 md:px-12 lg:px-16" data-scroll-section>
+    <!-- Ambient warm glow -->
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-[0.04] pointer-events-none" style="background: radial-gradient(ellipse, var(--color-terracotta), transparent 70%);"></div>
+
+    <div class="max-w-7xl mx-auto">
+      <div class="flex items-baseline justify-between mb-12">
+        <div>
+          <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 block mb-3">Recent Work</span>
+          <h2 class="showcase-title font-display text-4xl md:text-5xl lg:text-6xl italic text-white">From the chair</h2>
+        </div>
+        <a href="/artists" class="hidden md:flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-neutral-400 hover:text-white transition-colors group">
+          View all artists
+          <span class="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all text-[10px]">→</span>
+        </a>
+      </div>
+
+      <!-- Bento Grid -->
+      <div class="showcase-grid grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-3">
+        {showcaseImages.map((img, i) => (
+          <div class:list={[
+            "showcase-item group relative overflow-hidden",
+            i === 0 ? "row-span-2" : "",
+            i === 3 ? "md:col-span-2" : ""
+          ]}>
+            <img
+              src={img.src}
+              alt={`Tattoo by ${img.artist}`}
+              loading="lazy"
+              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+            <span class="absolute bottom-3 left-3 font-mono text-[10px] uppercase tracking-widest text-white/90 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">{img.artist}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
   <!-- Process Section: The Methodology -->
   <section id="process" class="process-section relative z-20 border-t border-white/10" data-scroll-section>
+    <!-- Ambient warm glow behind methodology -->
+    <div class="absolute bottom-0 left-1/4 w-[800px] h-[400px] rounded-full opacity-[0.03] pointer-events-none" style="background: radial-gradient(ellipse, var(--color-burnt-orange), transparent 60%);"></div>
+
     <SectionSidebar
       sectionNum="Section 02"
       label="Methodology"
@@ -212,6 +315,100 @@ const artists = await getCollection('artists');
 
   <!-- Micro-interactions & Hover Styles -->
   <style>
+    /* === Marquee === */
+    .marquee-track {
+      overflow: hidden;
+      mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+      -webkit-mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+    }
+
+    .marquee-scroll {
+      display: flex;
+      gap: 0.75rem;
+      width: max-content;
+      animation: marquee-left 40s linear infinite;
+    }
+
+    .marquee-reverse .marquee-scroll {
+      animation: marquee-right 45s linear infinite;
+    }
+
+    .marquee-item {
+      position: relative;
+      width: 240px;
+      height: 180px;
+      flex-shrink: 0;
+      overflow: hidden;
+      border-radius: 2px;
+    }
+
+    @media (min-width: 768px) {
+      .marquee-item {
+        width: 320px;
+        height: 220px;
+      }
+    }
+
+    .marquee-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .marquee-item:hover img {
+      transform: scale(1.08);
+    }
+
+    .marquee-credit {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 6px 10px;
+      font-family: 'Geist Mono', monospace;
+      font-size: 9px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: white;
+      background: linear-gradient(to top, rgba(0,0,0,0.7), transparent);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+
+    .marquee-item:hover .marquee-credit {
+      opacity: 1;
+    }
+
+    @keyframes marquee-left {
+      0% { transform: translateX(0); }
+      100% { transform: translateX(-50%); }
+    }
+
+    @keyframes marquee-right {
+      0% { transform: translateX(-50%); }
+      100% { transform: translateX(0); }
+    }
+
+    /* Pause marquee on hover */
+    .marquee-track:hover .marquee-scroll {
+      animation-play-state: paused;
+    }
+
+    /* === Showcase Grid === */
+    .showcase-item {
+      aspect-ratio: 1;
+      border-radius: 2px;
+    }
+
+    .showcase-item.row-span-2 {
+      aspect-ratio: auto;
+    }
+
+    .showcase-item img {
+      border-radius: 2px;
+    }
+
     /* Artist name underline on hover */
     .artist-row:hover h3 {
       background-image: linear-gradient(to right, var(--color-burnt-orange), var(--color-terracotta));
@@ -267,7 +464,6 @@ const artists = await getCollection('artists');
       gsap.set('.hero-title-line > span', { y: '100%' });
       gsap.set('.hero-reveal', { opacity: 0, y: 30 });
       gsap.set('.hero-cta', { opacity: 0, y: 20 });
-      gsap.set('.ingredient-item', { opacity: 0, x: -20 });
 
       // Parallax Mouse Effect for Hero Dove
       const heroSection = document.querySelector('.hero-section');
@@ -304,13 +500,6 @@ const artists = await getCollection('artists');
           stagger: 0.1,
           ease: 'power3.out'
         }, '-=0.8')
-        .to('.ingredient-item', {
-          opacity: 1,
-          x: 0,
-          duration: 0.6,
-          stagger: 0.1,
-          ease: 'power2.out'
-        }, '-=0.5')
         .to('.hero-cta', {
           opacity: 1,
           y: 0,
@@ -365,6 +554,34 @@ const artists = await getCollection('artists');
         scrollTrigger: {
           trigger: '.artists-list',
           start: 'top 80%'
+        }
+      });
+
+      // Showcase Section Animations
+      gsap.set('.showcase-title', { opacity: 0, y: 30 });
+      gsap.set('.showcase-item', { opacity: 0, y: 40, scale: 0.95 });
+
+      gsap.to('.showcase-title', {
+        opacity: 1,
+        y: 0,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.showcase-section',
+          start: 'top 80%'
+        }
+      });
+
+      gsap.to('.showcase-item', {
+        opacity: 1,
+        y: 0,
+        scale: 1,
+        stagger: 0.1,
+        duration: 0.8,
+        ease: 'power3.out',
+        scrollTrigger: {
+          trigger: '.showcase-grid',
+          start: 'top 85%'
         }
       });
 

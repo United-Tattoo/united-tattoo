@@ -4,7 +4,8 @@ interface Props {
   message?: string;
 }
 
-const { message = "Now booking for February 2026" } = Astro.props;
+const currentMonth = new Date().toLocaleString('en-US', { month: 'long', year: 'numeric' });
+const { message = `Now booking for ${currentMonth}` } = Astro.props;
 ---
 
 <div class="fixed top-0 left-0 w-full h-8 bg-[#0a0a0a] border-b border-white/5 z-[70] flex items-center justify-center overflow-hidden">
