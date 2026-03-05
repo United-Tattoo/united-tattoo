@@ -23,7 +23,7 @@ const selectedValue = selectedOption?.value || '';
 ---
 
 <div class="custom-select-wrapper" data-select-id={id}>
-  <label for={id} class="block font-mono text-[10px] uppercase tracking-widest text-neutral-500 mb-2">
+  <label for={id} class="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2">
     {label}
   </label>
 
@@ -40,22 +40,22 @@ const selectedValue = selectedOption?.value || '';
     <!-- Trigger Button -->
     <button
       type="button"
-      class="custom-select-trigger w-full bg-transparent border-b border-white/20 py-4 text-left font-mono text-sm transition-all duration-300 hover:border-white/40 focus:outline-none flex items-center justify-between gap-4 group"
+      class="custom-select-trigger w-full bg-transparent border-b border-input py-4 text-left font-mono text-sm transition-all duration-300 hover:border-ring focus:outline-none flex items-center justify-between gap-4 group"
       aria-haspopup="listbox"
       aria-expanded="false"
       data-value={selectedValue}
     >
-      <span class="custom-select-value truncate text-neutral-300 group-hover:text-white transition-colors" data-placeholder={!selectedValue}>
+      <span class="custom-select-value truncate text-secondary-foreground group-hover:text-foreground transition-colors" data-placeholder={!selectedValue}>
         {displayValue}
       </span>
       <span class="custom-select-arrow transition-transform duration-300">
-        <iconify-icon icon="solar:alt-arrow-down-linear" class="text-neutral-500 group-hover:text-neutral-300"></iconify-icon>
+        <iconify-icon icon="solar:alt-arrow-down-linear" class="text-muted-foreground group-hover:text-secondary-foreground"></iconify-icon>
       </span>
     </button>
 
     <!-- Dropdown Menu -->
     <div
-      class="custom-select-dropdown absolute top-full left-0 right-0 mt-2 bg-[#0a0a0a] border border-white/10 opacity-0 invisible translate-y-2 transition-all duration-300 z-[70] max-h-[300px] overflow-y-auto overscroll-contain shadow-2xl shadow-black/50"
+      class="custom-select-dropdown absolute top-full left-0 right-0 mt-2 bg-card border border-border opacity-0 invisible translate-y-2 transition-all duration-300 z-[70] max-h-[300px] overflow-y-auto overscroll-contain shadow-2xl shadow-black/50"
       data-lenis-prevent
     >
       <ul role="listbox" class="py-2">
@@ -63,7 +63,7 @@ const selectedValue = selectedOption?.value || '';
           <li
             role="option"
             data-value=""
-            class="custom-select-option px-4 py-4 font-mono text-sm text-neutral-500 cursor-pointer hover:bg-white/5 transition-colors"
+            class="custom-select-option px-4 py-4 font-mono text-sm text-muted-foreground cursor-pointer hover:bg-secondary transition-colors"
             aria-selected={!selectedValue}
           >
             {placeholder}
@@ -73,12 +73,12 @@ const selectedValue = selectedOption?.value || '';
           <li
             role="option"
             data-value={option.value}
-            class={`custom-select-option px-4 py-4 font-mono text-sm cursor-pointer hover:bg-white/5 transition-colors flex items-center justify-between ${option.value === selectedValue ? 'text-white bg-white/5' : 'text-neutral-300'}`}
+            class={`custom-select-option px-4 py-4 font-mono text-sm cursor-pointer hover:bg-secondary transition-colors flex items-center justify-between ${option.value === selectedValue ? 'text-foreground bg-secondary' : 'text-secondary-foreground'}`}
             aria-selected={option.value === selectedValue}
           >
             <span>{option.label}</span>
             {option.value === selectedValue && (
-              <iconify-icon icon="solar:check-bold" class="text-white text-xs"></iconify-icon>
+              <iconify-icon icon="solar:check-bold" class="text-foreground text-xs"></iconify-icon>
             )}
           </li>
         ))}
@@ -87,18 +87,18 @@ const selectedValue = selectedOption?.value || '';
   </div>
 
   {hint && (
-    <p class="font-mono text-[10px] text-neutral-600 mt-2">{hint}</p>
+    <p class="font-mono text-[10px] text-muted-foreground/60 mt-2">{hint}</p>
   )}
 </div>
 
 <style>
   .custom-select-trigger[data-placeholder="true"] .custom-select-value,
   .custom-select-value[data-placeholder="true"] {
-    color: rgb(115 115 115); /* neutral-500 */
+    color: var(--muted-foreground);
   }
 
   .custom-select.open .custom-select-trigger {
-    border-color: var(--color-terracotta, #D87850);
+    border-color: var(--ring);
   }
 
   .custom-select.open .custom-select-arrow {
@@ -120,12 +120,12 @@ const selectedValue = selectedOption?.value || '';
   }
 
   .custom-select-dropdown::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
+    background: oklch(from var(--foreground) l c h / 0.1);
     border-radius: 2px;
   }
 
   .custom-select-dropdown::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: oklch(from var(--foreground) l c h / 0.2);
   }
 </style>
 
@@ -178,16 +178,16 @@ const selectedValue = selectedOption?.value || '';
           options.forEach((opt) => {
             const isSelected = (opt as HTMLElement).dataset.value === value;
             opt.setAttribute('aria-selected', isSelected ? 'true' : 'false');
-            opt.classList.toggle('text-white', isSelected);
-            opt.classList.toggle('bg-white/5', isSelected);
-            opt.classList.toggle('text-neutral-300', !isSelected);
+            opt.classList.toggle('text-foreground', isSelected);
+            opt.classList.toggle('bg-secondary', isSelected);
+            opt.classList.toggle('text-secondary-foreground', !isSelected);
 
             // Toggle check icon
             const checkIcon = opt.querySelector('iconify-icon[icon="solar:check-bold"]');
             if (isSelected && !checkIcon) {
               const icon = document.createElement('iconify-icon');
               icon.setAttribute('icon', 'solar:check-bold');
-              icon.className = 'text-white text-xs';
+              icon.className = 'text-foreground text-xs';
               opt.appendChild(icon);
             } else if (!isSelected && checkIcon) {
               checkIcon.remove();

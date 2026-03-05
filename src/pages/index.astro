@@ -56,17 +56,21 @@ const showcaseImages = shuffled.slice(0, 6);
     <!-- Grid Background -->
     <GridBackground opacity={40} class="hero-grid" />
 
-    <!-- Dove - Positioned Right, Smaller -->
-    <div class="absolute right-0 top-0 bottom-0 w-full lg:w-2/3 z-0 pointer-events-none overflow-hidden">
-      <div class="absolute inset-0 mix-blend-screen opacity-70 hero-dove-layer">
-        <img src="/dove.avif" alt="" class="w-full h-full object-contain object-right grayscale contrast-125" />
+    <!-- Exterior Photo -->
+    <div class="absolute right-0 top-0 bottom-0 w-full lg:w-3/5 z-0 pointer-events-none overflow-hidden hero-photo-wrap">
+      <div class="absolute inset-0 hero-photo-layer">
+        <img src="/images/united-exterior.avif" alt="United Tattoo storefront" class="w-full h-full object-cover object-center" />
       </div>
-      <!-- Gradient fade to left - softer charcoal tones -->
-      <div class="absolute inset-0 bg-gradient-to-r from-bg-deep via-bg-deep/70 to-transparent"></div>
+      <!-- Gradient fade to left -->
+      <div class="absolute inset-0 bg-gradient-to-r from-background via-background/80 to-background/20"></div>
+      <!-- Bottom fade -->
+      <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-transparent"></div>
+      <!-- Warm color wash to match site palette -->
+      <div class="absolute inset-0 mix-blend-multiply opacity-20" style="background: linear-gradient(135deg, var(--primary), transparent 60%);"></div>
     </div>
 
-    <!-- Vignette overlay -->
-    <div class="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-t from-bg-deep via-transparent to-bg-deep/60"></div>
+    <!-- Top vignette -->
+    <div class="absolute inset-0 z-[1] pointer-events-none bg-gradient-to-b from-background/70 via-transparent to-transparent"></div>
 
     <!-- Hero Content Grid -->
     <div class="relative z-10 flex-1 grid grid-cols-1 lg:grid-cols-12 pt-24 lg:pt-32">
@@ -74,36 +78,36 @@ const showcaseImages = shuffled.slice(0, 6);
       <div class="col-span-1 lg:col-span-7 flex flex-col justify-end px-6 md:px-12 lg:px-16 pb-16 md:pb-24 lg:pb-32">
         <!-- Label -->
         <div class="hero-reveal mb-6">
-          <span class="font-mono text-xs uppercase tracking-[0.2em] text-neutral-300 font-medium">Custom · Flash · Freedom</span>
+          <span class="font-mono text-xs uppercase tracking-[0.2em] text-secondary-foreground font-medium">Custom · Flash · Freedom</span>
         </div>
 
         <!-- Title -->
-        <h1 class="hero-title text-7xl md:text-8xl lg:text-9xl leading-[0.85] font-normal tracking-tight uppercase mb-8 md:mb-10">
-          <span class="hero-title-line block overflow-hidden"><span class="inline-block text-white">United</span></span>
-          <span class="hero-title-line block overflow-hidden"><span class="italic font-light text-neutral-500 inline-block">Tattoo</span></span>
+        <h1 class="hero-title text-7xl md:text-8xl lg:text-9xl leading-[0.85] font-semibold tracking-tight uppercase mb-8 md:mb-10">
+          <span class="hero-title-line block overflow-hidden"><span class="inline-block text-foreground">United</span></span>
+          <span class="hero-title-line block overflow-hidden"><span class="italic font-light text-muted-foreground inline-block">Tattoo</span></span>
         </h1>
 
         <!-- Tagline -->
-        <p class="hero-reveal text-neutral-400 text-base md:text-lg lg:text-xl max-w-lg leading-relaxed font-light mb-10">
+        <p class="hero-reveal text-muted-foreground text-base md:text-lg lg:text-xl max-w-lg leading-relaxed font-light mb-10">
           A collective dedicated to the art of release. Where the timeless torch of tradition meets the modern expression of self.
         </p>
 
         <!-- Hero Info Bar -->
-        <div class="hero-reveal flex flex-wrap items-center gap-8 pt-6 border-t" style="border-color: var(--color-burnt-orange);">
+        <div class="hero-reveal flex flex-wrap items-center gap-8 pt-6 border-t border-primary">
           <div>
-            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-1" style="color: var(--color-moss);">Location</span>
-            <span class="font-mono text-sm text-white">Fountain, CO</span>
+            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-1 text-muted-foreground">Location</span>
+            <span class="font-mono text-sm text-foreground">Fountain, CO</span>
           </div>
           <div>
-            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-1" style="color: var(--color-moss);">Hours</span>
-            <span class="font-mono text-sm text-white">Sun–Sat · 10am–8pm</span>
+            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-1 text-muted-foreground">Hours</span>
+            <span class="font-mono text-sm text-foreground">Sun–Sat · 10am–8pm</span>
           </div>
           <div>
-            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-1" style="color: var(--color-moss);">Artists</span>
-            <span class="font-mono text-sm text-white">{artists.length} in residence</span>
+            <span class="font-mono text-xs uppercase tracking-[0.2em] block mb-1 text-muted-foreground">Artists</span>
+            <span class="font-mono text-sm text-foreground">{artists.length} in residence</span>
           </div>
           <div class="hidden lg:block ml-auto">
-             <a href="/booking" class="px-6 py-3 border border-white/20 hover:bg-white hover:text-black hover:border-white transition-all duration-300 font-mono text-xs uppercase tracking-widest">
+             <a href="/booking" class="px-6 py-3 border border-input hover:bg-foreground hover:text-background hover:border-foreground transition-all duration-300 font-mono text-xs uppercase tracking-widest">
                Book Consultation
              </a>
           </div>
@@ -111,16 +115,16 @@ const showcaseImages = shuffled.slice(0, 6);
 
         <!-- Mobile CTA -->
         <div class="lg:hidden mt-10">
-          <a href="/booking" class="group block w-full py-5 text-black text-center font-mono text-sm uppercase tracking-[0.15em] transition-all shadow-lg shadow-white/10" style="background-color: var(--color-burnt-orange);">
+          <a href="/booking" class="group block w-full py-5 bg-primary text-primary-foreground text-center font-mono text-sm uppercase tracking-[0.15em] transition-all shadow-lg shadow-primary/20">
             <span class="flex items-center justify-center gap-3">
               <span class="group-hover:translate-x-1 transition-transform">Book a session</span>
-              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs transition-colors" style="background-color: var(--color-burnt-dark); color: white;">→</span>
+              <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs bg-primary-foreground text-primary transition-colors">→</span>
             </span>
           </a>
         </div>
       </div>
 
-      <!-- Right Column - Empty space for dove -->
+      <!-- Right Column - Space for exterior photo -->
       <div class="hidden lg:block col-span-5"></div>
     </div>
 
@@ -129,9 +133,9 @@ const showcaseImages = shuffled.slice(0, 6);
   </section>
 
   <!-- Work Marquee: Infinite Scroll Strip -->
-  <section class="marquee-section relative z-20 overflow-hidden border-t border-white/10 py-8 md:py-12" data-scroll-section>
+  <section class="marquee-section relative z-20 overflow-hidden border-t border-border py-8 md:py-12" data-scroll-section>
     <!-- Warm ambient glow behind marquee -->
-    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full opacity-[0.07] pointer-events-none" style="background: radial-gradient(ellipse, var(--color-burnt-orange), transparent 70%);"></div>
+    <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] rounded-full opacity-[0.07] pointer-events-none" style="background: radial-gradient(ellipse, var(--primary), transparent 70%);"></div>
 
     <!-- Row 1 - scrolls left -->
     <div class="marquee-track mb-4">
@@ -159,7 +163,7 @@ const showcaseImages = shuffled.slice(0, 6);
   </section>
 
   <!-- Artists Section: The Index -->
-  <section id="artists" class="artists-section relative z-20 border-t border-white/10" data-scroll-section>
+  <section id="artists" class="artists-section relative z-20 border-t border-border" data-scroll-section>
     <SectionSidebar
       sectionNum="Section 01"
       label="The Team"
@@ -176,10 +180,10 @@ const showcaseImages = shuffled.slice(0, 6);
       <!-- Artists List -->
       <div class="artists-list">
         {artists.map((artist, index) => (
-          <div class="artist-row group relative border-b border-white/10 hover:bg-white/[0.02] transition-colors duration-300">
+          <div class="artist-row group relative border-b border-border hover:bg-secondary transition-colors duration-300">
             <a href={`/artists/${artist.id}`} class="block px-6 md:px-8 py-8 md:py-10 flex flex-col md:flex-row items-baseline md:items-center justify-between gap-4">
               <div class="flex items-center md:items-baseline gap-4 md:gap-8 md:w-1/2">
-                <span class="font-mono text-sm text-neutral-700 group-hover:text-white transition-colors">
+                <span class="font-mono text-sm text-muted-foreground/40 group-hover:text-foreground transition-colors">
                   {(index + 1).toString().padStart(2, '0')}
                 </span>
                 
@@ -187,30 +191,30 @@ const showcaseImages = shuffled.slice(0, 6);
                 <img 
                   src={artist.data.portrait} 
                   alt="" 
-                  class="w-12 h-12 rounded-full object-cover lg:hidden border border-white/10" 
+                  class="w-12 h-12 rounded-full object-cover lg:hidden border border-border" 
                 />
 
-                <h3 class="text-2xl md:text-3xl lg:text-4xl font-normal font-display italic text-white group-hover:translate-x-2 transition-transform duration-300">
+                <h3 class="text-2xl md:text-3xl lg:text-4xl font-semibold font-sans text-foreground group-hover:translate-x-2 transition-transform duration-300">
                   {artist.data.name}
                 </h3>
               </div>
 
               <div class="flex items-center justify-between w-full md:w-auto gap-6 md:gap-10">
                 <div class="flex flex-col">
-                  <span class="font-mono text-xs uppercase tracking-[0.2em] mb-1" style="color: var(--color-moss);">Specialty</span>
-                  <span class="font-mono text-sm text-neutral-300">
+                  <span class="font-mono text-xs uppercase tracking-[0.2em] mb-1 text-muted-foreground">Specialty</span>
+                  <span class="font-mono text-sm text-secondary-foreground">
                     {artist.data.specialties ? artist.data.specialties[0] : 'Custom'}
                   </span>
                 </div>
 
-                <span class="w-9 h-9 rounded-full flex items-center justify-center text-white opacity-0 group-hover:opacity-100 transition-all duration-300" style="background-color: var(--color-terracotta);">
+                <span class="w-9 h-9 rounded-full flex items-center justify-center text-primary-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 bg-primary">
                   ↗
                 </span>
               </div>
             </a>
 
             <!-- Hover Image Reveal (Desktop) -->
-            <div class="hidden lg:block absolute top-1/2 right-24 -translate-y-1/2 w-[180px] aspect-[3/4] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 bg-neutral-900 border border-white/5 rotate-2 group-hover:rotate-3 transition-transform shadow-2xl">
+            <div class="hidden lg:block absolute top-1/2 right-24 -translate-y-1/2 w-[180px] aspect-[3/4] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 bg-card border border-border rotate-2 group-hover:rotate-3 transition-transform shadow-2xl">
               <img
                 src={artist.data.portrait}
                 alt={artist.data.name}
@@ -224,19 +228,19 @@ const showcaseImages = shuffled.slice(0, 6);
   </section>
 
   <!-- Featured Work: Visual Showcase -->
-  <section class="showcase-section relative z-20 border-t border-white/10 py-16 md:py-24 px-6 md:px-12 lg:px-16" data-scroll-section>
+  <section class="showcase-section relative z-20 border-t border-border py-16 md:py-24 px-6 md:px-12 lg:px-16" data-scroll-section>
     <!-- Ambient warm glow -->
-    <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-[0.04] pointer-events-none" style="background: radial-gradient(ellipse, var(--color-terracotta), transparent 70%);"></div>
+    <div class="absolute top-0 right-0 w-[500px] h-[500px] rounded-full opacity-[0.04] pointer-events-none" style="background: radial-gradient(ellipse, var(--primary), transparent 70%);"></div>
 
     <div class="max-w-7xl mx-auto">
       <div class="flex items-baseline justify-between mb-12">
         <div>
-          <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-neutral-500 block mb-3">Recent Work</span>
-          <h2 class="showcase-title font-display text-4xl md:text-5xl lg:text-6xl italic text-white">From the chair</h2>
+          <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground block mb-3">Recent Work</span>
+          <h2 class="showcase-title font-sans text-4xl md:text-5xl lg:text-6xl font-semibold text-foreground">From the chair</h2>
         </div>
-        <a href="/artists" class="hidden md:flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-neutral-400 hover:text-white transition-colors group">
+        <a href="/artists" class="hidden md:flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-muted-foreground hover:text-foreground transition-colors group">
           View all artists
-          <span class="w-6 h-6 rounded-full border border-white/20 flex items-center justify-center group-hover:bg-white group-hover:text-black transition-all text-[10px]">→</span>
+          <span class="w-6 h-6 rounded-full border border-input flex items-center justify-center group-hover:bg-foreground group-hover:text-background transition-all text-[10px]">→</span>
         </a>
       </div>
 
@@ -263,9 +267,9 @@ const showcaseImages = shuffled.slice(0, 6);
   </section>
 
   <!-- Process Section: The Methodology -->
-  <section id="process" class="process-section relative z-20 border-t border-white/10" data-scroll-section>
+  <section id="process" class="process-section relative z-20 border-t border-border" data-scroll-section>
     <!-- Ambient warm glow behind methodology -->
-    <div class="absolute bottom-0 left-1/4 w-[800px] h-[400px] rounded-full opacity-[0.03] pointer-events-none" style="background: radial-gradient(ellipse, var(--color-burnt-orange), transparent 60%);"></div>
+    <div class="absolute bottom-0 left-1/4 w-[800px] h-[400px] rounded-full opacity-[0.03] pointer-events-none" style="background: radial-gradient(ellipse, var(--primary), transparent 60%);"></div>
 
     <SectionSidebar
       sectionNum="Section 02"
@@ -281,24 +285,24 @@ const showcaseImages = shuffled.slice(0, 6);
       />
 
       <!-- Grid -->
-      <div class="process-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-white/5 border-l border-white/5">
+      <div class="process-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-px bg-border border-l border-border">
         {[
           { num: '01', title: 'Consultation', desc: 'Share your vision. We\'ll shape your idea together and match you with the right artist.', icon: 'solar:chat-line-linear' },
           { num: '02', title: 'Design', desc: 'Your artist creates a custom piece tailored to your body and style.', icon: 'solar:pen-new-square-linear' },
           { num: '03', title: 'Session', desc: 'Get inked in our clean, comfortable studio with experienced professionals.', icon: 'ph:needle' },
           { num: '04', title: 'Aftercare', desc: 'We guide you through healing so your artwork stays vibrant for life.', icon: 'solar:heart-linear' }
         ].map((step, i) => (
-          <div class="process-step group px-6 py-10 lg:py-12 min-h-[280px] flex flex-col justify-between bg-bg-deep hover:bg-white/[0.02] transition-colors duration-300 border-b border-white/5 lg:border-b-0">
+          <div class="process-step group px-6 py-10 lg:py-12 min-h-[280px] flex flex-col justify-between bg-background hover:bg-secondary transition-colors duration-300 border-b border-border lg:border-b-0">
             <div class="flex justify-between items-start mb-6">
-              <span class="process-num font-mono text-4xl lg:text-5xl font-light transition-colors" style="color: var(--color-burnt-orange);">
+              <span class="process-num font-mono text-4xl lg:text-5xl font-light transition-colors text-primary">
                 {step.num}
               </span>
-              <iconify-icon icon={step.icon} class="group-hover:text-white transition-colors text-xl lg:text-2xl" style="color: var(--color-sage);"></iconify-icon>
+              <iconify-icon icon={step.icon} class="group-hover:text-foreground transition-colors text-xl lg:text-2xl text-muted-foreground"></iconify-icon>
             </div>
 
             <div class="process-content">
-              <h3 class="font-display text-xl lg:text-2xl italic text-white mb-3">{step.title}</h3>
-              <p class="font-mono text-sm lg:text-base text-neutral-400 leading-relaxed">
+              <h3 class="font-sans text-xl lg:text-2xl font-semibold text-foreground mb-3">{step.title}</h3>
+              <p class="font-mono text-sm lg:text-base text-muted-foreground leading-relaxed">
                 {step.desc}
               </p>
             </div>
@@ -411,7 +415,7 @@ const showcaseImages = shuffled.slice(0, 6);
 
     /* Artist name underline on hover */
     .artist-row:hover h3 {
-      background-image: linear-gradient(to right, var(--color-burnt-orange), var(--color-terracotta));
+      background-image: linear-gradient(to right, var(--primary), var(--ring));
       background-size: 0 2px;
       background-position: 0 100%;
       background-repeat: no-repeat;
@@ -426,9 +430,9 @@ const showcaseImages = shuffled.slice(0, 6);
 
     /* Mobile CTA hover effect */
     .hero-section a[href="/booking"]:hover {
-      background-color: var(--color-terracotta) !important;
+      filter: brightness(1.15);
       transform: translateY(-2px);
-      box-shadow: 0 10px 40px rgba(230, 126, 80, 0.3);
+      box-shadow: 0 10px 40px oklch(from var(--primary) l c h / 0.3);
     }
 
     /* Process step hover enhancements */
@@ -438,12 +442,12 @@ const showcaseImages = shuffled.slice(0, 6);
     }
 
     .process-step:hover {
-      border-top-color: var(--color-terracotta);
+      border-top-color: var(--primary);
     }
 
     .process-step:hover .process-num {
       transform: scale(1.1);
-      color: var(--color-terracotta) !important;
+      color: var(--ring) !important;
     }
   </style>
 
@@ -465,23 +469,33 @@ const showcaseImages = shuffled.slice(0, 6);
       gsap.set('.hero-reveal', { opacity: 0, y: 30 });
       gsap.set('.hero-cta', { opacity: 0, y: 20 });
 
-      // Parallax Mouse Effect for Hero Dove
+      // Subtle parallax on hero exterior photo
       const heroSection = document.querySelector('.hero-section');
-      const doveLayer = document.querySelector('.hero-dove-layer');
-      
-      if (heroSection && doveLayer) {
+      const photoLayer = document.querySelector('.hero-photo-layer');
+
+      if (heroSection && photoLayer) {
         heroSection.addEventListener('mousemove', (e) => {
-          const xPos = (e.clientX / window.innerWidth - 0.5) * 20;
-          const yPos = (e.clientY / window.innerHeight - 0.5) * 20;
-          
-          gsap.to(doveLayer, {
+          const xPos = (e.clientX / window.innerWidth - 0.5) * 8;
+          const yPos = (e.clientY / window.innerHeight - 0.5) * 8;
+
+          gsap.to(photoLayer, {
             x: xPos,
             y: yPos,
-            duration: 1,
+            duration: 1.2,
             ease: 'power2.out'
           });
         });
       }
+
+      // Hero photo reveal
+      gsap.set('.hero-photo-wrap', { scale: 1.1, opacity: 0 });
+      gsap.to('.hero-photo-wrap', {
+        scale: 1,
+        opacity: 1,
+        duration: 1.8,
+        ease: 'power2.out',
+        delay: 0.1
+      });
 
       // Hero Title Animation on Load
       const heroTl = gsap.timeline({ delay: 0.3 });

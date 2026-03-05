@@ -12,51 +12,51 @@ export const prerender = true;
     <div class="text-center max-w-2xl">
       <!-- Success Icon -->
       <div class="mb-8 flex justify-center">
-        <div class="w-20 h-20 rounded-full border border-white/20 flex items-center justify-center">
-          <iconify-icon icon="solar:check-circle-bold" class="text-4xl text-white"></iconify-icon>
+        <div class="w-20 h-20 rounded-full border border-input flex items-center justify-center">
+          <iconify-icon icon="solar:check-circle-bold" class="text-4xl text-foreground"></iconify-icon>
         </div>
       </div>
 
       <span class="section-label block mb-6">Request Confirmed</span>
 
-      <h1 class="text-5xl md:text-6xl font-normal tracking-tighter text-white italic mb-6">
+      <h1 class="text-5xl md:text-6xl font-semibold tracking-tighter text-foreground italic mb-6">
         Thank You
       </h1>
 
-      <p class="text-neutral-400 text-base mb-4 leading-relaxed">
-        We've received your booking request and will review it shortly.
+      <p class="text-muted-foreground text-base mb-4 leading-relaxed">
+        We’ve received your booking request and will review it shortly.
       </p>
 
-      <p class="text-neutral-500 text-sm mb-12">
+      <p class="text-muted-foreground/60 text-sm mb-12">
         Expect a response within 24–48 hours via your preferred contact method.
       </p>
 
-      <!-- What's Next -->
+      <!-- What’s Next -->
       <div class="glass-card p-8 mb-10 text-left">
-        <h2 class="text-lg font-normal italic text-white mb-6">What Happens Next</h2>
+        <h2 class="text-lg font-semibold italic text-foreground mb-6">What Happens Next</h2>
 
         <div class="space-y-4">
           <div class="flex items-start gap-4">
-            <span class="text-xs text-neutral-500 font-mono mt-0.5">01</span>
-            <p class="text-sm text-neutral-400">Our reception desk reviews your request and reference images</p>
+            <span class="text-xs text-muted-foreground font-mono mt-0.5">01</span>
+            <p class="text-sm text-muted-foreground">Our reception desk reviews your request and reference images</p>
           </div>
           <div class="flex items-start gap-4">
-            <span class="text-xs text-neutral-500 font-mono mt-0.5">02</span>
-            <p class="text-sm text-neutral-400">Your selected artist reviews the details and reaches out to discuss the project</p>
+            <span class="text-xs text-muted-foreground font-mono mt-0.5">02</span>
+            <p class="text-sm text-muted-foreground">Your selected artist reviews the details and reaches out to discuss the project</p>
           </div>
           <div class="flex items-start gap-4">
-            <span class="text-xs text-neutral-500 font-mono mt-0.5">03</span>
-            <p class="text-sm text-neutral-400">If it’s a fit, we’ll propose dates/times and confirm any deposit details (artist-specific)</p>
+            <span class="text-xs text-muted-foreground font-mono mt-0.5">03</span>
+            <p class="text-sm text-muted-foreground">If it’s a fit, we’ll propose dates/times and confirm any deposit details (artist-specific)</p>
           </div>
         </div>
       </div>
 
       <!-- Action Buttons -->
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="/" class="px-8 py-4 bg-white text-black text-sm font-medium tracking-wide hover:bg-neutral-200 transition-all">
+        <a href="/" class="px-8 py-4 bg-foreground text-background text-sm font-medium tracking-wide hover:bg-foreground/90 transition-all">
           Return Home
         </a>
-        <a href="/artists" class="px-8 py-4 border border-white/10 text-white text-sm hover:bg-white/5 transition-all">
+        <a href="/artists" class="px-8 py-4 border border-border text-foreground text-sm hover:bg-secondary transition-all">
           View Artists
         </a>
       </div>

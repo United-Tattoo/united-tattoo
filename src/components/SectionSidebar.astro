@@ -23,18 +23,18 @@ const {
 <div class:list={["grid grid-cols-1 lg:grid-cols-12", className]}>
   <!-- Left Sidebar -->
   <div class:list={[
-    "hidden lg:block lg:col-span-2 border-r border-white/5 p-6 lg:p-8",
+    "hidden lg:block lg:col-span-2 border-r border-border p-6 lg:p-8",
     sidebarClass
   ]}>
     <div class="sticky top-24">
       {sectionNum && (
-        <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-500 block mb-2">
+        <span class="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground block mb-2">
           {sectionNum}
         </span>
       )}
-      <span class="font-mono text-xs text-white">{label}</span>
+      <span class="font-mono text-xs text-foreground">{label}</span>
       {description && (
-        <p class="font-mono text-[10px] text-neutral-500 mt-4 leading-relaxed">
+        <p class="font-mono text-[10px] text-muted-foreground mt-4 leading-relaxed">
           {description}
         </p>
       )}

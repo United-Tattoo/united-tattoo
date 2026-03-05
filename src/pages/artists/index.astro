@@ -36,16 +36,16 @@ const sortedArtists = artists.sort((a, b) => a.data.name.localeCompare(b.data.na
 
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
         <div class="lg:col-span-8">
-          <h1 class="text-[15vw] lg:text-[12vw] leading-[0.8] font-display font-medium tracking-tighter text-white uppercase mix-blend-difference">
+          <h1 class="text-[15vw] lg:text-[12vw] leading-[0.8] font-sans font-semibold tracking-tighter text-foreground uppercase mix-blend-difference">
             <span class="artist-hero-title-line block overflow-hidden"><span class="inline-block">The</span></span>
-            <span class="artist-hero-title-line block overflow-hidden"><span class="inline-block italic text-neutral-500">Artists</span></span>
+            <span class="artist-hero-title-line block overflow-hidden"><span class="inline-block italic text-muted-foreground">Artists</span></span>
           </h1>
         </div>
         
         <div class="lg:col-span-4 artist-hero-reveal mb-2">
-          <p class="text-neutral-400 text-lg leading-relaxed font-light border-l border-terracotta/50 pl-6 max-w-sm">
-            A collective of distinct styles and shared dedication to the craft. 
-            <span class="block mt-4 font-mono text-xs uppercase tracking-widest text-terracotta">
+          <p class="text-muted-foreground text-lg leading-relaxed font-light border-l border-primary/50 pl-6 max-w-sm">
+            A collective of distinct styles and shared dedication to the craft.
+            <span class="block mt-4 font-mono text-xs uppercase tracking-widest text-primary">
               {artists.length} Resident Artists
             </span>
           </p>
@@ -62,37 +62,37 @@ const sortedArtists = artists.sort((a, b) => a.data.name.localeCompare(b.data.na
       {sortedArtists.map((artist, index) => (
         <a href={`/artists/${artist.id}`} class="artist-card group block relative" data-index={index}>
           <!-- Image Container -->
-          <div class="relative aspect-[3/4] overflow-hidden bg-white/5 mb-8">
+          <div class="relative aspect-[3/4] overflow-hidden bg-secondary mb-8">
             <!-- Frame/Border Effect -->
-            <div class="absolute inset-0 border border-white/10 z-20 transition-colors duration-500 group-hover:border-white/30"></div>
-            
+            <div class="absolute inset-0 border border-border z-20 transition-colors duration-500 group-hover:border-foreground/30"></div>
+
             <!-- Image -->
             <img
               src={artist.data.portrait}
               alt={artist.data.name}
               class="absolute inset-0 w-full h-full object-cover grayscale-[20%] contrast-[1.1] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105 group-hover:grayscale-0"
             />
-            
+
             <!-- Hover Overlay (Warmth) -->
-            <div class="absolute inset-0 bg-terracotta/0 mix-blend-overlay transition-colors duration-700 group-hover:bg-terracotta/20 z-10"></div>
-            
+            <div class="absolute inset-0 bg-primary/0 mix-blend-overlay transition-colors duration-700 group-hover:bg-primary/20 z-10"></div>
+
             <!-- Corner Accents -->
-            <div class="absolute top-0 left-0 w-3 h-3 border-l border-t border-white/0 transition-all duration-500 group-hover:border-terracotta/80 z-30"></div>
-            <div class="absolute bottom-0 right-0 w-3 h-3 border-r border-b border-white/0 transition-all duration-500 group-hover:border-terracotta/80 z-30"></div>
+            <div class="absolute top-0 left-0 w-3 h-3 border-l border-t border-transparent transition-all duration-500 group-hover:border-primary/80 z-30"></div>
+            <div class="absolute bottom-0 right-0 w-3 h-3 border-r border-b border-transparent transition-all duration-500 group-hover:border-primary/80 z-30"></div>
           </div>
 
           <!-- Typography / Label -->
           <div class="flex flex-col items-start relative overflow-hidden">
-            <h2 class="text-3xl lg:text-4xl font-display text-white group-hover:text-terracotta transition-colors duration-300">
+            <h2 class="text-3xl lg:text-4xl font-sans font-semibold text-foreground group-hover:text-primary transition-colors duration-300">
               {artist.data.name}
             </h2>
-            
-            <div class="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-neutral-500 group-hover:text-neutral-300 transition-colors duration-300">
+
+            <div class="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-muted-foreground group-hover:text-secondary-foreground transition-colors duration-300">
               {artist.data.specialties && artist.data.specialties.slice(0, 2).map((specialty, i) => (
                 <span class="font-mono text-[10px] uppercase tracking-widest flex items-center gap-4">
                   {specialty}
                   {i < (artist.data.specialties?.slice(0, 2).length || 0) - 1 && (
-                    <span class="w-1 h-1 rounded-full bg-terracotta/50"></span>
+                    <span class="w-1 h-1 rounded-full bg-primary/50"></span>
                   )}
                 </span>
               ))}
@@ -100,7 +100,7 @@ const sortedArtists = artists.sort((a, b) => a.data.name.localeCompare(b.data.na
 
             <!-- Hover "View" CTA -->
             <div class="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-100">
-              <iconify-icon icon="solar:arrow-right-linear" class="text-2xl text-white"></iconify-icon>
+              <iconify-icon icon="solar:arrow-right-linear" class="text-2xl text-foreground"></iconify-icon>
             </div>
           </div>
         </a>

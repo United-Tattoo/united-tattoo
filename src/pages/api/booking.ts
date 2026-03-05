@@ -176,7 +176,7 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
 
           <!-- Header -->
           <tr>
-            <td style="background-color: #E67E50; padding: 24px 40px;">
+            <td style="background-color: #166534; padding: 24px 40px;">
               <h1 style="margin: 0; font-family: Georgia, serif; font-size: 22px; font-weight: 400; color: #ffffff;">
                 New Booking Request
               </h1>
@@ -188,7 +188,7 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
 
           <!-- Client Contact (Prominent) -->
           <tr>
-            <td style="padding: 32px 40px 24px 40px; background-color: #fff7ec; border-left: 4px solid #D87850;">
+            <td style="padding: 32px 40px 24px 40px; background-color: #f0fdf4; border-left: 4px solid #22c55e;">
               <p style="margin: 0 0 4px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
                 01 // Client Contact
               </p>
@@ -199,8 +199,8 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
                 </tr>
                 <tr>
                   <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Email</td>
-                  <td style="padding: 6px 0; font-size: 15px; color: #E67E50; font-weight: 600;">
-                    <a href="mailto:${escapeHtml(email)}" style="color: #E67E50; text-decoration: none;">${escapeHtml(email)}</a>
+                  <td style="padding: 6px 0; font-size: 15px; color: #166534; font-weight: 600;">
+                    <a href="mailto:${escapeHtml(email)}" style="color: #166534; text-decoration: none;">${escapeHtml(email)}</a>
                   </td>
                 </tr>
                 <tr>
@@ -217,7 +217,7 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
 
           <!-- Artist Selection -->
           <tr>
-            <td style="padding: 24px 40px; border-top: 1px solid #f2e3d0;">
+            <td style="padding: 24px 40px; border-top: 1px solid #dcfce7;">
               <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
                 02 // Artist Selection
               </p>
@@ -229,7 +229,7 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
 
           <!-- Project Details -->
           <tr>
-            <td style="padding: 24px 40px; border-top: 1px solid #f2e3d0;">
+            <td style="padding: 24px 40px; border-top: 1px solid #dcfce7;">
               <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
                 03 // Project Details
               </p>
@@ -256,7 +256,7 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
                 </tr>
               </table>
 
-              <div style="margin-top: 20px; padding: 16px; background-color: #f9f9f9; border-left: 2px solid #D87850;">
+              <div style="margin-top: 20px; padding: 16px; background-color: #f9f9f9; border-left: 2px solid #22c55e;">
                 <p style="margin: 0 0 8px 0; font-size: 12px; color: #6f5c49; font-weight: 600; text-transform: uppercase;">Description</p>
                 <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #1c1915;">${escapeHtml(description).replace(/\n/g, '<br>')}</p>
               </div>
@@ -265,7 +265,7 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
 
           <!-- Reference Images -->
           <tr>
-            <td style="padding: 24px 40px; border-top: 1px solid #f2e3d0;">
+            <td style="padding: 24px 40px; border-top: 1px solid #dcfce7;">
               <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
                 04 // Reference Images
               </p>
@@ -277,7 +277,7 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
 
           <!-- Consent Info -->
           <tr>
-            <td style="padding: 24px 40px; border-top: 1px solid #f2e3d0;">
+            <td style="padding: 24px 40px; border-top: 1px solid #dcfce7;">
               <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
                 05 // Consent
               </p>
@@ -300,7 +300,7 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
 
           <!-- Footer -->
           <tr>
-            <td style="padding: 24px 40px; background-color: #f9f9f9; text-align: center; border-top: 1px solid #f2e3d0;">
+            <td style="padding: 24px 40px; background-color: #f9f9f9; text-align: center; border-top: 1px solid #dcfce7;">
               <p style="margin: 0; font-size: 12px; line-height: 1.6; color: #6f5c49;">
                 <em>Submitted via unitedtattoo.com/booking</em>
               </p>
@@ -389,7 +389,7 @@ This booking request was submitted via the United Tattoo website.
 
           <!-- Header -->
           <tr>
-            <td style="background-color: #E67E50; padding: 32px 40px; text-align: center;">
+            <td style="background-color: #166534; padding: 32px 40px; text-align: center;">
               <h1 style="margin: 0; font-family: Georgia, serif; font-size: 28px; font-weight: 400; font-style: italic; color: #ffffff; letter-spacing: 0.5px;">
                 United Tattoo
               </h1>
@@ -410,7 +410,7 @@ This booking request was submitted via the United Tattoo website.
               </p>
 
               <!-- Booking Details Card -->
-              <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #fff7ec; border-left: 3px solid #D87850; margin: 0 0 32px 0;">
+              <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f0fdf4; border-left: 3px solid #22c55e; margin: 0 0 32px 0;">
                 <tr>
                   <td style="padding: 24px;">
                     <p style="margin: 0 0 4px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
@@ -458,7 +458,7 @@ This booking request was submitted via the United Tattoo website.
               </table>
 
               <!-- What's Next Section -->
-              <div style="margin: 0 0 32px 0; padding-bottom: 32px; border-bottom: 1px solid #f2e3d0;">
+              <div style="margin: 0 0 32px 0; padding-bottom: 32px; border-bottom: 1px solid #dcfce7;">
                 <h3 style="margin: 0 0 12px 0; font-family: Georgia, serif; font-size: 18px; font-weight: 400; color: #1c1915;">
                   What Happens Next?
                 </h3>
@@ -476,7 +476,7 @@ This booking request was submitted via the United Tattoo website.
                   If you need to reach us before then, feel free to contact us:
                 </p>
                 <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #1c1915;">
-                  <strong>Email:</strong> <a href="mailto:ink@united-tattoos.com" style="color: #E67E50; text-decoration: none;">ink@united-tattoos.com</a>
+                  <strong>Email:</strong> <a href="mailto:ink@united-tattoos.com" style="color: #166534; text-decoration: none;">ink@united-tattoos.com</a>
                 </p>
               </div>
 
@@ -493,7 +493,7 @@ This booking request was submitted via the United Tattoo website.
 
           <!-- Footer -->
           <tr>
-            <td style="padding: 24px 40px; background-color: #f9f9f9; text-align: center; border-top: 1px solid #f2e3d0;">
+            <td style="padding: 24px 40px; background-color: #f9f9f9; text-align: center; border-top: 1px solid #dcfce7;">
               <p style="margin: 0; font-size: 12px; line-height: 1.6; color: #6f5c49;">
                 <em>This is an automated confirmation. Please do not reply to this email.</em>
               </p>

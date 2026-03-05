@@ -21,7 +21,7 @@ const opacityClass = `opacity-${opacity}`;
 ]} style={`opacity: ${opacity / 100}`}>
   {Array.from({ length: columns }).map((_, i) => (
     <div class:list={[
-      "h-full border-r border-white/5",
+      "h-full border-r border-border",
       i === 0 && "border-l",
       columns === 12 && i >= 6 && "hidden md:block"
     ]}></div>

@@ -8,17 +8,16 @@ const { href, label } = Astro.props;
 ---
 
 <div id="floating-cta" class="hidden lg:block fixed bottom-8 right-8 z-50 transition-all duration-300">
-  <a href={href} class="hero-cta group flex items-center gap-3 px-6 py-4 text-black font-mono text-xs uppercase tracking-[0.15em] transition-all shadow-2xl" style="background-color: var(--color-burnt-orange); box-shadow: 0 20px 50px rgba(230, 126, 80, 0.3);">
+  <a href={href} class="hero-cta group flex items-center gap-3 px-6 py-4 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.15em] transition-all shadow-2xl shadow-primary/30">
     <span class="group-hover:translate-x-1 transition-transform">{label}</span>
-    <span class="w-6 h-6 rounded-full flex items-center justify-center text-white transition-all" style="background-color: var(--color-burnt-dark);">→</span>
+    <span class="w-6 h-6 rounded-full flex items-center justify-center bg-primary-foreground text-primary transition-all">→</span>
   </a>
 </div>
 
 <style>
   #floating-cta a:hover {
-    background-color: var(--color-terracotta) !important;
+    filter: brightness(1.1);
     transform: translateY(-2px);
-    box-shadow: 0 25px 60px rgba(230, 126, 80, 0.4);
+    box-shadow: 0 25px 60px oklch(from var(--primary) l c h / 0.4);
   }
 </style>
-

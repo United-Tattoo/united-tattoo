@@ -6,46 +6,46 @@ interface Props {
 const { artistId } = Astro.props;
 ---
 
-<div id="calendar-wrapper" class="w-full max-w-md font-sans text-white" data-artist-id={artistId}>
+<div id="calendar-wrapper" class="w-full max-w-md font-sans text-foreground" data-artist-id={artistId}>
   <div class="flex justify-between items-center mb-2">
-    <div class="text-xs font-medium text-white uppercase tracking-wider" id="month-label">Loading...</div>
+    <div class="text-xs font-medium text-foreground uppercase tracking-wider" id="month-label">Loading...</div>
     <div class="flex gap-1">
-      <button id="prev-month" class="w-6 h-6 flex items-center justify-center hover:bg-white/10 rounded transition-colors text-neutral-400 hover:text-white" type="button" aria-label="Previous month">
+      <button id="prev-month" class="w-6 h-6 flex items-center justify-center hover:bg-secondary rounded transition-colors text-muted-foreground hover:text-foreground" type="button" aria-label="Previous month">
         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 18-6-6 6-6"/></svg>
       </button>
-      <button id="next-month" class="w-6 h-6 flex items-center justify-center hover:bg-white/10 rounded transition-colors text-neutral-400 hover:text-white" type="button" aria-label="Next month">
+      <button id="next-month" class="w-6 h-6 flex items-center justify-center hover:bg-secondary rounded transition-colors text-muted-foreground hover:text-foreground" type="button" aria-label="Next month">
         <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6"/></svg>
       </button>
     </div>
   </div>
 
-  <div class="grid grid-cols-7 gap-0.5 text-center text-[10px] text-neutral-500 uppercase tracking-wider">
+  <div class="grid grid-cols-7 gap-0.5 text-center text-[10px] text-muted-foreground uppercase tracking-wider">
     <div>Sun</div><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div>
   </div>
   <div id="calendar-grid" class="grid grid-cols-7 gap-0.5 text-xs">
-    <div class="col-span-7 flex items-center justify-center py-4 text-neutral-400">Loading...</div>
+    <div class="col-span-7 flex items-center justify-center py-4 text-muted-foreground">Loading...</div>
   </div>
 
-  <p class="text-[10px] text-neutral-500 uppercase tracking-wider mt-2 text-center">All times shown in Mountain Time (MT)</p>
+  <p class="text-[10px] text-muted-foreground uppercase tracking-wider mt-2 text-center">All times shown in Mountain Time (MT)</p>
 
-  <div id="selected-slots-container" class="mt-3 pt-3 border-t border-white/10 hidden">
-    <h4 class="font-serif text-white text-xs mb-2 uppercase tracking-wide">Your Selections</h4>
+  <div id="selected-slots-container" class="mt-3 pt-3 border-t border-border hidden">
+    <h4 class="font-sans font-semibold text-foreground text-xs mb-2 uppercase tracking-wide">Your Selections</h4>
     <div id="selected-slots-list" class="space-y-1">
     </div>
     <input type="hidden" name="selected_slots" id="selected_slots_input">
   </div>
 
-  <div id="time-slots-panel" class="hidden mt-3 pt-3 border-t border-white/10">
+  <div id="time-slots-panel" class="hidden mt-3 pt-3 border-t border-border">
     <div class="flex justify-between items-center mb-2">
-      <h3 id="panel-date-title" class="text-xs font-medium text-white">Select a time</h3>
-      <button id="close-panel" class="text-[10px] text-neutral-500 hover:text-white transition-colors">Clear</button>
+      <h3 id="panel-date-title" class="text-xs font-medium text-foreground">Select a time</h3>
+      <button id="close-panel" class="text-[10px] text-muted-foreground hover:text-foreground transition-colors">Clear</button>
     </div>
     <div id="panel-slots-list" class="grid grid-cols-4 gap-1">
     </div>
   </div>
 
-  <div id="alternatives-container" class="mt-4 pt-3 border-t border-white/10 hidden">
-    <h4 class="font-serif text-white text-xs mb-2">Similar Artists with Availability</h4>
+  <div id="alternatives-container" class="mt-4 pt-3 border-t border-border hidden">
+    <h4 class="font-sans font-semibold text-foreground text-xs mb-2">Similar Artists with Availability</h4>
     <div id="alternatives-list" class="grid grid-cols-3 gap-2"></div>
   </div>
 </div>
@@ -70,7 +70,7 @@ const { artistId } = Astro.props;
             monthLabel.textContent = 'Select an Artist';
             grid.innerHTML = `
                 <div class="col-span-7 flex flex-col items-center justify-center py-4 text-center">
-                    <p class="text-neutral-400 text-xs max-w-xs">Calendar available once artist is assigned.</p>
+                    <p class="text-muted-foreground text-xs max-w-xs">Calendar available once artist is assigned.</p>
                 </div>
             `;
         }
@@ -115,15 +115,15 @@ const { artistId } = Astro.props;
       
       alts.forEach(alt => {
           const card = document.createElement('div');
-          card.className = 'border border-white/10 rounded p-2 bg-white/5 hover:border-emerald-500/50 transition-colors cursor-pointer text-center';
+          card.className = 'border border-border rounded p-2 bg-secondary hover:border-primary/50 transition-colors cursor-pointer text-center';
           card.onclick = () => switchArtist(alt.id);
           
           card.innerHTML = `
-              <div class="w-8 h-8 rounded-full overflow-hidden mx-auto mb-1.5 border border-white/10">
+              <div class="w-8 h-8 rounded-full overflow-hidden mx-auto mb-1.5 border border-border">
                   <img src="${alt.portrait}" alt="${alt.name}" class="w-full h-full object-cover">
               </div>
-              <h5 class="font-serif text-[10px] text-white mb-1">${alt.name}</h5>
-              <p class="text-[9px] text-emerald-400 bg-emerald-900/30 inline-block px-1.5 py-0.5 rounded">${alt.slotCount}</p>
+              <h5 class="font-sans font-semibold text-[10px] text-foreground mb-1">${alt.name}</h5>
+              <p class="text-[9px] text-primary bg-primary/20 inline-block px-1.5 py-0.5 rounded">${alt.slotCount}</p>
           `;
           list.appendChild(card);
       });
@@ -166,14 +166,14 @@ const { artistId } = Astro.props;
       const isSelected = selectedDate === dateStr;
       
       if (isPast) {
-        cell.className = 'h-8 flex items-center justify-center text-neutral-600 cursor-default';
+        cell.className = 'h-8 flex items-center justify-center text-muted-foreground/40 cursor-default';
         cell.disabled = true;
       } else if (!hasSlots) {
-        cell.className = 'h-8 flex items-center justify-center text-neutral-600 cursor-default';
+        cell.className = 'h-8 flex items-center justify-center text-muted-foreground/40 cursor-default';
         cell.disabled = true;
       } else {
         cell.className = `h-8 flex items-center justify-center transition-all cursor-pointer ${
-          isSelected ? 'bg-white/20 border border-white/30' : 'text-white hover:bg-white/10'
+          isSelected ? 'bg-secondary border border-ring' : 'text-foreground hover:bg-secondary'
         }`;
         cell.onclick = () => selectDate(dateStr, slots);
       }
@@ -201,7 +201,7 @@ const { artistId } = Astro.props;
     list.innerHTML = '';
     
     if (slots.length === 0) {
-        list.innerHTML = '<p class="col-span-4 text-neutral-500 text-xs">No available slots.</p>';
+        list.innerHTML = '<p class="col-span-4 text-muted-foreground text-xs">No available slots.</p>';
     } else {
         slots.forEach(slot => {
             const btn = document.createElement('button');
@@ -210,8 +210,8 @@ const { artistId } = Astro.props;
             btn.type = 'button';
             btn.className = `py-1.5 px-2 rounded text-xs transition-colors text-center ${
                 isSelected 
-                    ? 'bg-white text-black border border-white' 
-                    : 'bg-white/10 border border-white/10 text-white hover:bg-white/20'
+                    ? 'bg-foreground text-background border border-foreground'
+                    : 'bg-secondary border border-border text-foreground hover:bg-accent'
             }`;
             
             btn.textContent = formatTime(slot.startTime);
@@ -306,17 +306,17 @@ const { artistId } = Astro.props;
       
       selectedSlots.forEach((slot, i) => {
           const item = document.createElement('div');
-          item.className = 'flex items-center justify-between p-2 bg-white/5 rounded border border-white/10';
+          item.className = 'flex items-center justify-between p-2 bg-secondary rounded border border-border';
           
           const text = document.createElement('div');
           const dateObj = new Date(slot.date + 'T00:00:00');
-          text.innerHTML = `<span class="font-bold text-emerald-400 mr-1.5 text-xs">#${i+1}</span> <span class="text-xs">${dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} ${formatTime(slot.startTime)}</span>`;
+          text.innerHTML = `<span class="font-bold text-primary mr-1.5 text-xs">#${i+1}</span> <span class="text-xs">${dateObj.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })} ${formatTime(slot.startTime)}</span>`;
           item.appendChild(text);
           
           const remove = document.createElement('button');
           remove.type = 'button';
           remove.innerHTML = '&times;';
-          remove.className = 'text-neutral-500 hover:text-red-400 text-sm px-1.5';
+          remove.className = 'text-muted-foreground hover:text-red-400 text-sm px-1.5';
           remove.onclick = () => toggleSlot(slot);
           item.appendChild(remove);
           

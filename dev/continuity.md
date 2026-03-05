@@ -1,5 +1,76 @@
 # Continuity Log
 
+## 2026-03-04 - Full Theme Migration: shadcn Green Primary + Outfit Font
+
+### Overview
+Migrated the entire site from hardcoded dark theme (burnt-orange/terracotta accents, Instrument Serif + Inter fonts) to a shadcn-style semantic token system with green primary colors (oklch hue ~160), Outfit as sans font, Geist Mono kept for mono elements. Dark mode only.
+
+### Files Changed
+
+**Phase 1 - Foundation:**
+- `src/styles/global.css` - Complete rewrite with oklch `:root` + `.dark` variable blocks, `@theme inline` mapping, updated `.prose-editorial`, `.glass-card`, `.section-label`
+
+**Phase 2 - Layout:**
+- `src/layouts/SiteLayout.astro` - Added `class="dark"` to html, swapped Google Fonts to Outfit + Geist Mono, body class to semantic tokens
+
+**Phase 3 - Components (12 files):**
+- `HeaderNav.astro` - bg/border/text/JS classList all semantic
+- `Announcement.astro` - bg-card, border-border, text-muted-foreground, ping dot to primary
+- `SiteFooter.astro` - All borders/text semantic
+- `EditorialFooter.astro` - bg-background, borders, text, hover states semantic
+- `FloatingCTA.astro` - Rewritten with primary/primary-foreground
+- `GridBackground.astro` - border-border
+- `ScrollIndicator.astro` - text-muted-foreground, from-foreground/50
+- `SectionHeader.astro` - borders, text, font variant updated
+- `SectionSidebar.astro` - borders, text updated
+- `Breadcrumb.astro` - muted-foreground variants
+- `CustomSelect.astro` - Full migration including JS classList and CSS variables
+- `CalendarPicker.astro` - emerald -> primary, all text/bg/border semantic
+
+**Phase 4 - Pages (9 files):**
+- `index.astro` - All inline styles, gradients, GSAP-related classes migrated
+- `booking.astro` - All terracotta -> primary, form inputs, checkboxes, progress dots, success modal, JS classList
+- `booking/thanks.astro` - All semantic tokens
+- `artists/index.astro` - font-display -> font-sans font-semibold, terracotta -> primary, card hover states
+- `artists/[slug].astro` - Hero gradients, bio section, testimonials, works toggle, lightbox, next-artist section, JS classList
+- `404.astro` - All semantic tokens
+- `aftercare.mdx` - Heading, text, CTA button semantic
+- `privacy.mdx` - Heading, date text semantic
+- `terms.mdx` - Heading, date text semantic
+
+**Phase 5 - Email:**
+- `src/pages/api/booking.ts` - Inline HTML emails: #E67E50 -> #166534, #D87850 -> #22c55e, #fff7ec -> #f0fdf4, #f2e3d0 -> #dcfce7
+- `src/content/email-template.html` - Same hex replacements, font import updated to Outfit + Geist Mono
+
+**Phase 6 - Cleanup:**
+- Removed all temporary backward-compat aliases from global.css
+- Verified no remaining references to old tokens (terracotta, burnt-orange, neutral-*, font-display, text-white, bg-white, border-white)
+
+### Token Mapping Summary
+| Old | New |
+|-----|-----|
+| `--color-burnt-orange` | `--primary` |
+| `--color-terracotta` | `--accent` / `--ring` |
+| `text-white` | `text-foreground` |
+| `text-neutral-400/500` | `text-muted-foreground` |
+| `text-neutral-300` | `text-secondary-foreground` |
+| `bg-white text-black` | `bg-foreground text-background` |
+| `border-white/5`, `border-white/10` | `border-border` |
+| `border-white/20` | `border-input` |
+| `bg-white/5`, `bg-white/[0.02]` | `bg-secondary` |
+| `bg-[#0a0a0a]` | `bg-card` |
+| `font-display` | `font-sans font-semibold` |
+| `focus:border-terracotta` | `focus:border-ring` |
+| Instrument Serif + Inter | Outfit |
+
+### Next Steps
+- Visual QA pass on all pages at localhost:4322
+- Test email template rendering in real clients (Gmail, Outlook, Apple Mail)
+- Verify GSAP animations still work correctly with new classes
+- Hero section uses `public/images/united-exterior.avif` (real exterior photo, not dove)
+
+---
+
 ## 2026-03-04 - Homepage Visual Overhaul: Added Life
 
 ### Changes Made (`src/pages/index.astro`)

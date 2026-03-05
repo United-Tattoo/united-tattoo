@@ -8,13 +8,13 @@ const currentMonth = new Date().toLocaleString('en-US', { month: 'long', year: '
 const { message = `Now booking for ${currentMonth}` } = Astro.props;
 ---
 
-<div class="fixed top-0 left-0 w-full h-8 bg-[#0a0a0a] border-b border-white/5 z-[70] flex items-center justify-center overflow-hidden">
+<div class="fixed top-0 left-0 w-full h-8 bg-card border-b border-border z-[70] flex items-center justify-center overflow-hidden">
   <div class="flex items-center gap-4 animate-in fade-in slide-in-from-top-4 duration-700">
     <span class="relative flex h-1.5 w-1.5">
-      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white/40 opacity-75"></span>
-      <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-white"></span>
+      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary/40 opacity-75"></span>
+      <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-primary"></span>
     </span>
-    <p class="font-mono text-[9px] uppercase tracking-[0.2em] text-neutral-400">
+    <p class="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground">
       {message}
     </p>
   </div>
