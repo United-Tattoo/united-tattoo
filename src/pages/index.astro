@@ -61,7 +61,7 @@ const showcaseImages = shuffled.slice(0, 6);
     <!-- Full-bleed B&W photo -->
     <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden hero-photo-wrap">
       <div class="absolute inset-0 hero-photo-layer scale-[1.03]">
-        <img src="/images/united-exterior.avif" alt="United Tattoo storefront" class="w-full h-full object-cover object-center grayscale brightness-[0.35] contrast-[1.1]" />
+        <img src="/images/united-exterior.avif" alt="United Tattoo storefront" class="w-full h-full object-cover object-center grayscale brightness-[0.5] contrast-[1.1]" />
       </div>
       <!-- Dark overlay -->
       <div class="absolute inset-0 bg-black/40"></div>
@@ -113,6 +113,17 @@ const showcaseImages = shuffled.slice(0, 6);
               </span>
             </h1>
             <div class="hero-reveal w-12 h-px bg-primary/40 mt-5"></div>
+            <p class="hero-reveal font-mono text-sm md:text-base text-white/70 mt-4 max-w-md tracking-wide">
+              Custom tattoos in Fountain, Colorado
+            </p>
+            <div class="hero-reveal mt-6 flex items-center gap-4">
+              <a href="/booking" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.15em] border border-primary hover:brightness-110 transition-all">
+                Book a Session
+              </a>
+              <a href="/artists" class="font-mono text-xs uppercase tracking-[0.15em] text-white/70 border-b border-white/30 pb-0.5 hover:text-white hover:border-white transition-all">
+                View Artists
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -631,10 +642,10 @@ const showcaseImages = shuffled.slice(0, 6);
     .intro-kicker {
       display: block;
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.28em;
-      color: oklch(from var(--ring) l c h / 0.65);
+      color: oklch(from var(--ring) l c h / 0.75);
       margin-bottom: 1.5rem;
     }
 
@@ -663,7 +674,7 @@ const showcaseImages = shuffled.slice(0, 6);
       background: oklch(from var(--primary) l c h / 0.95);
       color: var(--primary-foreground);
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.2em;
       border: 1px solid var(--primary);
@@ -694,7 +705,7 @@ const showcaseImages = shuffled.slice(0, 6);
 
     .intro-cta-secondary {
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.2em;
       color: var(--muted-foreground);
@@ -754,10 +765,10 @@ const showcaseImages = shuffled.slice(0, 6);
     .intro-meta-label {
       display: block;
       font-family: var(--font-mono);
-      font-size: 9px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.22em;
-      color: oklch(from var(--muted-foreground) l c h / 0.45);
+      color: oklch(from var(--muted-foreground) l c h / 0.65);
       margin-bottom: 0.35rem;
     }
 

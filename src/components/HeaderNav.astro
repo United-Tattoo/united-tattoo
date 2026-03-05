@@ -42,7 +42,7 @@ const mobileNavItems = [
           <a
             href={item.href}
             class:list={[
-              'nav-link font-mono text-[12px] uppercase tracking-[0.15em] text-foreground/50 transition-all duration-300',
+              'nav-link font-mono text-[13px] uppercase tracking-[0.15em] text-foreground/70 transition-all duration-300',
               { '!text-foreground': item.active }
             ]}
           >
@@ -53,7 +53,7 @@ const mobileNavItems = [
         <a
           href="/booking"
           class:list={[
-            'nav-book-btn font-mono text-[12px] uppercase tracking-[0.15em] px-5 py-2.5 border transition-all duration-300',
+            'nav-book-btn font-mono text-[13px] uppercase tracking-[0.15em] px-5 py-2.5 border transition-all duration-300',
             { '!bg-foreground !text-background !border-foreground': isBookingPage }
           ]}
         >
@@ -124,22 +124,23 @@ const mobileNavItems = [
     color: var(--foreground);
   }
 
-  /* Nav never has its own background */
+  /* Nav never has its own background — pointer-events only on interactive elements */
   #main-nav {
-    background: none !important;
+    background: none;
     pointer-events: none;
+    transition: background 0.3s ease;
   }
 
-  #main-nav > div,
   #main-nav a,
   #main-nav button {
     pointer-events: auto;
   }
 
-  .nav-scrolled > div {
+  #main-nav.nav-scrolled {
     background: oklch(from var(--background) l c h / 0.94);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    pointer-events: auto;
   }
 
   /* Links */
@@ -149,13 +150,13 @@ const mobileNavItems = [
 
   /* Book button */
   .nav-book-btn {
-    border-color: rgba(255, 255, 255, 0.3);
-    color: rgba(255, 255, 255, 0.85);
+    border-color: rgba(255, 255, 255, 0.4);
+    color: rgba(255, 255, 255, 0.9);
   }
 
   .nav-scrolled .nav-book-btn {
-    border-color: oklch(from var(--foreground) l c h / 0.3);
-    color: oklch(from var(--foreground) l c h / 0.8);
+    border-color: oklch(from var(--foreground) l c h / 0.4);
+    color: oklch(from var(--foreground) l c h / 0.85);
   }
 
   .nav-book-btn:hover {
