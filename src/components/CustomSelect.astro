@@ -44,6 +44,7 @@ const selectedValue = selectedOption?.value || '';
       aria-haspopup="listbox"
       aria-expanded="false"
       data-value={selectedValue}
+      data-lenis-prevent
     >
       <span class="custom-select-value truncate text-secondary-foreground group-hover:text-foreground transition-colors" data-placeholder={!selectedValue}>
         {displayValue}
@@ -127,14 +128,22 @@ const selectedValue = selectedOption?.value || '';
   .custom-select-dropdown::-webkit-scrollbar-thumb:hover {
     background: oklch(from var(--foreground) l c h / 0.2);
   }
+
+  .custom-select-trigger,
+  .custom-select-option {
+    touch-action: manipulation;
+  }
 </style>
 
 <script>
-  // Initialize all custom selects on the page
   function initCustomSelects() {
     const selects = document.querySelectorAll('.custom-select');
 
     selects.forEach((select) => {
+      // Guard against duplicate init (Astro view transitions re-run scripts)
+      if ((select as HTMLElement).dataset.initialized) return;
+      (select as HTMLElement).dataset.initialized = 'true';
+
       const trigger = select.querySelector('.custom-select-trigger') as HTMLButtonElement;
       const dropdown = select.querySelector('.custom-select-dropdown') as HTMLDivElement;
       const options = select.querySelectorAll('.custom-select-option');
@@ -160,46 +169,47 @@ const selectedValue = selectedOption?.value || '';
         trigger.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
       });
 
-      // Handle option selection
+      // Shared option selection logic
+      function selectOption(option: Element) {
+        const value = (option as HTMLElement).dataset.value || '';
+        const label = option.textContent?.trim() || '';
+
+        hiddenInput.value = value;
+        valueDisplay.textContent = label;
+        valueDisplay.dataset.placeholder = value ? 'false' : 'true';
+        trigger.dataset.value = value;
+
+        options.forEach((opt) => {
+          const isSelected = (opt as HTMLElement).dataset.value === value;
+          opt.setAttribute('aria-selected', isSelected ? 'true' : 'false');
+          opt.classList.toggle('text-foreground', isSelected);
+          opt.classList.toggle('bg-secondary', isSelected);
+          opt.classList.toggle('text-secondary-foreground', !isSelected);
+
+          const checkIcon = opt.querySelector('iconify-icon[icon="solar:check-bold"]');
+          if (isSelected && !checkIcon) {
+            const icon = document.createElement('iconify-icon');
+            icon.setAttribute('icon', 'solar:check-bold');
+            icon.className = 'text-foreground text-xs';
+            opt.appendChild(icon);
+          } else if (!isSelected && checkIcon) {
+            checkIcon.remove();
+          }
+        });
+
+        select.classList.remove('open');
+        trigger.setAttribute('aria-expanded', 'false');
+        hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+      }
+
+      // Handle option selection — click for desktop, touchend for mobile
       options.forEach((option) => {
-        option.addEventListener('click', () => {
-          const value = (option as HTMLElement).dataset.value || '';
-          const label = option.textContent?.trim() || '';
+        option.addEventListener('click', () => selectOption(option));
 
-          // Update hidden input
-          hiddenInput.value = value;
-
-          // Update display
-          valueDisplay.textContent = label;
-          valueDisplay.dataset.placeholder = value ? 'false' : 'true';
-          trigger.dataset.value = value;
-
-          // Update selected state
-          options.forEach((opt) => {
-            const isSelected = (opt as HTMLElement).dataset.value === value;
-            opt.setAttribute('aria-selected', isSelected ? 'true' : 'false');
-            opt.classList.toggle('text-foreground', isSelected);
-            opt.classList.toggle('bg-secondary', isSelected);
-            opt.classList.toggle('text-secondary-foreground', !isSelected);
-
-            // Toggle check icon
-            const checkIcon = opt.querySelector('iconify-icon[icon="solar:check-bold"]');
-            if (isSelected && !checkIcon) {
-              const icon = document.createElement('iconify-icon');
-              icon.setAttribute('icon', 'solar:check-bold');
-              icon.className = 'text-foreground text-xs';
-              opt.appendChild(icon);
-            } else if (!isSelected && checkIcon) {
-              checkIcon.remove();
-            }
-          });
-
-          // Close dropdown
-          select.classList.remove('open');
-          trigger.setAttribute('aria-expanded', 'false');
-
-          // Dispatch change event
-          hiddenInput.dispatchEvent(new Event('change', { bubbles: true }));
+        // touchend fires reliably on iOS where <li> click can be swallowed
+        option.addEventListener('touchend', (e) => {
+          e.preventDefault(); // blocks ghost click so selectOption runs once
+          selectOption(option);
         });
       });
 
@@ -220,23 +230,28 @@ const selectedValue = selectedOption?.value || '';
       });
     });
 
-    // Close on outside click
-    document.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('.custom-select')) {
-        document.querySelectorAll('.custom-select.open').forEach((select) => {
-          select.classList.remove('open');
-          select.querySelector('.custom-select-trigger')?.setAttribute('aria-expanded', 'false');
-        });
-      }
-    });
+    // Close on outside tap — pointerdown is reliable across mouse + touch
+    // Guard so view transitions don't stack duplicate document listeners
+    if (!(window as any).__csOutsideInit) {
+      (window as any).__csOutsideInit = true;
+      document.addEventListener('pointerdown', (e) => {
+        const target = e.target as HTMLElement;
+        if (!target.closest('.custom-select')) {
+          document.querySelectorAll('.custom-select.open').forEach((s) => {
+            s.classList.remove('open');
+            s.querySelector('.custom-select-trigger')?.setAttribute('aria-expanded', 'false');
+          });
+        }
+      });
+    }
   }
 
-  // Initialize on DOM ready
+  // Run on initial load and after view transitions
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initCustomSelects);
   } else {
     initCustomSelects();
   }
+  document.addEventListener('astro:page-load', initCustomSelects);
 </script>
 
