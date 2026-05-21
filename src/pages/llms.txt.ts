@@ -6,6 +6,8 @@ const SITE_URL = 'https://united-tattoos.com';
 
 export async function GET() {
   const artists = await getCollection('artists');
+  const posts = (await getCollection('blog', ({ data }) => !data.draft))
+    .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
 
   const artistLines = artists
     .map((a) => {
@@ -13,6 +15,10 @@ export async function GET() {
       const status = a.data.acceptingBookings ? 'accepting bookings' : 'not currently booking';
       return `- [${a.data.name}](${SITE_URL}/artists/${a.id}): ${specialties} — ${status}`;
     })
+    .join('\n');
+
+  const postLines = posts
+    .map((post) => `- [${post.data.title}](${SITE_URL}/blog/${post.id}): ${post.data.description}`)
     .join('\n');
 
   const content = `# United Tattoo
@@ -23,12 +29,17 @@ export async function GET() {
 
 - [Home](${SITE_URL}/): Studio overview, featured artists, and booking
 - [Artists](${SITE_URL}/artists): Browse all resident artists and their specialties
+- [Journal](${SITE_URL}/blog): Studio notes, tattoo preparation guides, artist insight, and aftercare resources
 - [Booking](${SITE_URL}/booking): Request a tattoo consultation or book a session
 - [Aftercare](${SITE_URL}/aftercare): Tattoo aftercare instructions and healing guidance
 
 ## Artists
 
 ${artistLines}
+
+## Journal
+
+${postLines}
 
 ## Contact
 

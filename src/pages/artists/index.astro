@@ -19,6 +19,10 @@ const sortedArtists = artists.sort((a, b) => a.data.name.localeCompare(b.data.na
   description="Meet the resident artists at United Tattoo. A collective of distinct styles and shared dedication to the craft."
   removeMainPadding={true}
   hideFooter={true}
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Artists', url: '/artists' },
+  ]}
 >
   <!-- Hero Section -->
   <section class="artist-hero-section relative min-h-[50vh] lg:min-h-[60vh] flex flex-col justify-end px-6 md:px-12 lg:px-24 pb-24 pt-48" data-scroll-section>

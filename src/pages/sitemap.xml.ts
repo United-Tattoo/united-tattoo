@@ -12,10 +12,12 @@ interface SitemapEntry {
 
 export async function GET() {
   const artists = await getCollection('artists');
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
 
   const staticPages: SitemapEntry[] = [
     { url: '/', changefreq: 'weekly', priority: '1.0' },
     { url: '/artists', changefreq: 'weekly', priority: '0.9' },
+    { url: '/blog', changefreq: 'weekly', priority: '0.7' },
     { url: '/booking', changefreq: 'monthly', priority: '0.8' },
     { url: '/aftercare', changefreq: 'monthly', priority: '0.6' },
   ];
@@ -26,7 +28,13 @@ export async function GET() {
     priority: '0.8',
   }));
 
-  const allPages = [...staticPages, ...artistPages];
+  const blogPages: SitemapEntry[] = posts.map((post) => ({
+    url: `/blog/${post.id}`,
+    changefreq: 'monthly',
+    priority: '0.6',
+  }));
+
+  const allPages = [...staticPages, ...artistPages, ...blogPages];
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

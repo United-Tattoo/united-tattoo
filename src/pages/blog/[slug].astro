@@ -1,0 +1,100 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { getCollection, render } from 'astro:content';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import EditorialFooter from '../../components/EditorialFooter.astro';
+
+export const prerender = true;
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ data }) => !data.draft);
+
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const formatDate = (date: Date) => date.toLocaleDateString('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<SiteLayout
+  title={post.data.title}
+  description={post.data.description}
+  image={post.data.image}
+  type="article"
+  removeMainPadding={true}
+  hideFooter={true}
+  articleSchema={{
+    headline: post.data.title,
+    datePublished: post.data.publishDate,
+    dateModified: post.data.updatedDate || post.data.publishDate,
+    author: post.data.author,
+    keywords: post.data.tags,
+  }}
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Journal', url: '/blog' },
+    { name: post.data.title, url: `/blog/${post.id}` },
+  ]}
+>
+  <article class="px-6 pb-28 pt-40 md:px-12 lg:px-20 lg:pt-48">
+    <div class="mx-auto max-w-5xl">
+      <div class="mb-12">
+        <Breadcrumb
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Journal', href: '/blog' },
+            { label: post.data.title }
+          ]}
+        />
+      </div>
+
+      <header class="border-y border-border py-12">
+        <div class="mb-8 flex flex-wrap items-center gap-4 font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground">
+          <span>{formatDate(post.data.publishDate)}</span>
+          <span class="h-px w-8 bg-border"></span>
+          <span>{post.data.author}</span>
+        </div>
+        <h1 class="font-display text-5xl font-normal leading-none tracking-normal text-foreground md:text-7xl lg:text-8xl">
+          {post.data.title}
+        </h1>
+        <p class="mt-8 max-w-3xl text-lg leading-relaxed text-muted-foreground md:text-xl">
+          {post.data.description}
+        </p>
+        {post.data.tags.length > 0 && (
+          <div class="mt-8 flex flex-wrap gap-2">
+            {post.data.tags.map((tag) => (
+              <span class="border border-border px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+                {tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <div class="prose-editorial mt-14 max-w-none">
+        <Content />
+      </div>
+
+      <footer class="mt-16 flex flex-col gap-6 border-t border-border pt-8 md:flex-row md:items-center md:justify-between">
+        <a href="/blog" class="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground transition-colors hover:text-foreground">
+          Back to journal
+        </a>
+        <a href="/booking" class="inline-flex items-center justify-center border border-foreground bg-foreground px-6 py-3 font-mono text-[10px] uppercase tracking-[0.2em] text-background transition-colors hover:bg-background hover:text-foreground">
+          Book a session
+        </a>
+      </footer>
+    </div>
+  </article>
+
+  <EditorialFooter />
+</SiteLayout>

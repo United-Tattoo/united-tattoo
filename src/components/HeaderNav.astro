@@ -11,18 +11,21 @@ const { currentPath = "", hasAnnouncement = false } = Astro.props;
 const isHomePage = currentPath === "/";
 const isArtistsPage = currentPath.startsWith("/artists");
 const isBookingPage = currentPath.startsWith("/booking");
+const isBlogPage = currentPath.startsWith("/blog");
 
 const desktopNavItems = [
   { href: '/', label: 'Home', num: '01', active: isHomePage },
   { href: '/artists', label: 'Artists', num: '02', active: isArtistsPage },
-  { href: '/#process', label: 'Process', num: '03', active: false },
+  { href: '/blog', label: 'Journal', num: '03', active: isBlogPage },
+  { href: '/#process', label: 'Process', num: '04', active: false },
 ];
 
 const mobileNavItems = [
   { href: '/', label: 'Home', num: '01' },
   { href: '/artists', label: 'Artists', num: '02' },
-  { href: '/#process', label: 'Process', num: '03' },
-  { href: '/booking', label: 'Book a Session', num: '04' },
+  { href: '/blog', label: 'Journal', num: '03' },
+  { href: '/#process', label: 'Process', num: '04' },
+  { href: '/booking', label: 'Book a Session', num: '05' },
 ];
 ---
 

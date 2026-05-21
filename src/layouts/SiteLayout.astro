@@ -27,6 +27,17 @@ interface Props {
     image: string;
     sameAs?: string[];
   };
+  articleSchema?: {
+    headline: string;
+    datePublished: Date | string;
+    dateModified?: Date | string;
+    author: string;
+    keywords?: string[];
+  };
+  breadcrumbs?: {
+    name: string;
+    url: string;
+  }[];
 }
 
 const { 
@@ -38,6 +49,8 @@ const {
   image = '/images/united-studio-main.avif',
   type = 'website',
   artistSchema,
+  articleSchema,
+  breadcrumbs,
   ...props 
 } = Astro.props;
 
@@ -59,7 +72,8 @@ const ogImage = new URL(image, siteUrl).toString();
 		
     <!-- SEO -->
     <title>{title ? `${title} | ${SITE_TITLE}` : SITE_TITLE}</title>
-		<meta name="description" content={description} />
+    <meta name="description" content={description} />
+    <meta name="robots" content="index, follow" />
     <link rel="canonical" href={canonicalUrl} />
     <link rel="sitemap" type="application/xml" href="/sitemap.xml" />
 
@@ -77,6 +91,17 @@ const ogImage = new URL(image, siteUrl).toString();
     <meta property="twitter:description" content={description} />
     <meta property="twitter:image" content={ogImage} />
 
+    {type === 'article' && articleSchema && (
+      <>
+        <meta property="article:published_time" content={new Date(articleSchema.datePublished).toISOString()} />
+        <meta property="article:modified_time" content={new Date(articleSchema.dateModified || articleSchema.datePublished).toISOString()} />
+        <meta property="article:author" content={articleSchema.author} />
+        {articleSchema.keywords?.map((tag) => (
+          <meta property="article:tag" content={tag} />
+        ))}
+      </>
+    )}
+
     <!-- Schema.org JSON-LD -->
     <Schema 
       type={type} 
@@ -85,6 +110,8 @@ const ogImage = new URL(image, siteUrl).toString();
       image={image} 
       canonicalUrl={canonicalUrl}
       artistData={artistSchema}
+      articleData={articleSchema}
+      breadcrumbs={breadcrumbs}
     />
 
 		<!-- Fonts -->

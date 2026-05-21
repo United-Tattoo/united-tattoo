@@ -77,6 +77,11 @@ const artistSchema = {
   type="profile"
   artistSchema={artistSchema}
   image={artist.data.portrait}
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Artists', url: '/artists' },
+    { name: artist.data.name, url: `/artists/${artist.id}` },
+  ]}
 >
   <FloatingCTA href={`/booking?artist=${artist.id}`} label={`Book with ${firstName}`} />
 

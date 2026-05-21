@@ -1,0 +1,130 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { getCollection } from 'astro:content';
+import Breadcrumb from '../../components/Breadcrumb.astro';
+import EditorialFooter from '../../components/EditorialFooter.astro';
+
+export const prerender = true;
+
+const posts = (await getCollection('blog', ({ data }) => !data.draft))
+  .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
+
+const featuredPost = posts[0];
+const remainingPosts = posts.slice(1);
+
+const formatDate = (date: Date) => date.toLocaleDateString('en-US', {
+  month: 'long',
+  day: 'numeric',
+  year: 'numeric',
+  timeZone: 'UTC',
+});
+---
+
+<SiteLayout
+  title="Journal"
+  description="Studio notes, tattoo preparation guides, artist insight, and aftercare resources from United Tattoo."
+  removeMainPadding={true}
+  hideFooter={true}
+  breadcrumbs={[
+    { name: 'Home', url: '/' },
+    { name: 'Journal', url: '/blog' },
+  ]}
+>
+  <section class="relative px-6 pb-20 pt-40 md:px-12 lg:px-20 lg:pt-48">
+    <div class="mx-auto max-w-7xl">
+      <div class="mb-12">
+        <Breadcrumb
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Journal' }
+          ]}
+        />
+      </div>
+
+      <div class="grid gap-12 border-y border-border py-12 lg:grid-cols-12 lg:items-end">
+        <div class="lg:col-span-8">
+          <p class="mb-5 font-mono text-[10px] uppercase tracking-[0.32em] text-muted-foreground">Studio Journal</p>
+          <h1 class="font-display text-6xl font-normal leading-none tracking-normal text-foreground md:text-8xl lg:text-[9rem]">
+            Notes on the work
+          </h1>
+        </div>
+        <div class="lg:col-span-4">
+          <p class="max-w-md text-base leading-relaxed text-muted-foreground md:text-lg">
+            Practical writing from the studio: how to prepare, how to choose an artist, and how to take care of the work after the appointment.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="px-6 pb-28 md:px-12 lg:px-20">
+    <div class="mx-auto max-w-7xl">
+      {featuredPost ? (
+        <a href={`/blog/${featuredPost.id}`} class="group mb-16 grid gap-8 border-b border-border pb-16 lg:grid-cols-12 lg:items-end">
+          <div class="lg:col-span-3">
+            <p class="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+              Featured
+            </p>
+            <p class="mt-4 font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground/70">
+              {formatDate(featuredPost.data.publishDate)}
+            </p>
+          </div>
+
+          <div class="lg:col-span-6">
+            <h2 class="font-display text-4xl font-normal leading-tight text-foreground transition-colors group-hover:text-muted-foreground md:text-6xl">
+              {featuredPost.data.title}
+            </h2>
+            <p class="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
+              {featuredPost.data.description}
+            </p>
+          </div>
+
+          <div class="flex items-center justify-between border-t border-border pt-6 lg:col-span-3 lg:border-t-0 lg:pt-0">
+            <div class="flex flex-wrap gap-2">
+              {featuredPost.data.tags.slice(0, 2).map((tag) => (
+                <span class="border border-border px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+                  {tag}
+                </span>
+              ))}
+            </div>
+            <iconify-icon icon="solar:arrow-right-linear" class="text-2xl text-foreground transition-transform group-hover:translate-x-1"></iconify-icon>
+          </div>
+        </a>
+      ) : (
+        <div class="border border-border p-8">
+          <p class="text-muted-foreground">No journal posts are published yet.</p>
+        </div>
+      )}
+
+      {remainingPosts.length > 0 && (
+        <div class="grid gap-6 md:grid-cols-2">
+          {remainingPosts.map((post) => (
+            <a href={`/blog/${post.id}`} class="group border border-border p-6 transition-colors hover:border-foreground/40 md:p-8">
+              <p class="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground/70">
+                {formatDate(post.data.publishDate)}
+              </p>
+              <h2 class="mt-6 font-display text-3xl font-normal leading-tight text-foreground transition-colors group-hover:text-muted-foreground md:text-4xl">
+                {post.data.title}
+              </h2>
+              <p class="mt-4 text-sm leading-relaxed text-muted-foreground">
+                {post.data.description}
+              </p>
+              <div class="mt-8 flex items-center justify-between border-t border-border pt-5">
+                <div class="flex flex-wrap gap-2">
+                  {post.data.tags.slice(0, 2).map((tag) => (
+                    <span class="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+                <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground">Read</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <EditorialFooter />
+</SiteLayout>

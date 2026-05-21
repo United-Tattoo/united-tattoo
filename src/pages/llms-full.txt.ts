@@ -6,6 +6,8 @@ const SITE_URL = 'https://united-tattoos.com';
 
 export async function GET() {
   const artists = await getCollection('artists');
+  const posts = (await getCollection('blog', ({ data }) => !data.draft))
+    .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
 
   const artistSections = artists
     .map((a) => {
@@ -20,6 +22,22 @@ export async function GET() {
 URL: ${SITE_URL}/artists/${a.id}
 Specialties: ${specialties}
 ${status}${instagram}${portfolio}
+
+${body}`;
+    })
+    .join('\n\n---\n\n');
+
+  const postSections = posts
+    .map((post) => {
+      const tags = post.data.tags.length > 0 ? post.data.tags.join(', ') : 'Studio';
+      const body = (post.body ?? '').trim();
+
+      return `## ${post.data.title}
+
+URL: ${SITE_URL}/blog/${post.id}
+Published: ${post.data.publishDate.toISOString().slice(0, 10)}
+Tags: ${tags}
+Description: ${post.data.description}
 
 ${body}`;
     })
@@ -41,6 +59,14 @@ United Tattoo is a custom tattoo studio in Fountain, Colorado. We are home to ${
 # Artists
 
 ${artistSections}
+
+---
+
+# Journal
+
+URL: ${SITE_URL}/blog
+
+${postSections}
 
 ---
 
