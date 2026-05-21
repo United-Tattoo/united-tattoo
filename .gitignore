@@ -2,6 +2,7 @@
 node_modules/
 
 # Astro build output
+.astro/
 astro/dist/
 astro/.astro/
 
@@ -45,7 +46,7 @@ Thumbs.db
 # Cache directories
 .cache/
 .turbo/
-
+.fuse_*
 
 # Large binary assets (avoid committing raw media dumps)
 temp/
