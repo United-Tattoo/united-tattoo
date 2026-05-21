@@ -1,0 +1,92 @@
+---
+import Breadcrumb from './Breadcrumb.astro';
+import GridBackground from './GridBackground.astro';
+
+interface BreadcrumbItem {
+  label: string;
+  href?: string;
+}
+
+interface StatItem {
+  value: string | number;
+  label: string;
+}
+
+interface Props {
+  eyebrow: string;
+  title: string | string[];
+  description: string;
+  breadcrumbs: BreadcrumbItem[];
+  image?: string;
+  imagePosition?: string;
+  stats?: StatItem[];
+}
+
+const {
+  eyebrow,
+  title,
+  description,
+  breadcrumbs,
+  image,
+  imagePosition = 'center',
+  stats = [],
+} = Astro.props;
+
+const titleLines = Array.isArray(title) ? title : [title];
+---
+
+<section class="page-hero relative flex min-h-[500px] flex-col justify-end overflow-hidden border-b border-border px-6 pb-10 pt-32 md:min-h-[520px] md:px-12 md:pt-36 lg:min-h-[540px] lg:px-20" data-scroll-section>
+  {image && (
+    <div class="absolute inset-0 z-0 pointer-events-none">
+      <img
+        src={image}
+        alt=""
+        class="absolute inset-0 h-full w-full object-cover opacity-44 grayscale contrast-[1.1]"
+        style={`object-position: ${imagePosition};`}
+      />
+      <div class="absolute inset-0 bg-background/58"></div>
+      <div class="absolute inset-0 bg-gradient-to-r from-background via-background/74 to-background/20"></div>
+      <div class="absolute inset-0 bg-gradient-to-t from-background via-transparent to-background/30"></div>
+    </div>
+  )}
+  <GridBackground opacity={10} />
+
+  <div class="relative z-10 w-full">
+    <div class="page-hero-reveal mb-7">
+      <Breadcrumb items={breadcrumbs} />
+    </div>
+
+    <div class="grid gap-10 lg:grid-cols-12 lg:items-end">
+      <div class="lg:col-span-7">
+        <p class="page-hero-reveal mb-5 font-mono text-[10px] uppercase tracking-[0.32em] text-muted-foreground">{eyebrow}</p>
+        <h1 class="font-display text-6xl font-normal leading-[0.9] tracking-normal text-foreground md:text-8xl lg:text-[7.5rem]">
+          {titleLines.map((line, index) => (
+            <span class="page-hero-title-line block overflow-hidden">
+              <span class:list={[
+                'inline-block',
+                { 'pl-[0.18em] text-foreground/76': index > 0 }
+              ]}>{line}</span>
+            </span>
+          ))}
+        </h1>
+      </div>
+
+      <aside class="page-hero-reveal border-l border-border bg-background/25 p-6 backdrop-blur-[2px] md:p-8 lg:col-span-5">
+        <p class="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground/70">Overview</p>
+        <p class="mt-6 max-w-md text-base leading-relaxed text-muted-foreground md:text-lg">
+          {description}
+        </p>
+        {stats.length > 0 && (
+          <div class="mt-8 grid border-t border-border pt-6" style={`grid-template-columns: repeat(${Math.min(stats.length, 3)}, minmax(0, 1fr));`}>
+            {stats.map((stat) => (
+              <div>
+                <p class="font-display text-4xl leading-none text-foreground">{stat.value}</p>
+                <p class="mt-2 font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground">{stat.label}</p>
+              </div>
+            ))}
+          </div>
+        )}
+      </aside>
+    </div>
+  </div>
+</section>

@@ -46,6 +46,7 @@ const formatDate = (date: Date) => date.toLocaleDateString('en-US', {
     { name: post.data.title, url: `/blog/${post.id}` },
   ]}
 >
+  <div class="relative mx-auto max-w-[1800px] border-l border-r border-border">
   <article class="px-6 pb-28 pt-40 md:px-12 lg:px-20 lg:pt-48">
     <div class="mx-auto max-w-5xl">
       <div class="mb-12">
@@ -97,4 +98,5 @@ const formatDate = (date: Date) => date.toLocaleDateString('en-US', {
   </article>
 
   <EditorialFooter />
+  </div>
 </SiteLayout>

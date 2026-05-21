@@ -2,9 +2,7 @@
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import { getCollection } from 'astro:content';
 import EditorialFooter from '../../components/EditorialFooter.astro';
-import GridBackground from '../../components/GridBackground.astro';
-import Breadcrumb from '../../components/Breadcrumb.astro';
-import ScrollIndicator from '../../components/ScrollIndicator.astro';
+import PageHero from '../../components/PageHero.astro';
 
 export const prerender = true;
 
@@ -12,6 +10,10 @@ const artists = await getCollection('artists');
 
 // Sort artists alphabetically or by some other criteria if needed
 const sortedArtists = artists.sort((a, b) => a.data.name.localeCompare(b.data.name));
+const specialtyNames = Array.from(
+  new Set(sortedArtists.flatMap((artist) => artist.data.specialties || []))
+).slice(0, 8);
+const heroImage = '/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-03%2048.jpg';
 ---
 
 <SiteLayout
@@ -24,95 +26,60 @@ const sortedArtists = artists.sort((a, b) => a.data.name.localeCompare(b.data.na
     { name: 'Artists', url: '/artists' },
   ]}
 >
-  <!-- Hero Section -->
-  <section class="artist-hero-section relative min-h-[50vh] lg:min-h-[60vh] flex flex-col justify-end px-6 md:px-12 lg:px-24 pb-24 pt-48" data-scroll-section>
-    <GridBackground opacity={20} />
-    
-    <div class="relative z-10 w-full">
-      <div class="artist-hero-reveal mb-8">
-        <Breadcrumb
-          items={[
-            { label: 'Home', href: '/' },
-            { label: 'Artists' }
-          ]}
-        />
-      </div>
-
-      <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
-        <div class="lg:col-span-8">
-          <h1 class="text-[15vw] lg:text-[12vw] leading-[0.8] font-sans font-semibold tracking-tighter text-foreground uppercase mix-blend-difference">
-            <span class="artist-hero-title-line block overflow-hidden"><span class="inline-block">The</span></span>
-            <span class="artist-hero-title-line block overflow-hidden"><span class="inline-block italic text-muted-foreground">Artists</span></span>
-          </h1>
-        </div>
-        
-        <div class="lg:col-span-4 artist-hero-reveal mb-2">
-          <p class="text-muted-foreground text-lg leading-relaxed font-light border-l border-primary/50 pl-6 max-w-sm">
-            A collective of distinct styles and shared dedication to the craft.
-            <span class="block mt-4 font-mono text-xs uppercase tracking-widest text-primary">
-              {artists.length} Resident Artists
-            </span>
-          </p>
-        </div>
-      </div>
-    </div>
-    
-    <ScrollIndicator class="artist-hero-reveal absolute bottom-12 right-6 lg:right-12" />
-  </section>
+  <div class="relative mx-auto max-w-[1800px] border-l border-r border-border">
+  <PageHero
+    eyebrow="Resident artists"
+    title={['Artists', 'in ink']}
+    description="A focused group of tattoo artists with distinct styles, shared standards, and portfolios built around custom work."
+    breadcrumbs={[
+      { label: 'Home', href: '/' },
+      { label: 'Artists' },
+    ]}
+    image={heroImage}
+    imagePosition="76% 45%"
+    stats={[
+      { value: artists.length, label: 'Artists' },
+      { value: specialtyNames.length, label: 'Styles' },
+    ]}
+  />
 
   <!-- Artist Gallery -->
-  <section class="artist-list-section relative z-20 px-6 md:px-12 lg:px-24 pb-32" data-scroll-section>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-20 lg:gap-y-32">
+  <section class="artist-list-section relative z-20 px-6 pb-28 pt-10 md:px-12 lg:px-20" data-scroll-section>
+    <div class="mx-auto max-w-7xl">
+    <div class="artist-grid">
       {sortedArtists.map((artist, index) => (
-        <a href={`/artists/${artist.id}`} class="artist-card group block relative" data-index={index}>
-          <!-- Image Container -->
-          <div class="relative aspect-[3/4] overflow-hidden bg-secondary mb-8">
-            <!-- Frame/Border Effect -->
-            <div class="absolute inset-0 border border-border z-20 transition-colors duration-500 group-hover:border-foreground/30"></div>
-
-            <!-- Image -->
+        <a href={`/artists/${artist.id}`} class="artist-card group" data-index={index}>
+          <div class="artist-card-media">
             <img
               src={artist.data.portrait}
               alt={artist.data.name}
-              class="absolute inset-0 w-full h-full object-cover grayscale-[20%] contrast-[1.1] transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] group-hover:scale-105 group-hover:grayscale-0"
+              class="artist-card-image"
             />
-
-            <!-- Hover Overlay (Warmth) -->
-            <div class="absolute inset-0 bg-primary/0 mix-blend-overlay transition-colors duration-700 group-hover:bg-primary/20 z-10"></div>
-
-            <!-- Corner Accents -->
-            <div class="absolute top-0 left-0 w-3 h-3 border-l border-t border-transparent transition-all duration-500 group-hover:border-primary/80 z-30"></div>
-            <div class="absolute bottom-0 right-0 w-3 h-3 border-r border-b border-transparent transition-all duration-500 group-hover:border-primary/80 z-30"></div>
+            <div class="artist-card-shade"></div>
           </div>
 
-          <!-- Typography / Label -->
-          <div class="flex flex-col items-start relative overflow-hidden">
-            <h2 class="text-3xl lg:text-4xl font-sans font-semibold text-foreground group-hover:text-primary transition-colors duration-300">
-              {artist.data.name}
-            </h2>
-
-            <div class="mt-3 flex flex-wrap gap-x-4 gap-y-2 text-muted-foreground group-hover:text-secondary-foreground transition-colors duration-300">
-              {artist.data.specialties && artist.data.specialties.slice(0, 2).map((specialty, i) => (
-                <span class="font-mono text-[10px] uppercase tracking-widest flex items-center gap-4">
-                  {specialty}
-                  {i < (artist.data.specialties?.slice(0, 2).length || 0) - 1 && (
-                    <span class="w-1 h-1 rounded-full bg-primary/50"></span>
-                  )}
-                </span>
-              ))}
+          <div class="artist-card-body">
+            <div>
+              <h2>{artist.data.name}</h2>
+              <p>
+                {artist.data.specialties && artist.data.specialties.length > 0 ? (
+                  artist.data.specialties.slice(0, 2).join(' / ')
+                ) : (
+                  'Custom work'
+                )}
+              </p>
             </div>
 
-            <!-- Hover "View" CTA -->
-            <div class="absolute right-0 top-1/2 -translate-y-1/2 opacity-0 -translate-x-4 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-500 delay-100">
-              <iconify-icon icon="solar:arrow-right-linear" class="text-2xl text-foreground"></iconify-icon>
-            </div>
+            <span class="artist-card-link">View portfolio <span aria-hidden="true">→</span></span>
           </div>
         </a>
       ))}
     </div>
+    </div>
   </section>
 
   <EditorialFooter />
+  </div>
 
   <script>
     const initAnimations = () => {
@@ -125,18 +92,18 @@ const sortedArtists = artists.sort((a, b) => a.data.name.localeCompare(b.data.na
       }
 
       // Hero Animations
-      gsap.set('.artist-hero-title-line > span', { y: '100%' });
-      gsap.set('.artist-hero-reveal', { opacity: 0, y: 20 });
+      gsap.set('.page-hero-title-line > span', { y: '100%' });
+      gsap.set('.page-hero-reveal', { opacity: 0, y: 20 });
       
       const tl = gsap.timeline({ delay: 0.2 });
       
-      tl.to('.artist-hero-title-line > span', {
+      tl.to('.page-hero-title-line > span', {
         y: '0%',
         duration: 1.2,
         stagger: 0.1,
         ease: 'power4.out'
       })
-      .to('.artist-hero-reveal', {
+      .to('.page-hero-reveal', {
         opacity: 1,
         y: 0,
         duration: 0.8,
@@ -163,4 +130,138 @@ const sortedArtists = artists.sort((a, b) => a.data.name.localeCompare(b.data.na
 
     document.addEventListener('astro:page-load', initAnimations);
   </script>
+
+  <style>
+    .artist-list-section {
+      background:
+        linear-gradient(180deg, color-mix(in srgb, var(--brand-paper) 1.5%, transparent), transparent 14rem),
+        var(--background);
+    }
+
+    .artist-grid {
+      display: grid;
+      gap: 0;
+      border-left: 1px solid var(--border);
+      border-top: 1px solid var(--border);
+    }
+
+    @media (min-width: 768px) {
+      .artist-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (min-width: 1180px) {
+      .artist-grid {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+    }
+
+    .artist-card {
+      position: relative;
+      display: grid;
+      grid-template-rows: auto 1fr;
+      gap: 1rem;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem;
+      color: inherit;
+      transition: background 0.25s ease;
+    }
+
+    @media (min-width: 768px) {
+      .artist-card {
+        padding: 1.25rem;
+      }
+    }
+
+    .artist-card:hover {
+      background: color-mix(in srgb, var(--brand-paper) 2.5%, transparent);
+    }
+
+    .artist-card-media {
+      position: relative;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      background: var(--secondary);
+    }
+
+    .artist-card-image {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: grayscale(0.28) contrast(1.04) brightness(0.88);
+      transition: filter 0.55s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .artist-card:hover .artist-card-image {
+      filter: grayscale(0) contrast(1.04) brightness(0.98);
+      transform: scale(1.045);
+    }
+
+    .artist-card-shade {
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(180deg, rgb(0 0 0 / 0.08), transparent 42%),
+        linear-gradient(0deg, rgb(0 0 0 / 0.34), transparent 44%);
+      opacity: 0.72;
+      transition: opacity 0.35s ease;
+    }
+
+    .artist-card:hover .artist-card-shade {
+      opacity: 0.5;
+    }
+
+    .artist-card-body {
+      display: grid;
+      gap: 1rem;
+      min-height: 9rem;
+      align-content: space-between;
+    }
+
+    .artist-card-body h2 {
+      font-family: var(--font-display);
+      font-size: clamp(2.35rem, 4vw, 4.8rem);
+      font-weight: 400;
+      line-height: 0.96;
+      letter-spacing: 0;
+      color: var(--foreground);
+      transition: color 0.25s ease;
+    }
+
+    .artist-card-body p {
+      margin-top: 0.7rem;
+      color: var(--muted-foreground);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.18em;
+      line-height: 1.7;
+      text-transform: uppercase;
+    }
+
+    .artist-card-link {
+      width: max-content;
+      color: color-mix(in srgb, var(--brand-paper) 42%, transparent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      transition: color 0.25s ease;
+    }
+
+    .artist-card:hover .artist-card-link {
+      color: var(--foreground);
+    }
+
+    .artist-card-link span {
+      display: inline-block;
+      letter-spacing: 0;
+      transition: transform 0.25s ease;
+    }
+
+    .artist-card:hover .artist-card-link span {
+      transform: translateX(0.25rem);
+    }
+  </style>
 </SiteLayout>

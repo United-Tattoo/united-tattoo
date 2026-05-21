@@ -1,8 +1,8 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import { getCollection } from 'astro:content';
-import Breadcrumb from '../../components/Breadcrumb.astro';
 import EditorialFooter from '../../components/EditorialFooter.astro';
+import PageHero from '../../components/PageHero.astro';
 
 export const prerender = true;
 
@@ -11,6 +11,8 @@ const posts = (await getCollection('blog', ({ data }) => !data.draft))
 
 const featuredPost = posts[0];
 const remainingPosts = posts.slice(1);
+const allTags = Array.from(new Set(posts.flatMap((post) => post.data.tags))).slice(0, 6);
+const heroImage = '/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-22%20127.jpg';
 
 const formatDate = (date: Date) => date.toLocaleDateString('en-US', {
   month: 'long',
@@ -30,66 +32,76 @@ const formatDate = (date: Date) => date.toLocaleDateString('en-US', {
     { name: 'Journal', url: '/blog' },
   ]}
 >
-  <section class="relative px-6 pb-20 pt-40 md:px-12 lg:px-20 lg:pt-48">
-    <div class="mx-auto max-w-7xl">
-      <div class="mb-12">
-        <Breadcrumb
-          items={[
-            { label: 'Home', href: '/' },
-            { label: 'Journal' }
-          ]}
-        />
-      </div>
-
-      <div class="grid gap-12 border-y border-border py-12 lg:grid-cols-12 lg:items-end">
-        <div class="lg:col-span-8">
-          <p class="mb-5 font-mono text-[10px] uppercase tracking-[0.32em] text-muted-foreground">Studio Journal</p>
-          <h1 class="font-display text-6xl font-normal leading-none tracking-normal text-foreground md:text-8xl lg:text-[9rem]">
-            Notes on the work
-          </h1>
-        </div>
-        <div class="lg:col-span-4">
-          <p class="max-w-md text-base leading-relaxed text-muted-foreground md:text-lg">
-            Practical writing from the studio: how to prepare, how to choose an artist, and how to take care of the work after the appointment.
-          </p>
-        </div>
-      </div>
-    </div>
-  </section>
+  <div class="relative mx-auto max-w-[1800px] border-l border-r border-border">
+  <PageHero
+    eyebrow="Studio Journal"
+    title={['Notes on', 'the work']}
+    description="Practical writing from the studio: how to prepare, how to choose an artist, and how to take care of the work after the appointment."
+    breadcrumbs={[
+      { label: 'Home', href: '/' },
+      { label: 'Journal' },
+    ]}
+    image={heroImage}
+    imagePosition="70% 42%"
+    stats={[
+      { value: posts.length, label: 'Published' },
+      { value: allTags.length, label: 'Topics' },
+    ]}
+  />
 
   <section class="px-6 pb-28 md:px-12 lg:px-20">
     <div class="mx-auto max-w-7xl">
       {featuredPost ? (
-        <a href={`/blog/${featuredPost.id}`} class="group mb-16 grid gap-8 border-b border-border pb-16 lg:grid-cols-12 lg:items-end">
-          <div class="lg:col-span-3">
-            <p class="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
-              Featured
-            </p>
-            <p class="mt-4 font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground/70">
-              {formatDate(featuredPost.data.publishDate)}
-            </p>
-          </div>
-
-          <div class="lg:col-span-6">
-            <h2 class="font-display text-4xl font-normal leading-tight text-foreground transition-colors group-hover:text-muted-foreground md:text-6xl">
-              {featuredPost.data.title}
-            </h2>
-            <p class="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
-              {featuredPost.data.description}
-            </p>
-          </div>
-
-          <div class="flex items-center justify-between border-t border-border pt-6 lg:col-span-3 lg:border-t-0 lg:pt-0">
-            <div class="flex flex-wrap gap-2">
-              {featuredPost.data.tags.slice(0, 2).map((tag) => (
-                <span class="border border-border px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
-                  {tag}
-                </span>
-              ))}
+        <div class="journal-featured-grid grid border-y border-border lg:grid-cols-12">
+          <a href={`/blog/${featuredPost.id}`} class="group flex min-h-[360px] flex-col justify-between border-border py-8 transition-colors hover:bg-white/[0.018] md:py-10 lg:col-span-8 lg:border-r lg:pr-12">
+            <div class="flex flex-col gap-6 md:flex-row md:items-start md:justify-between">
+              <div>
+                <p class="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+                  Featured note
+                </p>
+                <p class="mt-4 font-mono text-xs uppercase tracking-[0.18em] text-muted-foreground/70">
+                  {formatDate(featuredPost.data.publishDate)}
+                </p>
+              </div>
+              <span class="hidden h-12 w-12 items-center justify-center rounded-full border border-border text-2xl text-foreground transition-all group-hover:translate-x-1 group-hover:border-foreground/45 md:flex">
+                <iconify-icon icon="solar:arrow-right-linear"></iconify-icon>
+              </span>
             </div>
-            <iconify-icon icon="solar:arrow-right-linear" class="text-2xl text-foreground transition-transform group-hover:translate-x-1"></iconify-icon>
-          </div>
-        </a>
+
+            <div class="mt-12 max-w-4xl">
+              <h2 class="font-display text-5xl font-normal leading-[0.98] text-foreground transition-colors group-hover:text-muted-foreground md:text-7xl">
+                {featuredPost.data.title}
+              </h2>
+              <p class="mt-6 max-w-2xl text-base leading-relaxed text-muted-foreground md:text-lg">
+                {featuredPost.data.description}
+              </p>
+            </div>
+
+            <div class="mt-10 flex items-center justify-between border-t border-border pt-6">
+              <div class="flex flex-wrap gap-2">
+                {featuredPost.data.tags.slice(0, 3).map((tag) => (
+                  <span class="border border-border px-3 py-1 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+              <span class="font-mono text-[10px] uppercase tracking-[0.22em] text-foreground">Read note</span>
+            </div>
+          </a>
+
+          <aside class="flex flex-col justify-between py-8 md:py-10 lg:col-span-4 lg:pl-10">
+            <div>
+              <p class="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">Start here</p>
+              <p class="mt-6 text-sm leading-relaxed text-muted-foreground">
+                The newest notes are written for clients comparing artists, preparing references, or trying to understand what happens before and after a tattoo appointment.
+              </p>
+            </div>
+            <div class="mt-10 border-t border-border pt-6">
+              <p class="font-mono text-[9px] uppercase tracking-[0.22em] text-muted-foreground/70">Most recent</p>
+              <p class="mt-3 text-foreground">{featuredPost.data.title}</p>
+            </div>
+          </aside>
+        </div>
       ) : (
         <div class="border border-border p-8">
           <p class="text-muted-foreground">No journal posts are published yet.</p>
@@ -97,34 +109,51 @@ const formatDate = (date: Date) => date.toLocaleDateString('en-US', {
       )}
 
       {remainingPosts.length > 0 && (
-        <div class="grid gap-6 md:grid-cols-2">
+        <div class="mt-14">
+          <div class="mb-6 flex items-end justify-between border-b border-border pb-4">
+            <h2 class="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">More notes</h2>
+            <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">
+              {remainingPosts.length.toString().padStart(2, '0')}
+            </span>
+          </div>
+
+          <div class="divide-y divide-border border-y border-border">
           {remainingPosts.map((post) => (
-            <a href={`/blog/${post.id}`} class="group border border-border p-6 transition-colors hover:border-foreground/40 md:p-8">
-              <p class="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground/70">
-                {formatDate(post.data.publishDate)}
-              </p>
-              <h2 class="mt-6 font-display text-3xl font-normal leading-tight text-foreground transition-colors group-hover:text-muted-foreground md:text-4xl">
-                {post.data.title}
-              </h2>
-              <p class="mt-4 text-sm leading-relaxed text-muted-foreground">
-                {post.data.description}
-              </p>
-              <div class="mt-8 flex items-center justify-between border-t border-border pt-5">
-                <div class="flex flex-wrap gap-2">
+            <a href={`/blog/${post.id}`} class="group grid gap-6 py-7 transition-colors hover:bg-white/[0.018] md:grid-cols-12 md:items-center">
+              <div class="md:col-span-2">
+                <p class="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground/70">
+                  {formatDate(post.data.publishDate)}
+                </p>
+              </div>
+
+              <div class="md:col-span-5">
+                <h3 class="font-display text-3xl font-normal leading-tight text-foreground transition-colors group-hover:text-muted-foreground md:text-4xl">
+                  {post.data.title}
+                </h3>
+              </div>
+
+              <div class="md:col-span-4">
+                <p class="max-w-xl text-sm leading-relaxed text-muted-foreground">
+                  {post.data.description}
+                </p>
+                <div class="mt-4 flex flex-wrap gap-3">
                   {post.data.tags.slice(0, 2).map((tag) => (
-                    <span class="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70">
-                      {tag}
-                    </span>
+                    <span class="font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground/70">{tag}</span>
                   ))}
                 </div>
-                <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground">Read</span>
+              </div>
+
+              <div class="flex justify-end md:col-span-1">
+                <iconify-icon icon="solar:arrow-right-linear" class="text-xl text-foreground transition-transform group-hover:translate-x-1"></iconify-icon>
               </div>
             </a>
           ))}
+          </div>
         </div>
       )}
     </div>
   </section>
 
   <EditorialFooter />
+  </div>
 </SiteLayout>

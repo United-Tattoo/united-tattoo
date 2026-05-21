@@ -62,6 +62,7 @@ const showcaseColumns = 3;
 const showcaseMinimumImages = Math.max(6, portfolioImagesByArtist.length);
 const showcaseImageCount = Math.ceil(showcaseMinimumImages / showcaseColumns) * showcaseColumns;
 const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
+const showStudioIntro = false;
 ---
 
 <SiteLayout title={SITE_DESCRIPTION} removeMainPadding={true} hideFooter={true}>
@@ -126,6 +127,7 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
     </div>
   </section>
 
+  {showStudioIntro && (
   <section class="studio-intro relative z-20 border-t border-b border-border" data-scroll-section>
     <!-- Grid dots -->
     <div class="grid-dot" style="left:25%;top:0"></div>
@@ -146,7 +148,7 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
       <div class="intro-statement">
         <span class="intro-kicker intro-reveal">Custom work, built with you</span>
         <h2 class="intro-headline intro-reveal">
-          Bring your idea. We will shape it into a tattoo that fits your body and still reads years from now.
+          Bring your idea. We will shape it into work that fits now and ages well.
         </h2>
         <div class="intro-actions intro-reveal">
           <a href="/booking" class="intro-cta-primary">
@@ -159,6 +161,7 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
 
       <!-- Right: metadata sidebar -->
       <div class="intro-sidebar">
+        <span class="intro-sidebar-label intro-reveal">Studio snapshot</span>
         <div class="intro-meta-stack">
           <div class="intro-meta intro-reveal">
             <span class="intro-meta-label">Location</span>
@@ -176,6 +179,7 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
       </div>
     </div>
   </section>
+  )}
 
   <!-- Work Marquee: Infinite Scroll Strip -->
   <section class="marquee-section relative z-20 overflow-hidden border-t border-border py-8 md:py-12" data-scroll-section>
@@ -209,7 +213,7 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
   </section>
 
   <!-- Section Title Banner: Artists -->
-  <div class="section-banner relative z-20 border-t border-b border-border py-16 md:py-20 lg:py-28 overflow-hidden" data-scroll-section>
+  <div class="section-banner section-banner--image section-banner--team relative z-20 border-t border-b border-border overflow-hidden" data-scroll-section>
     <!-- Grid dots at intersections -->
     <div class="grid-dot" style="left:25%;top:0"></div>
     <div class="grid-dot" style="left:50%;top:0"></div>
@@ -219,8 +223,19 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
     <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
     <!-- Subtle noise bg -->
     <div class="absolute inset-0 noise pointer-events-none"></div>
-    <h2 class="artists-title relative text-center font-display text-6xl md:text-8xl lg:text-[10rem] font-normal text-foreground tracking-tight leading-none">The Team</h2>
-    <p class="relative text-center font-mono text-[10px] text-muted-foreground/60 mt-5 uppercase tracking-[0.3em]">{artists.length} artists in residence</p>
+    <div class="section-banner-image" aria-hidden="true">
+      <img src="/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-03%2048.jpg" alt="" loading="lazy" />
+    </div>
+    <div class="section-banner-inner">
+      <div class="section-banner-meta">
+        <span>01 / Artists</span>
+      </div>
+      <h2 class="artists-title section-banner-title">The Team</h2>
+      <div class="section-banner-footer">
+        <span>{artists.length} artists in residence</span>
+        <a href="/artists">Explore portfolios <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
   </div>
 
   <!-- Artists Section: The Index -->
@@ -274,7 +289,7 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
   </section>
 
   <!-- Section Title Banner: Work -->
-  <div class="section-banner relative z-20 border-t border-b border-border py-16 md:py-20 lg:py-28 overflow-hidden" data-scroll-section>
+  <div class="section-banner section-banner--image section-banner--work relative z-20 border-t border-b border-border overflow-hidden" data-scroll-section>
     <div class="grid-dot" style="left:25%;top:0"></div>
     <div class="grid-dot" style="left:50%;top:0"></div>
     <div class="grid-dot" style="left:75%;top:0"></div>
@@ -282,12 +297,18 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
     <div class="grid-dot" style="left:50%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
     <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
     <div class="absolute inset-0 noise pointer-events-none"></div>
-    <h2 class="showcase-title relative text-center font-display text-6xl md:text-8xl lg:text-[10rem] font-normal text-foreground tracking-tight leading-none">Recent Work</h2>
-    <div class="relative flex justify-center mt-5">
-      <a href="/artists" class="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/60 hover:text-foreground transition-colors group">
-        View all artists
-        <span class="w-5 h-5 rounded-full border border-border flex items-center justify-center group-hover:bg-foreground group-hover:text-background transition-all text-[9px]">→</span>
-      </a>
+    <div class="section-banner-image" aria-hidden="true">
+      <img src="/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-22%20127.jpg" alt="" loading="lazy" />
+    </div>
+    <div class="section-banner-inner">
+      <div class="section-banner-meta">
+        <span>02 / Portfolio</span>
+      </div>
+      <h2 class="showcase-title section-banner-title">Recent Work</h2>
+      <div class="section-banner-footer">
+        <span>{showcaseImages.length} featured pieces</span>
+        <a href="/artists">View all artists <span aria-hidden="true">→</span></a>
+      </div>
     </div>
   </div>
 
@@ -313,7 +334,7 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
   </section>
 
   <!-- Section Title Banner: Process -->
-  <div class="section-banner relative z-20 border-t border-b border-border py-16 md:py-20 lg:py-28 overflow-hidden" data-scroll-section>
+  <div class="section-banner section-banner--image section-banner--process relative z-20 border-t border-b border-border overflow-hidden" data-scroll-section>
     <div class="grid-dot" style="left:25%;top:0"></div>
     <div class="grid-dot" style="left:50%;top:0"></div>
     <div class="grid-dot" style="left:75%;top:0"></div>
@@ -321,8 +342,19 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
     <div class="grid-dot" style="left:50%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
     <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
     <div class="absolute inset-0 noise pointer-events-none"></div>
-    <h2 class="process-title relative text-center font-display text-6xl md:text-8xl lg:text-[10rem] font-normal text-foreground tracking-tight leading-none">The Process</h2>
-    <p class="relative text-center font-mono text-[10px] text-muted-foreground/60 mt-5 uppercase tracking-[0.3em]">From idea to ink</p>
+    <div class="section-banner-image" aria-hidden="true">
+      <img src="/artists/Christy-Lumberg/Portfolio/26-01-02%2019-30-50%20139.jpg" alt="" loading="lazy" />
+    </div>
+    <div class="section-banner-inner">
+      <div class="section-banner-meta">
+        <span>03 / Process</span>
+      </div>
+      <h2 class="process-title section-banner-title">The Process</h2>
+      <div class="section-banner-footer">
+        <span>From idea to ink</span>
+        <a href="/booking">Start booking <span aria-hidden="true">→</span></a>
+      </div>
+    </div>
   </div>
 
   <!-- Process Section: Bordered Grid -->
@@ -461,21 +493,182 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
     /* === Section Banners === */
     .section-banner {
       position: relative;
+      min-height: clamp(280px, 30vw, 420px);
       background:
-        linear-gradient(90deg, color-mix(in srgb, var(--brand-white) 5%, transparent) 0 18%, transparent 18% 100%),
-        linear-gradient(135deg, color-mix(in srgb, var(--brand-paper) 2%, transparent), color-mix(in srgb, var(--brand-white) 2%, transparent)),
+        linear-gradient(180deg, color-mix(in srgb, var(--brand-paper) 2%, transparent), transparent 46%),
         var(--background);
     }
 
+    .section-banner::before {
+      display: none;
+    }
+
     .section-banner::after {
+      display: none;
+    }
+
+    .section-banner-image {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      opacity: 0.34;
+      mix-blend-mode: screen;
+      mask-image:
+        linear-gradient(90deg, transparent 0 14%, black 34%, black 78%, transparent 100%),
+        linear-gradient(180deg, transparent 0 8%, black 28%, black 76%, transparent 100%);
+      -webkit-mask-image:
+        linear-gradient(90deg, transparent 0 14%, black 34%, black 78%, transparent 100%),
+        linear-gradient(180deg, transparent 0 8%, black 28%, black 76%, transparent 100%);
+      mask-composite: intersect;
+      -webkit-mask-composite: source-in;
+    }
+
+    .section-banner-image::after {
       content: '';
       position: absolute;
-      left: clamp(1rem, 4vw, 4rem);
-      right: clamp(1rem, 4vw, 4rem);
-      bottom: 1rem;
-      height: 5px;
-      background: var(--brand-white);
+      inset: 0;
+      background:
+        linear-gradient(90deg, var(--background) 0 12%, transparent 34%, var(--background) 92%),
+        radial-gradient(circle at 50% 50%, transparent 0 28%, var(--background) 76%);
+      opacity: 0.76;
+    }
+
+    .section-banner-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: saturate(0.82) contrast(1.08) brightness(0.72);
+      transform: scale(1.04);
+    }
+
+    .section-banner--team .section-banner-image {
+      left: 34%;
+      opacity: 0.3;
+    }
+
+    .section-banner--team .section-banner-image img {
+      object-position: 50% 44%;
+    }
+
+    .section-banner--work .section-banner-image {
+      right: 26%;
       opacity: 0.38;
+    }
+
+    .section-banner--work .section-banner-image img {
+      object-position: 50% 52%;
+    }
+
+    .section-banner--process .section-banner-image {
+      left: 22%;
+      opacity: 0.32;
+    }
+
+    .section-banner--process .section-banner-image img {
+      object-position: 50% 48%;
+    }
+
+    .section-banner-inner {
+      position: relative;
+      z-index: 3;
+      display: grid;
+      min-height: inherit;
+      grid-template-rows: auto 1fr auto;
+      padding: clamp(1.75rem, 4.5vw, 4.5rem);
+    }
+
+    .section-banner-meta {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 2rem;
+      padding-bottom: clamp(0.75rem, 1.6vw, 1.25rem);
+    }
+
+    .section-banner-meta span,
+    .section-banner-footer {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.28em;
+      text-transform: uppercase;
+    }
+
+    .section-banner-meta span {
+      color: color-mix(in srgb, var(--brand-paper) 68%, transparent);
+      white-space: nowrap;
+    }
+
+    .section-banner-meta p {
+      display: none;
+    }
+
+    .section-banner-title {
+      align-self: center;
+      justify-self: center;
+      font-family: var(--font-display);
+      font-size: clamp(4rem, 10vw, 12rem);
+      font-weight: 400;
+      line-height: 0.82;
+      letter-spacing: 0;
+      color: var(--foreground);
+      text-align: center;
+      text-wrap: balance;
+    }
+
+    .section-banner-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      color: color-mix(in srgb, var(--brand-paper) 46%, transparent);
+    }
+
+    .section-banner-footer a {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: color-mix(in srgb, var(--brand-paper) 64%, transparent);
+      transition: color 0.25s ease;
+    }
+
+    .section-banner-footer a:hover {
+      color: var(--foreground);
+    }
+
+    .section-banner-footer a span {
+      display: inline-block;
+      letter-spacing: 0;
+      transition: transform 0.25s ease, border-color 0.25s ease;
+    }
+
+    .section-banner-footer a:hover span {
+      transform: translateX(3px);
+    }
+
+    @media (max-width: 767px) {
+      .section-banner {
+        min-height: 300px;
+      }
+
+      .section-banner-inner {
+        padding: 2rem 1.5rem 2.5rem;
+      }
+
+      .section-banner-footer {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.9rem;
+      }
+
+      .section-banner-meta p {
+        text-align: left;
+      }
+
+      .section-banner-title {
+        justify-self: start;
+        text-align: left;
+      }
     }
 
     /* Artist name underline on hover */
@@ -581,22 +774,35 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
     /* === Studio Intro === */
     .studio-intro {
       position: relative;
+      overflow: hidden;
       background:
-        linear-gradient(120deg, transparent 0 62%, color-mix(in srgb, var(--brand-white) 4%, transparent) 62% 100%),
+        linear-gradient(90deg, transparent 0 66%, color-mix(in srgb, var(--brand-white) 3%, transparent) 66% 100%),
         var(--background);
+    }
+
+    .studio-intro::before {
+      content: '';
+      position: absolute;
+      left: clamp(1.5rem, 6vw, 7rem);
+      right: clamp(1.5rem, 6vw, 7rem);
+      top: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border), transparent);
+      opacity: 0.8;
+      z-index: 2;
     }
 
     .studio-ghost-image {
       position: absolute;
-      right: clamp(1rem, 3vw, 3rem);
+      right: clamp(1rem, 5vw, 5rem);
       top: 50%;
       transform: translateY(-50%);
-      width: min(38vw, 520px);
+      width: min(34vw, 430px);
       pointer-events: none;
       z-index: 1;
-      opacity: 0.05;
-      mask-image: radial-gradient(circle at center, black 34%, transparent 78%);
-      -webkit-mask-image: radial-gradient(circle at center, black 34%, transparent 78%);
+      opacity: 0.075;
+      mask-image: radial-gradient(circle at center, black 32%, transparent 74%);
+      -webkit-mask-image: radial-gradient(circle at center, black 32%, transparent 74%);
     }
 
     .studio-ghost-image img {
@@ -610,7 +816,7 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
       .studio-ghost-image {
         width: min(62vw, 420px);
         right: 0.5rem;
-        opacity: 0.03;
+        opacity: 0.04;
       }
     }
 
@@ -618,19 +824,20 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
     .intro-layout {
       display: grid;
       grid-template-columns: 1fr;
+      min-height: clamp(500px, 46vw, 640px);
       position: relative;
       z-index: 2;
     }
 
     @media (min-width: 1024px) {
       .intro-layout {
-        grid-template-columns: 1fr 280px;
+        grid-template-columns: minmax(0, 1fr) 360px;
       }
     }
 
     @media (min-width: 1280px) {
       .intro-layout {
-        grid-template-columns: 1fr 320px;
+        grid-template-columns: minmax(0, 1fr) 420px;
       }
     }
 
@@ -640,6 +847,7 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
       display: flex;
       flex-direction: column;
       justify-content: center;
+      position: relative;
     }
 
     @media (min-width: 768px) {
@@ -650,29 +858,38 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
 
     @media (min-width: 1024px) {
       .intro-statement {
-        padding: 4.5rem 4rem 4.5rem clamp(2.5rem, 5vw, 5rem);
+        padding: 5.5rem clamp(3rem, 6vw, 7rem);
       }
     }
 
     .intro-kicker {
-      display: block;
+      display: inline-flex;
+      align-items: center;
+      gap: 1rem;
       font-family: var(--font-mono);
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.28em;
-      color: var(--foreground);
-      margin-bottom: 1.5rem;
+      color: color-mix(in srgb, var(--foreground) 78%, transparent);
+      margin-bottom: 2rem;
+    }
+
+    .intro-kicker::before {
+      content: '';
+      width: 46px;
+      height: 1px;
+      background: color-mix(in srgb, var(--foreground) 32%, transparent);
     }
 
     .intro-headline {
       font-family: var(--font-sans);
       font-weight: 200;
-      font-size: clamp(1.6rem, 3.2vw, 2.6rem);
-      line-height: 1.35;
-      letter-spacing: -0.01em;
+      font-size: clamp(2.35rem, 4.25vw, 5.25rem);
+      line-height: 1.14;
+      letter-spacing: -0.02em;
       color: var(--foreground);
-      max-width: 600px;
-      margin-bottom: 2.5rem;
+      max-width: 880px;
+      margin-bottom: 2rem;
     }
 
     .intro-actions {
@@ -689,7 +906,7 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
       background: var(--brand-white);
       color: var(--brand-black);
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.2em;
       border: 1px solid var(--brand-white);
@@ -699,7 +916,6 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
     .intro-cta-primary:hover {
       filter: brightness(1.05);
       transform: translateY(-1px);
-      box-shadow: 0 3px 12px color-mix(in srgb, var(--brand-white) 10%, transparent);
     }
 
     .intro-cta-arrow {
@@ -720,7 +936,7 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
 
     .intro-cta-secondary {
       font-family: var(--font-mono);
-      font-size: 12px;
+      font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.2em;
       color: var(--muted-foreground);
@@ -737,20 +953,40 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
     /* Right: sidebar */
     .intro-sidebar {
       display: flex;
-      flex-direction: row;
-      gap: 1.5rem;
-      padding: 0 1.5rem 2rem;
-      align-items: flex-start;
+      flex-direction: column;
+      gap: 1.75rem;
+      padding: 0 1.5rem 2.5rem;
+      justify-content: center;
+      position: relative;
     }
 
     @media (min-width: 1024px) {
       .intro-sidebar {
-        flex-direction: column;
-        gap: 0;
-        padding: 0;
-        border-left: 1px solid var(--border);
-        justify-content: space-between;
+        align-self: center;
+        justify-self: stretch;
+        margin: 0 clamp(2.5rem, 4vw, 4.5rem) 0 0;
+        padding: 0 0 0 2rem;
+        border-left: 1px solid color-mix(in srgb, var(--brand-paper) 18%, transparent);
+        background: transparent;
       }
+    }
+
+    .intro-sidebar-label {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      color: color-mix(in srgb, var(--muted-foreground) 72%, transparent);
+    }
+
+    .intro-sidebar-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: color-mix(in srgb, var(--brand-paper) 18%, transparent);
     }
 
     .intro-meta-stack {
@@ -763,6 +999,8 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
       .intro-meta-stack {
         flex-direction: column;
         gap: 0;
+        border-top: 1px solid color-mix(in srgb, var(--brand-paper) 18%, transparent);
+        border-bottom: 1px solid color-mix(in srgb, var(--brand-paper) 18%, transparent);
       }
     }
 
@@ -772,8 +1010,16 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
 
     @media (min-width: 1024px) {
       .intro-meta {
-        padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid oklch(from var(--border) l c h / 0.5);
+        display: grid;
+        grid-template-columns: 7.5rem minmax(0, 1fr);
+        gap: 1rem;
+        align-items: baseline;
+        padding: 1.1rem 0;
+        border-top: 1px solid oklch(from var(--border) l c h / 0.55);
+      }
+
+      .intro-meta:first-child {
+        border-top: 0;
       }
     }
 
@@ -796,6 +1042,12 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
       letter-spacing: 0.01em;
     }
 
+    @media (min-width: 1024px) {
+      .intro-meta-label {
+        margin-bottom: 0;
+      }
+    }
+
   </style>
 
   <!-- Scroll Animations -->
@@ -814,7 +1066,10 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
       // Set initial states for hero elements
       gsap.set('.hero-title-line > span', { y: '110%' });
       gsap.set('.hero-reveal', { opacity: 0, y: 30 });
-      gsap.set('.intro-reveal', { opacity: 0, y: 22 });
+      const studioIntro = document.querySelector('.studio-intro');
+      if (studioIntro) {
+        gsap.set('.intro-reveal', { opacity: 0, y: 22 });
+      }
 
       // Subtle parallax on hero exterior photo
       const heroSection = document.querySelector('.hero-section');
@@ -864,17 +1119,19 @@ const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
           ease: 'power3.out'
         }, '-=0.8');
 
-      gsap.to('.intro-reveal', {
-        opacity: 1,
-        y: 0,
-        stagger: 0.08,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: '.studio-intro',
-          start: 'top 82%'
-        }
-      });
+      if (studioIntro) {
+        gsap.to('.intro-reveal', {
+          opacity: 1,
+          y: 0,
+          stagger: 0.08,
+          duration: 0.8,
+          ease: 'power3.out',
+          scrollTrigger: {
+            trigger: studioIntro,
+            start: 'top 82%'
+          }
+        });
+      }
 
       // Hero Parallax on Scroll
       gsap.to('.hero-title', {
