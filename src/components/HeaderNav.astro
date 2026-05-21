@@ -8,12 +8,14 @@ interface Props {
 }
 
 const { currentPath = "", hasAnnouncement = false } = Astro.props;
+const isHomePage = currentPath === "/";
 const isArtistsPage = currentPath.startsWith("/artists");
 const isBookingPage = currentPath.startsWith("/booking");
 
 const desktopNavItems = [
-  { href: '/artists', label: 'Artists', num: '01', active: isArtistsPage },
-  { href: '/#process', label: 'Process', num: '02', active: false },
+  { href: '/', label: 'Home', num: '01', active: isHomePage },
+  { href: '/artists', label: 'Artists', num: '02', active: isArtistsPage },
+  { href: '/#process', label: 'Process', num: '03', active: false },
 ];
 
 const mobileNavItems = [
@@ -28,41 +30,50 @@ const mobileNavItems = [
   "fixed left-0 right-0 z-[60]",
   hasAnnouncement ? "top-8" : "top-0"
 ]}>
-  <div class="max-w-[1800px] mx-auto border-l border-r border-border px-6 md:px-10 lg:px-14">
-    <div class="nav-row flex justify-between items-center py-5 md:py-6">
+  <div class="nav-shell max-w-[1800px] mx-auto px-4 md:px-8 lg:px-12">
+    <div class="nav-row flex justify-between items-center gap-4 py-4 md:py-5">
       <!-- Logo / Wordmark -->
-      <a href="/" class="nav-logo group relative z-[110]">
-        <DoveMark class="nav-dove w-6 h-6 text-primary transition-all duration-300 group-hover:rotate-[-8deg]" />
-        <span class="nav-wordmark">United</span>
+      <a href="/" class="nav-logo group relative z-[110]" aria-label="United Tattoo home">
+        <span class="nav-mark">
+          <DoveMark class="nav-dove w-5 h-5 transition-all duration-300 group-hover:rotate-[-8deg]" />
+        </span>
+        <span class="nav-brand-text">
+          <span class="nav-wordmark">United</span>
+          <span class="nav-submark">Tattoo</span>
+        </span>
       </a>
 
       <!-- Desktop Navigation -->
-      <div class="hidden md:flex items-center gap-10">
-        {desktopNavItems.map((item) => (
-          <a
-            href={item.href}
-            class:list={[
-              'nav-link font-mono text-[13px] uppercase tracking-[0.15em] text-foreground/70 transition-all duration-300',
-              { '!text-foreground': item.active }
-            ]}
-          >
-            {item.label}
-          </a>
-        ))}
+      <div class="hidden md:flex items-center gap-4">
+        <div class="nav-links flex items-center">
+          {desktopNavItems.map((item) => (
+            <a
+              href={item.href}
+              class:list={[
+                'nav-link font-mono text-[11px] uppercase tracking-[0.18em] transition-all duration-300',
+                { 'is-active': item.active }
+              ]}
+            >
+              <span class="nav-link-num">{item.num}</span>
+              <span>{item.label}</span>
+            </a>
+          ))}
+        </div>
 
         <a
           href="/booking"
           class:list={[
-            'nav-book-btn font-mono text-[13px] uppercase tracking-[0.15em] px-5 py-2.5 border transition-all duration-300',
-            { '!bg-foreground !text-background !border-foreground': isBookingPage }
+            'nav-book-btn font-mono text-[11px] uppercase tracking-[0.18em] px-5 py-3 border transition-all duration-300',
+            { 'is-active': isBookingPage }
           ]}
         >
-          Book a Session
+          <span>Book</span>
+          <span class="hidden lg:inline">a Session</span>
         </a>
       </div>
 
       <!-- Mobile Menu Button -->
-      <button id="mobile-menu-btn" class="md:hidden relative z-[110] w-11 h-11 flex flex-col items-center justify-center gap-[5px]" aria-label="Toggle Menu">
+      <button id="mobile-menu-btn" class="mobile-menu-btn md:hidden relative z-[110] w-11 h-11 flex flex-col items-center justify-center gap-[5px]" aria-label="Toggle Menu">
         <span class="hamburger-line w-5 h-px bg-foreground transition-all duration-300 origin-center"></span>
         <span class="hamburger-line w-5 h-px bg-foreground transition-all duration-300 origin-center"></span>
       </button>
@@ -71,9 +82,7 @@ const mobileNavItems = [
 </nav>
 
 <!-- Mobile Menu Overlay -->
-<div id="mobile-menu" class="fixed inset-0 z-[100] bg-background/95 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-400">
-  <div class="absolute inset-0 pointer-events-none mobile-grid-lines"></div>
-
+<div id="mobile-menu" class="fixed inset-0 z-[100] bg-background/96 backdrop-blur-md opacity-0 pointer-events-none transition-opacity duration-400">
   <div class="relative max-w-[1800px] mx-auto w-full h-full border-l border-r border-border/70 flex flex-col">
     <!-- Menu content -->
     <div class="flex-1 flex flex-col justify-center px-8 pt-20">
@@ -85,7 +94,7 @@ const mobileNavItems = [
             style={`transition-delay: ${100 + i * 80}ms`}
           >
             <span class="font-mono text-[10px] text-muted-foreground/50 tracking-wider">{item.num}</span>
-            <span class="text-3xl font-sans font-light text-foreground/85 group-hover:text-foreground group-hover:translate-x-1 transition-all uppercase tracking-tight">{item.label}</span>
+            <span class="text-3xl font-sans font-light text-foreground/85 group-hover:text-primary group-hover:translate-x-1 transition-all uppercase tracking-tight">{item.label}</span>
           </a>
         ))}
       </nav>
@@ -112,23 +121,60 @@ const mobileNavItems = [
   .nav-logo {
     display: flex;
     align-items: center;
-    gap: 0.6rem;
+    gap: 0.75rem;
+    color: var(--foreground);
+    min-width: 9rem;
+  }
+
+  .nav-mark {
+    width: 2.25rem;
+    height: 2.25rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid color-mix(in srgb, var(--foreground) 18%, transparent);
+    background: color-mix(in srgb, var(--background) 56%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    transition: border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .nav-logo:hover .nav-mark {
+    border-color: color-mix(in srgb, var(--foreground) 45%, transparent);
+    background: color-mix(in srgb, var(--foreground) 8%, transparent);
+  }
+
+  .nav-brand-text {
+    display: flex;
+    flex-direction: column;
+    gap: 0.05rem;
   }
 
   .nav-wordmark {
     font-family: var(--font-sans);
-    font-size: 17px;
-    font-weight: 300;
-    letter-spacing: 0.1em;
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.16em;
     text-transform: uppercase;
-    color: var(--foreground);
+    line-height: 1;
+  }
+
+  .nav-submark {
+    font-family: var(--font-mono);
+    font-size: 8px;
+    letter-spacing: 0.28em;
+    text-transform: uppercase;
+    color: color-mix(in srgb, var(--foreground) 48%, transparent);
   }
 
   /* Nav never has its own background — pointer-events only on interactive elements */
+  .nav-shell {
+    transition: background 0.3s ease, border-color 0.3s ease, padding 0.3s ease;
+  }
+
   #main-nav {
-    background: none;
     pointer-events: none;
-    transition: background 0.3s ease;
+    transition: transform 0.3s ease;
   }
 
   #main-nav a,
@@ -136,33 +182,87 @@ const mobileNavItems = [
     pointer-events: auto;
   }
 
-  #main-nav.nav-scrolled {
-    background: oklch(from var(--background) l c h / 0.94);
+  #main-nav.nav-scrolled .nav-shell {
+    background: color-mix(in srgb, var(--background) 88%, transparent);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
+    border-bottom: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  }
+
+  #main-nav.nav-scrolled {
     pointer-events: auto;
   }
 
+  .nav-links {
+    border: 1px solid color-mix(in srgb, var(--foreground) 16%, transparent);
+    background: color-mix(in srgb, var(--background) 42%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
   /* Links */
+  .nav-link {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.45rem;
+    color: color-mix(in srgb, var(--foreground) 66%, transparent);
+    padding: 0.75rem 1rem;
+    border-right: 1px solid color-mix(in srgb, var(--foreground) 12%, transparent);
+  }
+
+  .nav-link:last-child {
+    border-right: 0;
+  }
+
+  .nav-link-num {
+    color: color-mix(in srgb, var(--foreground) 34%, transparent);
+    font-size: 9px;
+  }
+
+  .nav-link.is-active {
+    color: var(--foreground);
+    background: color-mix(in srgb, var(--foreground) 7%, transparent);
+  }
+
   .nav-link:hover {
     color: var(--foreground);
+    background: color-mix(in srgb, var(--foreground) 9%, transparent);
   }
 
   /* Book button */
   .nav-book-btn {
-    border-color: rgba(255, 255, 255, 0.4);
-    color: rgba(255, 255, 255, 0.9);
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border-color: color-mix(in srgb, var(--foreground) 32%, transparent);
+    color: color-mix(in srgb, var(--foreground) 82%, transparent);
+    background: color-mix(in srgb, var(--background) 42%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
   }
 
   .nav-scrolled .nav-book-btn {
-    border-color: oklch(from var(--foreground) l c h / 0.4);
-    color: oklch(from var(--foreground) l c h / 0.85);
+    border-color: color-mix(in srgb, var(--foreground) 28%, transparent);
+    color: color-mix(in srgb, var(--foreground) 84%, transparent);
+  }
+
+  .nav-book-btn.is-active {
+    background: var(--foreground);
+    border-color: var(--foreground);
+    color: var(--background);
   }
 
   .nav-book-btn:hover {
-    background: var(--foreground) !important;
-    border-color: var(--foreground) !important;
-    color: var(--background) !important;
+    background: var(--foreground);
+    border-color: var(--foreground);
+    color: var(--background);
+  }
+
+  .mobile-menu-btn {
+    border: 1px solid color-mix(in srgb, var(--foreground) 16%, transparent);
+    background: color-mix(in srgb, var(--background) 44%, transparent);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
   }
 
   /* Hamburger animation */
@@ -174,11 +274,14 @@ const mobileNavItems = [
     transform: rotate(-45deg) translateY(-3px);
   }
 
-  .mobile-grid-lines {
-    background-image:
-      linear-gradient(to right, transparent 24.9%, oklch(from var(--border) l c h / 0.35) 25%, transparent 25.1%),
-      linear-gradient(to right, transparent 49.9%, oklch(from var(--border) l c h / 0.22) 50%, transparent 50.1%),
-      linear-gradient(to right, transparent 74.9%, oklch(from var(--border) l c h / 0.35) 75%, transparent 75.1%);
+  @media (max-width: 767px) {
+    .nav-shell {
+      padding-inline: 1rem;
+    }
+
+    .nav-logo {
+      min-width: 0;
+    }
   }
 </style>
 

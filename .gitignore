@@ -38,6 +38,9 @@ Thumbs.db
 *~
 *.sublime-project
 *.sublime-workspace
+.codex/
+.agents/
+.cursorindexingignore/
 
 # Cache directories
 .cache/

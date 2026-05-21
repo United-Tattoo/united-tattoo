@@ -14,32 +14,54 @@ const featuredArtists = artists.slice(0, 4);
 
 // Collect portfolio images from all artists for the marquee & showcase
 const publicDir = path.join(process.cwd(), 'public');
-const allPortfolioImages: { src: string; artist: string }[] = [];
+const SUPPORTED_PORTFOLIO_IMAGE = /\.(avif|webp|jpe?g|png)$/i;
+const MAX_IMAGES_PER_ARTIST = 5;
+const portfolioImagesByArtist: { artist: string; images: { src: string; artist: string }[] }[] = [];
 
 for (const artist of artists) {
   const portfolioPath = path.join(publicDir, artist.data.galleryDir, 'Portfolio');
   try {
     if (fs.existsSync(portfolioPath)) {
       const files = fs.readdirSync(portfolioPath)
-        .filter((file) => /\.avif$/i.test(file))
-        .slice(0, 5); // max 5 per artist
-      for (const file of files) {
-        allPortfolioImages.push({
+        .filter((file) => SUPPORTED_PORTFOLIO_IMAGE.test(file))
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
+        .slice(0, MAX_IMAGES_PER_ARTIST);
+
+      if (files.length === 0) {
+        continue;
+      }
+
+      portfolioImagesByArtist.push({
+        artist: artist.data.name,
+        images: files.map((file) => ({
           src: `/${artist.data.galleryDir}/Portfolio/${file}`,
           artist: artist.data.name,
-        });
-      }
+        })),
+      });
     }
   } catch (_e) { /* skip */ }
 }
 
-// Shuffle deterministically and split into two rows for marquee
-const shuffled = allPortfolioImages.sort((a, b) => a.src.localeCompare(b.src));
-const marqueeRow1 = shuffled.filter((_, i) => i % 2 === 0).slice(0, 10);
-const marqueeRow2 = shuffled.filter((_, i) => i % 2 === 1).slice(0, 10);
+// Round-robin by artist so homepage features do not collapse onto one portfolio.
+const balancedPortfolioImages: { src: string; artist: string }[] = [];
+for (let imageIndex = 0; imageIndex < MAX_IMAGES_PER_ARTIST; imageIndex += 1) {
+  for (const artistPortfolio of portfolioImagesByArtist) {
+    const image = artistPortfolio.images[imageIndex];
+    if (image) {
+      balancedPortfolioImages.push(image);
+    }
+  }
+}
 
-// Pick 6 varied images for the featured work mosaic
-const showcaseImages = shuffled.slice(0, 6);
+// Split into two rows for marquee
+const marqueeRow1 = balancedPortfolioImages.filter((_, i) => i % 2 === 0).slice(0, 10);
+const marqueeRow2 = balancedPortfolioImages.filter((_, i) => i % 2 === 1).slice(0, 10);
+
+// Pick varied images for the featured work mosaic, filling complete desktop rows.
+const showcaseColumns = 3;
+const showcaseMinimumImages = Math.max(6, portfolioImagesByArtist.length);
+const showcaseImageCount = Math.ceil(showcaseMinimumImages / showcaseColumns) * showcaseColumns;
+const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
 ---
 
 <SiteLayout title={SITE_DESCRIPTION} removeMainPadding={true} hideFooter={true}>
@@ -58,78 +80,49 @@ const showcaseImages = shuffled.slice(0, 6);
   <!-- Hero Section -->
   <section class="hero-section min-h-screen relative flex flex-col overflow-hidden" data-scroll-section>
 
-    <!-- Full-bleed B&W photo -->
+    <!-- Full-bleed photo with desaturated treatment -->
     <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden hero-photo-wrap">
       <div class="absolute inset-0 hero-photo-layer scale-[1.03]">
-        <img src="/images/united-exterior.avif" alt="United Tattoo storefront" class="w-full h-full object-cover object-center grayscale brightness-[0.5] contrast-[1.1]" />
+        <img src="/images/united-exterior.avif" alt="United Tattoo storefront" class="w-full h-full object-cover object-center grayscale brightness-[0.62] contrast-[1.12]" />
       </div>
-      <!-- Dark overlay -->
-      <div class="absolute inset-0 bg-black/40"></div>
-    </div>
-
-    <!-- Grid overlay: inset frame with internal divisions -->
-    <div class="absolute z-[1] pointer-events-none" style="top:88px;left:32px;right:32px;bottom:32px;">
-      <!-- Outer frame -->
-      <div class="absolute inset-0 border border-white/[0.10]"></div>
-      <!-- Vertical dividers (wider center column ~50%) -->
-      <div class="absolute top-0 bottom-0 left-[25%] w-px bg-white/[0.10]"></div>
-      <div class="absolute top-0 bottom-0 left-[75%] w-px bg-white/[0.10]"></div>
-      <!-- Horizontal divider -->
-      <div class="absolute left-0 right-0 top-[60%] h-px bg-white/[0.10]"></div>
-      <!-- Dots: outer frame corners -->
-      <div class="hero-grid-dot" style="left:0;top:0"></div>
-      <div class="hero-grid-dot" style="left:100%;top:0"></div>
-      <div class="hero-grid-dot" style="left:0;top:100%"></div>
-      <div class="hero-grid-dot" style="left:100%;top:100%"></div>
-      <!-- Dots: top edge -->
-      <div class="hero-grid-dot" style="left:25%;top:0"></div>
-      <div class="hero-grid-dot" style="left:75%;top:0"></div>
-      <!-- Dots: bottom edge -->
-      <div class="hero-grid-dot" style="left:25%;top:100%"></div>
-      <div class="hero-grid-dot" style="left:75%;top:100%"></div>
-      <!-- Dots: left edge -->
-      <div class="hero-grid-dot" style="left:0;top:60%"></div>
-      <!-- Dots: right edge -->
-      <div class="hero-grid-dot" style="left:100%;top:60%"></div>
-      <!-- Dots: center intersections -->
-      <div class="hero-grid-dot" style="left:25%;top:60%"></div>
-      <div class="hero-grid-dot" style="left:75%;top:60%"></div>
+      <div class="absolute inset-0 bg-black/48"></div>
+      <div class="absolute inset-0 hero-vignette"></div>
     </div>
 
     <!-- Film grain -->
     <div class="absolute inset-0 z-[2] pointer-events-none hero-grain"></div>
 
-    <!-- Hero Content: centered title, bottom info -->
-    <div class="relative z-10 flex-1 flex flex-col">
-
-      <!-- Title area: positioned on the horizontal grid line, left-aligned in center column -->
-      <div class="absolute inset-0 z-10 flex flex-col" style="top:88px;left:32px;right:32px;bottom:32px;">
-        <div class="relative flex-1">
-          <!-- Title sits just above the horizontal line at 60% -->
-          <div class="absolute left-0 md:left-[25%] px-6 md:px-10" style="bottom: 40%;">
-            <h1 class="hero-title text-5xl md:text-7xl lg:text-8xl tracking-tight text-white" style="font-family: 'Outfit', sans-serif; font-weight: 200;">
-              <span class="hero-title-line block overflow-hidden">
-                <span class="inline-block">United Tattoo</span>
-              </span>
-            </h1>
-            <div class="hero-reveal w-12 h-px bg-primary/40 mt-5"></div>
-            <p class="hero-reveal font-mono text-sm md:text-base text-white/70 mt-4 max-w-md tracking-wide">
-              Custom tattoos in Fountain, Colorado
+    <!-- Hero Content -->
+    <div class="relative z-10 flex min-h-screen items-end">
+      <div class="hero-copy w-full px-6 pb-20 pt-32 md:px-12 md:pb-24 lg:px-20 lg:pb-28">
+        <div class="max-w-5xl">
+          <p class="hero-reveal hero-kicker font-mono text-[10px] uppercase tracking-[0.32em] text-white/65 mb-5">
+            Fountain, Colorado
+          </p>
+          <h1 class="hero-title text-white" style="font-family: var(--font-display), 'Playfair Display', serif; font-weight: 400;">
+            <span class="hero-title-line block overflow-hidden">
+              <span class="inline-block">United</span>
+            </span>
+            <span class="hero-title-line block overflow-hidden">
+              <span class="inline-block">Tattoo</span>
+            </span>
+          </h1>
+          <div class="hero-reveal mt-7 h-px w-full max-w-xl bg-white/35"></div>
+          <div class="hero-reveal mt-6 flex max-w-3xl flex-col gap-6 md:flex-row md:items-end md:justify-between">
+            <p class="max-w-lg font-mono text-sm md:text-base text-white/72 tracking-wide">
+              Custom tattoos in Fountain, Colorado. Built around the artist, the client, and the work.
             </p>
-            <div class="hero-reveal mt-6 flex items-center gap-4">
-              <a href="/booking" class="inline-flex items-center gap-2 px-5 py-2.5 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.15em] border border-primary hover:brightness-110 transition-all">
+            <div class="flex shrink-0 items-center gap-4">
+              <a href="/booking" class="inline-flex items-center gap-2 px-5 py-3 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.15em] border border-primary hover:brightness-110 transition-all">
                 Book a Session
               </a>
-              <a href="/artists" class="font-mono text-xs uppercase tracking-[0.15em] text-white/70 border-b border-white/30 pb-0.5 hover:text-white hover:border-white transition-all">
+              <a href="/artists" class="font-mono text-xs uppercase tracking-[0.15em] text-white/72 border-b border-white/30 pb-0.5 hover:text-white hover:border-white transition-all">
                 View Artists
               </a>
             </div>
           </div>
         </div>
       </div>
-
-      <!-- Spacer for bottom of hero -->
-      <div class="pb-8 md:pb-10"></div>
     </div>
   </section>
 
@@ -226,7 +219,7 @@ const showcaseImages = shuffled.slice(0, 6);
     <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
     <!-- Subtle noise bg -->
     <div class="absolute inset-0 noise pointer-events-none"></div>
-    <h2 class="artists-title relative text-center font-sans text-6xl md:text-8xl lg:text-[10rem] font-extralight text-foreground tracking-tight leading-none">The Team</h2>
+    <h2 class="artists-title relative text-center font-display text-6xl md:text-8xl lg:text-[10rem] font-normal text-foreground tracking-tight leading-none">The Team</h2>
     <p class="relative text-center font-mono text-[10px] text-muted-foreground/60 mt-5 uppercase tracking-[0.3em]">{artists.length} artists in residence</p>
   </div>
 
@@ -289,7 +282,7 @@ const showcaseImages = shuffled.slice(0, 6);
     <div class="grid-dot" style="left:50%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
     <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
     <div class="absolute inset-0 noise pointer-events-none"></div>
-    <h2 class="showcase-title relative text-center font-sans text-6xl md:text-8xl lg:text-[10rem] font-extralight text-foreground tracking-tight leading-none">Recent Work</h2>
+    <h2 class="showcase-title relative text-center font-display text-6xl md:text-8xl lg:text-[10rem] font-normal text-foreground tracking-tight leading-none">Recent Work</h2>
     <div class="relative flex justify-center mt-5">
       <a href="/artists" class="inline-flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.3em] text-muted-foreground/60 hover:text-foreground transition-colors group">
         View all artists
@@ -328,7 +321,7 @@ const showcaseImages = shuffled.slice(0, 6);
     <div class="grid-dot" style="left:50%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
     <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
     <div class="absolute inset-0 noise pointer-events-none"></div>
-    <h2 class="process-title relative text-center font-sans text-6xl md:text-8xl lg:text-[10rem] font-extralight text-foreground tracking-tight leading-none">The Process</h2>
+    <h2 class="process-title relative text-center font-display text-6xl md:text-8xl lg:text-[10rem] font-normal text-foreground tracking-tight leading-none">The Process</h2>
     <p class="relative text-center font-mono text-[10px] text-muted-foreground/60 mt-5 uppercase tracking-[0.3em]">From idea to ink</p>
   </div>
 
@@ -468,12 +461,26 @@ const showcaseImages = shuffled.slice(0, 6);
     /* === Section Banners === */
     .section-banner {
       position: relative;
-      background: oklch(from var(--background) l c h / 0.95);
+      background:
+        linear-gradient(90deg, color-mix(in srgb, var(--brand-white) 5%, transparent) 0 18%, transparent 18% 100%),
+        linear-gradient(135deg, color-mix(in srgb, var(--brand-paper) 2%, transparent), color-mix(in srgb, var(--brand-white) 2%, transparent)),
+        var(--background);
+    }
+
+    .section-banner::after {
+      content: '';
+      position: absolute;
+      left: clamp(1rem, 4vw, 4rem);
+      right: clamp(1rem, 4vw, 4rem);
+      bottom: 1rem;
+      height: 5px;
+      background: var(--brand-white);
+      opacity: 0.38;
     }
 
     /* Artist name underline on hover */
     .artist-row:hover h3 {
-      background-image: linear-gradient(to right, var(--primary), var(--ring));
+      background-image: linear-gradient(to right, var(--brand-white), var(--brand-gray-300));
       background-size: 0 2px;
       background-position: 0 100%;
       background-repeat: no-repeat;
@@ -486,22 +493,39 @@ const showcaseImages = shuffled.slice(0, 6);
       }
     }
 
-    /* Grid intersection dots */
-    .hero-grid-dot {
-      position: absolute;
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: var(--ring);
-      opacity: 0.5;
-      transform: translate(-50%, -50%);
-    }
-
     /* Film grain */
     .hero-grain {
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
       opacity: 0.035;
       mix-blend-mode: overlay;
+    }
+
+    .hero-copy {
+      position: relative;
+    }
+
+    .hero-title {
+      font-size: 4.5rem;
+      line-height: 0.88;
+      letter-spacing: 0;
+    }
+
+    @media (min-width: 768px) {
+      .hero-title {
+        font-size: 7rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .hero-title {
+        font-size: 8.75rem;
+      }
+    }
+
+    @media (min-width: 1280px) {
+      .hero-title {
+        font-size: 10rem;
+      }
     }
 
     /* Info column separator */
@@ -528,9 +552,9 @@ const showcaseImages = shuffled.slice(0, 6);
 
     /* Mobile CTA hover effect */
     .hero-section a[href="/booking"]:hover {
-      filter: brightness(1.15);
+      filter: brightness(1.08);
       transform: translateY(-2px);
-      box-shadow: 0 10px 40px oklch(from var(--primary) l c h / 0.3);
+      box-shadow: 0 6px 20px color-mix(in srgb, var(--brand-white) 10%, transparent);
     }
 
     /* Process grid: remove right border on right column */
@@ -557,7 +581,9 @@ const showcaseImages = shuffled.slice(0, 6);
     /* === Studio Intro === */
     .studio-intro {
       position: relative;
-      background: var(--background);
+      background:
+        linear-gradient(120deg, transparent 0 62%, color-mix(in srgb, var(--brand-white) 4%, transparent) 62% 100%),
+        var(--background);
     }
 
     .studio-ghost-image {
@@ -634,7 +660,7 @@ const showcaseImages = shuffled.slice(0, 6);
       font-size: 11px;
       text-transform: uppercase;
       letter-spacing: 0.28em;
-      color: oklch(from var(--ring) l c h / 0.75);
+      color: var(--foreground);
       margin-bottom: 1.5rem;
     }
 
@@ -660,20 +686,20 @@ const showcaseImages = shuffled.slice(0, 6);
       align-items: center;
       gap: 0.75rem;
       padding: 0.7rem 1.4rem;
-      background: oklch(from var(--primary) l c h / 0.95);
-      color: var(--primary-foreground);
+      background: var(--brand-white);
+      color: var(--brand-black);
       font-family: var(--font-mono);
       font-size: 12px;
       text-transform: uppercase;
       letter-spacing: 0.2em;
-      border: 1px solid var(--primary);
+      border: 1px solid var(--brand-white);
       transition: all 0.3s ease;
     }
 
     .intro-cta-primary:hover {
-      filter: brightness(1.1);
+      filter: brightness(1.05);
       transform: translateY(-1px);
-      box-shadow: 0 4px 20px oklch(from var(--primary) l c h / 0.2);
+      box-shadow: 0 3px 12px color-mix(in srgb, var(--brand-white) 10%, transparent);
     }
 
     .intro-cta-arrow {
@@ -683,7 +709,7 @@ const showcaseImages = shuffled.slice(0, 6);
       width: 18px;
       height: 18px;
       border-radius: 50%;
-      background: oklch(from var(--primary-foreground) l c h / 0.15);
+      background: color-mix(in srgb, var(--brand-black) 14%, transparent);
       font-size: 10px;
       transition: transform 0.3s ease;
     }

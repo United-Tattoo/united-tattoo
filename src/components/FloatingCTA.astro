@@ -8,7 +8,7 @@ const { href, label } = Astro.props;
 ---
 
 <div id="floating-cta" class="fixed z-50 transition-all duration-300 bottom-0 left-0 right-0 lg:bottom-8 lg:left-auto lg:right-8 lg:w-auto">
-  <a href={href} class="hero-cta group flex items-center justify-center lg:justify-start gap-3 px-6 py-4 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.15em] transition-all shadow-2xl shadow-primary/30 w-full lg:w-auto">
+  <a href={href} class="hero-cta group flex items-center justify-center lg:justify-start gap-3 px-6 py-4 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.15em] transition-all shadow-xl shadow-primary/15 w-full lg:w-auto">
     <span class="group-hover:translate-x-1 transition-transform">{label}</span>
     <span class="w-6 h-6 rounded-full flex items-center justify-center bg-primary-foreground text-primary transition-all">→</span>
   </a>
@@ -17,9 +17,9 @@ const { href, label } = Astro.props;
 <style>
   @media (min-width: 1024px) {
     #floating-cta a:hover {
-      filter: brightness(1.1);
+      filter: brightness(1.08);
       transform: translateY(-2px);
-      box-shadow: 0 25px 60px oklch(from var(--primary) l c h / 0.4);
+      box-shadow: 0 12px 30px color-mix(in srgb, var(--primary) 20%, transparent);
     }
   }
 

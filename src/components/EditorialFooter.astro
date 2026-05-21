@@ -5,19 +5,19 @@ import DoveMark from './DoveMark.astro';
 
 <footer class="footer-section bg-background relative z-20" data-scroll-section>
   <!-- Grid accent dots -->
-  <div class="absolute top-0 left-[25%] w-1.5 h-1.5 rounded-full bg-primary/30 -translate-x-1/2 -translate-y-1/2"></div>
-  <div class="absolute top-0 left-[75%] w-1.5 h-1.5 rounded-full bg-primary/30 -translate-x-1/2 -translate-y-1/2"></div>
+  <div class="absolute top-0 left-[25%] w-1.5 h-1.5 rounded-full bg-primary/40 -translate-x-1/2 -translate-y-1/2"></div>
+  <div class="absolute top-0 left-[75%] w-1.5 h-1.5 rounded-full bg-primary/40 -translate-x-1/2 -translate-y-1/2"></div>
   <!-- Ready to Book Block -->
   <div class="border-b border-border">
     <a href="/booking" class="group block relative overflow-hidden py-16 md:py-24 px-8 md:px-12 lg:px-16 hover:bg-white/[0.02] transition-colors duration-500">
       <div class="flex flex-col md:flex-row items-baseline justify-between gap-8">
         <div>
           <span class="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground block mb-4">Start your journey</span>
-          <h3 class="font-sans text-5xl md:text-7xl lg:text-8xl uppercase text-foreground font-extralight tracking-tight group-hover:text-primary/80 transition-all duration-500">
+          <h3 class="font-display text-5xl md:text-7xl lg:text-8xl uppercase text-foreground font-normal tracking-tight group-hover:text-primary/80 transition-all duration-500">
             Book a session
           </h3>
         </div>
-        <span class="w-16 h-16 rounded-full border border-input flex items-center justify-center text-foreground group-hover:bg-white group-hover:text-black group-hover:scale-110 transition-all duration-500">
+        <span class="w-16 h-16 rounded-full border border-input flex items-center justify-center text-foreground group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary group-hover:scale-110 transition-all duration-500">
           <iconify-icon icon="solar:arrow-right-linear" class="text-2xl"></iconify-icon>
         </span>
       </div>
@@ -28,7 +28,7 @@ import DoveMark from './DoveMark.astro';
     <!-- Left Column: Branding -->
     <div class="footer-branding col-span-1 lg:col-span-4 p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-border flex flex-col justify-between min-h-[300px]">
       <div class="footer-reveal">
-        <h2 class="footer-title text-5xl md:text-6xl lg:text-7xl font-sans uppercase tracking-tighter leading-none mb-2 font-extralight">United</h2>
+        <h2 class="footer-title text-5xl md:text-6xl lg:text-7xl font-display uppercase tracking-tighter leading-none mb-2 font-normal">United</h2>
         <span class="font-mono text-xs text-muted-foreground block">
           © {new Date().getFullYear()} United Tattoo Collective
         </span>
@@ -39,10 +39,10 @@ import DoveMark from './DoveMark.astro';
           Inking beautiful tattoos. Based in Fountain, Colorado.
         </p>
         <div class="flex gap-4">
-          <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-foreground hover:text-background transition-all">
+          <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
             <iconify-icon icon="mdi:instagram"></iconify-icon>
           </a>
-          <a href={`mailto:${EMAIL}`} class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-foreground hover:text-background transition-all">
+          <a href={`mailto:${EMAIL}`} class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
             <iconify-icon icon="mdi:email"></iconify-icon>
           </a>
         </div>
@@ -105,10 +105,10 @@ import DoveMark from './DoveMark.astro';
           [03] Directory
         </span>
         <ul class="font-mono text-sm space-y-2">
-          <li><a href="/artists" class="text-secondary-foreground hover:text-foreground transition-colors">Artists</a></li>
-          <li><a href="/booking" class="text-secondary-foreground hover:text-foreground transition-colors">Booking</a></li>
-          <li><a href="/aftercare" class="text-secondary-foreground hover:text-foreground transition-colors">Aftercare</a></li>
-          <li><a href="/privacy" class="text-muted-foreground hover:text-foreground transition-colors">Privacy</a></li>
+          <li><a href="/artists" class="text-secondary-foreground hover:text-primary transition-colors">Artists</a></li>
+          <li><a href="/booking" class="text-secondary-foreground hover:text-primary transition-colors">Booking</a></li>
+          <li><a href="/aftercare" class="text-secondary-foreground hover:text-primary transition-colors">Aftercare</a></li>
+          <li><a href="/privacy" class="text-muted-foreground hover:text-primary transition-colors">Privacy</a></li>
         </ul>
       </div>
     </div>
@@ -123,10 +123,9 @@ import DoveMark from './DoveMark.astro';
       <span class="tracking-wider">Freedom in ink</span>
     </div>
     <div class="flex items-center gap-6 font-mono text-[10px] text-muted-foreground">
-      <a class="hover:text-foreground transition-colors" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">Instagram</a>
-      <a class="hover:text-foreground transition-colors hidden sm:inline" href={`mailto:${EMAIL}`}>{EMAIL}</a>
-      <a class="hover:text-foreground transition-colors" href={`tel:${PHONE_NUMBER.replace(/\s+/g, '')}`}>{PHONE_NUMBER}</a>
+      <a class="hover:text-primary transition-colors" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a class="hover:text-primary transition-colors hidden sm:inline" href={`mailto:${EMAIL}`}>{EMAIL}</a>
+      <a class="hover:text-primary transition-colors" href={`tel:${PHONE_NUMBER.replace(/\s+/g, '')}`}>{PHONE_NUMBER}</a>
     </div>
   </div>
 </footer>
-
