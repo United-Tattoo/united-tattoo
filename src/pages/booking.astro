@@ -125,6 +125,23 @@ const budgetOptions = [
       enctype="multipart/form-data"
       class="max-w-7xl mx-auto px-6 md:px-12 lg:px-24"
     >
+      <!--
+        Hidden honeypot for low-cost bot filtering.
+        Humans cannot reach this field, but simple spambots often fill every
+        text input. The API treats a filled value as silent success and skips
+        email delivery.
+      -->
+      <div class="absolute left-[-9999px] top-auto h-px w-px overflow-hidden" aria-hidden="true">
+        <label for="website">Website</label>
+        <input
+          type="text"
+          id="website"
+          name="website"
+          tabindex="-1"
+          autocomplete="off"
+        />
+      </div>
+
       <!-- Section 01: Artist -->
       <div class="form-section-wrapper relative z-[50] py-12 md:py-20 lg:py-32 border-t border-border grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
         <div class="lg:col-span-4">
@@ -623,13 +640,25 @@ const budgetOptions = [
         });
       }
 
-      function createThumbnail(file: File): Promise<string> {
-        return new Promise((resolve) => {
-          const reader = new FileReader();
-          reader.onload = (e) => resolve(e.target?.result as string);
-          reader.readAsDataURL(file);
-        });
-      }
+	      function createThumbnail(file: File): Promise<string> {
+	        return new Promise((resolve) => {
+	          const reader = new FileReader();
+	          reader.onload = (e) => resolve(e.target?.result as string);
+	          reader.readAsDataURL(file);
+	        });
+	      }
+
+	      function escapeHtml(value: string) {
+	        // File names are user-controlled and later inserted into preview
+	        // markup. Escape before using innerHTML to avoid DOM XSS from a
+	        // malicious local filename.
+	        return value
+	          .replaceAll('&', '&amp;')
+	          .replaceAll('<', '&lt;')
+	          .replaceAll('>', '&gt;')
+	          .replaceAll('"', '&quot;')
+	          .replaceAll("'", '&#39;');
+	      }
 
       async function updateFilePreviews() {
         if (!filePreviews) return;
@@ -640,24 +669,26 @@ const budgetOptions = [
           return;
         }
         
-        filePreviews.classList.remove('hidden');
-        
-        const thumbnails = await Promise.all(selectedFiles.map(async (file) => {
-          const src = await createThumbnail(file);
-          const ext = file.name.split('.').pop()?.toUpperCase() || 'IMG';
-          return `
-            <div class="relative group/file aspect-square bg-secondary border border-border rounded-lg overflow-hidden animate-fade-in">
-              <img src="${src}" alt="${file.name}" class="w-full h-full object-cover" />
-              <div class="absolute inset-0 bg-black/60 opacity-0 group-hover/file:opacity-100 transition-opacity flex items-center justify-center gap-2">
-                <button type="button" data-remove class="p-2 bg-secondary rounded-full text-foreground hover:bg-red-500/80 transition-colors" title="Remove">
-                  <iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon>
+	        filePreviews.classList.remove('hidden');
+	        
+		        const thumbnails = await Promise.all(selectedFiles.map(async (file) => {
+		          const src = await createThumbnail(file);
+		          // Data URLs come from FileReader for selected local image files;
+		          // filenames still need separate escaping before entering markup.
+		          const safeName = escapeHtml(file.name);
+	          return `
+	            <div class="relative group/file aspect-square bg-secondary border border-border rounded-lg overflow-hidden animate-fade-in">
+	              <img src="${src}" alt="${safeName}" class="w-full h-full object-cover" />
+	              <div class="absolute inset-0 bg-black/60 opacity-0 group-hover/file:opacity-100 transition-opacity flex items-center justify-center gap-2">
+	                <button type="button" data-remove class="p-2 bg-secondary rounded-full text-foreground hover:bg-red-500/80 transition-colors" title="Remove">
+	                  <iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon>
                 </button>
-              </div>
-              <div class="absolute bottom-0 left-0 right-0 bg-black/80 px-2 py-1">
-                <span class="font-mono text-[10px] text-secondary-foreground truncate block">${file.name}</span>
-              </div>
-            </div>
-          `;
+	              </div>
+	              <div class="absolute bottom-0 left-0 right-0 bg-black/80 px-2 py-1">
+	                <span class="font-mono text-[10px] text-secondary-foreground truncate block">${safeName}</span>
+	              </div>
+	            </div>
+	          `;
         }));
         
         filePreviews.innerHTML = thumbnails.join('');
@@ -678,15 +709,17 @@ const budgetOptions = [
           fileList.classList.add('hidden');
           fileList.innerHTML = '';
           return;
-        }
-        fileList.classList.remove('hidden');
-        fileList.innerHTML = selectedFiles.map((file, index) => `
-          <div class="flex items-center justify-between bg-secondary border border-border px-4 py-3 group hover:border-input transition-all duration-300 opacity-0 animate-fade-in">
-            <div class="flex items-center gap-3">
-              <iconify-icon icon="solar:gallery-bold" class="text-muted-foreground group-hover:text-primary transition-colors"></iconify-icon>
-              <span class="font-mono text-xs text-secondary-foreground truncate max-w-[200px]">${file.name}</span>
-              <span class="font-mono text-[10px] text-muted-foreground/40">${(file.size / 1024 / 1024).toFixed(1)} MB</span>
-            </div>
+	        }
+		        fileList.classList.remove('hidden');
+		        // Escape file names here as well. The list view and image preview
+		        // are separate DOM surfaces that both render user-controlled names.
+		        fileList.innerHTML = selectedFiles.map((file, index) => `
+	          <div class="flex items-center justify-between bg-secondary border border-border px-4 py-3 group hover:border-input transition-all duration-300 opacity-0 animate-fade-in">
+	            <div class="flex items-center gap-3">
+	              <iconify-icon icon="solar:gallery-bold" class="text-muted-foreground group-hover:text-primary transition-colors"></iconify-icon>
+	              <span class="font-mono text-xs text-secondary-foreground truncate max-w-[200px]">${escapeHtml(file.name)}</span>
+	              <span class="font-mono text-[10px] text-muted-foreground/40">${(file.size / 1024 / 1024).toFixed(1)} MB</span>
+	            </div>
             <button type="button" data-index="${index}" class="remove-file text-muted-foreground hover:text-red-400 transition-colors p-1">
               <iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon>
             </button>

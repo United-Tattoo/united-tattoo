@@ -29,12 +29,14 @@ The local site runs at `http://localhost:4321`.
 pnpm dev       # Start the dev server
 pnpm lint      # Run ESLint
 pnpm lint:fix  # Auto-fix lint issues where possible
+pnpm test      # Run behavior/regression tests
+pnpm test:watch # Run tests in watch mode
 pnpm build     # Build production output
 pnpm preview   # Preview the production build
 pnpm deploy    # Build and deploy with Wrangler
 ```
 
-There is no automated test runner yet. Use `pnpm lint` and `pnpm build` before opening or merging changes.
+Use `pnpm test`, `pnpm lint`, and `pnpm build` before opening or merging changes.
 
 ## Environment
 
@@ -76,6 +78,7 @@ Important files:
 - `src/pages/api/availability.ts` handles artist availability.
 - `src/components/HeaderNav.astro` controls the main navigation.
 - `src/components/PageHero.astro` provides the shared page hero used across booking, artists, and blog pages.
+- `docs/booking-calendar-integration.md` documents booking, CalDAV availability, and regression testing.
 
 ## Content Editing
 
@@ -91,6 +94,7 @@ Work from a branch instead of committing directly to `main`:
 
 ```bash
 git checkout -b feat/short-description
+pnpm test
 pnpm build
 git push origin feat/short-description
 ```

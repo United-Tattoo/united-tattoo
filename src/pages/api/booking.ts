@@ -1,52 +1,236 @@
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { getCollection } from 'astro:content';
+import { formatSelectedSlots } from '../../services/booking-format';
 
 const MAX_FILES = 5;
 const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+// Reject obviously oversized submissions before parsing multipart data.
+// The form allows five 10MB files, so this leaves a small buffer for text fields
+// and multipart boundaries without letting a single request consume unbounded memory.
+const MAX_REQUEST_SIZE = 55 * 1024 * 1024; // Allow 5 x 10MB files plus form overhead.
 const ALLOWED_TYPES = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+
+// This in-memory limiter is a lightweight abuse guard for repeated POSTs from
+// the same IP in one Worker isolate/dev process. Cloudflare Turnstile or WAF
+// rules should still be preferred if bot traffic becomes persistent.
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
+const RATE_LIMIT_MAX_REQUESTS = 5;
+
+// Select inputs are controlled in the UI, but every value is still client input.
+// Keep these allowlists in sync with the options rendered in src/pages/booking.astro.
+const ALLOWED_CONTACT_METHODS = new Set(['email', 'phone', 'text']);
+const ALLOWED_STYLES = new Set([
+  'traditional',
+  'neo-traditional',
+  'realism',
+  'black-and-grey',
+  'fine-line',
+  'blackwork',
+  'japanese',
+  'chicano',
+  'geometric',
+  'illustrative',
+  'script',
+  'other',
+]);
+const ALLOWED_SIZES = new Set([
+  'small',
+  'medium',
+  'large',
+  'extra-large',
+  'half-sleeve',
+  'full-sleeve',
+  'back-piece',
+]);
+const ALLOWED_BUDGETS = new Set([
+  'under-200',
+  '200-500',
+  '500-1000',
+  '1000-2000',
+  '2000-plus',
+]);
+
+const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
 
 export const prerender = false;
 
-export const POST: APIRoute = async ({ request, locals, platform }) => {
+type RuntimeEnv = Record<string, string | undefined>;
+type RuntimeContext = Parameters<APIRoute>[0] & {
+  platform?: { env?: RuntimeEnv };
+  locals: Parameters<APIRoute>[0]['locals'] & {
+    runtime?: { env?: RuntimeEnv };
+  };
+};
+
+// Keep all API responses JSON-shaped so client-side error handling can stay
+// predictable and tests can assert exact behavior.
+function jsonResponse(body: Record<string, unknown>, status: number) {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'Content-Type': 'application/json' },
+  });
+}
+
+function successResponse() {
+  return jsonResponse({ success: true, message: 'Booking request submitted successfully' }, 200);
+}
+
+function validationError(error: string) {
+  return jsonResponse({ success: false, error }, 400);
+}
+
+function getString(formData: FormData, field: string): string {
+  const value = formData.get(field);
+  return typeof value === 'string' ? value : '';
+}
+
+// Strip control characters before using form values in logs, email text, or
+// headers. Newlines are allowed only for fields that are expected to be prose.
+function stripControlCharacters(value: string, allowNewline = false): string {
+  return Array.from(value).filter((char) => {
+    const code = char.charCodeAt(0);
+    if (allowNewline && code === 10) return true;
+    return code >= 32 && code !== 127;
+  }).join('');
+}
+
+function cleanSingleLine(value: string): string {
+  return stripControlCharacters(value).replace(/\s+/g, ' ').trim();
+}
+
+function cleanMultiline(value: string): string {
+  return stripControlCharacters(value.replace(/\r\n?/g, '\n'), true)
+    .replace(/[^\S\n]+/g, ' ')
+    .trim();
+}
+
+function validateLength(value: string, max: number, label: string): Response | null {
+  return value.length > max ? validationError(`${label} must be ${max} characters or fewer`) : null;
+}
+
+function getClientIp(request: Request): string | null {
+  // Cloudflare supplies cf-connecting-ip in production. The fallback headers
+  // make the same guard work in local/proxy-style environments.
+  return request.headers.get('cf-connecting-ip') ||
+    request.headers.get('x-real-ip') ||
+    request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ||
+    null;
+}
+
+function rateLimitResponse(request: Request): Response | null {
+  const clientIp = getClientIp(request);
+  if (!clientIp) return null;
+
+  const now = Date.now();
+  const bucket = rateLimitBuckets.get(clientIp);
+  if (!bucket || bucket.resetAt <= now) {
+    rateLimitBuckets.set(clientIp, { count: 1, resetAt: now + RATE_LIMIT_WINDOW_MS });
+    return null;
+  }
+
+  if (bucket.count >= RATE_LIMIT_MAX_REQUESTS) {
+    const retryAfter = Math.ceil((bucket.resetAt - now) / 1000);
+    return new Response(JSON.stringify({ success: false, error: 'Too many booking requests. Please try again later.' }), {
+      status: 429,
+      headers: {
+        'Content-Type': 'application/json',
+        'Retry-After': String(retryAfter),
+      },
+    });
+  }
+
+  bucket.count += 1;
+  return null;
+}
+
+function isAllowedImageSignature(type: string, buffer: Buffer): boolean {
+  // MIME type and extension are user-controlled metadata. These magic-byte
+  // checks are not malware scanning, but they prevent obvious disguised files
+  // from being emailed to the shop as image attachments.
+  if (type === 'image/jpeg') {
+    return buffer.length >= 3 && buffer[0] === 0xff && buffer[1] === 0xd8 && buffer[2] === 0xff;
+  }
+
+  if (type === 'image/png') {
+    return buffer.length >= 8 &&
+      buffer[0] === 0x89 &&
+      buffer[1] === 0x50 &&
+      buffer[2] === 0x4e &&
+      buffer[3] === 0x47 &&
+      buffer[4] === 0x0d &&
+      buffer[5] === 0x0a &&
+      buffer[6] === 0x1a &&
+      buffer[7] === 0x0a;
+  }
+
+  if (type === 'image/gif') {
+    return buffer.length >= 6 && buffer.subarray(0, 4).toString('ascii') === 'GIF8';
+  }
+
+  if (type === 'image/webp') {
+    return buffer.length >= 12 &&
+      buffer.subarray(0, 4).toString('ascii') === 'RIFF' &&
+      buffer.subarray(8, 12).toString('ascii') === 'WEBP';
+  }
+
+  return false;
+}
+
+function sanitizeFilename(name: string): string {
+  // Attachment filenames can appear in mail clients. Collapse path segments,
+  // remove control characters, and restrict to a conservative printable set.
+  const baseName = cleanSingleLine(name.split(/[\\/]/).pop() || 'reference-image');
+  const safeName = baseName.replace(/[^a-zA-Z0-9._ -]/g, '_').slice(0, 120).trim();
+  return safeName || 'reference-image';
+}
+
+export const POST: APIRoute = async (context) => {
+  const runtimeContext = context as RuntimeContext;
+  const { request } = runtimeContext;
+
   try {
+    // Fast-fail oversized multipart requests before request.formData() allocates
+    // buffers for file bodies.
+    const contentLength = Number.parseInt(request.headers.get('content-length') || '0', 10);
+    if (Number.isFinite(contentLength) && contentLength > MAX_REQUEST_SIZE) {
+      return jsonResponse({ success: false, error: 'Booking request is too large' }, 413);
+    }
+
+    const limited = rateLimitResponse(request);
+    if (limited) return limited;
+
     const formData = await request.formData();
 
-    // Extract form fields
-    const artist = formData.get('artist') as string;
-    const name = formData.get('name') as string;
-    const email = formData.get('email') as string;
-    const phone = formData.get('phone') as string;
-    const preferredContact = formData.get('preferredContact') as string;
-    const style = formData.get('style') as string;
-    const placement = formData.get('placement') as string;
-    const size = formData.get('size') as string;
-    const budget = formData.get('budget') as string;
-    const availabilityInput = formData.get('availability') as string;
-    const selectedSlotsJson = formData.get('selected_slots') as string;
+    // Honeypot field: humans never see/fill this. Bots often populate every
+    // text field, so we return a normal success without sending email to avoid
+    // teaching the bot which validation failed.
+    if (cleanSingleLine(getString(formData, 'website'))) {
+      return successResponse();
+    }
+
+    // Normalize all text before validation and email rendering. This keeps
+    // length checks honest and avoids control characters reaching email headers,
+    // logs, or admin inboxes.
+    const artist = cleanSingleLine(getString(formData, 'artist'));
+    const name = cleanSingleLine(getString(formData, 'name'));
+    const email = cleanSingleLine(getString(formData, 'email')).toLowerCase();
+    const phone = cleanSingleLine(getString(formData, 'phone'));
+    const preferredContact = cleanSingleLine(getString(formData, 'preferredContact')) || 'email';
+    const style = cleanSingleLine(getString(formData, 'style'));
+    const placement = cleanSingleLine(getString(formData, 'placement'));
+    const size = cleanSingleLine(getString(formData, 'size'));
+    const budget = cleanSingleLine(getString(formData, 'budget'));
+    const availabilityInput = cleanMultiline(getString(formData, 'availability'));
+    const selectedSlotsJson = getString(formData, 'selected_slots');
 
     let availability = availabilityInput;
 
-    if (selectedSlotsJson) {
-      try {
-        const slots = JSON.parse(selectedSlotsJson);
-        if (Array.isArray(slots) && slots.length > 0) {
-          const formatted = slots.map((s: any, i: number) => {
-             const date = new Date(s.date + 'T00:00:00');
-             const dateStr = date.toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-             const [h, m] = s.startTime.split(':');
-             const d = new Date();
-             d.setHours(parseInt(h), parseInt(m));
-             const timeStr = d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
-             return `Choice #${i+1}: ${dateStr} at ${timeStr} MT`;
-          });
-          availability = formatted.join('\n');
-        }
-      } catch (e) {
-        console.error('Error parsing selected slots', e);
-      }
+    const formattedSelectedSlots = formatSelectedSlots(selectedSlotsJson);
+    if (formattedSelectedSlots) {
+      availability = formattedSelectedSlots;
     }
-    const description = formData.get('description') as string;
+    const description = cleanMultiline(getString(formData, 'description'));
     const acceptTerms = formData.get('acceptTerms');
     const acceptAge = formData.get('acceptAge');
     const acceptDeposit = formData.get('acceptDeposit');
@@ -60,98 +244,120 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
         .replaceAll('"', '&quot;')
         .replaceAll("'", '&#39;');
 
-    // Validate required fields
+    // Required-field validation happens after normalization so whitespace-only
+    // values cannot satisfy the booking requirements.
     if (!artist || !name || !email || !phone || !style || !placement || !size || !description) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'Missing required fields' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return validationError('Missing required fields');
     }
 
     if (!acceptTerms || !acceptAge) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'You must accept the terms and confirm your age' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return validationError('You must accept the terms and confirm your age');
     }
 
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    // Bound free-text fields to keep email payloads and Worker memory usage
+    // predictable. These limits are intentionally generous for a booking form.
+    const lengthError =
+      validateLength(artist, 80, 'Artist') ||
+      validateLength(name, 120, 'Name') ||
+      validateLength(email, 254, 'Email') ||
+      validateLength(phone, 40, 'Phone') ||
+      validateLength(preferredContact, 20, 'Preferred contact') ||
+      validateLength(style, 40, 'Style') ||
+      validateLength(placement, 120, 'Placement') ||
+      validateLength(size, 40, 'Size') ||
+      validateLength(budget, 40, 'Budget') ||
+      validateLength(availability, 1000, 'Availability') ||
+      validateLength(description, 4000, 'Description');
+    if (lengthError) return lengthError;
+
+    // Server-side allowlists protect the email workflow from forged form values.
+    // The client select controls improve UX only; they are not security controls.
+    if (!ALLOWED_CONTACT_METHODS.has(preferredContact)) {
+      return validationError('Invalid contact method');
+    }
+
+    if (!ALLOWED_STYLES.has(style)) {
+      return validationError('Invalid tattoo style');
+    }
+
+    if (!ALLOWED_SIZES.has(size)) {
+      return validationError('Invalid tattoo size');
+    }
+
+    if (budget && !ALLOWED_BUDGETS.has(budget)) {
+      return validationError('Invalid budget range');
+    }
+
+    // Normalize and validate email before using it in replyTo, newsletter opt-in,
+    // and the customer confirmation recipient.
+    const emailRegex = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/i;
     if (!emailRegex.test(email)) {
-      return new Response(
-        JSON.stringify({ success: false, error: 'Invalid email address' }),
-        { status: 400, headers: { 'Content-Type': 'application/json' } }
-      );
+      return validationError('Invalid email address');
     }
 
-    // Process file uploads
+    const artists = await getCollection('artists');
+    const selectedArtist =
+      artist === 'no-preference' ? undefined : artists.find((a) => a.id === artist);
+
+    // A forged artist id should not route mail to arbitrary labels or bypass the
+    // content model. No-preference is the only non-content artist value allowed.
+    if (artist !== 'no-preference' && !selectedArtist) {
+      return validationError('Invalid artist selection');
+    }
+
+    if (selectedArtist && !selectedArtist.data.acceptingBookings) {
+      return validationError('Selected artist is not accepting bookings');
+    }
+
+    // Process uploads only after the cheap text validation has passed. Files are
+    // held in memory long enough to validate signatures and pass them to Resend.
     const files = formData.getAll('references') as File[];
-    const validFiles: File[] = [];
+    const attachments: Array<{ filename: string; content: Buffer }> = [];
 
     for (const file of files) {
       // Skip empty file inputs
       if (!file || file.size === 0) continue;
 
-      if (validFiles.length >= MAX_FILES) {
-        return new Response(
-          JSON.stringify({ success: false, error: `Maximum ${MAX_FILES} files allowed` }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
-        );
+      // Check count before buffering file bytes.
+      if (attachments.length >= MAX_FILES) {
+        return validationError(`Maximum ${MAX_FILES} files allowed`);
       }
 
+      // Check type and declared size before reading the file into memory.
       if (!ALLOWED_TYPES.includes(file.type)) {
-        return new Response(
-          JSON.stringify({ success: false, error: `Invalid file type: ${file.name}. Only JPG, PNG, WebP, and GIF are allowed.` }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
-        );
+        return validationError(`Invalid file type: ${sanitizeFilename(file.name)}. Only JPG, PNG, WebP, and GIF are allowed.`);
       }
 
       if (file.size > MAX_FILE_SIZE) {
-        return new Response(
-          JSON.stringify({ success: false, error: `File too large: ${file.name}. Maximum size is 10MB.` }),
-          { status: 400, headers: { 'Content-Type': 'application/json' } }
-        );
+        return validationError(`File too large: ${sanitizeFilename(file.name)}. Maximum size is 10MB.`);
       }
 
-      validFiles.push(file);
+      const buffer = Buffer.from(await file.arrayBuffer());
+      if (!isAllowedImageSignature(file.type, buffer)) {
+        return validationError(`Invalid image content: ${sanitizeFilename(file.name)}`);
+      }
+
+      attachments.push({
+        filename: sanitizeFilename(file.name),
+        content: buffer,
+      });
     }
 
-    // Prepare attachments for email
-    const attachments = await Promise.all(
-      validFiles.map(async (file) => {
-        const buffer = await file.arrayBuffer();
-        return {
-          filename: file.name,
-          content: Buffer.from(buffer),
-        };
-      })
-    );
-
-    // Get environment variables (Cloudflare Workers runtime)
-    // Try multiple access patterns for Cloudflare env vars
-    const env = (platform?.env as Record<string, string>) ||
-                (locals?.runtime?.env as Record<string, string>) ||
+    // Cloudflare exposes runtime bindings differently between adapter versions,
+    // wrangler dev, and local Astro dev. Keep all supported access paths here.
+    const env = runtimeContext.platform?.env ||
+                runtimeContext.locals.runtime?.env ||
                 {};
 
     const RESEND_API_KEY = env.RESEND_API_KEY || import.meta.env.RESEND_API_KEY;
     const BOOKING_FROM_EMAIL = env.BOOKING_FROM_EMAIL || import.meta.env.BOOKING_FROM_EMAIL || 'bookings@yourdomain.com';
     const RESEND_AUDIENCE_ID = env.RESEND_AUDIENCE_ID || import.meta.env.RESEND_AUDIENCE_ID;
 
-    // Debug logging (remove after testing)
-    console.log('Environment check:', {
-      hasApiKey: !!RESEND_API_KEY,
-      fromEmail: BOOKING_FROM_EMAIL,
-      platformEnv: !!platform?.env,
-      localsEnv: !!locals?.runtime?.env
-    });
-
     // Shop admin emails
     const ADMIN_EMAILS = ['Christyl116@yahoo.com', 'ashtonjl.work@gmail.com'];
 
-    // Lookup artist (to notify both reception + artist, per booking flow)
-    const artists = await getCollection('artists');
-    const selectedArtist =
-      artist === 'no-preference' ? undefined : artists.find((a) => a.id === artist);
+    // Keep reception/admin on every booking, then CC the selected artist when
+    // the artist frontmatter includes bookingEmailCc.
     const artistDisplayName =
       artist === 'no-preference' ? 'No preference' : (selectedArtist?.data.name || artist);
     const artistEmail = selectedArtist?.data.bookingEmailCc;
@@ -167,49 +373,52 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>New Booking Request - United Tattoo</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
-  <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f5f5f5;">
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #050505;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #050505;">
     <tr>
-      <td align="center" style="padding: 40px 20px;">
+      <td align="center" style="padding: 44px 18px;">
         <!-- Main Container -->
-        <table role="presentation" style="width: 100%; max-width: 600px; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <table role="presentation" style="width: 100%; max-width: 640px; border-collapse: collapse; background-color: #f7f4ee; border: 1px solid #d8d2c8;">
 
           <!-- Header -->
           <tr>
-            <td style="background-color: #166534; padding: 24px 40px;">
-              <h1 style="margin: 0; font-family: Georgia, serif; font-size: 22px; font-weight: 400; color: #ffffff;">
+            <td style="background-color: #050505; padding: 30px 40px 34px 40px; border-bottom: 1px solid #333333;">
+              <p style="margin: 0 0 18px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: #b8b2a8;">
+                United Tattoo / Admin Notification
+              </p>
+              <h1 style="margin: 0; font-family: Georgia, serif; font-size: 32px; line-height: 1.05; font-weight: 400; color: #f7f4ee;">
                 New Booking Request
               </h1>
-              <p style="margin: 8px 0 0 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.9);">
-                United Tattoo · Admin Notification
+              <p style="margin: 14px 0 0 0; font-size: 14px; line-height: 1.6; color: #b8b2a8;">
+                A new client inquiry has been submitted from the booking form.
               </p>
             </td>
           </tr>
 
           <!-- Client Contact (Prominent) -->
           <tr>
-            <td style="padding: 32px 40px 24px 40px; background-color: #f0fdf4; border-left: 4px solid #22c55e;">
-              <p style="margin: 0 0 4px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
+            <td style="padding: 32px 40px 26px 40px; background-color: #ffffff; border-bottom: 1px solid #d8d2c8;">
+              <p style="margin: 0 0 14px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #7e7a72;">
                 01 // Client Contact
               </p>
               <table role="presentation" style="width: 100%; border-collapse: collapse; margin-top: 12px;">
                 <tr>
-                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49; width: 35%;">Name</td>
-                  <td style="padding: 6px 0; font-size: 15px; color: #1c1915; font-weight: 600;">${escapeHtml(name)}</td>
+                  <td style="padding: 7px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72; width: 35%;">Name</td>
+                  <td style="padding: 7px 0; font-size: 16px; color: #111111; font-weight: 700;">${escapeHtml(name)}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Email</td>
-                  <td style="padding: 6px 0; font-size: 15px; color: #166534; font-weight: 600;">
-                    <a href="mailto:${escapeHtml(email)}" style="color: #166534; text-decoration: none;">${escapeHtml(email)}</a>
+                  <td style="padding: 7px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72;">Email</td>
+                  <td style="padding: 7px 0; font-size: 16px; color: #111111; font-weight: 700;">
+                    <a href="mailto:${escapeHtml(email)}" style="color: #111111; text-decoration: underline; text-decoration-color: #b8b2a8; text-underline-offset: 4px;">${escapeHtml(email)}</a>
                   </td>
                 </tr>
                 <tr>
-                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Phone</td>
-                  <td style="padding: 6px 0; font-size: 15px; color: #1c1915; font-weight: 600;">${escapeHtml(phone)}</td>
+                  <td style="padding: 7px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72;">Phone</td>
+                  <td style="padding: 7px 0; font-size: 16px; color: #111111; font-weight: 700;">${escapeHtml(phone)}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Preferred Contact</td>
-                  <td style="padding: 6px 0; font-size: 14px; color: #1c1915;">${escapeHtml(preferredContact || 'Email')}</td>
+                  <td style="padding: 7px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72;">Preferred Contact</td>
+                  <td style="padding: 7px 0; font-size: 15px; color: #333333;">${escapeHtml(preferredContact || 'Email')}</td>
                 </tr>
               </table>
             </td>
@@ -217,11 +426,11 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
 
           <!-- Artist Selection -->
           <tr>
-            <td style="padding: 24px 40px; border-top: 1px solid #dcfce7;">
-              <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
+            <td style="padding: 26px 40px; border-bottom: 1px solid #d8d2c8;">
+              <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #7e7a72;">
                 02 // Artist Selection
               </p>
-              <p style="margin: 0; font-size: 16px; color: #1c1915; font-weight: 600;">
+              <p style="margin: 0; font-family: Georgia, serif; font-size: 24px; line-height: 1.2; color: #111111; font-weight: 400;">
                 ${escapeHtml(artistDisplayName)}
               </p>
             </td>
@@ -229,70 +438,70 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
 
           <!-- Project Details -->
           <tr>
-            <td style="padding: 24px 40px; border-top: 1px solid #dcfce7;">
-              <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
+            <td style="padding: 30px 40px; border-bottom: 1px solid #d8d2c8;">
+              <p style="margin: 0 0 14px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #7e7a72;">
                 03 // Project Details
               </p>
               <table role="presentation" style="width: 100%; border-collapse: collapse;">
                 <tr>
-                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49; width: 35%;">Style</td>
-                  <td style="padding: 6px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(style)}</td>
+                  <td style="padding: 8px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72; width: 35%;">Style</td>
+                  <td style="padding: 8px 0; font-size: 15px; color: #111111; font-weight: 700;">${escapeHtml(style)}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Placement</td>
-                  <td style="padding: 6px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(placement)}</td>
+                  <td style="padding: 8px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72;">Placement</td>
+                  <td style="padding: 8px 0; font-size: 15px; color: #111111; font-weight: 700;">${escapeHtml(placement)}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Size</td>
-                  <td style="padding: 6px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(size)}</td>
+                  <td style="padding: 8px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72;">Size</td>
+                  <td style="padding: 8px 0; font-size: 15px; color: #111111; font-weight: 700;">${escapeHtml(size)}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Budget</td>
-                  <td style="padding: 6px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(budget || 'Not specified')}</td>
+                  <td style="padding: 8px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72;">Budget</td>
+                  <td style="padding: 8px 0; font-size: 15px; color: #111111; font-weight: 700;">${escapeHtml(budget || 'Not specified')}</td>
                 </tr>
                 <tr>
-                  <td style="padding: 6px 0; font-size: 14px; color: #6f5c49;">Availability</td>
-                  <td style="padding: 6px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(availability || 'Not specified').replace(/\n/g, '<br>')}</td>
+                  <td style="padding: 8px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72;">Availability</td>
+                  <td style="padding: 8px 0; font-size: 15px; color: #111111; font-weight: 700;">${escapeHtml(availability || 'Not specified').replace(/\n/g, '<br>')}</td>
                 </tr>
               </table>
 
-              <div style="margin-top: 20px; padding: 16px; background-color: #f9f9f9; border-left: 2px solid #22c55e;">
-                <p style="margin: 0 0 8px 0; font-size: 12px; color: #6f5c49; font-weight: 600; text-transform: uppercase;">Description</p>
-                <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #1c1915;">${escapeHtml(description).replace(/\n/g, '<br>')}</p>
+              <div style="margin-top: 22px; padding: 18px 20px; background-color: #ffffff; border: 1px solid #d8d2c8;">
+                <p style="margin: 0 0 10px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2.4px; color: #7e7a72; font-weight: 700; text-transform: uppercase;">Description</p>
+                <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #111111;">${escapeHtml(description).replace(/\n/g, '<br>')}</p>
               </div>
             </td>
           </tr>
 
           <!-- Reference Images -->
           <tr>
-            <td style="padding: 24px 40px; border-top: 1px solid #dcfce7;">
-              <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
+            <td style="padding: 26px 40px; border-bottom: 1px solid #d8d2c8;">
+              <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #7e7a72;">
                 04 // Reference Images
               </p>
-              <p style="margin: 0; font-size: 14px; color: #1c1915;">
-                ${validFiles.length > 0 ? `<strong>${validFiles.length} image(s) attached</strong> to this email` : '<em>No reference images provided</em>'}
+              <p style="margin: 0; font-size: 15px; color: #111111;">
+                ${attachments.length > 0 ? `<strong>${attachments.length} image(s) attached</strong> to this email` : '<em>No reference images provided</em>'}
               </p>
             </td>
           </tr>
 
           <!-- Consent Info -->
           <tr>
-            <td style="padding: 24px 40px; border-top: 1px solid #dcfce7;">
-              <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
+            <td style="padding: 26px 40px; border-bottom: 1px solid #d8d2c8;">
+              <p style="margin: 0 0 12px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #7e7a72;">
                 05 // Consent
               </p>
               <table role="presentation" style="width: 100%; border-collapse: collapse;">
                 <tr>
-                  <td style="padding: 4px 0; font-size: 13px; color: #6f5c49;">Accepted Terms</td>
-                  <td style="padding: 4px 0; font-size: 13px; color: #1c1915;">✓ Yes</td>
+                  <td style="padding: 5px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72;">Accepted Terms</td>
+                  <td style="padding: 5px 0; font-size: 14px; color: #111111;">Yes</td>
                 </tr>
                 <tr>
-                  <td style="padding: 4px 0; font-size: 13px; color: #6f5c49;">Confirmed Age (18+)</td>
-                  <td style="padding: 4px 0; font-size: 13px; color: #1c1915;">✓ Yes</td>
+                  <td style="padding: 5px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72;">Confirmed Age (18+)</td>
+                  <td style="padding: 5px 0; font-size: 14px; color: #111111;">Yes</td>
                 </tr>
                 <tr>
-                  <td style="padding: 4px 0; font-size: 13px; color: #6f5c49;">Understands Deposit</td>
-                  <td style="padding: 4px 0; font-size: 13px; color: #1c1915;">${acceptDeposit ? '✓ Yes' : '✗ No'}</td>
+                  <td style="padding: 5px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72;">Understands Deposit</td>
+                  <td style="padding: 5px 0; font-size: 14px; color: #111111;">${acceptDeposit ? 'Yes' : 'No'}</td>
                 </tr>
               </table>
             </td>
@@ -300,9 +509,9 @@ export const POST: APIRoute = async ({ request, locals, platform }) => {
 
           <!-- Footer -->
           <tr>
-            <td style="padding: 24px 40px; background-color: #f9f9f9; text-align: center; border-top: 1px solid #dcfce7;">
-              <p style="margin: 0; font-size: 12px; line-height: 1.6; color: #6f5c49;">
-                <em>Submitted via unitedtattoo.com/booking</em>
+            <td style="padding: 22px 40px; background-color: #111111; text-align: center;">
+              <p style="margin: 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2.6px; line-height: 1.6; color: #b8b2a8; text-transform: uppercase;">
+                Submitted via unitedtattoo.com/booking
               </p>
             </td>
           </tr>
@@ -342,7 +551,7 @@ Accepted Terms: Yes
 Confirmed Age: Yes
 Understands Deposit: ${acceptDeposit ? 'Yes' : 'No'}
 
-Reference Images: ${validFiles.length > 0 ? `${validFiles.length} image(s) attached` : 'No images attached'}
+Reference Images: ${attachments.length > 0 ? `${attachments.length} image(s) attached` : 'No images attached'}
 
 ---
 This booking request was submitted via the United Tattoo website.
@@ -380,76 +589,79 @@ This booking request was submitted via the United Tattoo website.
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Booking Confirmation - United Tattoo</title>
 </head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f5f5f5;">
-  <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f5f5f5;">
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #050505;">
+  <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #050505;">
     <tr>
-      <td align="center" style="padding: 40px 20px;">
+      <td align="center" style="padding: 44px 18px;">
         <!-- Main Container -->
-        <table role="presentation" style="width: 100%; max-width: 600px; border-collapse: collapse; background-color: #ffffff; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+        <table role="presentation" style="width: 100%; max-width: 640px; border-collapse: collapse; background-color: #f7f4ee; border: 1px solid #d8d2c8;">
 
           <!-- Header -->
           <tr>
-            <td style="background-color: #166534; padding: 32px 40px; text-align: center;">
-              <h1 style="margin: 0; font-family: Georgia, serif; font-size: 28px; font-weight: 400; font-style: italic; color: #ffffff; letter-spacing: 0.5px;">
-                United Tattoo
+            <td style="background-color: #050505; padding: 34px 40px 38px 40px; text-align: center; border-bottom: 1px solid #333333;">
+              <p style="margin: 0 0 18px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 4px; text-transform: uppercase; color: #b8b2a8;">
+                United Tattoo / Fountain, Colorado
+              </p>
+              <h1 style="margin: 0; font-family: Georgia, serif; font-size: 34px; line-height: 1.05; font-weight: 400; color: #f7f4ee;">
+                Booking Request Received
               </h1>
-              <p style="margin: 8px 0 0 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.9);">
-                Fountain, Colorado
+              <p style="margin: 14px auto 0 auto; max-width: 420px; font-size: 14px; line-height: 1.6; color: #b8b2a8;">
+                We have your details and will review the request with the studio team.
               </p>
             </td>
           </tr>
 
           <!-- Main Content -->
           <tr>
-            <td style="padding: 40px 40px 32px 40px;">
-              <h2 style="margin: 0 0 16px 0; font-family: Georgia, serif; font-size: 24px; font-weight: 400; color: #1c1915;">
+            <td style="padding: 40px 40px 34px 40px;">
+              <h2 style="margin: 0 0 16px 0; font-family: Georgia, serif; font-size: 28px; line-height: 1.15; font-weight: 400; color: #111111;">
                 Thank You, ${escapeHtml(name)}
               </h2>
-              <p style="margin: 0 0 24px 0; font-size: 16px; line-height: 1.7; color: #1c1915;">
-                We've received your booking request and our team is excited to work with you! Here's a summary of what you submitted:
+              <p style="margin: 0 0 26px 0; font-size: 16px; line-height: 1.75; color: #333333;">
+                We have received your booking request. Here is a summary of what you submitted:
               </p>
 
               <!-- Booking Details Card -->
-              <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #f0fdf4; border-left: 3px solid #22c55e; margin: 0 0 32px 0;">
+              <table role="presentation" style="width: 100%; border-collapse: collapse; background-color: #ffffff; border: 1px solid #d8d2c8; margin: 0 0 34px 0;">
                 <tr>
-                  <td style="padding: 24px;">
-                    <p style="margin: 0 0 4px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: #6f5c49;">
+                  <td style="padding: 26px;">
+                    <p style="margin: 0 0 16px 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: #7e7a72;">
                       Your Request Details
                     </p>
 
                     <table role="presentation" style="width: 100%; border-collapse: collapse; margin-top: 16px;">
                       <tr>
-                        <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top; width: 35%;">Preferred Artist</td>
-                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(artistDisplayName)}</td>
+                        <td style="padding: 8px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72; vertical-align: top; width: 35%;">Preferred Artist</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #111111; font-weight: 700;">${escapeHtml(artistDisplayName)}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top;">Style</td>
-                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(style)}</td>
+                        <td style="padding: 8px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72; vertical-align: top;">Style</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #111111; font-weight: 700;">${escapeHtml(style)}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top;">Placement</td>
-                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(placement)}</td>
+                        <td style="padding: 8px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72; vertical-align: top;">Placement</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #111111; font-weight: 700;">${escapeHtml(placement)}</td>
                       </tr>
                       <tr>
-                        <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top;">Size</td>
-                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(size)}</td>
+                        <td style="padding: 8px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72; vertical-align: top;">Size</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #111111; font-weight: 700;">${escapeHtml(size)}</td>
                       </tr>
                       ${budget ? `
                       <tr>
-                        <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top;">Budget</td>
-                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(budget)}</td>
+                        <td style="padding: 8px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72; vertical-align: top;">Budget</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #111111; font-weight: 700;">${escapeHtml(budget)}</td>
                       </tr>
                       ` : ''}
                       ${availability ? `
                       <tr>
-                        <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top;">Availability</td>
-                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${escapeHtml(availability).replace(/\n/g, '<br>')}</td>
+                        <td style="padding: 8px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72; vertical-align: top;">Availability</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #111111; font-weight: 700;">${escapeHtml(availability).replace(/\n/g, '<br>')}</td>
                       </tr>
                       ` : ''}
-                      ${validFiles.length > 0 ? `
+                      ${attachments.length > 0 ? `
                       <tr>
-                        <td style="padding: 8px 0; font-size: 14px; color: #6f5c49; vertical-align: top;">Reference Images</td>
-                        <td style="padding: 8px 0; font-size: 14px; color: #1c1915; font-weight: 600;">${validFiles.length} image(s) uploaded</td>
+                        <td style="padding: 8px 0; font-family: 'Courier New', monospace; font-size: 11px; letter-spacing: 1.6px; text-transform: uppercase; color: #7e7a72; vertical-align: top;">Reference Images</td>
+                        <td style="padding: 8px 0; font-size: 15px; color: #111111; font-weight: 700;">${attachments.length} image(s) uploaded</td>
                       </tr>
                       ` : ''}
                     </table>
@@ -458,33 +670,33 @@ This booking request was submitted via the United Tattoo website.
               </table>
 
               <!-- What's Next Section -->
-              <div style="margin: 0 0 32px 0; padding-bottom: 32px; border-bottom: 1px solid #dcfce7;">
-                <h3 style="margin: 0 0 12px 0; font-family: Georgia, serif; font-size: 18px; font-weight: 400; color: #1c1915;">
+              <div style="margin: 0 0 30px 0; padding-bottom: 30px; border-bottom: 1px solid #d8d2c8;">
+                <h3 style="margin: 0 0 12px 0; font-family: Georgia, serif; font-size: 22px; font-weight: 400; color: #111111;">
                   What Happens Next?
                 </h3>
-                <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #1c1915;">
-                  Our team will review your request and get back to you within <strong>24-48 hours</strong>. We'll discuss your design ideas, answer any questions, and help you schedule your appointment.
+                <p style="margin: 0; font-size: 15px; line-height: 1.75; color: #333333;">
+                  Our team will review your request and get back to you within <strong style="color: #111111;">24-48 hours</strong>. We will discuss your design ideas, answer questions, and help schedule the next step.
                 </p>
               </div>
 
               <!-- Contact Section -->
               <div style="margin: 0 0 32px 0;">
-                <h3 style="margin: 0 0 12px 0; font-family: Georgia, serif; font-size: 18px; font-weight: 400; color: #1c1915;">
+                <h3 style="margin: 0 0 12px 0; font-family: Georgia, serif; font-size: 22px; font-weight: 400; color: #111111;">
                   Questions?
                 </h3>
-                <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.7; color: #1c1915;">
-                  If you need to reach us before then, feel free to contact us:
+                <p style="margin: 0 0 16px 0; font-size: 15px; line-height: 1.75; color: #333333;">
+                  If you need to reach us before then, contact the studio:
                 </p>
-                <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #1c1915;">
-                  <strong>Email:</strong> <a href="mailto:ink@united-tattoos.com" style="color: #166534; text-decoration: none;">ink@united-tattoos.com</a>
+                <p style="margin: 0; font-size: 15px; line-height: 1.75; color: #333333;">
+                  <strong style="color: #111111;">Email:</strong> <a href="mailto:ink@united-tattoos.com" style="color: #111111; text-decoration: underline; text-decoration-color: #b8b2a8; text-underline-offset: 4px;">ink@united-tattoos.com</a>
                 </p>
               </div>
 
               <!-- Closing -->
-              <p style="margin: 0 0 8px 0; font-size: 16px; line-height: 1.7; color: #1c1915;">
-                We can't wait to bring your vision to life!
+              <p style="margin: 0 0 8px 0; font-size: 16px; line-height: 1.75; color: #111111;">
+                Thank you for trusting us with your idea.
               </p>
-              <p style="margin: 0; font-size: 15px; line-height: 1.7; color: #1c1915;">
+              <p style="margin: 0; font-size: 15px; line-height: 1.75; color: #333333;">
                 <strong>United Tattoo</strong><br>
                 Fountain, CO
               </p>
@@ -493,9 +705,9 @@ This booking request was submitted via the United Tattoo website.
 
           <!-- Footer -->
           <tr>
-            <td style="padding: 24px 40px; background-color: #f9f9f9; text-align: center; border-top: 1px solid #dcfce7;">
-              <p style="margin: 0; font-size: 12px; line-height: 1.6; color: #6f5c49;">
-                <em>This is an automated confirmation. Please do not reply to this email.</em>
+            <td style="padding: 22px 40px; background-color: #111111; text-align: center;">
+              <p style="margin: 0; font-family: 'Courier New', monospace; font-size: 10px; letter-spacing: 2.6px; line-height: 1.6; color: #b8b2a8; text-transform: uppercase;">
+                Automated confirmation / Please do not reply
               </p>
             </td>
           </tr>
@@ -509,28 +721,27 @@ This booking request was submitted via the United Tattoo website.
       `;
 
       const clientEmailText = `
-Thank You for Your Booking Request!
+Booking Request Received
 
 Hi ${name},
 
-We've received your tattoo booking request and our team is excited to work with you! Here's a summary of what you submitted:
+We have received your tattoo booking request. Here is a summary of what you submitted:
 
 YOUR REQUEST DETAILS
 - Preferred Artist: ${artistDisplayName}
 - Style: ${style}
 - Placement: ${placement}
-- Size: ${size}${budget ? `\n- Budget: ${budget}` : ''}${availability ? `\n- Availability: ${availability}` : ''}${validFiles.length > 0 ? `\n- Reference Images: ${validFiles.length} image(s) uploaded` : ''}
+- Size: ${size}${budget ? `\n- Budget: ${budget}` : ''}${availability ? `\n- Availability: ${availability}` : ''}${attachments.length > 0 ? `\n- Reference Images: ${attachments.length} image(s) uploaded` : ''}
 
 WHAT HAPPENS NEXT?
-Our team will review your request and get back to you within 24-48 hours. We'll discuss your design ideas, answer any questions, and help you schedule your appointment.
+Our team will review your request and get back to you within 24-48 hours. We will discuss your design ideas, answer questions, and help schedule the next step.
 
 QUESTIONS?
-If you need to reach us before then, feel free to contact us:
+If you need to reach us before then, contact the studio:
 - Email: ink@united-tattoos.com
 
-We can't wait to bring your vision to life!
+Thank you for trusting us with your idea.
 
-Best regards,
 United Tattoo
 Fountain, CO
 
@@ -579,7 +790,7 @@ This is an automated confirmation. Please do not reply to this email.
       console.log('From:', BOOKING_FROM_EMAIL);
       console.log('Reply-To:', email);
       console.log('Subject:', `New Booking Request: ${name} · ${style} · ${artistDisplayName}`);
-      console.log('Attachments:', validFiles.length);
+      console.log('Attachments:', attachments.length);
       console.log('---');
       console.log(emailText);
       console.log('=================================');
@@ -599,17 +810,10 @@ This is an automated confirmation. Please do not reply to this email.
       console.log('=================================');
     }
 
-    return new Response(
-      JSON.stringify({ success: true, message: 'Booking request submitted successfully' }),
-      { status: 200, headers: { 'Content-Type': 'application/json' } }
-    );
+    return successResponse();
 
   } catch (error) {
     console.error('Booking API error:', error);
-    return new Response(
-      JSON.stringify({ success: false, error: 'An unexpected error occurred. Please try again.' }),
-      { status: 500, headers: { 'Content-Type': 'application/json' } }
-    );
+    return jsonResponse({ success: false, error: 'An unexpected error occurred. Please try again.' }, 500);
   }
 };
-

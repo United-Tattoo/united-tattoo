@@ -8,6 +8,10 @@ interface CalendarEvent {
   status: string;
 }
 
+interface IcalTimeValue {
+  toJSDate: () => Date;
+}
+
 export function parseCalendarEvent(iCalData: string): CalendarEvent | null {
   try {
     const jcalData = ICAL.parse(iCalData);
@@ -22,8 +26,8 @@ export function parseCalendarEvent(iCalData: string): CalendarEvent | null {
     
     if (!dtstart || !dtend) return null;
 
-    const startTime = new ICAL.Time(dtstart);
-    const endTime = new ICAL.Time(dtend);
+    const startTime = dtstart as IcalTimeValue;
+    const endTime = dtend as IcalTimeValue;
     
     return {
       title: summary as string,

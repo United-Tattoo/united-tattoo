@@ -12,6 +12,22 @@ interface Slot {
   available: boolean;
 }
 
+export type AvailabilitySlot = Slot;
+
+export interface CalendarBusyEvent {
+  title: string;
+  start: Date;
+  end: Date;
+  status: string;
+}
+
+interface ArtistAvailabilityConfig {
+  data: {
+    bufferMinutes?: number;
+    schedule?: Record<string, string | 'closed'>;
+  };
+}
+
 const CACHE_DIR = '.calendar-cache';
 const CACHE_FILE = path.join(CACHE_DIR, 'availability.json');
 const CACHE_TTL = 15 * 60 * 1000;
@@ -80,13 +96,17 @@ export async function getArtistAvailability(artist: CollectionEntry<'artists'>):
   return slots;
 }
 
-function calculateAvailableSlots(artist: CollectionEntry<'artists'>, busyEvents: any[], start: Date, end: Date): Slot[] {
+export function calculateAvailableSlots(
+  artist: ArtistAvailabilityConfig,
+  busyEvents: CalendarBusyEvent[],
+  start: Date,
+  end: Date,
+): Slot[] {
   const slots: Slot[] = [];
   const bufferMinutes = artist.data.bufferMinutes || 30;
-  const schedule = artist.data.schedule || {};
 
   // Iterate days
-  let current = new Date(start);
+  const current = new Date(start);
   
   while (current <= end) {
     const zonedCurrent = toZonedTime(current, TIMEZONE);
