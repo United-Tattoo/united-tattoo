@@ -6,17 +6,49 @@ import EditorialFooter from '../../components/EditorialFooter.astro';
 
 export const prerender = true;
 
+const slugifyHeading = (value: string) => value
+  .toLowerCase()
+  .replace(/[^a-z0-9\s-]/g, '')
+  .trim()
+  .replace(/\s+/g, '-');
+
 export async function getStaticPaths() {
   const posts = await getCollection('blog', ({ data }) => !data.draft);
 
   return posts.map((post) => ({
     params: { slug: post.id },
-    props: { post },
+    props: { post, posts },
   }));
 }
 
-const { post } = Astro.props;
+const { post, posts } = Astro.props;
 const { Content } = await render(post);
+
+const headings = Array.from(post.body.matchAll(/^##\s+(.+)$/gm))
+  .map((match) => {
+    const text = match[1].trim();
+    return {
+      text,
+      id: slugifyHeading(text),
+    };
+  })
+  .filter((heading) => heading.id.length > 0);
+
+const relatedPosts = posts
+  .filter((candidate) => candidate.id !== post.id && !candidate.data.draft)
+  .map((candidate) => ({
+    post: candidate,
+    score: candidate.data.tags.filter((tag) => post.data.tags.includes(tag)).length,
+  }))
+  .sort((a, b) => {
+    if (b.score !== a.score) {
+      return b.score - a.score;
+    }
+
+    return b.post.data.publishDate.getTime() - a.post.data.publishDate.getTime();
+  })
+  .slice(0, 3)
+  .map(({ post }) => post);
 
 const formatDate = (date: Date) => date.toLocaleDateString('en-US', {
   month: 'long',
@@ -48,7 +80,7 @@ const formatDate = (date: Date) => date.toLocaleDateString('en-US', {
 >
   <div class="relative mx-auto max-w-[1800px] border-l border-r border-border">
   <article class="px-6 pb-28 pt-40 md:px-12 lg:px-20 lg:pt-48">
-    <div class="mx-auto max-w-5xl">
+    <div class="mx-auto max-w-7xl">
       <div class="mb-12">
         <Breadcrumb
           items={[
@@ -65,7 +97,7 @@ const formatDate = (date: Date) => date.toLocaleDateString('en-US', {
           <span class="h-px w-8 bg-border"></span>
           <span>{post.data.author}</span>
         </div>
-        <h1 class="font-display text-5xl font-normal leading-none tracking-normal text-foreground md:text-7xl lg:text-8xl">
+        <h1 class="max-w-5xl font-display text-5xl font-normal leading-none tracking-normal text-foreground md:text-7xl lg:text-8xl">
           {post.data.title}
         </h1>
         <p class="mt-8 max-w-3xl text-lg leading-relaxed text-muted-foreground md:text-xl">
@@ -82,9 +114,191 @@ const formatDate = (date: Date) => date.toLocaleDateString('en-US', {
         )}
       </header>
 
-      <div class="prose-editorial mt-14 max-w-none">
-        <Content />
+      <div class="article-utility-grid mt-12 grid gap-12 lg:grid-cols-[minmax(0,1fr)_17rem] lg:items-start">
+        <main class="min-w-0">
+          {headings.length > 0 && (
+            <details class="article-mobile-toc mb-10 border-y border-border py-5 lg:hidden">
+              <summary class="cursor-pointer font-mono text-[10px] uppercase tracking-[0.24em] text-foreground">
+                Article sections
+              </summary>
+              <nav class="mt-5 grid gap-3">
+                {headings.map((heading) => (
+                  <a href={`#${heading.id}`} class="text-sm leading-snug text-muted-foreground transition-colors hover:text-foreground">
+                    {heading.text}
+                  </a>
+                ))}
+              </nav>
+            </details>
+          )}
+
+          <div class="article-intent-card mb-12 grid gap-6 border-y border-border py-7 md:grid-cols-[1fr_auto] md:items-center">
+            <div>
+              <p class="font-mono text-[9px] uppercase tracking-[0.26em] text-muted-foreground">Need a second set of eyes?</p>
+              <p class="mt-3 max-w-2xl text-base leading-relaxed text-secondary-foreground">
+                Bring the idea, placement, references, or old tattoo you are working around. United can help route it to the artist whose work fits.
+              </p>
+            </div>
+            <a href="/booking" class="inline-flex items-center justify-center border border-foreground px-5 py-3 font-mono text-[10px] uppercase tracking-[0.2em] text-foreground transition-colors hover:bg-foreground hover:text-background">
+              Request booking
+            </a>
+          </div>
+
+          <div class="prose-editorial max-w-none">
+            <Content />
+          </div>
+
+          {relatedPosts.length > 0 && (
+            <section class="related-reading mt-20 border-t border-border pt-10" aria-labelledby="related-reading-title">
+              <div class="mb-6 flex items-end justify-between gap-6">
+                <h2 id="related-reading-title" class="font-mono text-[10px] uppercase tracking-[0.28em] text-muted-foreground">
+                  Related reading
+                </h2>
+                <span class="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/60">
+                  Keep going
+                </span>
+              </div>
+              <div class="divide-y divide-border border-y border-border">
+                {relatedPosts.map((relatedPost) => (
+                  <a href={`/blog/${relatedPost.id}`} class="group grid gap-4 py-6 transition-colors hover:bg-white/[0.018] md:grid-cols-[1fr_2fr_auto] md:items-center">
+                    <p class="font-mono text-[10px] uppercase tracking-[0.22em] text-muted-foreground/70">
+                      {formatDate(relatedPost.data.publishDate)}
+                    </p>
+                    <div>
+                      <h3 class="font-display text-3xl font-normal leading-tight text-foreground transition-colors group-hover:text-muted-foreground">
+                        {relatedPost.data.title}
+                      </h3>
+                      <p class="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
+                        {relatedPost.data.description}
+                      </p>
+                    </div>
+                    <span class="hidden h-10 w-10 items-center justify-center rounded-full border border-border text-xl text-foreground transition-all group-hover:translate-x-1 group-hover:border-foreground/45 md:flex">
+                      <iconify-icon icon="solar:arrow-right-linear"></iconify-icon>
+                    </span>
+                  </a>
+                ))}
+              </div>
+            </section>
+          )}
+        </main>
+
+        <aside class="article-sidebar hidden lg:block">
+          <div class="sticky top-28 border-y border-border py-6">
+            {headings.length > 0 && (
+              <nav aria-label="Article sections">
+                <p class="mb-5 font-mono text-[9px] uppercase tracking-[0.26em] text-muted-foreground">In this article</p>
+                <ol class="grid gap-3">
+                  {headings.map((heading, index) => (
+                    <li>
+                      <a href={`#${heading.id}`} class="article-toc-link group grid grid-cols-[2rem_1fr] gap-3 text-sm leading-snug text-muted-foreground transition-colors hover:text-foreground">
+                        <span class="font-mono text-[9px] uppercase tracking-[0.16em] text-muted-foreground/50 transition-colors group-hover:text-foreground/70">
+                          {(index + 1).toString().padStart(2, '0')}
+                        </span>
+                        <span>{heading.text}</span>
+                      </a>
+                    </li>
+                  ))}
+                </ol>
+              </nav>
+            )}
+            <div class="mt-8 border-t border-border pt-6">
+              <p class="font-mono text-[9px] uppercase tracking-[0.26em] text-muted-foreground">Ready when you are</p>
+              <p class="mt-4 text-sm leading-relaxed text-muted-foreground">
+                Have a tattoo idea, reference, or question? Send it over and we will help shape the next step.
+              </p>
+              <a href="/booking" class="mt-5 inline-flex font-mono text-[10px] uppercase tracking-[0.2em] text-foreground underline decoration-border underline-offset-4 transition-colors hover:decoration-foreground">
+                Book a session
+              </a>
+            </div>
+          </div>
+        </aside>
       </div>
+
+      <script>
+        const slugifyHeading = (value) => value
+          .toLowerCase()
+          .replace(/[^a-z0-9\s-]/g, '')
+          .trim()
+          .replace(/\s+/g, '-');
+
+        const enhanceBlogArticle = () => {
+          const proseBlocks = document.querySelectorAll('.prose-editorial');
+
+          proseBlocks.forEach((prose) => {
+            prose.querySelectorAll('h2').forEach((heading) => {
+              if (!heading.id) {
+                heading.id = slugifyHeading(heading.textContent ?? '');
+              }
+            });
+
+            prose.querySelectorAll('ul, ol').forEach((list) => {
+              if (list.closest('.faq-answer')) {
+                return;
+              }
+
+              list.classList.add('editorial-list-panel');
+            });
+
+            const headings = Array.from(prose.querySelectorAll('h2'));
+            const faqHeadings = headings.filter((heading) => /\bfaq\b/i.test(heading.textContent ?? ''));
+
+            faqHeadings.forEach((heading) => {
+              if (heading.nextElementSibling?.classList.contains('faq-accordion')) {
+                return;
+              }
+
+              const items = [];
+              let current = heading.nextElementSibling;
+
+              while (current && current.tagName !== 'H2') {
+                if (current.tagName !== 'H3') {
+                  current = current.nextElementSibling;
+                  continue;
+                }
+
+                const question = current;
+                const answerNodes = [];
+                let answerNode = question.nextElementSibling;
+
+                while (answerNode && answerNode.tagName !== 'H2' && answerNode.tagName !== 'H3') {
+                  answerNodes.push(answerNode);
+                  answerNode = answerNode.nextElementSibling;
+                }
+
+                items.push({ question, answerNodes });
+                current = answerNode;
+              }
+
+              if (items.length === 0) {
+                return;
+              }
+
+              const accordion = document.createElement('div');
+              accordion.className = 'faq-accordion';
+              heading.insertAdjacentElement('afterend', accordion);
+
+              items.forEach(({ question, answerNodes }) => {
+                const details = document.createElement('details');
+                details.className = 'faq-item';
+
+                const summary = document.createElement('summary');
+                summary.className = 'faq-question';
+                summary.textContent = question.textContent ?? '';
+
+                const answer = document.createElement('div');
+                answer.className = 'faq-answer';
+                answerNodes.forEach((node) => answer.appendChild(node));
+
+                details.append(summary, answer);
+                accordion.append(details);
+                question.remove();
+              });
+            });
+          });
+        };
+
+        document.addEventListener('astro:page-load', enhanceBlogArticle);
+        enhanceBlogArticle();
+      </script>
 
       <footer class="mt-16 flex flex-col gap-6 border-t border-border pt-8 md:flex-row md:items-center md:justify-between">
         <a href="/blog" class="font-mono text-[10px] uppercase tracking-[0.24em] text-muted-foreground transition-colors hover:text-foreground">

@@ -197,6 +197,7 @@
 
   .prose-editorial {
     & h2 {
+      scroll-margin-top: 8rem;
       font-family: var(--font-sans);
       font-size: 2.5rem;
       font-weight: 600;
@@ -222,7 +223,7 @@
     }
 
     & p {
-      color: var(--muted-foreground);
+      color: color-mix(in srgb, var(--brand-paper) 66%, transparent);
       font-size: 1.0625rem;
       line-height: 1.8;
       margin-bottom: 1.5rem;
@@ -233,12 +234,33 @@
       }
     }
 
+    & > p:first-of-type {
+      max-width: 54rem;
+      margin-bottom: 2.25rem;
+      padding-bottom: 2rem;
+      border-bottom: 1px solid var(--border);
+      color: color-mix(in srgb, var(--brand-paper) 82%, transparent);
+      font-size: clamp(1.25rem, 2vw, 1.75rem);
+      line-height: 1.55;
+      letter-spacing: -0.01em;
+    }
+
     & ul, & ol {
-      color: var(--muted-foreground);
+      color: color-mix(in srgb, var(--brand-paper) 68%, transparent);
       font-size: 1.0625rem;
       margin-top: 1.5rem;
       margin-bottom: 2rem;
       padding-left: 0;
+    }
+
+    & .editorial-list-panel {
+      max-width: 65ch;
+      padding: 1.25rem 1.35rem;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      background:
+        linear-gradient(90deg, color-mix(in srgb, var(--brand-paper) 3.5%, transparent), transparent 58%),
+        color-mix(in srgb, var(--brand-paper) 1.5%, transparent);
     }
 
     & ul li {
@@ -247,12 +269,20 @@
       margin-bottom: 1rem;
       line-height: 1.7;
 
+      &:last-child {
+        margin-bottom: 0;
+      }
+
       &::before {
-        content: '\2014';
+        content: '';
         position: absolute;
-        left: 0;
-        color: var(--primary);
-        font-weight: 400;
+        left: 0.25rem;
+        top: 0.72em;
+        width: 0.45rem;
+        height: 0.45rem;
+        border: 1px solid color-mix(in srgb, var(--brand-paper) 45%, transparent);
+        background: color-mix(in srgb, var(--brand-paper) 10%, transparent);
+        transform: rotate(45deg);
       }
     }
 
@@ -265,6 +295,10 @@
       padding-left: 2rem;
       margin-bottom: 1rem;
       line-height: 1.7;
+
+      &:last-child {
+        margin-bottom: 0;
+      }
 
       &::before {
         counter-increment: editorial-counter;
@@ -313,6 +347,83 @@
       color: inherit;
       font-size: inherit;
       line-height: inherit;
+      margin-bottom: 0;
+    }
+
+    & .faq-accordion {
+      max-width: 65ch;
+      margin-top: 2.25rem;
+      border-top: 1px solid var(--border);
+    }
+
+    & .faq-item {
+      border-bottom: 1px solid var(--border);
+    }
+
+    & .faq-question {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: 1.5rem 3rem 1.5rem 0;
+      color: var(--secondary-foreground);
+      cursor: pointer;
+      font-family: var(--font-sans);
+      font-size: 1.5rem;
+      font-weight: 500;
+      line-height: 1.2;
+      list-style: none;
+      transition: color 0.25s ease;
+    }
+
+    & .faq-question::-webkit-details-marker {
+      display: none;
+    }
+
+    & .faq-question::after {
+      content: '+';
+      position: absolute;
+      right: 0;
+      top: 50%;
+      color: var(--muted-foreground);
+      font-family: var(--font-mono);
+      font-size: 1.2rem;
+      font-weight: 400;
+      line-height: 1;
+      transform: translateY(-50%);
+      transition:
+        color 0.25s ease,
+        transform 0.25s ease;
+    }
+
+    & .faq-question:hover,
+    & .faq-question:focus-visible {
+      color: var(--foreground);
+      outline: none;
+    }
+
+    & .faq-question:focus-visible {
+      outline: 1px solid var(--ring);
+      outline-offset: 6px;
+    }
+
+    & .faq-item[open] .faq-question::after {
+      color: var(--foreground);
+      transform: translateY(-50%) rotate(45deg);
+    }
+
+    & .faq-answer {
+      padding: 0 3rem 1.75rem 0;
+    }
+
+    & .faq-answer p,
+    & .faq-answer ul,
+    & .faq-answer ol {
+      margin-bottom: 1rem;
+    }
+
+    & .faq-answer > :last-child {
       margin-bottom: 0;
     }
 
