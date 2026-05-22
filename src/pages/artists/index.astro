@@ -162,6 +162,8 @@ const heroImage = '/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-03%2048.j
       display: grid;
       grid-template-rows: auto 1fr;
       gap: 1rem;
+      min-width: 0;
+      overflow: hidden;
       border-right: 1px solid var(--border);
       border-bottom: 1px solid var(--border);
       padding: 1rem;
@@ -187,6 +189,7 @@ const heroImage = '/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-03%2048.j
     }
 
     .artist-card-image {
+      display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
@@ -216,17 +219,21 @@ const heroImage = '/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-03%2048.j
     .artist-card-body {
       display: grid;
       gap: 1rem;
+      min-width: 0;
       min-height: 9rem;
       align-content: space-between;
     }
 
     .artist-card-body h2 {
       font-family: var(--font-display);
-      font-size: clamp(2.35rem, 4vw, 4.8rem);
+      max-width: 100%;
+      font-size: clamp(2.35rem, 3vw, 3.9rem);
       font-weight: 400;
-      line-height: 0.96;
+      line-height: 0.98;
       letter-spacing: 0;
       color: var(--foreground);
+      overflow-wrap: break-word;
+      text-wrap: balance;
       transition: color 0.25s ease;
     }
 
