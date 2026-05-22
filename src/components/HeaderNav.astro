@@ -1,5 +1,10 @@
 ---
-import { ADDRESS_LINE_1, ADDRESS_LINE_2, PHONE_NUMBER } from '../consts';
+import {
+  ADDRESS_LINE_1,
+  ADDRESS_LINE_2,
+  GOOGLE_MAPS_URL,
+  PHONE_NUMBER,
+} from '../consts';
 import DoveMark from './DoveMark.astro';
 
 interface Props {
@@ -17,13 +22,15 @@ const desktopNavItems = [
   { href: '/', label: 'Home', num: '01', active: isHomePage },
   { href: '/artists', label: 'Artists', num: '02', active: isArtistsPage },
   { href: '/blog', label: 'Journal', num: '03', active: isBlogPage },
+  { href: GOOGLE_MAPS_URL, label: 'Get Directions', num: '', active: false, external: true },
 ];
 
 const mobileNavItems = [
   { href: '/', label: 'Home', num: '01' },
   { href: '/artists', label: 'Artists', num: '02' },
   { href: '/blog', label: 'Journal', num: '03' },
-  { href: '/booking', label: 'Book a Session', num: '04' },
+  { href: GOOGLE_MAPS_URL, label: 'Get Directions', num: '04', external: true },
+  { href: '/booking', label: 'Book a Session', num: '05' },
 ];
 ---
 
@@ -50,12 +57,14 @@ const mobileNavItems = [
           {desktopNavItems.map((item) => (
             <a
               href={item.href}
+              target={item.external ? '_blank' : undefined}
+              rel={item.external ? 'noopener noreferrer' : undefined}
               class:list={[
                 'nav-link font-mono text-[11px] uppercase tracking-[0.18em] transition-all duration-300',
                 { 'is-active': item.active }
               ]}
             >
-              <span class="nav-link-num">{item.num}</span>
+              {item.num && <span class="nav-link-num">{item.num}</span>}
               <span>{item.label}</span>
             </a>
           ))}
@@ -91,6 +100,8 @@ const mobileNavItems = [
         {mobileNavItems.map((item, i) => (
           <a
             href={item.href}
+            target={item.external ? '_blank' : undefined}
+            rel={item.external ? 'noopener noreferrer' : undefined}
             class="mobile-link group flex items-baseline gap-4 py-4 border-b border-border/40 transform translate-y-6 opacity-0 transition-all duration-500"
             style={`transition-delay: ${100 + i * 80}ms`}
           >
@@ -110,6 +121,9 @@ const mobileNavItems = [
             {ADDRESS_LINE_1}<br/>
             {ADDRESS_LINE_2}
           </p>
+          <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer" class="mt-4 inline-block font-mono text-[10px] uppercase tracking-[0.18em] text-foreground/75 hover:text-foreground transition-colors">
+            Get Directions
+          </a>
         </div>
         <a href={`tel:${PHONE_NUMBER}`} class="font-mono text-[10px] text-primary tracking-wider">{PHONE_NUMBER}</a>
       </div>

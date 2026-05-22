@@ -1,6 +1,11 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
-import { SITE_DESCRIPTION } from '../consts';
+import {
+  ADDRESS_LINE_1,
+  ADDRESS_LINE_2,
+  GOOGLE_MAPS_URL,
+  SITE_DESCRIPTION,
+} from '../consts';
 import { getCollection } from 'astro:content';
 import EditorialFooter from '../components/EditorialFooter.astro';
 import FloatingCTA from '../components/FloatingCTA.astro';
@@ -121,6 +126,15 @@ const showStudioIntro = false;
                 View Artists
               </a>
             </div>
+          </div>
+          <div class="hero-reveal mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[10px] uppercase tracking-[0.2em] text-white/58">
+            <span>{ADDRESS_LINE_1}</span>
+            <span class="hidden h-px w-6 bg-white/25 sm:inline-block" aria-hidden="true"></span>
+            <span>{ADDRESS_LINE_2}</span>
+            <span class="h-px w-6 bg-white/25" aria-hidden="true"></span>
+            <a href={GOOGLE_MAPS_URL} target="_blank" rel="noopener noreferrer" class="text-white/72 hover:text-white transition-colors">
+              Get Directions
+            </a>
           </div>
         </div>
       </div>

@@ -17,10 +17,11 @@ interface Props {
     description?: string;
     image?: string;
   };
-  announcement?: string;
-  hideAnnouncement?: boolean;
-  removeMainPadding?: boolean;
-  hideFooter?: boolean;
+	  announcement?: string;
+	  hideAnnouncement?: boolean;
+	  removeMainPadding?: boolean;
+	  disableSmoothScroll?: boolean;
+	  hideFooter?: boolean;
   artistSchema?: {
     name: string;
     description: string;
@@ -40,11 +41,12 @@ interface Props {
   }[];
 }
 
-const { 
-  frontmatter, 
-  hideAnnouncement = false, 
-  removeMainPadding = false, 
-  hideFooter = false, 
+const {
+  frontmatter,
+  hideAnnouncement = false,
+  removeMainPadding = false,
+  disableSmoothScroll = false,
+  hideFooter = false,
   announcement,
   image = '/images/united-studio-main.avif',
   type = 'website',
@@ -121,7 +123,7 @@ const ogImage = new URL(image, siteUrl).toString();
 		<!-- Icons -->
 		<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
 	</head>
-	<body class="bg-background text-foreground selection:bg-primary/20 selection:text-foreground">
+		<body class="bg-background text-foreground selection:bg-primary/20 selection:text-foreground" data-smooth-scroll={disableSmoothScroll ? 'disabled' : 'enabled'}>
 		<!-- Lenis + GSAP ScrollTrigger Setup -->
 		<script>
 			import Lenis from 'lenis';
@@ -131,25 +133,33 @@ const ogImage = new URL(image, siteUrl).toString();
 			// Register GSAP plugins
 			gsap.registerPlugin(ScrollTrigger);
 
-			// Initialize Lenis for smooth scrolling
-			const lenis = new Lenis({
-				duration: 1.2,
-				easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-				orientation: 'vertical',
-				smoothWheel: true,
-			});
+			const smoothScrollEnabled = document.body.dataset.smoothScroll !== 'disabled';
 
-			// Sync Lenis with GSAP ScrollTrigger
-			lenis.on('scroll', ScrollTrigger.update);
+			if (smoothScrollEnabled) {
+				// Initialize Lenis for smooth scrolling on editorial pages.
+				const lenis = new Lenis({
+					duration: 1.2,
+					easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+					orientation: 'vertical',
+					smoothWheel: true,
+				});
 
-			gsap.ticker.add((time) => {
-				lenis.raf(time * 1000);
-			});
+				// Sync Lenis with GSAP ScrollTrigger
+				lenis.on('scroll', ScrollTrigger.update);
+
+				gsap.ticker.add((time) => {
+					lenis.raf(time * 1000);
+				});
+
+				// Make lenis globally available for other scripts
+				window.lenis = lenis;
+			} else {
+				window.lenis = null;
+			}
 
 			gsap.ticker.lagSmoothing(0);
 
-			// Make lenis globally available for other scripts
-			window.lenis = lenis;
+			// Make animation libraries globally available for page scripts
 			window.gsap = gsap;
 			window.ScrollTrigger = ScrollTrigger;
 
