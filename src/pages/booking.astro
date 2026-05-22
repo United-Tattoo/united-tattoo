@@ -123,7 +123,7 @@ const budgetOptions = [
       action="/api/booking"
       method="POST"
       enctype="multipart/form-data"
-      class="max-w-7xl mx-auto px-6 md:px-12 lg:px-24"
+      class="booking-form max-w-7xl mx-auto px-6 md:px-12 lg:px-24"
     >
       <!--
         Hidden honeypot for low-cost bot filtering.
@@ -177,6 +177,7 @@ const budgetOptions = [
               type="text"
               id="availability"
               name="availability"
+              autocomplete="off"
               class="w-full bg-transparent border-b border-input py-4 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none transition-colors font-mono text-sm rounded-none appearance-none"
               placeholder="e.g. Weekends in March, Tuesdays after 4pm"
             />
@@ -199,6 +200,7 @@ const budgetOptions = [
                 id="name"
                 name="name"
                 required
+                autocomplete="name"
                 class="w-full bg-transparent border-b border-input py-4 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none transition-colors font-mono text-sm rounded-none appearance-none"
                 placeholder="Enter your full name"
               />
@@ -211,6 +213,8 @@ const budgetOptions = [
                 id="email"
                 name="email"
                 required
+                autocomplete="email"
+                inputmode="email"
                 class="w-full bg-transparent border-b border-input py-4 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none transition-colors font-mono text-sm rounded-none appearance-none"
                 placeholder="email@example.com"
               />
@@ -223,6 +227,8 @@ const budgetOptions = [
                 id="phone"
                 name="phone"
                 required
+                autocomplete="tel"
+                inputmode="tel"
                 class="w-full bg-transparent border-b border-input py-4 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none transition-colors font-mono text-sm rounded-none appearance-none"
                 placeholder="(555) 123-4567"
               />
@@ -266,6 +272,7 @@ const budgetOptions = [
                 id="placement"
                 name="placement"
                 required
+                autocomplete="off"
                 class="w-full bg-transparent border-b border-input py-4 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none transition-colors font-mono text-sm rounded-none appearance-none"
                 placeholder="e.g. Inner forearm"
               />
@@ -299,7 +306,7 @@ const budgetOptions = [
               id="description"
               name="description"
               required
-              rows="4"
+              rows="5"
               class="w-full bg-transparent border-b border-input py-4 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none transition-colors resize-none font-mono text-sm leading-relaxed rounded-none appearance-none"
               placeholder="Describe your idea in detail..."
             ></textarea>
@@ -330,24 +337,24 @@ const budgetOptions = [
               <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-secondary border border-border group-hover:scale-110 group-hover:border-primary/50 transition-all duration-500">
                 <iconify-icon icon="solar:upload-minimalistic-bold" class="text-3xl text-muted-foreground group-hover:text-primary transition-colors"></iconify-icon>
               </div>
-              <p class="font-sans font-extralight text-2xl text-foreground mb-3 group-hover:text-primary/80 transition-colors tracking-tight">Drop your inspiration</p>
+              <p class="font-sans font-extralight text-2xl text-foreground mb-3 group-hover:text-primary/80 transition-colors tracking-tight">Add your inspiration</p>
               <p class="font-mono text-xs text-muted-foreground tracking-widest uppercase">or click to browse · Max 5 images · 10MB each</p>
-              
+
               <!-- File type badges -->
               <div class="flex justify-center gap-3 mt-6">
                 <span class="px-3 py-1 bg-secondary rounded-full font-mono text-[10px] text-muted-foreground">JPG</span>
                 <span class="px-3 py-1 bg-secondary rounded-full font-mono text-[10px] text-muted-foreground">PNG</span>
                 <span class="px-3 py-1 bg-secondary rounded-full font-mono text-[10px] text-muted-foreground">WEBP</span>
-                <span class="px-3 py-1 bg-secondary rounded-full font-mono text-[10px] text-muted-foreground">HEIC</span>
+                <span class="px-3 py-1 bg-secondary rounded-full font-mono text-[10px] text-muted-foreground">GIF</span>
               </div>
             </div>
           </div>
-          
+
           <!-- File Previews -->
           <div id="file-previews" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 mt-6 hidden">
             <!-- Thumbnails will be inserted here -->
           </div>
-          
+
           <div id="file-list" class="space-y-3 mt-6 hidden"></div>
         </div>
       </div>
@@ -367,7 +374,7 @@ const budgetOptions = [
                 I agree to the <a href="/terms" class="text-foreground underline decoration-white/30 hover:decoration-white underline-offset-4">Terms of Service</a> & <a href="/privacy" class="text-foreground underline decoration-white/30 hover:decoration-white underline-offset-4">Privacy Policy</a>.
               </span>
             </label>
-            
+
             <label class="flex items-start gap-4 cursor-pointer group">
               <div class="relative mt-1">
                 <input type="checkbox" name="acceptAge" required class="peer sr-only" />
@@ -407,7 +414,7 @@ const budgetOptions = [
               <!-- Loading bar -->
               <span id="loading-bar" class="absolute bottom-0 left-0 h-1 bg-primary transition-all duration-300" style="width: 0%"></span>
             </button>
-          
+
           <div id="error-message" class="hidden mt-8 p-4 border border-red-500/20 bg-red-500/5 text-center">
             <p class="font-mono text-xs text-red-400"></p>
           </div>
@@ -523,7 +530,7 @@ const budgetOptions = [
       const submitIcon = document.getElementById('submit-icon') as HTMLElement;
       const loadingIcon = document.getElementById('loading-icon') as HTMLElement;
       const errorMessage = document.getElementById('error-message') as HTMLDivElement;
-      
+
       // Calendar Integration Logic
       const artistInput = form.querySelector('input[name="artist"]');
       const calendarContainer = document.getElementById('calendar-container');
@@ -535,7 +542,7 @@ const budgetOptions = [
           if (artistId && artistId !== 'no-preference' && calendarContainer && manualContainer) {
               calendarContainer.classList.remove('hidden');
               manualContainer.classList.add('hidden');
-              
+
               // Show loading state
               const grid = document.getElementById('calendar-grid');
               if (grid) {
@@ -583,12 +590,12 @@ const budgetOptions = [
               }
           }
       });
-      
+
       // Progress indicator elements
       const progressBar = document.getElementById('booking-progress') as HTMLDivElement;
       const progressStepLabel = document.getElementById('progress-step-label') as HTMLSpanElement;
       const progressDots = document.querySelectorAll('#progress-dots [data-step]');
-      
+
       // Success modal elements
       const successModal = document.getElementById('success-modal') as HTMLDivElement;
       const successContent = document.getElementById('success-content') as HTMLDivElement;
@@ -597,7 +604,7 @@ const budgetOptions = [
       const MAX_FILES = 5;
       const MAX_SIZE = 10 * 1024 * 1024; // 10MB
       let selectedFiles: File[] = [];
-      
+
       const steps = [
         { label: '01 — ARTIST', section: 0 },
         { label: '02 — CONTACT', section: 1 },
@@ -605,23 +612,23 @@ const budgetOptions = [
         { label: '04 — VISUALS', section: 3 },
         { label: '05 — SUBMIT', section: 4 }
       ];
-      
+
       let currentSection = 0;
 
       function updateProgress(sectionIndex: number) {
         currentSection = sectionIndex;
-        
+
         // Show progress bar
         if (progressBar && progressBar.classList.contains('translate-y-24')) {
           progressBar.classList.remove('translate-y-24');
           progressBar.classList.add('translate-y-0');
         }
-        
+
         // Update label
         if (progressStepLabel) {
           progressStepLabel.textContent = steps[sectionIndex].label;
         }
-        
+
         // Update dots
         progressDots.forEach((dot, index) => {
           if (index <= sectionIndex) {
@@ -640,59 +647,59 @@ const budgetOptions = [
         });
       }
 
-	      function createThumbnail(file: File): Promise<string> {
-	        return new Promise((resolve) => {
-	          const reader = new FileReader();
-	          reader.onload = (e) => resolve(e.target?.result as string);
-	          reader.readAsDataURL(file);
-	        });
-	      }
+        function createThumbnail(file: File): Promise<string> {
+          return new Promise((resolve) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target?.result as string);
+            reader.readAsDataURL(file);
+          });
+        }
 
-	      function escapeHtml(value: string) {
-	        // File names are user-controlled and later inserted into preview
-	        // markup. Escape before using innerHTML to avoid DOM XSS from a
-	        // malicious local filename.
-	        return value
-	          .replaceAll('&', '&amp;')
-	          .replaceAll('<', '&lt;')
-	          .replaceAll('>', '&gt;')
-	          .replaceAll('"', '&quot;')
-	          .replaceAll("'", '&#39;');
-	      }
+        function escapeHtml(value: string) {
+          // File names are user-controlled and later inserted into preview
+          // markup. Escape before using innerHTML to avoid DOM XSS from a
+          // malicious local filename.
+          return value
+            .replaceAll('&', '&amp;')
+            .replaceAll('<', '&lt;')
+            .replaceAll('>', '&gt;')
+            .replaceAll('"', '&quot;')
+            .replaceAll("'", '&#39;');
+        }
 
       async function updateFilePreviews() {
         if (!filePreviews) return;
-        
+
         if (selectedFiles.length === 0) {
           filePreviews.classList.add('hidden');
           filePreviews.innerHTML = '';
           return;
         }
-        
-	        filePreviews.classList.remove('hidden');
-	        
-		        const thumbnails = await Promise.all(selectedFiles.map(async (file) => {
-		          const src = await createThumbnail(file);
-		          // Data URLs come from FileReader for selected local image files;
-		          // filenames still need separate escaping before entering markup.
-		          const safeName = escapeHtml(file.name);
-	          return `
-	            <div class="relative group/file aspect-square bg-secondary border border-border rounded-lg overflow-hidden animate-fade-in">
-	              <img src="${src}" alt="${safeName}" class="w-full h-full object-cover" />
-	              <div class="absolute inset-0 bg-black/60 opacity-0 group-hover/file:opacity-100 transition-opacity flex items-center justify-center gap-2">
-	                <button type="button" data-remove class="p-2 bg-secondary rounded-full text-foreground hover:bg-red-500/80 transition-colors" title="Remove">
-	                  <iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon>
+
+          filePreviews.classList.remove('hidden');
+
+            const thumbnails = await Promise.all(selectedFiles.map(async (file) => {
+              const src = await createThumbnail(file);
+              // Data URLs come from FileReader for selected local image files;
+              // filenames still need separate escaping before entering markup.
+              const safeName = escapeHtml(file.name);
+            return `
+              <div class="relative group/file aspect-square bg-secondary border border-border rounded-lg overflow-hidden animate-fade-in">
+                <img src="${src}" alt="${safeName}" class="w-full h-full object-cover" />
+                <div class="absolute inset-0 bg-black/60 opacity-0 group-hover/file:opacity-100 transition-opacity flex items-center justify-center gap-2">
+                  <button type="button" data-remove class="p-2 bg-secondary rounded-full text-foreground hover:bg-red-500/80 transition-colors" title="Remove">
+                    <iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon>
                 </button>
-	              </div>
-	              <div class="absolute bottom-0 left-0 right-0 bg-black/80 px-2 py-1">
-	                <span class="font-mono text-[10px] text-secondary-foreground truncate block">${safeName}</span>
-	              </div>
-	            </div>
-	          `;
+                </div>
+                <div class="absolute bottom-0 left-0 right-0 bg-black/80 px-2 py-1">
+                  <span class="font-mono text-[10px] text-secondary-foreground truncate block">${safeName}</span>
+                </div>
+              </div>
+            `;
         }));
-        
+
         filePreviews.innerHTML = thumbnails.join('');
-        
+
         // Add remove handlers
         filePreviews.querySelectorAll('[data-remove]').forEach((btn, index) => {
           btn.addEventListener('click', () => {
@@ -709,17 +716,17 @@ const budgetOptions = [
           fileList.classList.add('hidden');
           fileList.innerHTML = '';
           return;
-	        }
-		        fileList.classList.remove('hidden');
-		        // Escape file names here as well. The list view and image preview
-		        // are separate DOM surfaces that both render user-controlled names.
-		        fileList.innerHTML = selectedFiles.map((file, index) => `
-	          <div class="flex items-center justify-between bg-secondary border border-border px-4 py-3 group hover:border-input transition-all duration-300 opacity-0 animate-fade-in">
-	            <div class="flex items-center gap-3">
-	              <iconify-icon icon="solar:gallery-bold" class="text-muted-foreground group-hover:text-primary transition-colors"></iconify-icon>
-	              <span class="font-mono text-xs text-secondary-foreground truncate max-w-[200px]">${escapeHtml(file.name)}</span>
-	              <span class="font-mono text-[10px] text-muted-foreground/40">${(file.size / 1024 / 1024).toFixed(1)} MB</span>
-	            </div>
+          }
+            fileList.classList.remove('hidden');
+            // Escape file names here as well. The list view and image preview
+            // are separate DOM surfaces that both render user-controlled names.
+            fileList.innerHTML = selectedFiles.map((file, index) => `
+            <div class="flex items-center justify-between bg-secondary border border-border px-4 py-3 group hover:border-input transition-all duration-300 opacity-0 animate-fade-in">
+              <div class="flex items-center gap-3">
+                <iconify-icon icon="solar:gallery-bold" class="text-muted-foreground group-hover:text-primary transition-colors"></iconify-icon>
+                <span class="font-mono text-xs text-secondary-foreground truncate max-w-[200px]">${escapeHtml(file.name)}</span>
+                <span class="font-mono text-[10px] text-muted-foreground/40">${(file.size / 1024 / 1024).toFixed(1)} MB</span>
+              </div>
             <button type="button" data-index="${index}" class="remove-file text-muted-foreground hover:text-red-400 transition-colors p-1">
               <iconify-icon icon="solar:trash-bin-minimalistic-bold"></iconify-icon>
             </button>
@@ -780,16 +787,16 @@ const budgetOptions = [
         if (submitIcon) submitIcon.classList.remove('hidden');
         if (loadingIcon) loadingIcon.classList.add('hidden');
       }
-      
+
       function showSuccessModal() {
         if (!successModal || !successContent) return;
-        
+
         // Show modal
         successModal.classList.remove('opacity-0', 'invisible');
-        
+
         // Trigger GSAP animations
         const gsap = (window as any).gsap;
-        
+
         if (gsap) {
           // Ring draw animation
           gsap.to('#success-ring-progress', {
@@ -797,7 +804,7 @@ const budgetOptions = [
             duration: 1,
             ease: 'power2.inOut'
           });
-          
+
           // Checkmark reveal with bounce
           gsap.to('#success-check', {
             opacity: 1,
@@ -806,7 +813,7 @@ const budgetOptions = [
             ease: 'back.out(2)',
             delay: 0.8
           });
-          
+
           // Staggered content reveal
           gsap.to('#success-label', {
             opacity: 1,
@@ -814,35 +821,35 @@ const budgetOptions = [
             duration: 0.6,
             delay: 1
           });
-          
+
           gsap.to('#success-title', {
             opacity: 1,
             y: 0,
             duration: 0.6,
             delay: 1.1
           });
-          
+
           gsap.to('#success-message', {
             opacity: 1,
             y: 0,
             duration: 0.6,
             delay: 1.2
           });
-          
+
           gsap.to('#success-timing', {
             opacity: 1,
             y: 0,
             duration: 0.6,
             delay: 1.3
           });
-          
+
           gsap.to('#success-next', {
             opacity: 1,
             y: 0,
             duration: 0.6,
             delay: 1.4
           });
-          
+
           gsap.to('#success-actions', {
             opacity: 1,
             y: 0,
@@ -853,7 +860,7 @@ const budgetOptions = [
           // Fallback without GSAP
           const ring = document.getElementById('success-ring-progress');
           if (ring) (ring as HTMLElement).style.strokeDashoffset = '0';
-          
+
           const elements = ['success-check', 'success-label', 'success-title', 'success-message', 'success-timing', 'success-next', 'success-actions'];
           elements.forEach((id) => {
             const el = document.getElementById(id);
@@ -863,7 +870,7 @@ const budgetOptions = [
             }
           });
         }
-        
+
         // Scroll to top smoothly
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
@@ -907,7 +914,7 @@ const budgetOptions = [
           if (submitIcon) submitIcon.classList.add('hidden');
           if (loadingIcon) loadingIcon.classList.remove('hidden');
           if (errorMessage) errorMessage.classList.add('hidden');
-          
+
           // Animate loading bar
           const loadingBar = document.getElementById('loading-bar') as HTMLElement;
           if (loadingBar) {
@@ -929,7 +936,7 @@ const budgetOptions = [
                 loadingBar.style.width = '100%';
                 loadingBar.style.transition = 'width 0.3s ease-out';
               }
-              
+
               // Show success modal
               setTimeout(() => showSuccessModal(), 400);
             } else {
@@ -952,7 +959,7 @@ const budgetOptions = [
 
       gsap.set('.page-hero-title-line > span', { y: '100%' });
       gsap.set('.page-hero-reveal', { opacity: 0, y: 20 });
-      
+
       const tl = gsap.timeline({ delay: 0.2 });
       tl.to('.page-hero-title-line > span', { y: '0%', duration: 1, stagger: 0.1, ease: 'power3.out' })
         .to('.page-hero-reveal', { opacity: 1, y: 0, duration: 0.8, stagger: 0.05, ease: 'power2.out' }, '-=0.5');
@@ -963,8 +970,8 @@ const budgetOptions = [
           y: 60,
           duration: 1,
           ease: 'power3.out',
-          scrollTrigger: { 
-            trigger: section, 
+          scrollTrigger: {
+            trigger: section,
             start: 'top 85%',
             onEnter: () => updateProgress(index),
             onEnterBack: () => updateProgress(index)
@@ -975,7 +982,7 @@ const budgetOptions = [
 
     document.addEventListener('astro:page-load', initBooking);
   </script>
-  
+
   <style>
     @keyframes fade-in {
       from { opacity: 0; transform: scale(0.95); }
@@ -984,7 +991,7 @@ const budgetOptions = [
     .animate-fade-in {
       animation: fade-in 0.3s ease-out forwards;
     }
-    
+
     @keyframes shake {
       0%, 100% { transform: translateX(0); }
       25% { transform: translateX(-4px); }
@@ -993,5 +1000,163 @@ const budgetOptions = [
     .animate-shake {
       animation: shake 0.3s ease-out;
     }
-  </style>
+
+    .form-section-wrapper {
+      scroll-margin-top: 6rem;
+    }
+
+    @media (max-width: 767px) {
+      #booking-progress {
+          bottom: 0;
+          left: 0;
+          width: 100%;
+          max-width: none;
+          transform: translateY(calc(100% + 1rem));
+          border-right: 0;
+          border-bottom: 0;
+          border-left: 0;
+          padding: 0.85rem 1rem calc(0.85rem + env(safe-area-inset-bottom));
+        }
+
+        #booking-progress.translate-y-0 {
+          transform: translateY(0);
+        }
+
+        #progress-dots [data-step] {
+          width: 0.42rem;
+          height: 0.42rem;
+        }
+
+        .booking-form-section {
+          padding-bottom: 9rem;
+        }
+
+        .booking-form {
+          padding-inline: 1rem;
+        }
+
+        .form-section-wrapper {
+          padding-block: 2rem;
+          gap: 1.35rem;
+          scroll-margin-top: 5.75rem;
+        }
+
+        .form-section-wrapper > div:first-child {
+          display: grid;
+          gap: 0.75rem;
+        }
+
+        .form-section-wrapper > div:first-child span {
+          margin-bottom: 0;
+          font-size: 0.66rem;
+          letter-spacing: 0.22em;
+        }
+
+        .form-section-wrapper > div:first-child h2 {
+          max-width: 11.5em;
+          font-size: clamp(2rem, 10vw, 2.65rem);
+          line-height: 1.04;
+        }
+
+        .form-section-wrapper > div:first-child p {
+          margin-top: 0;
+          font-size: 0.92rem;
+          line-height: 1.65;
+        }
+
+        .form-section-wrapper > div:last-child {
+          border: 1px solid var(--border);
+          background: color-mix(in srgb, var(--brand-paper) 2.5%, transparent);
+          padding: 1rem;
+        }
+
+        .form-section-wrapper input:not([type='checkbox']):not([type='hidden']),
+        .form-section-wrapper textarea,
+        .form-section-wrapper .custom-select-trigger {
+          min-height: 3.5rem;
+          border: 1px solid var(--input);
+          background: color-mix(in srgb, var(--brand-paper) 3.5%, transparent);
+          padding: 0.95rem 1rem;
+        }
+
+        .form-section-wrapper textarea {
+          min-height: 10rem;
+        }
+
+        .form-field label,
+        .custom-select-wrapper > label {
+          margin-bottom: 0.55rem;
+          color: color-mix(in srgb, var(--brand-paper) 60%, var(--muted-foreground));
+        }
+
+        #calendar-container {
+          margin-top: 1rem;
+          border: 1px solid var(--border);
+          background: color-mix(in srgb, var(--brand-paper) 2.5%, transparent);
+          padding: 1rem;
+        }
+
+        #manual-availability-container {
+          margin-top: 1rem;
+        }
+
+        #upload-zone {
+          padding: 2rem 1rem !important;
+          border-radius: 0;
+        }
+
+        #upload-zone > div:first-child {
+          width: 3.5rem;
+          height: 3.5rem;
+          margin-bottom: 1rem;
+        }
+
+        #upload-zone p:first-of-type {
+          font-size: 1.55rem;
+          line-height: 1.1;
+        }
+
+        #upload-zone p:last-of-type {
+          max-width: 18rem;
+          margin-inline: auto;
+          line-height: 1.6;
+        }
+
+        #upload-zone .flex {
+          flex-wrap: wrap;
+          gap: 0.5rem;
+        }
+
+        #file-previews {
+          grid-template-columns: repeat(2, minmax(0, 1fr));
+        }
+
+        #file-list > div {
+          align-items: flex-start;
+          gap: 0.75rem;
+        }
+
+        .form-section-wrapper label:has(input[type='checkbox']) {
+          border: 1px solid var(--border);
+          background: color-mix(in srgb, var(--brand-paper) 2%, transparent);
+          padding: 1rem;
+        }
+
+        .form-section-wrapper label:has(input[type='checkbox']) .w-5 {
+          width: 1.45rem;
+          height: 1.45rem;
+        }
+
+        #submit-btn {
+          min-height: 3.75rem;
+          padding-block: 1.15rem;
+        }
+
+	      #success-content {
+	        max-height: 100svh;
+	        overflow-y: auto;
+	        padding-block: 2rem;
+	      }
+	    }
+	  </style>
 </SiteLayout>
