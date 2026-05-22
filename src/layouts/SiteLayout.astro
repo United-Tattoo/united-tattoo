@@ -133,41 +133,72 @@ const ogImage = new URL(image, siteUrl).toString();
 			// Register GSAP plugins
 			gsap.registerPlugin(ScrollTrigger);
 
-			const smoothScrollEnabled = document.body.dataset.smoothScroll !== 'disabled';
+			let lenis = null;
+			let lenisTicker = null;
 
-			if (smoothScrollEnabled) {
+			function shouldUseSmoothScroll() {
+				return (
+					document.body.dataset.smoothScroll !== 'disabled' &&
+					!window.location.pathname.startsWith('/booking')
+				);
+			}
+
+			function startSmoothScroll() {
+				if (lenis) return;
+
 				// Initialize Lenis for smooth scrolling on editorial pages.
-				const lenis = new Lenis({
+				lenis = new Lenis({
 					duration: 1.2,
 					easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
 					orientation: 'vertical',
 					smoothWheel: true,
 				});
 
-				// Sync Lenis with GSAP ScrollTrigger
+				// Sync Lenis with GSAP ScrollTrigger.
 				lenis.on('scroll', ScrollTrigger.update);
 
-				gsap.ticker.add((time) => {
-					lenis.raf(time * 1000);
-				});
+				lenisTicker = (time) => {
+					lenis?.raf(time * 1000);
+				};
+				gsap.ticker.add(lenisTicker);
 
-				// Make lenis globally available for other scripts
 				window.lenis = lenis;
-			} else {
+			}
+
+			function stopSmoothScroll() {
+				if (lenisTicker) {
+					gsap.ticker.remove(lenisTicker);
+					lenisTicker = null;
+				}
+
+				if (lenis) {
+					lenis.destroy();
+					lenis = null;
+				}
+
 				window.lenis = null;
 			}
 
-			gsap.ticker.lagSmoothing(0);
+			function syncSmoothScroll() {
+				if (shouldUseSmoothScroll()) {
+					startSmoothScroll();
+				} else {
+					stopSmoothScroll();
+				}
+
+				ScrollTrigger.refresh();
+			}
 
 			// Make animation libraries globally available for page scripts
 			window.gsap = gsap;
 			window.ScrollTrigger = ScrollTrigger;
 
-      // Handle View Transitions
-      document.addEventListener('astro:page-load', () => {
-        // Refresh ScrollTrigger on page load to ensure positions are correct
-        ScrollTrigger.refresh();
-      });
+			gsap.ticker.lagSmoothing(0);
+			syncSmoothScroll();
+
+			// Handle View Transitions
+			document.addEventListener('astro:page-load', syncSmoothScroll);
+			document.addEventListener('astro:after-swap', syncSmoothScroll);
 		</script>
 		<HeaderNav currentPath={currentPath} hasAnnouncement={false} />
 
