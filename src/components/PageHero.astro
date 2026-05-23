@@ -32,7 +32,8 @@ const {
   stats = [],
 } = Astro.props;
 
-const titleLines = Array.isArray(title) ? title : [title];
+const titleIsStacked = Array.isArray(title);
+const titleLines = Array.isArray(title) ? title : title.split(' ');
 ---
 
 <section class="page-hero relative flex min-h-[500px] flex-col justify-end overflow-hidden border-b border-border px-6 pb-10 pt-32 md:min-h-[520px] md:px-12 md:pt-36 lg:min-h-[540px] lg:px-20" data-scroll-section>
@@ -59,12 +60,18 @@ const titleLines = Array.isArray(title) ? title : [title];
     <div class="grid gap-10 lg:grid-cols-12 lg:items-end">
       <div class="lg:col-span-7">
         <p class="page-hero-reveal mb-5 font-mono text-[10px] uppercase tracking-[0.32em] text-muted-foreground">{eyebrow}</p>
-        <h1 class="font-display text-6xl font-normal leading-[0.9] tracking-normal text-foreground md:text-8xl lg:text-[7.5rem]">
+        <h1 class:list={[
+          'page-hero-title font-display text-6xl font-normal leading-[0.9] tracking-normal text-foreground md:text-8xl lg:text-[7.5rem]',
+          { 'page-hero-title--stacked': titleIsStacked },
+        ]}>
           {titleLines.map((line, index) => (
-            <span class="page-hero-title-line block overflow-hidden">
+            <span class:list={[
+              'page-hero-title-line overflow-hidden',
+              titleIsStacked ? 'block' : 'inline-block',
+            ]}>
               <span class:list={[
                 'inline-block',
-                { 'pl-[0.18em] text-foreground/76': index > 0 }
+                { 'pl-[0.18em] text-foreground/76': titleIsStacked && index > 0 },
               ]}>{line}</span>
             </span>
           ))}
@@ -90,3 +97,23 @@ const titleLines = Array.isArray(title) ? title : [title];
     </div>
   </div>
 </section>
+
+<style>
+  .page-hero-title {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 0.22em;
+    max-width: 7.6em;
+  }
+
+  .page-hero-title--stacked {
+    display: block;
+    max-width: 9em;
+  }
+
+  @media (max-width: 767px) {
+    .page-hero-title {
+      font-size: clamp(3.7rem, 18vw, 5.25rem);
+    }
+  }
+</style>
