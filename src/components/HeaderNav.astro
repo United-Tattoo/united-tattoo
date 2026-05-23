@@ -30,7 +30,7 @@ const mobileNavItems = [
   { href: '/artists', label: 'Artists', num: '02' },
   { href: '/blog', label: 'Journal', num: '03' },
   { href: GOOGLE_MAPS_URL, label: 'Get Directions', num: '04', external: true },
-  { href: '/booking', label: 'Book a Session', num: '05' },
+  { href: '/booking', label: 'Start a Request', num: '05' },
 ];
 ---
 
@@ -70,16 +70,20 @@ const mobileNavItems = [
           ))}
         </div>
 
-        <a
-          href="/booking"
-          class:list={[
-            'nav-book-btn font-mono text-[11px] uppercase tracking-[0.18em] px-5 py-3 border transition-all duration-300',
-            { 'is-active': isBookingPage }
-          ]}
-        >
-          <span>Book</span>
-          <span class="hidden lg:inline">a Session</span>
-        </a>
+          <a
+            href="/booking"
+            class:list={[
+              'nav-book-btn font-mono text-[11px] uppercase tracking-[0.18em] px-5 py-3 border transition-all duration-300',
+              { 'is-active': isBookingPage }
+            ]}
+            data-analytics-event="booking_cta_click"
+            data-analytics-location="nav_desktop"
+            data-analytics-label="Start a Request"
+            data-analytics-href="/booking"
+          >
+            <span>Start</span>
+            <span class="hidden lg:inline">a Request</span>
+          </a>
       </div>
 
       <!-- Mobile Menu Button -->
@@ -98,13 +102,17 @@ const mobileNavItems = [
     <div class="flex-1 flex flex-col justify-center px-8 pt-20">
       <nav class="flex flex-col gap-1">
         {mobileNavItems.map((item, i) => (
-          <a
-            href={item.href}
-            target={item.external ? '_blank' : undefined}
-            rel={item.external ? 'noopener noreferrer' : undefined}
-            class="mobile-link group flex items-baseline gap-4 py-4 border-b border-border/40 transform translate-y-6 opacity-0 transition-all duration-500"
-            style={`transition-delay: ${100 + i * 80}ms`}
-          >
+            <a
+              href={item.href}
+              target={item.external ? '_blank' : undefined}
+              rel={item.external ? 'noopener noreferrer' : undefined}
+              class="mobile-link group flex items-baseline gap-4 py-4 border-b border-border/40 transform translate-y-6 opacity-0 transition-all duration-500"
+              style={`transition-delay: ${100 + i * 80}ms`}
+              data-analytics-event={item.href === '/booking' ? 'booking_cta_click' : undefined}
+              data-analytics-location={item.href === '/booking' ? 'nav_mobile' : undefined}
+              data-analytics-label={item.href === '/booking' ? item.label : undefined}
+              data-analytics-href={item.href === '/booking' ? item.href : undefined}
+            >
             <span class="font-mono text-[10px] text-muted-foreground/50 tracking-wider">{item.num}</span>
             <span class="text-3xl font-sans font-light text-foreground/85 group-hover:text-primary group-hover:translate-x-1 transition-all uppercase tracking-tight">{item.label}</span>
           </a>

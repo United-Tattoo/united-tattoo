@@ -62,12 +62,12 @@ const budgetOptions = [
 ---
 
 <SiteLayout
-  title="Book a Session"
-	  description="Request a tattoo appointment with one of our talented artists at United Tattoo in Fountain, CO."
-	  removeMainPadding={true}
-	  disableSmoothScroll={true}
-	  hideFooter={true}
-	>
+    title="Start a Booking Request"
+    description="Request a tattoo consultation with one of our talented artists at United Tattoo in Fountain, CO."
+    removeMainPadding={true}
+    disableSmoothScroll={true}
+    hideFooter={true}
+  >
   <div class="relative max-w-[1800px] mx-auto border-l border-r border-border">
 
   <!-- Persistent page grid lines -->
@@ -79,8 +79,8 @@ const budgetOptions = [
 
   <PageHero
     eyebrow="Booking"
-    title="Book a Session"
-    description="Tell us about your tattoo idea, preferred artist, placement, and timing. We will review the request and follow up with next steps."
+      title="Start a Request"
+      description="Tell us about your tattoo idea, preferred artist, placement, and timing. We will review the request and follow up with next steps."
     breadcrumbs={[
       { label: 'Home', href: '/' },
       { label: 'Booking' },
@@ -118,14 +118,15 @@ const budgetOptions = [
   </div>
 
   <!-- Form Section -->
-  <section class="booking-form-section relative z-20 pb-32" data-scroll-section>
-    <form
-      id="booking-form"
-      action="/api/booking"
-      method="POST"
-      enctype="multipart/form-data"
-      class="booking-form max-w-7xl mx-auto px-6 md:px-12 lg:px-24"
-    >
+    <section class="booking-form-section relative z-20 pb-32" data-scroll-section>
+      <form
+        id="booking-form"
+        action="/api/booking"
+        method="POST"
+        enctype="multipart/form-data"
+        class="booking-form max-w-7xl mx-auto px-6 md:px-12 lg:px-24"
+        data-analytics-event="booking_form"
+      >
       <!--
         Hidden honeypot for low-cost bot filtering.
         Humans cannot reach this field, but simple spambots often fill every
@@ -568,28 +569,36 @@ const budgetOptions = [
           });
       }
 
-      // Check for preselected artist on init
-      if (artistInput && (artistInput as HTMLInputElement).value && (artistInput as HTMLInputElement).value !== 'no-preference') {
-          handleArtistChange((artistInput as HTMLInputElement).value);
-      }
-
       if (manualLink && calendarContainer && manualContainer) {
           manualLink.addEventListener('click', () => {
               calendarContainer.classList.add('hidden');
               manualContainer.classList.remove('hidden');
           });
-      }
+	      }
 
-      document.addEventListener('request-artist-change', (e: any) => {
-          const newArtistId = e.detail.artistId;
-          const wrapper = document.querySelector('.custom-select-wrapper[data-select-id="artist"]');
-          if (wrapper) {
+	      const selectArtistById = (newArtistId: string, shouldScroll = false) => {
+	          const wrapper = document.querySelector('.custom-select-wrapper[data-select-id="artist"]');
+	          if (wrapper) {
               const option = wrapper.querySelector(`.custom-select-option[data-value="${newArtistId}"]`) as HTMLElement;
               if (option) {
                   option.click();
-                  wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  if (shouldScroll) {
+                    wrapper.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  }
               }
           }
+      };
+
+      // Booking is prerendered, so artist query params must be applied in the browser.
+      const artistFromUrl = new URLSearchParams(window.location.search).get('artist');
+      if (artistFromUrl) {
+        requestAnimationFrame(() => selectArtistById(artistFromUrl));
+      } else if (artistInput && (artistInput as HTMLInputElement).value && (artistInput as HTMLInputElement).value !== 'no-preference') {
+        handleArtistChange((artistInput as HTMLInputElement).value);
+      }
+
+      document.addEventListener('request-artist-change', (e: any) => {
+          selectArtistById(e.detail.artistId, true);
       });
 
       // Progress indicator elements
@@ -604,7 +613,29 @@ const budgetOptions = [
       // Reset state on new page load
       const MAX_FILES = 5;
       const MAX_SIZE = 10 * 1024 * 1024; // 10MB
-      let selectedFiles: File[] = [];
+	      let selectedFiles: File[] = [];
+	      let bookingFormStarted = false;
+	      type TrackUnitedEvent = (eventName: string, params: Record<string, string>) => void;
+
+	      const trackBookingEvent = (eventName: string, params: Record<string, string> = {}) => {
+	        const tracker = (window as Window & { trackUnitedEvent?: TrackUnitedEvent }).trackUnitedEvent;
+	        if (typeof tracker !== 'function') return;
+
+          const artistValue = artistInput ? (artistInput as HTMLInputElement).value : '';
+          const styleValue = (document.getElementById('style') as HTMLInputElement | null)?.value || '';
+          tracker(eventName, {
+            location: 'booking_form',
+            artist: artistValue || 'unset',
+            style: styleValue || 'unset',
+            ...params,
+          });
+        };
+
+        const markBookingFormStarted = (source: string) => {
+          if (bookingFormStarted) return;
+          bookingFormStarted = true;
+          trackBookingEvent('booking_form_start', { source });
+        };
 
       const steps = [
         { label: '01 — ARTIST', section: 0 },
@@ -877,12 +908,13 @@ const budgetOptions = [
       }
 
       // Event Listeners
-      if (fileInput) {
-        fileInput.addEventListener('change', () => {
-          const files = Array.from(fileInput.files || []);
-          handleFiles(files);
-        });
-      }
+        if (fileInput) {
+          fileInput.addEventListener('change', () => {
+            markBookingFormStarted('references');
+            const files = Array.from(fileInput.files || []);
+            handleFiles(files);
+          });
+        }
 
       if (uploadZone) {
         uploadZone.addEventListener('dragover', (e) => {
@@ -907,10 +939,16 @@ const budgetOptions = [
         });
       }
 
-      if (form) {
-        form.addEventListener('submit', async (e) => {
-          e.preventDefault();
-          if (submitBtn) submitBtn.disabled = true;
+        if (form) {
+          form.addEventListener('input', () => markBookingFormStarted('input'), { capture: true });
+          form.addEventListener('change', () => markBookingFormStarted('change'), { capture: true });
+
+          form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            trackBookingEvent('booking_form_submit_attempt', {
+              references: selectedFiles.length.toString(),
+            });
+            if (submitBtn) submitBtn.disabled = true;
           if (submitText) submitText.textContent = 'Sending...';
           if (submitIcon) submitIcon.classList.add('hidden');
           if (loadingIcon) loadingIcon.classList.remove('hidden');
@@ -931,8 +969,11 @@ const budgetOptions = [
             const response = await fetch('/api/booking', { method: 'POST', body: formData });
             const result = await response.json();
 
-            if (response.ok && result.success) {
-              // Complete loading animation
+              if (response.ok && result.success) {
+                trackBookingEvent('booking_form_submit_success', {
+                  references: selectedFiles.length.toString(),
+                });
+                // Complete loading animation
               if (loadingBar) {
                 loadingBar.style.width = '100%';
                 loadingBar.style.transition = 'width 0.3s ease-out';
@@ -1153,11 +1194,11 @@ const budgetOptions = [
           padding-block: 1.15rem;
         }
 
-	      #success-content {
-	        max-height: 100svh;
-	        overflow-y: auto;
-	        padding-block: 2rem;
-	      }
-	    }
-	  </style>
+        #success-content {
+          max-height: 100svh;
+          overflow-y: auto;
+          padding-block: 2rem;
+        }
+      }
+    </style>
 </SiteLayout>

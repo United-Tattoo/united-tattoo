@@ -45,38 +45,79 @@ const heroImage = '/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-03%2048.j
 
   <!-- Artist Gallery -->
   <section class="artist-list-section relative z-20 px-6 pb-28 pt-10 md:px-12 lg:px-20" data-scroll-section>
-    <div class="mx-auto max-w-7xl">
-    <div class="artist-grid">
-      {sortedArtists.map((artist, index) => (
-        <a href={`/artists/${artist.id}`} class="artist-card group" data-index={index}>
-          <div class="artist-card-media">
-            <img
-              src={artist.data.portrait}
-              alt={artist.data.name}
-              class="artist-card-image"
-            />
-            <div class="artist-card-shade"></div>
-          </div>
+      <div class="mx-auto max-w-7xl">
+      <div class="artist-grid">
+        {sortedArtists.map((artist, index) => {
+          const firstName = artist.data.name.split(' ')[0];
+          return (
+          <article class="artist-card" data-index={index}>
+            <a
+              href={`/artists/${artist.id}`}
+              class="artist-card-media"
+              data-analytics-event="artist_card_click"
+              data-analytics-location="artists_grid_image"
+              data-analytics-artist={artist.id}
+              data-analytics-href={`/artists/${artist.id}`}
+            >
+              <img
+                src={artist.data.portrait}
+                alt={artist.data.name}
+                class="artist-card-image"
+              />
+              <div class="artist-card-shade"></div>
+            </a>
 
-          <div class="artist-card-body">
-            <div>
-              <h2>{artist.data.name}</h2>
-              <p>
-                {artist.data.specialties && artist.data.specialties.length > 0 ? (
+            <div class="artist-card-body">
+              <div>
+                <h2>
+                  <a
+                    href={`/artists/${artist.id}`}
+                    data-analytics-event="artist_card_click"
+                    data-analytics-location="artists_grid_name"
+                    data-analytics-artist={artist.id}
+                    data-analytics-href={`/artists/${artist.id}`}
+                  >
+                    {artist.data.name}
+                  </a>
+                </h2>
+                <p>
+                  {artist.data.specialties && artist.data.specialties.length > 0 ? (
                   artist.data.specialties.slice(0, 2).join(' / ')
                 ) : (
                   'Custom work'
                 )}
-              </p>
-            </div>
+                </p>
+              </div>
 
-            <span class="artist-card-link">View portfolio <span aria-hidden="true">→</span></span>
-          </div>
-        </a>
-      ))}
-    </div>
-    </div>
-  </section>
+              <div class="artist-card-actions">
+                <a
+                  href={`/artists/${artist.id}`}
+                  class="artist-card-link"
+                  data-analytics-event="artist_card_click"
+                  data-analytics-location="artists_grid_portfolio"
+                  data-analytics-artist={artist.id}
+                  data-analytics-href={`/artists/${artist.id}`}
+                >
+                  View portfolio <span aria-hidden="true">→</span>
+                </a>
+                <a
+                  href={`/booking?artist=${artist.id}`}
+                  class="artist-card-book"
+                  data-analytics-event="booking_cta_click"
+                  data-analytics-location="artists_grid_card"
+                  data-analytics-label={`Request with ${firstName}`}
+                  data-analytics-artist={artist.id}
+                  data-analytics-href={`/booking?artist=${artist.id}`}
+                >
+                  Request with {firstName}
+                </a>
+              </div>
+            </div>
+          </article>
+        )})}
+      </div>
+      </div>
+    </section>
 
   <EditorialFooter />
   </div>
@@ -181,11 +222,12 @@ const heroImage = '/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-03%2048.j
       background: color-mix(in srgb, var(--brand-paper) 2.5%, transparent);
     }
 
-    .artist-card-media {
-      position: relative;
-      aspect-ratio: 4 / 5;
-      overflow: hidden;
-      background: var(--secondary);
+      .artist-card-media {
+        position: relative;
+        display: block;
+        aspect-ratio: 4 / 5;
+        overflow: hidden;
+        background: var(--secondary);
     }
 
     .artist-card-image {
@@ -224,18 +266,22 @@ const heroImage = '/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-03%2048.j
       align-content: space-between;
     }
 
-    .artist-card-body h2 {
-      font-family: var(--font-display);
-      max-width: 100%;
-      font-size: clamp(2.35rem, 3vw, 3.9rem);
+      .artist-card-body h2 {
+        font-family: var(--font-display);
+        max-width: 100%;
+        font-size: clamp(2.35rem, 3vw, 3.9rem);
       font-weight: 400;
       line-height: 0.98;
       letter-spacing: 0;
       color: var(--foreground);
       overflow-wrap: break-word;
-      text-wrap: balance;
-      transition: color 0.25s ease;
-    }
+        text-wrap: balance;
+        transition: color 0.25s ease;
+      }
+
+      .artist-card-body h2 a {
+        color: inherit;
+      }
 
     .artist-card-body p {
       margin-top: 0.7rem;
@@ -247,21 +293,39 @@ const heroImage = '/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-03%2048.j
       text-transform: uppercase;
     }
 
-    .artist-card-link {
-      width: max-content;
-      color: color-mix(in srgb, var(--brand-paper) 42%, transparent);
-      font-family: var(--font-mono);
-      font-size: 10px;
+      .artist-card-actions {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.8rem 1.1rem;
+      }
+
+      .artist-card-link,
+      .artist-card-book {
+        width: max-content;
+        color: color-mix(in srgb, var(--brand-paper) 42%, transparent);
+        font-family: var(--font-mono);
+        font-size: 10px;
       letter-spacing: 0.22em;
       text-transform: uppercase;
-      transition: color 0.25s ease;
-    }
+        transition: color 0.25s ease;
+      }
 
-    .artist-card:hover .artist-card-link {
-      color: var(--foreground);
-    }
+      .artist-card-book {
+        color: color-mix(in srgb, var(--brand-paper) 70%, transparent);
+        border-bottom: 1px solid color-mix(in srgb, var(--brand-paper) 20%, transparent);
+      }
 
-    .artist-card-link span {
+      .artist-card:hover .artist-card-link,
+      .artist-card-book:hover {
+        color: var(--foreground);
+      }
+
+      .artist-card-book:hover {
+        border-color: var(--foreground);
+      }
+
+      .artist-card-link span {
       display: inline-block;
       letter-spacing: 0;
       transition: transform 0.25s ease;

@@ -9,13 +9,20 @@ import DoveMark from './DoveMark.astro';
   <div class="absolute top-0 left-[75%] w-1.5 h-1.5 rounded-full bg-primary/40 -translate-x-1/2 -translate-y-1/2"></div>
   <!-- Ready to Book Block -->
   <div class="border-b border-border">
-    <a href="/booking" class="group block relative overflow-hidden py-16 md:py-24 px-8 md:px-12 lg:px-16 hover:bg-white/[0.02] transition-colors duration-500">
+      <a
+        href="/booking"
+        class="group block relative overflow-hidden py-16 md:py-24 px-8 md:px-12 lg:px-16 hover:bg-white/[0.02] transition-colors duration-500"
+        data-analytics-event="booking_cta_click"
+        data-analytics-location="footer_marquee"
+        data-analytics-label="Start a Request"
+        data-analytics-href="/booking"
+      >
       <div class="flex flex-col md:flex-row items-baseline justify-between gap-8">
         <div>
-          <span class="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground block mb-4">Start your journey</span>
-          <h3 class="font-display text-5xl md:text-7xl lg:text-8xl uppercase text-foreground font-normal tracking-tight group-hover:text-primary/80 transition-all duration-500">
-            Book a session
-          </h3>
+            <span class="font-mono text-xs uppercase tracking-[0.2em] text-muted-foreground block mb-4">No deposit to request · 24-48h response</span>
+            <h3 class="font-display text-5xl md:text-7xl lg:text-8xl uppercase text-foreground font-normal tracking-tight group-hover:text-primary/80 transition-all duration-500">
+              Start a request
+            </h3>
         </div>
         <span class="w-16 h-16 rounded-full border border-input flex items-center justify-center text-foreground group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary group-hover:scale-110 transition-all duration-500">
           <iconify-icon icon="solar:arrow-right-linear" class="text-2xl"></iconify-icon>
@@ -106,7 +113,7 @@ import DoveMark from './DoveMark.astro';
         </span>
         <ul class="font-mono text-sm space-y-2">
           <li><a href="/artists" class="text-secondary-foreground hover:text-primary transition-colors">Artists</a></li>
-          <li><a href="/booking" class="text-secondary-foreground hover:text-primary transition-colors">Booking</a></li>
+            <li><a href="/booking" class="text-secondary-foreground hover:text-primary transition-colors" data-analytics-event="booking_cta_click" data-analytics-location="footer_directory" data-analytics-label="Booking" data-analytics-href="/booking">Booking</a></li>
           <li><a href="/aftercare" class="text-secondary-foreground hover:text-primary transition-colors">Aftercare</a></li>
           <li><a href="/privacy" class="text-muted-foreground hover:text-primary transition-colors">Privacy</a></li>
         </ul>

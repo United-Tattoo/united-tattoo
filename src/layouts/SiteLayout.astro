@@ -17,11 +17,11 @@ interface Props {
     description?: string;
     image?: string;
   };
-	  announcement?: string;
-	  hideAnnouncement?: boolean;
-	  removeMainPadding?: boolean;
-	  disableSmoothScroll?: boolean;
-	  hideFooter?: boolean;
+    announcement?: string;
+    hideAnnouncement?: boolean;
+    removeMainPadding?: boolean;
+    disableSmoothScroll?: boolean;
+    hideFooter?: boolean;
   artistSchema?: {
     name: string;
     description: string;
@@ -65,13 +65,13 @@ const ogImage = new URL(image, siteUrl).toString();
 ---
 
 <html lang="en" class="dark">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="generator" content={Astro.generator} />
     <ClientRouter />
-		
+
     <!-- SEO -->
     <title>{title ? `${title} | ${SITE_TITLE}` : SITE_TITLE}</title>
     <meta name="description" content={description} />
@@ -116,96 +116,139 @@ const ogImage = new URL(image, siteUrl).toString();
       breadcrumbs={breadcrumbs}
     />
 
-		<!-- Fonts -->
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-		<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700&family=Geist+Mono:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
-		<!-- Icons -->
-		<script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
-	</head>
-		<body class="bg-background text-foreground selection:bg-primary/20 selection:text-foreground" data-smooth-scroll={disableSmoothScroll ? 'disabled' : 'enabled'}>
-		<!-- Lenis + GSAP ScrollTrigger Setup -->
-		<script>
-			import Lenis from 'lenis';
-			import gsap from 'gsap';
-			import { ScrollTrigger } from 'gsap/ScrollTrigger';
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100;200;300;400;500;600;700&family=Geist+Mono:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+  </head>
+    <body class="bg-background text-foreground selection:bg-primary/20 selection:text-foreground" data-smooth-scroll={disableSmoothScroll ? 'disabled' : 'enabled'}>
+    <!-- Lenis + GSAP ScrollTrigger Setup -->
+    <script>
+      import Lenis from 'lenis';
+      import gsap from 'gsap';
+      import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-			// Register GSAP plugins
-			gsap.registerPlugin(ScrollTrigger);
+      // Register GSAP plugins
+      gsap.registerPlugin(ScrollTrigger);
 
-			let lenis = null;
-			let lenisTicker = null;
+      let lenis = null;
+      let lenisTicker = null;
 
-			function shouldUseSmoothScroll() {
-				return (
-					document.body.dataset.smoothScroll !== 'disabled' &&
-					!window.location.pathname.startsWith('/booking')
-				);
-			}
+      function shouldUseSmoothScroll() {
+        return (
+          document.body.dataset.smoothScroll !== 'disabled' &&
+          !window.location.pathname.startsWith('/booking')
+        );
+      }
 
-			function startSmoothScroll() {
-				if (lenis) return;
+      function startSmoothScroll() {
+        if (lenis) return;
 
-				// Initialize Lenis for smooth scrolling on editorial pages.
-				lenis = new Lenis({
-					duration: 1.2,
-					easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-					orientation: 'vertical',
-					smoothWheel: true,
-				});
+        // Initialize Lenis for smooth scrolling on editorial pages.
+        lenis = new Lenis({
+          duration: 1.2,
+          easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+          orientation: 'vertical',
+          smoothWheel: true,
+        });
 
-				// Sync Lenis with GSAP ScrollTrigger.
-				lenis.on('scroll', ScrollTrigger.update);
+        // Sync Lenis with GSAP ScrollTrigger.
+        lenis.on('scroll', ScrollTrigger.update);
 
-				lenisTicker = (time) => {
-					lenis?.raf(time * 1000);
-				};
-				gsap.ticker.add(lenisTicker);
+        lenisTicker = (time) => {
+          lenis?.raf(time * 1000);
+        };
+        gsap.ticker.add(lenisTicker);
 
-				window.lenis = lenis;
-			}
+        window.lenis = lenis;
+      }
 
-			function stopSmoothScroll() {
-				if (lenisTicker) {
-					gsap.ticker.remove(lenisTicker);
-					lenisTicker = null;
-				}
+      function stopSmoothScroll() {
+        if (lenisTicker) {
+          gsap.ticker.remove(lenisTicker);
+          lenisTicker = null;
+        }
 
-				if (lenis) {
-					lenis.destroy();
-					lenis = null;
-				}
+        if (lenis) {
+          lenis.destroy();
+          lenis = null;
+        }
 
-				window.lenis = null;
-			}
+        window.lenis = null;
+      }
 
-			function syncSmoothScroll() {
-				if (shouldUseSmoothScroll()) {
-					startSmoothScroll();
-				} else {
-					stopSmoothScroll();
-				}
+      function syncSmoothScroll() {
+        if (shouldUseSmoothScroll()) {
+          startSmoothScroll();
+        } else {
+          stopSmoothScroll();
+        }
 
-				ScrollTrigger.refresh();
-			}
+        ScrollTrigger.refresh();
+      }
 
-			// Make animation libraries globally available for page scripts
-			window.gsap = gsap;
-			window.ScrollTrigger = ScrollTrigger;
+      // Make animation libraries globally available for page scripts
+      window.gsap = gsap;
+      window.ScrollTrigger = ScrollTrigger;
 
-			gsap.ticker.lagSmoothing(0);
-			syncSmoothScroll();
+      gsap.ticker.lagSmoothing(0);
+      syncSmoothScroll();
 
-			// Handle View Transitions
-			document.addEventListener('astro:page-load', syncSmoothScroll);
-			document.addEventListener('astro:after-swap', syncSmoothScroll);
-		</script>
-		<HeaderNav currentPath={currentPath} hasAnnouncement={false} />
+      // Handle View Transitions
+      document.addEventListener('astro:page-load', syncSmoothScroll);
+      document.addEventListener('astro:after-swap', syncSmoothScroll);
+    </script>
+    <script>
+      function trackUnitedEvent(eventName, params = {}) {
+        const payload = {
+          event: eventName,
+          ...params,
+        };
 
-		<main class:list={[{ "pt-32 pb-24": !removeMainPadding }]}>
-			<slot />
-		</main>
+        window.dataLayer = window.dataLayer || [];
+        window.dataLayer.push(payload);
 
-		{!hideFooter && <SiteFooter />}
-	</body>
+        if (typeof window.gtag === 'function') {
+          window.gtag('event', eventName, params);
+        }
+
+        if (typeof window.plausible === 'function') {
+          window.plausible(eventName, { props: params });
+        }
+
+        document.dispatchEvent(new CustomEvent('united:analytics', {
+          detail: { eventName, params },
+        }));
+      }
+
+      function bindAnalyticsEvents() {
+        document.querySelectorAll('[data-analytics-event]').forEach((element) => {
+          if (element.dataset.analyticsBound === 'true') return;
+
+	        element.dataset.analyticsBound = 'true';
+	        element.addEventListener('click', () => {
+	          const analyticsData = { ...element.dataset };
+	          const analyticsEvent = analyticsData.analyticsEvent;
+	          delete analyticsData.analyticsEvent;
+	          delete analyticsData.analyticsBound;
+
+	          trackUnitedEvent(analyticsEvent, analyticsData);
+	        });
+	      });
+	    }
+
+      window.trackUnitedEvent = trackUnitedEvent;
+      document.addEventListener('astro:page-load', bindAnalyticsEvents);
+      bindAnalyticsEvents();
+    </script>
+    <HeaderNav currentPath={currentPath} hasAnnouncement={false} />
+
+    <main class:list={[{ "pt-32 pb-24": !removeMainPadding }]}>
+      <slot />
+    </main>
+
+    {!hideFooter && <SiteFooter />}
+  </body>
 </html>

@@ -21,7 +21,7 @@ const featuredArtists = artists.slice(0, 4);
 const publicDir = path.join(process.cwd(), 'public');
 const SUPPORTED_PORTFOLIO_IMAGE = /\.(avif|webp|jpe?g|png)$/i;
 const MAX_IMAGES_PER_ARTIST = 5;
-const portfolioImagesByArtist: { artist: string; images: { src: string; artist: string }[] }[] = [];
+const portfolioImagesByArtist: { artist: string; artistId: string; images: { src: string; artist: string; artistId: string }[] }[] = [];
 
 for (const artist of artists) {
   const portfolioPath = path.join(publicDir, artist.data.galleryDir, 'Portfolio');
@@ -38,9 +38,11 @@ for (const artist of artists) {
 
       portfolioImagesByArtist.push({
         artist: artist.data.name,
+        artistId: artist.id,
         images: files.map((file) => ({
           src: `/${artist.data.galleryDir}/Portfolio/${file}`,
           artist: artist.data.name,
+          artistId: artist.id,
         })),
       });
     }
@@ -48,7 +50,7 @@ for (const artist of artists) {
 }
 
 // Round-robin by artist so homepage features do not collapse onto one portfolio.
-const balancedPortfolioImages: { src: string; artist: string }[] = [];
+const balancedPortfolioImages: { src: string; artist: string; artistId: string }[] = [];
 for (let imageIndex = 0; imageIndex < MAX_IMAGES_PER_ARTIST; imageIndex += 1) {
   for (const artistPortfolio of portfolioImagesByArtist) {
     const image = artistPortfolio.images[imageIndex];
@@ -72,7 +74,7 @@ const showStudioIntro = false;
 
 <SiteLayout title={SITE_DESCRIPTION} removeMainPadding={true} hideFooter={true}>
 
-  <FloatingCTA href="/booking" label="Book a session" />
+  <FloatingCTA href="/booking" label="Start a request" eventLocation="home_floating" />
 
   <div class="relative main-content-wrapper max-w-[1800px] mx-auto border-l border-r border-border">
 
@@ -118,15 +120,27 @@ const showStudioIntro = false;
             <p class="max-w-lg font-mono text-sm md:text-base text-white/72 tracking-wide">
               Custom tattoos in Fountain, Colorado. Built around the artist, the client, and the work.
             </p>
-            <div class="flex shrink-0 items-center gap-4">
-              <a href="/booking" class="inline-flex items-center gap-2 px-5 py-3 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.15em] border border-primary hover:brightness-110 transition-all">
-                Book a Session
-              </a>
-              <a href="/artists" class="font-mono text-xs uppercase tracking-[0.15em] text-white/72 border-b border-white/30 pb-0.5 hover:text-white hover:border-white transition-all">
-                View Artists
-              </a>
+            <div class="flex shrink-0 flex-col items-start gap-3">
+              <div class="flex items-center gap-4">
+                <a
+                  href="/booking"
+                  class="inline-flex items-center gap-2 px-5 py-3 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.15em] border border-primary hover:brightness-110 transition-all"
+                  data-analytics-event="booking_cta_click"
+                  data-analytics-location="home_hero"
+                  data-analytics-label="Start a Request"
+                  data-analytics-href="/booking"
+                >
+                  Start a Request
+                </a>
+                <a href="/artists" class="font-mono text-xs uppercase tracking-[0.15em] text-white/72 border-b border-white/30 pb-0.5 hover:text-white hover:border-white transition-all">
+                  View Artists
+                </a>
+              </div>
+              <p class="max-w-xs font-mono text-[10px] uppercase tracking-[0.18em] text-white/52">
+                No deposit to request · 24-48h response
+              </p>
             </div>
-          </div>
+            </div>
           <div class="hero-reveal mt-5 flex flex-wrap items-center gap-x-3 gap-y-2 font-mono text-[10px] uppercase tracking-[0.2em] text-white/58">
             <span>{ADDRESS_LINE_1}</span>
             <span class="hidden h-px w-6 bg-white/25 sm:inline-block" aria-hidden="true"></span>
@@ -255,9 +269,11 @@ const showStudioIntro = false;
   <!-- Artists Section: The Index -->
   <section id="artists" class="artists-section relative z-20" data-scroll-section>
     <div class="artists-list">
-      {artists.map((artist, index) => (
-        <div class="artist-row group relative border-b border-border hover:bg-secondary/50 transition-colors duration-300">
-          <a href={`/artists/${artist.id}`} class="block px-6 md:px-10 lg:px-16 py-8 md:py-10 flex flex-col md:flex-row items-baseline md:items-center justify-between gap-4">
+      {artists.map((artist, index) => {
+        const firstName = artist.data.name.split(' ')[0];
+        return (
+          <div class="artist-row group relative border-b border-border hover:bg-secondary/50 transition-colors duration-300">
+            <a href={`/artists/${artist.id}`} class="block px-6 md:px-10 lg:px-16 py-8 md:py-10 flex flex-col md:flex-row items-baseline md:items-center justify-between gap-4">
             <div class="flex items-center md:items-baseline gap-4 md:gap-8 md:w-1/2">
               <span class="font-mono text-sm text-muted-foreground/40 group-hover:text-primary/60 transition-colors tabular-nums">
                 {(index + 1).toString().padStart(2, '0')}
@@ -285,20 +301,32 @@ const showStudioIntro = false;
 
               <span class="w-9 h-9 rounded-full flex items-center justify-center text-primary-foreground opacity-0 group-hover:opacity-100 transition-all duration-300 bg-primary">
                 ↗
-              </span>
-            </div>
-          </a>
+                </span>
+              </div>
+            </a>
 
-          <!-- Hover Image Reveal (Desktop) -->
-          <div class="hidden lg:block absolute top-1/2 right-24 -translate-y-1/2 w-[180px] aspect-[3/4] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 bg-card border border-border rotate-2 group-hover:rotate-3 transition-transform shadow-2xl">
+            <a
+              href={`/booking?artist=${artist.id}`}
+              class="artist-row-booking"
+              data-analytics-event="booking_cta_click"
+              data-analytics-location="home_artist_row"
+              data-analytics-label={`Request with ${firstName}`}
+              data-analytics-artist={artist.id}
+              data-analytics-href={`/booking?artist=${artist.id}`}
+            >
+              Request with {firstName}
+            </a>
+
+            <!-- Hover Image Reveal (Desktop) -->
+            <div class="hidden lg:block absolute top-1/2 right-24 -translate-y-1/2 w-[180px] aspect-[3/4] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 bg-card border border-border rotate-2 group-hover:rotate-3 transition-transform shadow-2xl">
             <img
               src={artist.data.portrait}
               alt={artist.data.name}
               class="w-full h-full object-cover grayscale"
             />
+            </div>
           </div>
-        </div>
-      ))}
+        )})}
     </div>
   </section>
 
@@ -330,20 +358,27 @@ const showStudioIntro = false;
   <section class="showcase-section relative z-20" data-scroll-section>
     <!-- Bordered image cells grid -->
     <div class="showcase-grid grid grid-cols-2 md:grid-cols-3">
-      {showcaseImages.map((img, i) => (
-        <div class="showcase-item group relative border-b border-r border-border p-2 md:p-3">
-          <div class="relative overflow-hidden aspect-[4/5]">
-            <img
-              src={img.src}
+	      {showcaseImages.map((img) => (
+          <a
+            href={`/artists/${img.artistId}`}
+            class="showcase-item group relative block border-b border-r border-border p-2 md:p-3"
+            data-analytics-event="portfolio_image_click"
+            data-analytics-location="home_recent_work"
+            data-analytics-artist={img.artistId}
+            data-analytics-href={`/artists/${img.artistId}`}
+          >
+            <div class="relative overflow-hidden aspect-[4/5]">
+              <img
+                src={img.src}
               alt={`Tattoo by ${img.artist}`}
               loading="lazy"
               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
             />
-            <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <span class="absolute bottom-3 left-3 font-mono text-[10px] uppercase tracking-widest text-white/90 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">{img.artist}</span>
-          </div>
-        </div>
-      ))}
+              <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              <span class="absolute bottom-3 left-3 font-mono text-[10px] uppercase tracking-widest text-white/90 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">{img.artist} · View artist</span>
+            </div>
+          </a>
+        ))}
     </div>
   </section>
 
@@ -366,7 +401,15 @@ const showStudioIntro = false;
       <h2 class="process-title section-banner-title">The Process</h2>
       <div class="section-banner-footer">
         <span>From idea to ink</span>
-        <a href="/booking">Start booking <span aria-hidden="true">→</span></a>
+        <a
+          href="/booking"
+          data-analytics-event="booking_cta_click"
+          data-analytics-location="home_process_banner"
+          data-analytics-label="Start a Request"
+          data-analytics-href="/booking"
+        >
+          Start a request <span aria-hidden="true">→</span>
+        </a>
       </div>
     </div>
   </div>
@@ -493,6 +536,10 @@ const showStudioIntro = false;
     /* === Showcase Grid === */
     .showcase-item:nth-child(3n) {
       border-right: none;
+    }
+
+    .showcase-item {
+      color: inherit;
     }
 
     @media (max-width: 767px) {
@@ -692,6 +739,44 @@ const showStudioIntro = false;
       background-position: 0 100%;
       background-repeat: no-repeat;
       animation: underlineSlide 0.3s ease-out forwards;
+    }
+
+    .artist-row-booking {
+      position: absolute;
+      right: clamp(1.5rem, 4vw, 4rem);
+      bottom: 1.35rem;
+      z-index: 20;
+      color: color-mix(in srgb, var(--brand-paper) 56%, transparent);
+      font-family: var(--font-mono);
+      font-size: 10px;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      border-bottom: 1px solid color-mix(in srgb, var(--brand-paper) 18%, transparent);
+      transition: color 0.25s ease, border-color 0.25s ease, transform 0.25s ease;
+    }
+
+    .artist-row-booking:hover {
+      color: var(--foreground);
+      border-color: var(--foreground);
+      transform: translateX(0.25rem);
+    }
+
+    @media (min-width: 768px) {
+      .artist-row-booking {
+        bottom: 2rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .artist-row-booking {
+        right: clamp(13rem, 18vw, 18rem);
+        bottom: 50%;
+        transform: translateY(50%);
+      }
+
+      .artist-row-booking:hover {
+        transform: translate(0.25rem, 50%);
+      }
     }
 
     @keyframes underlineSlide {

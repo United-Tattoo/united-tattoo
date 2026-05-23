@@ -2,13 +2,21 @@
 interface Props {
   href: string;
   label: string;
+  eventLocation?: string;
 }
 
-const { href, label } = Astro.props;
+const { href, label, eventLocation = 'floating_cta' } = Astro.props;
 ---
 
 <div id="floating-cta" class="fixed z-50 transition-all duration-300 bottom-0 left-0 right-0 lg:bottom-8 lg:left-auto lg:right-8 lg:w-auto">
-  <a href={href} class="hero-cta group flex items-center justify-center lg:justify-start gap-3 px-6 py-4 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.15em] transition-all shadow-xl shadow-primary/15 w-full lg:w-auto">
+  <a
+    href={href}
+    class="hero-cta group flex items-center justify-center lg:justify-start gap-3 px-6 py-4 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.15em] transition-all shadow-xl shadow-primary/15 w-full lg:w-auto"
+    data-analytics-event="booking_cta_click"
+    data-analytics-location={eventLocation}
+    data-analytics-label={label}
+    data-analytics-href={href}
+  >
     <span class="group-hover:translate-x-1 transition-transform">{label}</span>
     <span class="w-6 h-6 rounded-full flex items-center justify-center bg-primary-foreground text-primary transition-all">→</span>
   </a>

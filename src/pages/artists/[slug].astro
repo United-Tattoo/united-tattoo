@@ -83,7 +83,7 @@ const artistSchema = {
     { name: artist.data.name, url: `/artists/${artist.id}` },
   ]}
 >
-  <FloatingCTA href={`/booking?artist=${artist.id}`} label={`Book with ${firstName}`} />
+  <FloatingCTA href={`/booking?artist=${artist.id}`} label={`Request with ${firstName}`} eventLocation="artist_profile_floating" />
 
   <div class="main-content-wrapper relative max-w-[1800px] mx-auto border-l border-r border-border">
 
@@ -135,15 +135,31 @@ const artistSchema = {
             </h1>
 
             <!-- Specialties -->
-            <div class="artist-hero-reveal flex flex-wrap gap-x-6 gap-y-3 items-center text-sm">
-                {artist.data.specialties?.map((specialty, i) => (
-                    <span class="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground flex items-center gap-6">
+              <div class="artist-hero-reveal flex flex-wrap gap-x-6 gap-y-3 items-center text-sm">
+                  {artist.data.specialties?.map((specialty, i) => (
+                      <span class="font-mono text-xs uppercase tracking-[0.15em] text-muted-foreground flex items-center gap-6">
                         {specialty}
                         {i < (artist.data.specialties?.length || 0) - 1 && <span class="w-1 h-1 rounded-full bg-primary"></span>}
-                    </span>
-                ))}
-            </div>
-        </div>
+                      </span>
+                  ))}
+              </div>
+              <div class="artist-hero-reveal mt-8 flex flex-wrap items-center gap-4">
+                <a
+                  href={`/booking?artist=${artist.id}`}
+                  class="inline-flex items-center justify-center border border-foreground bg-foreground px-6 py-3 font-mono text-[10px] uppercase tracking-[0.2em] text-background transition-colors hover:bg-background hover:text-foreground"
+                  data-analytics-event="booking_cta_click"
+                  data-analytics-location="artist_hero"
+                  data-analytics-label={`Request with ${firstName}`}
+                  data-analytics-artist={artist.id}
+                  data-analytics-href={`/booking?artist=${artist.id}`}
+                >
+                  Request with {firstName}
+                </a>
+                <a href="#work" class="font-mono text-[10px] uppercase tracking-[0.2em] text-foreground/70 underline decoration-border underline-offset-4 transition-colors hover:text-foreground hover:decoration-foreground">
+                  View work
+                </a>
+              </div>
+          </div>
 
         <!-- Social & Stats -->
         <div class="lg:col-span-3 artist-hero-reveal flex flex-col justify-end">
@@ -183,12 +199,23 @@ const artistSchema = {
         <div class="relative">
             <div class="sticky top-32 p-10 border border-border bg-secondary backdrop-blur-sm">
                  <h3 class="font-sans font-extralight text-3xl text-foreground mb-6 tracking-tight">Start a Project</h3>
-                 <p class="font-mono text-xs text-muted-foreground leading-relaxed mb-8">
-                    {firstName} specializes in {artist.data.specialties?.[0].toLowerCase()} and is currently accepting new clients.
-                 </p>
-                 <a href={`/booking?artist=${artist.id}`} class="w-full block text-center bg-foreground text-background font-mono text-xs uppercase tracking-[0.2em] py-4 hover:bg-primary hover:text-primary-foreground transition-colors duration-300">
-                    Request Booking
-                 </a>
+                   <p class="font-mono text-xs text-muted-foreground leading-relaxed mb-5">
+                      {firstName} specializes in {artist.data.specialties?.[0].toLowerCase()} and is currently accepting new clients.
+                   </p>
+                   <p class="mb-8 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/70">
+                     No deposit to request · 24-48h response
+                   </p>
+                   <a
+                     href={`/booking?artist=${artist.id}`}
+                     class="w-full block text-center bg-foreground text-background font-mono text-xs uppercase tracking-[0.2em] py-4 hover:bg-primary hover:text-primary-foreground transition-colors duration-300"
+                     data-analytics-event="booking_cta_click"
+                     data-analytics-location="artist_about_card"
+                     data-analytics-label={`Request with ${firstName}`}
+                     data-analytics-artist={artist.id}
+                     data-analytics-href={`/booking?artist=${artist.id}`}
+                   >
+                      Request with {firstName}
+                   </a>
             </div>
         </div>
       </div>
@@ -223,7 +250,7 @@ const artistSchema = {
 
   <!-- Unified Works Section with Toggle -->
   {(portfolioImages.length > 0 || flashImages.length > 0) && (
-    <section class="works-section relative z-20 border-t border-border" data-scroll-section>
+      <section id="work" class="works-section relative z-20 border-t border-border" data-scroll-section>
       <SectionSidebar
         sectionNum={artist.data.testimonials && artist.data.testimonials.length > 0 ? "03" : "02"}
         label="Works"
@@ -330,9 +357,17 @@ const artistSchema = {
             <a href="/artists" class="px-8 py-4 border border-border text-foreground font-mono text-xs uppercase tracking-[0.15em] hover:bg-foreground hover:text-background transition-all">
                 All Artists
             </a>
-            <a href={`/booking?artist=${artist.id}`} class="px-8 py-4 bg-foreground text-background font-mono text-xs uppercase tracking-[0.15em] hover:bg-primary hover:text-primary-foreground transition-all">
-                Book with {firstName}
-            </a>
+              <a
+                href={`/booking?artist=${artist.id}`}
+                class="px-8 py-4 bg-foreground text-background font-mono text-xs uppercase tracking-[0.15em] hover:bg-primary hover:text-primary-foreground transition-all"
+                data-analytics-event="booking_cta_click"
+                data-analytics-location="artist_footer"
+                data-analytics-label={`Request with ${firstName}`}
+                data-analytics-artist={artist.id}
+                data-analytics-href={`/booking?artist=${artist.id}`}
+              >
+                  Request with {firstName}
+              </a>
         </div>
     </div>
   </section>
