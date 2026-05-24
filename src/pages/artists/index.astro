@@ -226,19 +226,22 @@ const heroImage = '/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-03%2048.j
       background: color-mix(in srgb, var(--brand-paper) 2.5%, transparent);
     }
 
-      .artist-card-media {
-        position: relative;
-        display: block;
-        aspect-ratio: 4 / 5;
-        overflow: hidden;
-        background: var(--secondary);
+    .artist-card-media {
+      position: relative;
+      display: block;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      background: var(--secondary);
     }
 
     .artist-card-image {
+      position: absolute;
+      inset: 0;
       display: block;
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center;
       filter: grayscale(0.28) contrast(1.04) brightness(0.88);
       transition: filter 0.55s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1);
     }
