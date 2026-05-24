@@ -77,7 +77,7 @@ Artist profiles are managed as an Astro content collection. The collection is de
 
 At build time, pages use `getCollection('artists')` to fetch all entries. The homepage builds the image marquee, artists list, and showcase grid from this data. `src/pages/artists/[slug].astro` uses `getStaticPaths()` to generate one page per artist entry.
 
-Portfolio images are **not** in the content collection — they're read from the filesystem at build time using Node's `fs` module, scanning the artist's `galleryDir` in `public/`. This means adding images to the right directory is all that's needed; no config update required.
+Portfolio and flash images are stored as Decap-managed frontmatter arrays (`cmsPortfolioUploads` and `cmsFlashUploads`) so the CMS can display and reorder the live galleries. Pages still fall back to scanning the artist's `galleryDir` in `public/` when those arrays are absent.
 
 ---
 

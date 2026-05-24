@@ -2,7 +2,7 @@
 
 This document captures a proposed publishing model for letting non-technical United Tattoo staff update site content from Nextcloud without needing to use GitHub directly.
 
-Status: concept only. No sync script, systemd service, or deployment automation has been implemented yet.
+Status: concept only. No sync script, systemd service, or deployment automation has been implemented. Decap CMS is now implemented as the preferred Git-based CMS path.
 
 ---
 
@@ -41,7 +41,7 @@ Build-time sync fits the current repo:
 
 - Artist profile data already lives in `src/content/artists/*.mdx`.
 - The artist content schema already validates frontmatter at build time.
-- Gallery images are already discovered from `public/artists/{Artist}/Portfolio`.
+- Gallery images now have CMS-visible frontmatter lists, with folder scanning kept as a fallback.
 - The site already uses prerendered Astro pages for the main content routes.
 
 It also keeps the production site resilient:
@@ -115,7 +115,7 @@ The publisher would transform this into the existing `src/content/artists/{slug}
 
 - `portrait` from the copied and converted portrait file.
 - `galleryDir` from the artist folder name.
-- portfolio and flash images from the folder contents.
+- `cmsPortfolioUploads` and `cmsFlashUploads` from the copied folder contents.
 
 The owner should not need to edit generated paths such as `portrait` or `galleryDir`.
 

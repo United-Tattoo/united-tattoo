@@ -21,6 +21,10 @@ const artists = defineCollection({
       quote: z.string(),
       client: z.string(),
     })).optional(),
+    // Decap-managed gallery lists. Pages use these values when present and
+    // fall back to scanning galleryDir/Portfolio and galleryDir/Flash.
+    cmsPortfolioUploads: z.array(z.string()).optional(),
+    cmsFlashUploads: z.array(z.string()).optional(),
     // Calendar Integration Fields
     calendarId: z.string().optional(), // Nextcloud calendar identifier
     acceptingBookings: z.boolean().default(true),

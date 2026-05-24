@@ -2,7 +2,7 @@
 
 This guide covers how to add and update artist profiles, manage portfolio images, and configure the calendar integration for each artist.
 
-For a proposed future workflow where staff edit artist content and images in Nextcloud instead of GitHub, see [Nextcloud CMS Publisher Concept](./nextcloud-cms-publisher.md). That document is a design note only; the workflow below describes the current implemented process.
+For the browser-based CMS workflow, see [Decap CMS on Cloudflare](./decap-cms-cloudflare.md). For the older alternative concept of publishing from Nextcloud, see [Nextcloud CMS Publisher Concept](./nextcloud-cms-publisher.md). The manual workflow below remains the fallback process.
 
 ---
 
@@ -98,8 +98,9 @@ public/artists/
 
 - The site expects AVIF format for all images
 - Portrait images appear on the artist listing and profile hero
-- Portfolio images auto-populate the gallery grid on the artist's page
-- Flash images appear under the "Flash" toggle tab on the artist's page
+- Portfolio images are managed in each artist's `cmsPortfolioUploads` list and appear in the gallery grid on the artist's page
+- Flash images are managed in each artist's `cmsFlashUploads` list and appear under the "Flash" toggle tab on the artist's page
+- If those CMS lists are missing, the site falls back to scanning the matching `Portfolio/` and `Flash/` folders at build time
 
 ### Converting Images to AVIF
 

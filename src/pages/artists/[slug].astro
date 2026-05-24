@@ -6,8 +6,7 @@ import SectionSidebar from '../../components/SectionSidebar.astro';
 import FloatingCTA from '../../components/FloatingCTA.astro';
 import ScrollIndicator from '../../components/ScrollIndicator.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
-import fs from 'node:fs';
-import path from 'node:path';
+import { getGalleryImages } from '../../services/gallery-images';
 
 export const prerender = true;
 
@@ -22,35 +21,16 @@ export async function getStaticPaths() {
 const { artist } = Astro.props;
 const { Content } = await render(artist);
 
-// Read portfolio images from the public directory at build time
-const publicDir = path.join(process.cwd(), 'public');
-const portfolioPath = path.join(publicDir, artist.data.galleryDir, 'Portfolio');
-
-let portfolioImages: string[] = [];
-try {
-  if (fs.existsSync(portfolioPath)) {
-    const files = fs.readdirSync(portfolioPath);
-    portfolioImages = files
-      .filter((file) => /\.(jpg|jpeg|png|webp|avif|gif)$/i.test(file))
-      .map((file) => `/${artist.data.galleryDir}/Portfolio/${file}`);
-  }
-} catch (e) {
-  console.warn(`Could not read portfolio directory for ${artist.data.name}:`, e);
-}
-
-// Also check for flash sheets
-const flashPath = path.join(publicDir, artist.data.galleryDir, 'Flash');
-let flashImages: string[] = [];
-try {
-  if (fs.existsSync(flashPath)) {
-    const files = fs.readdirSync(flashPath);
-    flashImages = files
-      .filter((file) => /\.(jpg|jpeg|png|webp|avif|gif)$/i.test(file))
-      .map((file) => `/${artist.data.galleryDir}/Flash/${file}`);
-  }
-} catch (e) {
-  // No flash directory
-}
+const portfolioImages = getGalleryImages(
+  artist.data.galleryDir,
+  'Portfolio',
+  artist.data.cmsPortfolioUploads,
+);
+const flashImages = getGalleryImages(
+  artist.data.galleryDir,
+  'Flash',
+  artist.data.cmsFlashUploads,
+);
 
 const firstName = artist.data.name.split(' ')[0];
 const lastName = artist.data.name.split(' ').slice(1).join(' ');

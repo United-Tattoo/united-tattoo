@@ -1,0 +1,456 @@
+backend:
+  name: github
+  repo: United-Tattoo/united-tattoo
+  branch: main
+  base_url: https://united-tattoos.com
+  auth_endpoint: /oauth/auth
+
+publish_mode: simple
+local_backend: true
+site_url: https://united-tattoos.com
+display_url: https://united-tattoos.com
+media_folder: public/artists
+public_folder: /artists
+
+collections:
+  - label: Blog
+    label_singular: Blog Post
+    name: blog
+    folder: src/content/blog
+    create: true
+    extension: mdx
+    format: frontmatter
+    slug: "{{slug}}"
+    identifier_field: title
+    fields:
+      - { label: Title, name: title, widget: string }
+      - { label: Description, name: description, widget: text }
+      - { label: Publish Date, name: publishDate, widget: datetime, format: "YYYY-MM-DD" }
+      - { label: Updated Date, name: updatedDate, widget: datetime, format: "YYYY-MM-DD", required: false }
+      - { label: Author, name: author, widget: string, default: United Tattoo }
+      - { label: Tags, name: tags, widget: list, required: false, field: { label: Tag, name: tag, widget: string } }
+      - { label: Image, name: image, widget: image, required: false, choose_url: false }
+      - { label: Draft, name: draft, widget: boolean, required: false, default: false }
+      - { label: Body, name: body, widget: markdown }
+
+  - label: Artists
+    name: artists
+    format: frontmatter
+    editor:
+      preview: false
+    files:
+      - label: Amari Kyss
+        name: amari_kyss
+        file: src/content/artists/amari-kyss.mdx
+        fields:
+          - { label: Name, name: name, widget: string }
+          - { label: Portrait, name: portrait, widget: image, choose_url: false, media_folder: public/artists, public_folder: /artists }
+          - { label: Gallery Directory, name: galleryDir, widget: string, hint: "Advanced: must match this artist's folder under public/artists." }
+          - { label: Booking CC Email, name: bookingEmailCc, widget: string, required: false, hint: "Advanced: changing this affects booking notifications." }
+          - { label: Specialties, name: specialties, widget: list, required: false, field: { label: Specialty, name: specialty, widget: string } }
+          - { label: Instagram, name: instagram, widget: string, required: false }
+          - { label: Facebook, name: facebook, widget: string, required: false }
+          - { label: TikTok, name: tiktok, widget: string, required: false }
+          - { label: Twitch, name: twitch, widget: string, required: false }
+          - { label: Portfolio URL, name: portfolioUrl, widget: string, required: false }
+          - { label: Calendar ID, name: calendarId, widget: string, required: false, hint: "Advanced: must match the Nextcloud calendar." }
+          - { label: Accepting Bookings, name: acceptingBookings, widget: boolean, default: true }
+          - label: Weekly Schedule
+            name: schedule
+            widget: object
+            required: false
+            collapsed: true
+            hint: "Advanced: use HH:MM-HH:MM or closed."
+            fields:
+              - { label: Monday, name: monday, widget: string, required: false }
+              - { label: Tuesday, name: tuesday, widget: string, required: false }
+              - { label: Wednesday, name: wednesday, widget: string, required: false }
+              - { label: Thursday, name: thursday, widget: string, required: false }
+              - { label: Friday, name: friday, widget: string, required: false }
+              - { label: Saturday, name: saturday, widget: string, required: false }
+              - { label: Sunday, name: sunday, widget: string, required: false }
+          - { label: Buffer Minutes, name: bufferMinutes, widget: number, value_type: int, min: 0, default: 30, hint: "Advanced: booking buffer after calendar events." }
+          - label: Testimonials
+            name: testimonials
+            widget: list
+            required: false
+            fields:
+              - { label: Quote, name: quote, widget: text }
+              - { label: Client, name: client, widget: string }
+          - label: Portfolio Images
+            name: cmsPortfolioUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's portfolio tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/Amari-Rodriguez/Portfolio, public_folder: /artists/Amari-Rodriguez/Portfolio }
+          - label: Flash Images
+            name: cmsFlashUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's flash tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/Amari-Rodriguez/Flash, public_folder: /artists/Amari-Rodriguez/Flash }
+          - { label: Body, name: body, widget: markdown }
+
+      - label: Christy Lumberg
+        name: christy_lumberg
+        file: src/content/artists/christy-lumberg.mdx
+        fields:
+          - { label: Name, name: name, widget: string }
+          - { label: Portrait, name: portrait, widget: image, choose_url: false, media_folder: public/artists, public_folder: /artists }
+          - { label: Gallery Directory, name: galleryDir, widget: string, hint: "Advanced: must match this artist's folder under public/artists." }
+          - { label: Booking CC Email, name: bookingEmailCc, widget: string, required: false, hint: "Advanced: changing this affects booking notifications." }
+          - { label: Specialties, name: specialties, widget: list, required: false, field: { label: Specialty, name: specialty, widget: string } }
+          - { label: Instagram, name: instagram, widget: string, required: false }
+          - { label: Facebook, name: facebook, widget: string, required: false }
+          - { label: TikTok, name: tiktok, widget: string, required: false }
+          - { label: Twitch, name: twitch, widget: string, required: false }
+          - { label: Portfolio URL, name: portfolioUrl, widget: string, required: false }
+          - { label: Calendar ID, name: calendarId, widget: string, required: false, hint: "Advanced: must match the Nextcloud calendar." }
+          - { label: Accepting Bookings, name: acceptingBookings, widget: boolean, default: true }
+          - label: Weekly Schedule
+            name: schedule
+            widget: object
+            required: false
+            collapsed: true
+            hint: "Advanced: use HH:MM-HH:MM or closed."
+            fields:
+              - { label: Monday, name: monday, widget: string, required: false }
+              - { label: Tuesday, name: tuesday, widget: string, required: false }
+              - { label: Wednesday, name: wednesday, widget: string, required: false }
+              - { label: Thursday, name: thursday, widget: string, required: false }
+              - { label: Friday, name: friday, widget: string, required: false }
+              - { label: Saturday, name: saturday, widget: string, required: false }
+              - { label: Sunday, name: sunday, widget: string, required: false }
+          - { label: Buffer Minutes, name: bufferMinutes, widget: number, value_type: int, min: 0, default: 30, hint: "Advanced: booking buffer after calendar events." }
+          - label: Testimonials
+            name: testimonials
+            widget: list
+            required: false
+            fields:
+              - { label: Quote, name: quote, widget: text }
+              - { label: Client, name: client, widget: string }
+          - label: Portfolio Images
+            name: cmsPortfolioUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's portfolio tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/Christy-Lumberg/Portfolio, public_folder: /artists/Christy-Lumberg/Portfolio }
+          - label: Flash Images
+            name: cmsFlashUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's flash tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/Christy-Lumberg/Flash, public_folder: /artists/Christy-Lumberg/Flash }
+          - { label: Body, name: body, widget: markdown }
+
+      - label: Donovan Lankford
+        name: donovan_lankford
+        file: src/content/artists/donovan-lankford.mdx
+        fields:
+          - { label: Name, name: name, widget: string }
+          - { label: Portrait, name: portrait, widget: image, choose_url: false, media_folder: public/artists, public_folder: /artists }
+          - { label: Gallery Directory, name: galleryDir, widget: string, hint: "Advanced: must match this artist's folder under public/artists." }
+          - { label: Booking CC Email, name: bookingEmailCc, widget: string, required: false, hint: "Advanced: changing this affects booking notifications." }
+          - { label: Specialties, name: specialties, widget: list, required: false, field: { label: Specialty, name: specialty, widget: string } }
+          - { label: Instagram, name: instagram, widget: string, required: false }
+          - { label: Facebook, name: facebook, widget: string, required: false }
+          - { label: TikTok, name: tiktok, widget: string, required: false }
+          - { label: Twitch, name: twitch, widget: string, required: false }
+          - { label: Portfolio URL, name: portfolioUrl, widget: string, required: false }
+          - { label: Calendar ID, name: calendarId, widget: string, required: false, hint: "Advanced: must match the Nextcloud calendar." }
+          - { label: Accepting Bookings, name: acceptingBookings, widget: boolean, default: true }
+          - label: Weekly Schedule
+            name: schedule
+            widget: object
+            required: false
+            collapsed: true
+            hint: "Advanced: use HH:MM-HH:MM or closed."
+            fields:
+              - { label: Monday, name: monday, widget: string, required: false }
+              - { label: Tuesday, name: tuesday, widget: string, required: false }
+              - { label: Wednesday, name: wednesday, widget: string, required: false }
+              - { label: Thursday, name: thursday, widget: string, required: false }
+              - { label: Friday, name: friday, widget: string, required: false }
+              - { label: Saturday, name: saturday, widget: string, required: false }
+              - { label: Sunday, name: sunday, widget: string, required: false }
+          - { label: Buffer Minutes, name: bufferMinutes, widget: number, value_type: int, min: 0, default: 30, hint: "Advanced: booking buffer after calendar events." }
+          - label: Testimonials
+            name: testimonials
+            widget: list
+            required: false
+            fields:
+              - { label: Quote, name: quote, widget: text }
+              - { label: Client, name: client, widget: string }
+          - label: Portfolio Images
+            name: cmsPortfolioUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's portfolio tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/Donovan-Lankford/Portfolio, public_folder: /artists/Donovan-Lankford/Portfolio }
+          - label: Flash Images
+            name: cmsFlashUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's flash tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/Donovan-Lankford/Flash, public_folder: /artists/Donovan-Lankford/Flash }
+          - { label: Body, name: body, widget: markdown }
+
+      - label: Heather Santistevan
+        name: heather_santistevan
+        file: src/content/artists/heather-santistevan.mdx
+        fields:
+          - { label: Name, name: name, widget: string }
+          - { label: Portrait, name: portrait, widget: image, choose_url: false, media_folder: public/artists, public_folder: /artists }
+          - { label: Gallery Directory, name: galleryDir, widget: string, hint: "Advanced: must match this artist's folder under public/artists." }
+          - { label: Booking CC Email, name: bookingEmailCc, widget: string, required: false, hint: "Advanced: changing this affects booking notifications." }
+          - { label: Specialties, name: specialties, widget: list, required: false, field: { label: Specialty, name: specialty, widget: string } }
+          - { label: Instagram, name: instagram, widget: string, required: false }
+          - { label: Facebook, name: facebook, widget: string, required: false }
+          - { label: TikTok, name: tiktok, widget: string, required: false }
+          - { label: Twitch, name: twitch, widget: string, required: false }
+          - { label: Portfolio URL, name: portfolioUrl, widget: string, required: false }
+          - { label: Calendar ID, name: calendarId, widget: string, required: false, hint: "Advanced: must match the Nextcloud calendar." }
+          - { label: Accepting Bookings, name: acceptingBookings, widget: boolean, default: true }
+          - label: Weekly Schedule
+            name: schedule
+            widget: object
+            required: false
+            collapsed: true
+            hint: "Advanced: use HH:MM-HH:MM or closed."
+            fields:
+              - { label: Monday, name: monday, widget: string, required: false }
+              - { label: Tuesday, name: tuesday, widget: string, required: false }
+              - { label: Wednesday, name: wednesday, widget: string, required: false }
+              - { label: Thursday, name: thursday, widget: string, required: false }
+              - { label: Friday, name: friday, widget: string, required: false }
+              - { label: Saturday, name: saturday, widget: string, required: false }
+              - { label: Sunday, name: sunday, widget: string, required: false }
+          - { label: Buffer Minutes, name: bufferMinutes, widget: number, value_type: int, min: 0, default: 30, hint: "Advanced: booking buffer after calendar events." }
+          - label: Testimonials
+            name: testimonials
+            widget: list
+            required: false
+            fields:
+              - { label: Quote, name: quote, widget: text }
+              - { label: Client, name: client, widget: string }
+          - label: Portfolio Images
+            name: cmsPortfolioUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's portfolio tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/Heather-Santistevan/Portfolio, public_folder: /artists/Heather-Santistevan/Portfolio }
+          - label: Flash Images
+            name: cmsFlashUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's flash tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/Heather-Santistevan/Flash, public_folder: /artists/Heather-Santistevan/Flash }
+          - { label: Body, name: body, widget: markdown }
+
+      - label: John Lapides
+        name: john_lapides
+        file: src/content/artists/john-lapides.mdx
+        fields:
+          - { label: Name, name: name, widget: string }
+          - { label: Portrait, name: portrait, widget: image, choose_url: false, media_folder: public/artists, public_folder: /artists }
+          - { label: Gallery Directory, name: galleryDir, widget: string, hint: "Advanced: must match this artist's folder under public/artists." }
+          - { label: Booking CC Email, name: bookingEmailCc, widget: string, required: false, hint: "Advanced: changing this affects booking notifications." }
+          - { label: Specialties, name: specialties, widget: list, required: false, field: { label: Specialty, name: specialty, widget: string } }
+          - { label: Instagram, name: instagram, widget: string, required: false }
+          - { label: Facebook, name: facebook, widget: string, required: false }
+          - { label: TikTok, name: tiktok, widget: string, required: false }
+          - { label: Twitch, name: twitch, widget: string, required: false }
+          - { label: Portfolio URL, name: portfolioUrl, widget: string, required: false }
+          - { label: Calendar ID, name: calendarId, widget: string, required: false, hint: "Advanced: must match the Nextcloud calendar." }
+          - { label: Accepting Bookings, name: acceptingBookings, widget: boolean, default: true }
+          - label: Weekly Schedule
+            name: schedule
+            widget: object
+            required: false
+            collapsed: true
+            hint: "Advanced: use HH:MM-HH:MM or closed."
+            fields:
+              - { label: Monday, name: monday, widget: string, required: false }
+              - { label: Tuesday, name: tuesday, widget: string, required: false }
+              - { label: Wednesday, name: wednesday, widget: string, required: false }
+              - { label: Thursday, name: thursday, widget: string, required: false }
+              - { label: Friday, name: friday, widget: string, required: false }
+              - { label: Saturday, name: saturday, widget: string, required: false }
+              - { label: Sunday, name: sunday, widget: string, required: false }
+          - { label: Buffer Minutes, name: bufferMinutes, widget: number, value_type: int, min: 0, default: 30, hint: "Advanced: booking buffer after calendar events." }
+          - label: Testimonials
+            name: testimonials
+            widget: list
+            required: false
+            fields:
+              - { label: Quote, name: quote, widget: text }
+              - { label: Client, name: client, widget: string }
+          - label: Portfolio Images
+            name: cmsPortfolioUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's portfolio tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/John-Lapides/Portfolio, public_folder: /artists/John-Lapides/Portfolio }
+          - label: Flash Images
+            name: cmsFlashUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's flash tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/John-Lapides/Flash, public_folder: /artists/John-Lapides/Flash }
+          - { label: Body, name: body, widget: markdown }
+
+      - label: Kaori Cedre
+        name: kaori_cedre
+        file: src/content/artists/kaori-cedre.mdx
+        fields:
+          - { label: Name, name: name, widget: string }
+          - { label: Portrait, name: portrait, widget: image, choose_url: false, media_folder: public/artists, public_folder: /artists }
+          - { label: Gallery Directory, name: galleryDir, widget: string, hint: "Advanced: must match this artist's folder under public/artists." }
+          - { label: Booking CC Email, name: bookingEmailCc, widget: string, required: false, hint: "Advanced: changing this affects booking notifications." }
+          - { label: Specialties, name: specialties, widget: list, required: false, field: { label: Specialty, name: specialty, widget: string } }
+          - { label: Instagram, name: instagram, widget: string, required: false }
+          - { label: Facebook, name: facebook, widget: string, required: false }
+          - { label: TikTok, name: tiktok, widget: string, required: false }
+          - { label: Twitch, name: twitch, widget: string, required: false }
+          - { label: Portfolio URL, name: portfolioUrl, widget: string, required: false }
+          - { label: Calendar ID, name: calendarId, widget: string, required: false, hint: "Advanced: must match the Nextcloud calendar." }
+          - { label: Accepting Bookings, name: acceptingBookings, widget: boolean, default: true }
+          - label: Weekly Schedule
+            name: schedule
+            widget: object
+            required: false
+            collapsed: true
+            hint: "Advanced: use HH:MM-HH:MM or closed."
+            fields:
+              - { label: Monday, name: monday, widget: string, required: false }
+              - { label: Tuesday, name: tuesday, widget: string, required: false }
+              - { label: Wednesday, name: wednesday, widget: string, required: false }
+              - { label: Thursday, name: thursday, widget: string, required: false }
+              - { label: Friday, name: friday, widget: string, required: false }
+              - { label: Saturday, name: saturday, widget: string, required: false }
+              - { label: Sunday, name: sunday, widget: string, required: false }
+          - { label: Buffer Minutes, name: bufferMinutes, widget: number, value_type: int, min: 0, default: 30, hint: "Advanced: booking buffer after calendar events." }
+          - label: Testimonials
+            name: testimonials
+            widget: list
+            required: false
+            fields:
+              - { label: Quote, name: quote, widget: text }
+              - { label: Client, name: client, widget: string }
+          - label: Portfolio Images
+            name: cmsPortfolioUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's portfolio tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/Kaori-Cedre/Portfolio, public_folder: /artists/Kaori-Cedre/Portfolio }
+          - label: Flash Images
+            name: cmsFlashUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's flash tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/Kaori-Cedre/Flash, public_folder: /artists/Kaori-Cedre/Flash }
+          - { label: Body, name: body, widget: markdown }
+
+      - label: Pako Martinez
+        name: pako_martinez
+        file: src/content/artists/pako-martinez.mdx
+        fields:
+          - { label: Name, name: name, widget: string }
+          - { label: Portrait, name: portrait, widget: image, choose_url: false, media_folder: public/artists, public_folder: /artists }
+          - { label: Gallery Directory, name: galleryDir, widget: string, hint: "Advanced: must match this artist's folder under public/artists." }
+          - { label: Booking CC Email, name: bookingEmailCc, widget: string, required: false, hint: "Advanced: changing this affects booking notifications." }
+          - { label: Specialties, name: specialties, widget: list, required: false, field: { label: Specialty, name: specialty, widget: string } }
+          - { label: Instagram, name: instagram, widget: string, required: false }
+          - { label: Facebook, name: facebook, widget: string, required: false }
+          - { label: TikTok, name: tiktok, widget: string, required: false }
+          - { label: Twitch, name: twitch, widget: string, required: false }
+          - { label: Portfolio URL, name: portfolioUrl, widget: string, required: false }
+          - { label: Calendar ID, name: calendarId, widget: string, required: false, hint: "Advanced: must match the Nextcloud calendar." }
+          - { label: Accepting Bookings, name: acceptingBookings, widget: boolean, default: true }
+          - label: Weekly Schedule
+            name: schedule
+            widget: object
+            required: false
+            collapsed: true
+            hint: "Advanced: use HH:MM-HH:MM or closed."
+            fields:
+              - { label: Monday, name: monday, widget: string, required: false }
+              - { label: Tuesday, name: tuesday, widget: string, required: false }
+              - { label: Wednesday, name: wednesday, widget: string, required: false }
+              - { label: Thursday, name: thursday, widget: string, required: false }
+              - { label: Friday, name: friday, widget: string, required: false }
+              - { label: Saturday, name: saturday, widget: string, required: false }
+              - { label: Sunday, name: sunday, widget: string, required: false }
+          - { label: Buffer Minutes, name: bufferMinutes, widget: number, value_type: int, min: 0, default: 30, hint: "Advanced: booking buffer after calendar events." }
+          - label: Testimonials
+            name: testimonials
+            widget: list
+            required: false
+            fields:
+              - { label: Quote, name: quote, widget: text }
+              - { label: Client, name: client, widget: string }
+          - label: Portfolio Images
+            name: cmsPortfolioUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's portfolio tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/Pako-Martinez/Portfolio, public_folder: /artists/Pako-Martinez/Portfolio }
+          - label: Flash Images
+            name: cmsFlashUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's flash tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/Pako-Martinez/Flash, public_folder: /artists/Pako-Martinez/Flash }
+          - { label: Body, name: body, widget: markdown }
+
+      - label: Steven Sole Cedre
+        name: steven_sole_cedre
+        file: src/content/artists/steven-sole-cedre.mdx
+        fields:
+          - { label: Name, name: name, widget: string }
+          - { label: Portrait, name: portrait, widget: image, choose_url: false, media_folder: public/artists, public_folder: /artists }
+          - { label: Gallery Directory, name: galleryDir, widget: string, hint: "Advanced: must match this artist's folder under public/artists." }
+          - { label: Booking CC Email, name: bookingEmailCc, widget: string, required: false, hint: "Advanced: changing this affects booking notifications." }
+          - { label: Specialties, name: specialties, widget: list, required: false, field: { label: Specialty, name: specialty, widget: string } }
+          - { label: Instagram, name: instagram, widget: string, required: false }
+          - { label: Facebook, name: facebook, widget: string, required: false }
+          - { label: TikTok, name: tiktok, widget: string, required: false }
+          - { label: Twitch, name: twitch, widget: string, required: false }
+          - { label: Portfolio URL, name: portfolioUrl, widget: string, required: false }
+          - { label: Calendar ID, name: calendarId, widget: string, required: false, hint: "Advanced: must match the Nextcloud calendar." }
+          - { label: Accepting Bookings, name: acceptingBookings, widget: boolean, default: true }
+          - label: Weekly Schedule
+            name: schedule
+            widget: object
+            required: false
+            collapsed: true
+            hint: "Advanced: use HH:MM-HH:MM or closed."
+            fields:
+              - { label: Monday, name: monday, widget: string, required: false }
+              - { label: Tuesday, name: tuesday, widget: string, required: false }
+              - { label: Wednesday, name: wednesday, widget: string, required: false }
+              - { label: Thursday, name: thursday, widget: string, required: false }
+              - { label: Friday, name: friday, widget: string, required: false }
+              - { label: Saturday, name: saturday, widget: string, required: false }
+              - { label: Sunday, name: sunday, widget: string, required: false }
+          - { label: Buffer Minutes, name: bufferMinutes, widget: number, value_type: int, min: 0, default: 30, hint: "Advanced: booking buffer after calendar events." }
+          - label: Testimonials
+            name: testimonials
+            widget: list
+            required: false
+            fields:
+              - { label: Quote, name: quote, widget: text }
+              - { label: Client, name: client, widget: string }
+          - label: Portfolio Images
+            name: cmsPortfolioUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's portfolio tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/Steven-Sole-Cedre/Portfolio, public_folder: /artists/Steven-Sole-Cedre/Portfolio }
+          - label: Flash Images
+            name: cmsFlashUploads
+            widget: list
+            required: false
+            hint: "These images are shown on this artist's flash tab. Reorder this list to control display order."
+            field: { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists/Steven-Sole-Cedre/Flash, public_folder: /artists/Steven-Sole-Cedre/Flash }
+          - { label: Body, name: body, widget: markdown }

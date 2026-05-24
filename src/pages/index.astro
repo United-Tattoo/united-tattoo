@@ -9,8 +9,7 @@ import {
 import { getCollection } from 'astro:content';
 import EditorialFooter from '../components/EditorialFooter.astro';
 import FloatingCTA from '../components/FloatingCTA.astro';
-import fs from 'node:fs';
-import path from 'node:path';
+import { getGalleryImages } from '../services/gallery-images';
 
 export const prerender = true;
 
@@ -18,35 +17,29 @@ const artists = await getCollection('artists');
 const featuredArtists = artists.slice(0, 4);
 
 // Collect portfolio images from all artists for the marquee & showcase
-const publicDir = path.join(process.cwd(), 'public');
-const SUPPORTED_PORTFOLIO_IMAGE = /\.(avif|webp|jpe?g|png)$/i;
 const MAX_IMAGES_PER_ARTIST = 5;
 const portfolioImagesByArtist: { artist: string; artistId: string; images: { src: string; artist: string; artistId: string }[] }[] = [];
 
 for (const artist of artists) {
-  const portfolioPath = path.join(publicDir, artist.data.galleryDir, 'Portfolio');
-  try {
-    if (fs.existsSync(portfolioPath)) {
-      const files = fs.readdirSync(portfolioPath)
-        .filter((file) => SUPPORTED_PORTFOLIO_IMAGE.test(file))
-        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true }))
-        .slice(0, MAX_IMAGES_PER_ARTIST);
+  const images = getGalleryImages(
+    artist.data.galleryDir,
+    'Portfolio',
+    artist.data.cmsPortfolioUploads,
+  ).slice(0, MAX_IMAGES_PER_ARTIST);
 
-      if (files.length === 0) {
-        continue;
-      }
+  if (images.length === 0) {
+    continue;
+  }
 
-      portfolioImagesByArtist.push({
-        artist: artist.data.name,
-        artistId: artist.id,
-        images: files.map((file) => ({
-          src: `/${artist.data.galleryDir}/Portfolio/${file}`,
-          artist: artist.data.name,
-          artistId: artist.id,
-        })),
-      });
-    }
-  } catch (_e) { /* skip */ }
+  portfolioImagesByArtist.push({
+    artist: artist.data.name,
+    artistId: artist.id,
+    images: images.map((src) => ({
+      src,
+      artist: artist.data.name,
+      artistId: artist.id,
+    })),
+  });
 }
 
 // Round-robin by artist so homepage features do not collapse onto one portfolio.
