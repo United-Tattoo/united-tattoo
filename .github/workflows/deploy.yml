@@ -41,5 +41,12 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Check Cloudflare secrets
+        run: |
+          if [ -z "$CLOUDFLARE_API_TOKEN" ] || [ -z "$CLOUDFLARE_ACCOUNT_ID" ]; then
+            echo "::error::Set CLOUDFLARE_API_TOKEN and CLOUDFLARE_ACCOUNT_ID in the GitHub repository secrets."
+            exit 1
+          fi
+
       - name: Deploy
         run: pnpm exec wrangler deploy
