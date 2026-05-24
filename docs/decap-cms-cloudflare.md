@@ -224,19 +224,23 @@ Target publication flow:
 ```text
 Staff edit content in /admin
   -> Decap commits to GitHub
-  -> GitHub Actions sees the Git push
-  -> GitHub Actions runs typecheck and pnpm build
-  -> GitHub Actions deploys with Wrangler
-  -> Cloudflare receives the Worker deployment
+  -> Cloudflare Workers Builds sees the Git push
+  -> Cloudflare runs the configured build command
+  -> Cloudflare runs the configured Wrangler deploy command
   -> Site deploys if build succeeds
 ```
 
-The workflow lives at `.github/workflows/deploy.yml`. Configure these GitHub repository secrets before relying on automatic deploys:
+Cloudflare Workers Builds is configured from the Worker dashboard, not from GitHub Actions. The current intended settings are:
 
 ```text
-CLOUDFLARE_API_TOKEN
-CLOUDFLARE_ACCOUNT_ID
+Git repository: United-Tattoo/united-tattoo
+Production branch: main
+Root directory: /
+Build command: pnpm run build
+Deploy command: npx wrangler deploy
 ```
+
+Cloudflare manages the Workers Builds API token in the dashboard. Do not add a separate GitHub Actions deploy workflow unless there is a specific reason to move deployment back into GitHub.
 
 If the build fails, Cloudflare should keep the previous successful deployment online. The Git commit remains available for debugging and rollback.
 
