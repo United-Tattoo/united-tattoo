@@ -6,6 +6,20 @@ For the browser-based CMS workflow, see [Decap CMS on Cloudflare](./decap-cms-cl
 
 ---
 
+## Site and Page Content
+
+Decap exposes several repo files for non-technical editing while keeping Git as the source of truth:
+
+- `src/data/site-settings.json`: studio identity, contact details, social links, logo, and favicon.
+- `src/data/site-hours.json`: public studio hours for footers, schema, and LLM text.
+- `src/data/home.json`: homepage hero, banners, CTA copy, images, and process steps.
+- `src/data/booking-form.json`: booking page copy, booking select options, agreement text, submit label, and success modal.
+- `src/pages/aftercare.mdx`, `src/pages/privacy.mdx`, `src/pages/terms.mdx`: editable MDX utility pages.
+
+When editing booking form options, prefer changing labels over values. The `value` fields are submitted by the browser and validated by the booking API.
+
+---
+
 ## Artist Content Collection
 
 Each artist is represented by a single MDX file in `src/content/artists/`. The filename becomes the artist's URL slug. For example, `christy-lumberg.mdx` is accessible at `/artists/christy-lumberg`.

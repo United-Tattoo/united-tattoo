@@ -1,0 +1,55 @@
+{
+  "summary": "Sunday-Saturday, 10am-8pm",
+  "footerSummary": "Thursday-Saturday: 10am-8pm\nSunday-Wednesday: 10am-6pm",
+  "hours": [
+    {
+      "day": "Sunday",
+      "shortDay": "Sun",
+      "opens": "10:00",
+      "closes": "18:00",
+      "display": "10am-6pm"
+    },
+    {
+      "day": "Monday",
+      "shortDay": "Mon",
+      "opens": "10:00",
+      "closes": "18:00",
+      "display": "10am-6pm"
+    },
+    {
+      "day": "Tuesday",
+      "shortDay": "Tue",
+      "opens": "10:00",
+      "closes": "18:00",
+      "display": "10am-6pm"
+    },
+    {
+      "day": "Wednesday",
+      "shortDay": "Wed",
+      "opens": "10:00",
+      "closes": "18:00",
+      "display": "10am-6pm"
+    },
+    {
+      "day": "Thursday",
+      "shortDay": "Thu",
+      "opens": "10:00",
+      "closes": "20:00",
+      "display": "10am-8pm"
+    },
+    {
+      "day": "Friday",
+      "shortDay": "Fri",
+      "opens": "10:00",
+      "closes": "20:00",
+      "display": "10am-8pm"
+    },
+    {
+      "day": "Saturday",
+      "shortDay": "Sat",
+      "opens": "10:00",
+      "closes": "20:00",
+      "display": "10am-8pm"
+    }
+  ]
+}

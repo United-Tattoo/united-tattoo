@@ -5,12 +5,27 @@ import CustomSelect from '../components/CustomSelect.astro';
 import EditorialFooter from '../components/EditorialFooter.astro';
 import CalendarPicker from '../components/CalendarPicker.astro';
 import PageHero from '../components/PageHero.astro';
+import bookingForm from '../data/booking-form.json';
 import { getPublicArtists } from '../services/artists';
 
 export const prerender = true;
 
 const artists = getPublicArtists(await getCollection('artists'));
 const preselectedArtist = Astro.url.searchParams.get('artist') || '';
+const booking = bookingForm;
+
+interface SelectOption {
+  value: string;
+  label: string;
+  default?: boolean;
+}
+
+const toSelectOptions = (options: SelectOption[]) =>
+  options.map((option) => ({
+    value: option.value,
+    label: option.label,
+    selected: option.default === true,
+  }));
 
 // Prepare options for selects
 const artistOptions = [
@@ -22,49 +37,15 @@ const artistOptions = [
   { value: 'no-preference', label: 'No preference', selected: false }
 ];
 
-const contactOptions = [
-  { value: 'email', label: 'Email', selected: true },
-  { value: 'phone', label: 'Phone', selected: false },
-  { value: 'text', label: 'Text Message', selected: false }
-];
-
-const styleOptions = [
-  { value: 'traditional', label: 'Traditional', selected: false },
-  { value: 'neo-traditional', label: 'Neo-Traditional', selected: false },
-  { value: 'realism', label: 'Realism', selected: false },
-  { value: 'black-and-grey', label: 'Black and Grey', selected: false },
-  { value: 'fine-line', label: 'Fine Line', selected: false },
-  { value: 'blackwork', label: 'Blackwork', selected: false },
-  { value: 'japanese', label: 'Japanese', selected: false },
-  { value: 'chicano', label: 'Chicano', selected: false },
-  { value: 'geometric', label: 'Geometric', selected: false },
-  { value: 'illustrative', label: 'Illustrative', selected: false },
-  { value: 'script', label: 'Script/Lettering', selected: false },
-  { value: 'other', label: 'Other', selected: false }
-];
-
-const sizeOptions = [
-  { value: 'small', label: 'Small (2-3 inches)', selected: false },
-  { value: 'medium', label: 'Medium (4-6 inches)', selected: false },
-  { value: 'large', label: 'Large (7-10 inches)', selected: false },
-  { value: 'extra-large', label: 'Extra Large (11+ inches)', selected: false },
-  { value: 'half-sleeve', label: 'Half Sleeve', selected: false },
-  { value: 'full-sleeve', label: 'Full Sleeve', selected: false },
-  { value: 'back-piece', label: 'Back Piece', selected: false }
-];
-
-const budgetOptions = [
-  { value: 'under-200', label: 'Under $200', selected: false },
-  { value: '200-500', label: '$200 - $500', selected: false },
-  { value: '500-1000', label: '$500 - $1,000', selected: false },
-  { value: '1000-2000', label: '$1,000 - $2,000', selected: false },
-  { value: '2000-plus', label: '$2,000+', selected: false }
-];
+const contactOptions = toSelectOptions(booking.contactOptions);
+const styleOptions = toSelectOptions(booking.styleOptions);
+const sizeOptions = toSelectOptions(booking.sizeOptions);
+const budgetOptions = toSelectOptions(booking.budgetOptions);
 ---
 
 <SiteLayout
-    title="Request a Consult"
-    description="Request a tattoo consultation with one of our talented artists at United Tattoo in Fountain, CO."
+    title={booking.pageTitle}
+    description={booking.pageDescription}
     removeMainPadding={true}
     disableSmoothScroll={true}
     hideFooter={true}
@@ -79,18 +60,18 @@ const budgetOptions = [
   </div>
 
   <PageHero
-    eyebrow="Booking"
-    title="Request a Consult"
-    description="Tell us about your tattoo idea, preferred artist, placement, and timing. We will review the request and follow up with next steps."
+    eyebrow={booking.hero.eyebrow}
+    title={booking.hero.title}
+    description={booking.hero.description}
     breadcrumbs={[
       { label: 'Home', href: '/' },
       { label: 'Booking' },
     ]}
-    image="/images/united-studio-main.avif"
-    imagePosition="center 45%"
+    image={booking.hero.image}
+    imagePosition={booking.hero.imagePosition}
     stats={[
       { value: artists.length, label: 'Artists' },
-      { value: '24-48h', label: 'Response' },
+      { value: booking.hero.responseStat, label: 'Response' },
     ]}
   />
 
@@ -148,18 +129,18 @@ const budgetOptions = [
       <!-- Section 01: Artist -->
       <div class="form-section-wrapper relative z-[50] py-12 md:py-20 lg:py-32 border-t border-border grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
         <div class="lg:col-span-4">
-          <span class="font-mono text-xs uppercase tracking-[0.2em] text-primary block mb-4">01 // Artist</span>
-          <h2 class="text-4xl md:text-5xl font-sans font-extralight text-foreground tracking-tight">Who are you looking to work with?</h2>
+          <span class="font-mono text-xs uppercase tracking-[0.2em] text-primary block mb-4">{booking.sections.artist.label}</span>
+          <h2 class="text-4xl md:text-5xl font-sans font-extralight text-foreground tracking-tight">{booking.sections.artist.heading}</h2>
         </div>
         <div class="lg:col-span-8 lg:pt-8">
           <CustomSelect
             id="artist"
             name="artist"
-            label="Select Artist"
+            label={booking.sections.artist.selectLabel}
             options={artistOptions}
             required={true}
-            placeholder="Choose an artist..."
-            hint="Select 'No preference' if you'd like us to recommend an artist based on your style."
+            placeholder={booking.sections.artist.placeholder}
+            hint={booking.sections.artist.hint}
           />
 
           <!-- Calendar Picker (shown when artist is selected) -->
@@ -168,21 +149,21 @@ const budgetOptions = [
              <CalendarPicker artistId="" />
              <div class="mt-3 text-center">
                 <button type="button" id="use-manual-time" class="text-[10px] text-muted-foreground hover:text-primary underline decoration-neutral-500/30 underline-offset-4 transition-colors">
-                   Can't find a suitable time? Enter manually
+                   {booking.sections.artist.manualAvailabilityLink}
                 </button>
              </div>
           </div>
 
           <!-- Manual Availability Input (shown when no artist selected or manual entry chosen) -->
           <div id="manual-availability-container" class="form-field group mt-8">
-            <label for="availability" class="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2 group-focus-within:text-foreground transition-colors">Preferred Dates / Times</label>
+            <label for="availability" class="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2 group-focus-within:text-foreground transition-colors">{booking.sections.artist.manualAvailabilityLabel}</label>
             <input
               type="text"
               id="availability"
               name="availability"
               autocomplete="off"
               class="w-full bg-transparent border-b border-input py-4 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none transition-colors font-mono text-sm rounded-none appearance-none"
-              placeholder="e.g. Weekends in March, Tuesdays after 4pm"
+              placeholder={booking.sections.artist.manualAvailabilityPlaceholder}
             />
           </div>
         </div>
@@ -191,8 +172,8 @@ const budgetOptions = [
       <!-- Section 02: Contact -->
       <div class="form-section-wrapper relative z-[40] py-12 md:py-20 lg:py-32 border-t border-border grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
         <div class="lg:col-span-4">
-          <span class="font-mono text-xs uppercase tracking-[0.2em] text-primary block mb-4">02 // Contact</span>
-          <h2 class="text-4xl md:text-5xl font-sans font-extralight text-foreground tracking-tight">How can we reach you?</h2>
+          <span class="font-mono text-xs uppercase tracking-[0.2em] text-primary block mb-4">{booking.sections.contact.label}</span>
+          <h2 class="text-4xl md:text-5xl font-sans font-extralight text-foreground tracking-tight">{booking.sections.contact.heading}</h2>
         </div>
         <div class="lg:col-span-8 lg:pt-8">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 md:gap-y-16">
@@ -252,8 +233,8 @@ const budgetOptions = [
       <!-- Section 03: Details -->
       <div class="form-section-wrapper relative z-[30] py-12 md:py-20 lg:py-32 border-t border-border grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
         <div class="lg:col-span-4">
-          <span class="font-mono text-xs uppercase tracking-[0.2em] text-primary block mb-4">03 // Details</span>
-          <h2 class="text-4xl md:text-5xl font-sans font-extralight text-foreground tracking-tight">Tell us about the piece</h2>
+          <span class="font-mono text-xs uppercase tracking-[0.2em] text-primary block mb-4">{booking.sections.details.label}</span>
+          <h2 class="text-4xl md:text-5xl font-sans font-extralight text-foreground tracking-tight">{booking.sections.details.heading}</h2>
         </div>
         <div class="lg:col-span-8 lg:pt-8">
           <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-10 md:gap-y-16 mb-16">
@@ -261,15 +242,15 @@ const budgetOptions = [
               <CustomSelect
                 id="style"
                 name="style"
-                label="Tattoo Style"
+                label={booking.sections.details.styleLabel}
                 options={styleOptions}
                 required={true}
-                placeholder="Select style..."
+                placeholder={booking.sections.details.stylePlaceholder}
               />
             </div>
 
             <div class="form-field group">
-              <label for="placement" class="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2 group-focus-within:text-foreground transition-colors">Body Placement</label>
+              <label for="placement" class="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2 group-focus-within:text-foreground transition-colors">{booking.sections.details.placementLabel}</label>
               <input
                 type="text"
                 id="placement"
@@ -277,7 +258,7 @@ const budgetOptions = [
                 required
                 autocomplete="off"
                 class="w-full bg-transparent border-b border-input py-4 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none transition-colors font-mono text-sm rounded-none appearance-none"
-                placeholder="e.g. Inner forearm"
+                placeholder={booking.sections.details.placementPlaceholder}
               />
             </div>
 
@@ -285,10 +266,10 @@ const budgetOptions = [
               <CustomSelect
                 id="size"
                 name="size"
-                label="Approximate Size"
+                label={booking.sections.details.sizeLabel}
                 options={sizeOptions}
                 required={true}
-                placeholder="Select size..."
+                placeholder={booking.sections.details.sizePlaceholder}
               />
             </div>
 
@@ -296,22 +277,22 @@ const budgetOptions = [
               <CustomSelect
                 id="budget"
                 name="budget"
-                label="Budget Range"
+                label={booking.sections.details.budgetLabel}
                 options={budgetOptions}
-                placeholder="Optional"
+                placeholder={booking.sections.details.budgetPlaceholder}
               />
             </div>
           </div>
 
           <div class="form-field group">
-            <label for="description" class="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2 group-focus-within:text-foreground transition-colors">Description</label>
+            <label for="description" class="block font-mono text-[10px] uppercase tracking-widest text-muted-foreground mb-2 group-focus-within:text-foreground transition-colors">{booking.sections.details.descriptionLabel}</label>
             <textarea
               id="description"
               name="description"
               required
               rows="5"
               class="w-full bg-transparent border-b border-input py-4 text-foreground placeholder:text-muted-foreground focus:border-ring focus:outline-none transition-colors resize-none font-mono text-sm leading-relaxed rounded-none appearance-none"
-              placeholder="Describe your idea in detail..."
+              placeholder={booking.sections.details.descriptionPlaceholder}
             ></textarea>
           </div>
         </div>
@@ -320,10 +301,10 @@ const budgetOptions = [
       <!-- Section 04: References -->
       <div class="form-section-wrapper relative z-[20] py-12 md:py-20 lg:py-32 border-t border-border grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-24">
         <div class="lg:col-span-4">
-          <span class="font-mono text-xs uppercase tracking-[0.2em] text-primary block mb-4">04 // Visuals</span>
-          <h2 class="text-4xl md:text-5xl font-sans font-extralight text-foreground tracking-tight">Reference Images</h2>
+          <span class="font-mono text-xs uppercase tracking-[0.2em] text-primary block mb-4">{booking.sections.references.label}</span>
+          <h2 class="text-4xl md:text-5xl font-sans font-extralight text-foreground tracking-tight">{booking.sections.references.heading}</h2>
           <p class="mt-6 text-muted-foreground font-light leading-relaxed">
-            Upload up to 5 images to help us understand your vision. These can be photos of other tattoos, artwork, or placement photos.
+            {booking.sections.references.description}
           </p>
         </div>
         <div class="lg:col-span-8 lg:pt-8">
@@ -340,8 +321,8 @@ const budgetOptions = [
               <div class="mb-6 inline-flex items-center justify-center w-20 h-20 rounded-full bg-secondary border border-border group-hover:scale-110 group-hover:border-primary/50 transition-all duration-500">
                 <iconify-icon icon="solar:upload-minimalistic-bold" class="text-3xl text-muted-foreground group-hover:text-primary transition-colors"></iconify-icon>
               </div>
-              <p class="font-sans font-extralight text-2xl text-foreground mb-3 group-hover:text-primary/80 transition-colors tracking-tight">Add your inspiration</p>
-              <p class="font-mono text-xs text-muted-foreground tracking-widest uppercase">or click to browse · Max 5 images · 10MB each</p>
+              <p class="font-sans font-extralight text-2xl text-foreground mb-3 group-hover:text-primary/80 transition-colors tracking-tight">{booking.sections.references.uploadTitle}</p>
+              <p class="font-mono text-xs text-muted-foreground tracking-widest uppercase">{booking.sections.references.uploadHint}</p>
 
               <!-- File type badges -->
               <div class="flex justify-center gap-3 mt-6">
@@ -374,7 +355,7 @@ const budgetOptions = [
                 </div>
               </div>
               <span class="font-mono text-xs text-muted-foreground group-hover:text-secondary-foreground transition-colors leading-relaxed">
-                I agree to the <a href="/terms" class="text-foreground underline decoration-white/30 hover:decoration-white underline-offset-4">Terms of Service</a> & <a href="/privacy" class="text-foreground underline decoration-white/30 hover:decoration-white underline-offset-4">Privacy Policy</a>.
+                {booking.agreements.termsPrefix} <a href="/terms" class="text-foreground underline decoration-white/30 hover:decoration-white underline-offset-4">Terms of Service</a> {booking.agreements.termsJoiner} <a href="/privacy" class="text-foreground underline decoration-white/30 hover:decoration-white underline-offset-4">Privacy Policy</a>.
               </span>
             </label>
 
@@ -386,7 +367,7 @@ const budgetOptions = [
                 </div>
               </div>
               <span class="font-mono text-xs text-muted-foreground group-hover:text-secondary-foreground transition-colors leading-relaxed">
-                I confirm I am 18+ years old.
+                {booking.agreements.ageText}
               </span>
             </label>
 
@@ -399,7 +380,7 @@ const budgetOptions = [
                 </div>
               </div>
               <span class="font-mono text-xs text-muted-foreground group-hover:text-secondary-foreground transition-colors leading-relaxed">
-                Stay informed about promotions, events, and tattoo inspiration from United Tattoo.
+                {booking.agreements.newsletterText}
               </span>
             </label>
           </div>
@@ -410,7 +391,7 @@ const budgetOptions = [
               class="relative w-full bg-foreground text-background font-mono text-sm uppercase tracking-[0.2em] py-6 hover:bg-primary hover:text-primary-foreground transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed group overflow-hidden"
             >
               <span class="relative z-10 flex items-center justify-center gap-4">
-                <span id="submit-text">Send Request</span>
+                <span id="submit-text">{booking.submitLabel}</span>
                 <iconify-icon id="submit-icon" icon="solar:arrow-right-linear" class="text-lg group-hover:translate-x-1 transition-transform"></iconify-icon>
               </span>
               <iconify-icon id="loading-icon" icon="solar:refresh-bold" class="relative z-10 text-lg animate-spin hidden"></iconify-icon>
@@ -465,52 +446,42 @@ const budgetOptions = [
         </div>
       </div>
 
-      <span class="section-label block mb-6 opacity-0 transform translate-y-6 transition-all duration-600" id="success-label">Request Confirmed</span>
+      <span class="section-label block mb-6 opacity-0 transform translate-y-6 transition-all duration-600" id="success-label">{booking.success.label}</span>
 
       <h1 class="text-5xl md:text-6xl font-extralight tracking-tight text-foreground mb-6 opacity-0 transform translate-y-6 transition-all duration-600 delay-100" id="success-title">
-        Thank You
+        {booking.success.title}
       </h1>
 
       <p class="text-muted-foreground text-base mb-4 leading-relaxed opacity-0 transform translate-y-6 transition-all duration-600 delay-200" id="success-message">
-        Your booking request has been received. We'll review your details and respond within 24–48 hours.
+        {booking.success.message}
       </p>
 
       <p class="text-muted-foreground text-sm mb-12 opacity-0 transform translate-y-6 transition-all duration-600 delay-300" id="success-timing">
-        Expect a response via your preferred contact method.
+        {booking.success.timing}
       </p>
 
       <!-- What's Next -->
       <div class="glass-card p-8 mb-10 text-left opacity-0 transform translate-y-6 transition-all duration-600 delay-400" id="success-next">
-        <h2 class="text-lg font-normal italic text-foreground mb-6">What Happens Next</h2>
+        <h2 class="text-lg font-normal italic text-foreground mb-6">{booking.success.nextHeading}</h2>
         <div class="space-y-5">
-          <div class="flex items-start gap-4">
-            <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-              <iconify-icon icon="solar:check-bold" class="text-xs text-primary"></iconify-icon>
+          {booking.success.nextSteps.map((step) => (
+            <div class="flex items-start gap-4">
+              <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
+                <iconify-icon icon="solar:check-bold" class="text-xs text-primary"></iconify-icon>
+              </div>
+              <p class="text-sm text-secondary-foreground">{step}</p>
             </div>
-            <p class="text-sm text-secondary-foreground">Our reception desk reviews your request and reference images</p>
-          </div>
-          <div class="flex items-start gap-4">
-            <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-              <iconify-icon icon="solar:check-bold" class="text-xs text-primary"></iconify-icon>
-            </div>
-            <p class="text-sm text-secondary-foreground">Your selected artist reviews the details and reaches out to discuss your vision</p>
-          </div>
-          <div class="flex items-start gap-4">
-            <div class="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0 mt-0.5">
-              <iconify-icon icon="solar:check-bold" class="text-xs text-primary"></iconify-icon>
-            </div>
-            <p class="text-sm text-secondary-foreground">We propose dates/times and confirm any deposit details</p>
-          </div>
+          ))}
         </div>
       </div>
 
       <!-- Action Buttons -->
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4 opacity-0 transform translate-y-6 transition-all duration-600 delay-500" id="success-actions">
         <a href="/" class="px-10 py-4 bg-foreground text-background text-sm font-medium tracking-[0.15em] uppercase hover:bg-primary hover:text-primary-foreground transition-all duration-300">
-          Return Home
+          {booking.success.primaryActionLabel}
         </a>
         <a href="/artists" class="px-10 py-4 border border-input text-foreground text-sm tracking-[0.15em] uppercase hover:bg-secondary transition-all duration-300">
-          Browse Artists
+          {booking.success.secondaryActionLabel}
         </a>
       </div>
     </div>

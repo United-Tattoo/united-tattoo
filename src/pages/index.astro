@@ -9,8 +9,10 @@ import {
 import { getCollection } from 'astro:content';
 import EditorialFooter from '../components/EditorialFooter.astro';
 import FloatingCTA from '../components/FloatingCTA.astro';
+import homeContent from '../data/home.json';
 import { getPublicArtists } from '../services/artists';
 import { getGalleryImages } from '../services/gallery-images';
+import { SITE_HOURS } from '../services/site-hours';
 
 export const prerender = true;
 
@@ -64,11 +66,12 @@ const showcaseMinimumImages = Math.max(6, portfolioImagesByArtist.length);
 const showcaseImageCount = Math.ceil(showcaseMinimumImages / showcaseColumns) * showcaseColumns;
 const showcaseImages = balancedPortfolioImages.slice(0, showcaseImageCount);
 const showStudioIntro = false;
+const home = homeContent;
 ---
 
-<SiteLayout title={SITE_DESCRIPTION} removeMainPadding={true} hideFooter={true}>
+<SiteLayout title={home.metaTitle || SITE_DESCRIPTION} description={home.metaDescription} removeMainPadding={true} hideFooter={true}>
 
-  <FloatingCTA href="/booking" label="Request a consult" eventLocation="home_floating" />
+  <FloatingCTA href={home.hero.primaryCtaHref} label={home.floatingCtaLabel} eventLocation="home_floating" />
 
   <div class="relative main-content-wrapper max-w-[1800px] mx-auto border-l border-r border-border">
 
@@ -85,7 +88,7 @@ const showStudioIntro = false;
     <!-- Full-bleed photo with desaturated treatment -->
     <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden hero-photo-wrap">
       <div class="absolute inset-0 hero-photo-layer scale-[1.03]">
-        <img src="/images/united-exterior.avif" alt="United Tattoo storefront" class="w-full h-full object-cover object-center grayscale brightness-[0.62] contrast-[1.12]" />
+        <img src={home.hero.image} alt={home.hero.imageAlt} class="w-full h-full object-cover object-center grayscale brightness-[0.62] contrast-[1.12]" />
       </div>
       <div class="absolute inset-0 bg-black/48"></div>
       <div class="absolute inset-0 hero-vignette"></div>
@@ -99,39 +102,38 @@ const showStudioIntro = false;
       <div class="hero-copy w-full px-6 pb-20 pt-32 md:px-12 md:pb-24 lg:px-20 lg:pb-28">
         <div class="max-w-5xl">
           <p class="hero-reveal hero-kicker font-mono text-[10px] uppercase tracking-[0.32em] text-white/65 mb-5">
-            Fountain, Colorado
+            {home.hero.kicker}
           </p>
           <h1 class="hero-title text-white" style="font-family: var(--font-display), 'Playfair Display', serif; font-weight: 400;">
-            <span class="hero-title-line block overflow-hidden">
-              <span class="inline-block">United</span>
-            </span>
-            <span class="hero-title-line block overflow-hidden">
-              <span class="inline-block">Tattoo</span>
-            </span>
+            {home.hero.titleLines.map((line) => (
+              <span class="hero-title-line block overflow-hidden">
+                <span class="inline-block">{line}</span>
+              </span>
+            ))}
           </h1>
           <div class="hero-reveal mt-7 h-px w-full max-w-xl bg-white/35"></div>
           <div class="hero-reveal mt-6 flex max-w-3xl flex-col gap-6 md:flex-row md:items-end md:justify-between">
             <p class="max-w-lg font-mono text-sm md:text-base text-white/72 tracking-wide">
-              Custom tattoos in Fountain, Colorado. Built around the artist, the client, and the work.
+              {home.hero.description}
             </p>
             <div class="flex shrink-0 flex-col items-start gap-3">
               <div class="flex items-center gap-4">
                 <a
-                  href="/booking"
+                  href={home.hero.primaryCtaHref}
                   class="inline-flex items-center gap-2 px-5 py-3 bg-primary text-primary-foreground font-mono text-xs uppercase tracking-[0.15em] border border-primary hover:brightness-110 transition-all"
                   data-analytics-event="booking_cta_click"
                   data-analytics-location="home_hero"
-                  data-analytics-label="Request a Consult"
-                  data-analytics-href="/booking"
+                  data-analytics-label={home.hero.primaryCtaLabel}
+                  data-analytics-href={home.hero.primaryCtaHref}
                 >
-                  Request a Consult
+                  {home.hero.primaryCtaLabel}
                 </a>
-                <a href="/artists" class="font-mono text-xs uppercase tracking-[0.15em] text-white/72 border-b border-white/30 pb-0.5 hover:text-white hover:border-white transition-all">
-                  View Artists
+                <a href={home.hero.secondaryCtaHref} class="font-mono text-xs uppercase tracking-[0.15em] text-white/72 border-b border-white/30 pb-0.5 hover:text-white hover:border-white transition-all">
+                  {home.hero.secondaryCtaLabel}
                 </a>
               </div>
               <p class="max-w-xs font-mono text-[10px] uppercase tracking-[0.18em] text-white/52">
-                No deposit to request · 24-48h response
+                {home.hero.note}
               </p>
             </div>
             </div>
@@ -195,7 +197,7 @@ const showStudioIntro = false;
           </div>
           <div class="intro-meta intro-reveal">
             <span class="intro-meta-label">Hours</span>
-            <span class="intro-meta-value">Sun — Sat, 10a–8p</span>
+            <span class="intro-meta-value">{SITE_HOURS.summary}</span>
           </div>
         </div>
       </div>
@@ -246,16 +248,16 @@ const showStudioIntro = false;
     <!-- Subtle noise bg -->
     <div class="absolute inset-0 noise pointer-events-none"></div>
     <div class="section-banner-image" aria-hidden="true">
-      <img src="/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-03%2048.jpg" alt="" loading="lazy" />
+      <img src={home.artistsBanner.image} alt="" loading="lazy" />
     </div>
     <div class="section-banner-inner">
       <div class="section-banner-meta">
-        <span>01 / Artists</span>
+        <span>{home.artistsBanner.meta}</span>
       </div>
-      <h2 class="artists-title section-banner-title">The Team</h2>
+      <h2 class="artists-title section-banner-title">{home.artistsBanner.title}</h2>
       <div class="section-banner-footer">
         <span>{artists.length} artists in residence</span>
-        <a href="/artists">Explore portfolios <span aria-hidden="true">→</span></a>
+        <a href="/artists">{home.artistsBanner.footerLinkLabel} <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </div>
@@ -334,16 +336,16 @@ const showStudioIntro = false;
     <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
     <div class="absolute inset-0 noise pointer-events-none"></div>
     <div class="section-banner-image" aria-hidden="true">
-      <img src="/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-22%20127.jpg" alt="" loading="lazy" />
+      <img src={home.workBanner.image} alt="" loading="lazy" />
     </div>
     <div class="section-banner-inner">
       <div class="section-banner-meta">
-        <span>02 / Portfolio</span>
+        <span>{home.workBanner.meta}</span>
       </div>
-      <h2 class="showcase-title section-banner-title">Recent Work</h2>
+      <h2 class="showcase-title section-banner-title">{home.workBanner.title}</h2>
       <div class="section-banner-footer">
         <span>{showcaseImages.length} featured pieces</span>
-        <a href="/artists">View all artists <span aria-hidden="true">→</span></a>
+        <a href="/artists">{home.workBanner.footerLinkLabel} <span aria-hidden="true">→</span></a>
       </div>
     </div>
   </div>
@@ -386,23 +388,23 @@ const showStudioIntro = false;
     <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
     <div class="absolute inset-0 noise pointer-events-none"></div>
     <div class="section-banner-image" aria-hidden="true">
-      <img src="/artists/Christy-Lumberg/Portfolio/26-01-02%2019-30-50%20139.jpg" alt="" loading="lazy" />
+      <img src={home.processBanner.image} alt="" loading="lazy" />
     </div>
     <div class="section-banner-inner">
       <div class="section-banner-meta">
-        <span>03 / Process</span>
+        <span>{home.processBanner.meta}</span>
       </div>
-      <h2 class="process-title section-banner-title">The Process</h2>
+      <h2 class="process-title section-banner-title">{home.processBanner.title}</h2>
       <div class="section-banner-footer">
-        <span>From idea to ink</span>
+        <span>{home.processBanner.footerText}</span>
         <a
           href="/booking"
           data-analytics-event="booking_cta_click"
           data-analytics-location="home_process_banner"
-          data-analytics-label="Request a Consult"
+          data-analytics-label={home.processBanner.footerLinkLabel}
           data-analytics-href="/booking"
         >
-          Request a consult <span aria-hidden="true">→</span>
+          {home.processBanner.footerLinkLabel} <span aria-hidden="true">→</span>
         </a>
       </div>
     </div>
@@ -411,12 +413,7 @@ const showStudioIntro = false;
   <!-- Process Section: Bordered Grid -->
   <section id="process" class="process-section relative z-20" data-scroll-section>
     <div class="process-grid grid grid-cols-1 md:grid-cols-2">
-      {[
-        { num: '01', title: 'Consultation', desc: 'Share your vision. We shape your idea together and match you with the right artist.' },
-        { num: '02', title: 'Design', desc: 'Your artist creates a custom piece tailored to your body and style.' },
-        { num: '03', title: 'Session', desc: 'Get inked in our clean, comfortable studio with experienced professionals.' },
-        { num: '04', title: 'Aftercare', desc: 'We guide you through healing so your artwork stays vibrant for life.' }
-      ].map((step, i) => (
+      {home.processSteps.map((step, i) => (
         <div class="process-step group relative border-b border-r border-border p-8 md:p-12 lg:p-16 flex flex-col justify-between min-h-[280px] md:min-h-[360px] hover:bg-secondary/20 transition-colors duration-500">
           <!-- Corner dot -->
           <div class="absolute top-0 right-0 w-1.5 h-1.5 rounded-full bg-primary/25 translate-x-1/2 -translate-y-1/2"></div>
@@ -432,7 +429,7 @@ const showStudioIntro = false;
               {step.title}
             </h3>
             <p class="font-mono text-sm text-muted-foreground leading-relaxed max-w-sm">
-              {step.desc}
+              {step.description}
             </p>
           </div>
         </div>

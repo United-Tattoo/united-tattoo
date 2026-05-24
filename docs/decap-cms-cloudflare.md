@@ -124,13 +124,35 @@ Start with content that already maps cleanly to files.
 
 ### Site Settings
 
-Path:
+Paths:
 
 ```text
 src/data/site-settings.json
+src/data/site-hours.json
+src/data/home.json
+src/data/booking-form.json
 ```
 
-This file drives the exported values in `src/consts.ts`, including studio contact details, profile links, the header/schema logo image, and the favicon.
+These files drive global content that is shared by pages and code:
+
+- `site-settings.json`: studio contact details, profile links, the header/schema logo image, and the favicon.
+- `site-hours.json`: visible footer hours, generated LLM text hours, and `OpeningHoursSpecification` schema.
+- `home.json`: homepage hero copy, banner copy/images, CTA labels, and process steps.
+- `booking-form.json`: booking page copy, select options, agreement text, submit label, and success modal copy.
+
+`booking-form.json` is also used by the booking API to validate submitted select values, so option `value` fields are operational. Change labels freely, but change values only when the API behavior should change too.
+
+### Pages
+
+Paths:
+
+```text
+src/pages/aftercare.mdx
+src/pages/privacy.mdx
+src/pages/terms.mdx
+```
+
+These are file entries in Decap. Their page bodies remain MDX in the repository and can still be edited manually.
 
 ### Artists
 

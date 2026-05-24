@@ -19,6 +19,7 @@ import {
   YELP,
   YOUTUBE,
 } from '../consts';
+import { OPENING_HOURS_SPECIFICATION } from '../services/site-hours';
 
 interface Props {
   type?: 'website' | 'article' | 'profile';
@@ -90,20 +91,7 @@ const localBusinessSchema = {
     "latitude": GEO_LATITUDE,
     "longitude": GEO_LONGITUDE
   },
-  "openingHoursSpecification": [
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Thursday", "Friday", "Saturday"],
-      "opens": "10:00",
-      "closes": "20:00"
-    },
-    {
-      "@type": "OpeningHoursSpecification",
-      "dayOfWeek": ["Sunday", "Monday", "Tuesday", "Wednesday"],
-      "opens": "10:00",
-      "closes": "18:00"
-    }
-  ]
+  "openingHoursSpecification": OPENING_HOURS_SPECIFICATION
 };
 
 const schemaGraph: Record<string, unknown>[] = [localBusinessSchema];

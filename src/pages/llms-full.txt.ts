@@ -16,6 +16,7 @@ import {
   YOUTUBE,
 } from '../consts';
 import { getPublicArtists } from '../services/artists';
+import { SITE_HOURS } from '../services/site-hours';
 
 export async function GET() {
   const artists = getPublicArtists(await getCollection('artists'));
@@ -66,7 +67,7 @@ Instagram: ${INSTAGRAM}
 YouTube: ${YOUTUBE}
 Yelp: ${YELP}
 InkRoster: ${INKROSTER}
-Hours: Sunday–Saturday, 10am–8pm
+Hours: ${SITE_HOURS.summary}
 
 ${SITE_TITLE} is a custom tattoo studio in Fountain, Colorado. ${SITE_DESCRIPTION}. We are home to ${artists.length} resident artists offering a wide range of tattoo styles including American Traditional, Fine Line, Watercolor, Black & Grey, Botanical, Geometric, Illustrative, and more. Every piece is custom-built for the client.
 

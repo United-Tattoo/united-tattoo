@@ -72,6 +72,8 @@ The canonical business details live in `src/data/site-settings.json` and are exp
 
 Keep these values consistent anywhere the business appears. If a phone number, email, or domain changes, update Site Settings in Decap or edit `src/data/site-settings.json` first, then search for hard-coded older values.
 
+Studio hours live in `src/data/site-hours.json`. That file feeds visible footer hours, `llms.txt`, `llms-full.txt`, and LocalBusiness opening-hours schema.
+
 ### Third-Party Profiles
 
 Important profile URLs are also centralized in Site Settings:

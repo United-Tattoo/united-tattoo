@@ -16,6 +16,7 @@ import {
   YOUTUBE,
 } from '../consts';
 import { getPublicArtists } from '../services/artists';
+import { SITE_HOURS } from '../services/site-hours';
 
 export async function GET() {
   const artists = getPublicArtists(await getCollection('artists'));
@@ -36,7 +37,7 @@ export async function GET() {
 
   const content = `# ${SITE_TITLE}
 
-> ${SITE_DESCRIPTION}. Home to ${artists.length} resident artists specializing in American Traditional, Fine Line, Watercolor, Black & Grey, Botanical, Geometric, and more. Located at ${LOCATION}. Open Sun–Sat 10am–8pm.
+> ${SITE_DESCRIPTION}. Home to ${artists.length} resident artists specializing in American Traditional, Fine Line, Watercolor, Black & Grey, Botanical, Geometric, and more. Located at ${LOCATION}. Open ${SITE_HOURS.summary}.
 
 ## Studio Pages
 

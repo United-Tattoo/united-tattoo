@@ -11,6 +11,7 @@ import {
   YOUTUBE,
 } from '../consts';
 import DoveMark from './DoveMark.astro';
+import { SITE_HOURS } from '../services/site-hours';
 
 const [brandPrimary = SITE_TITLE] = SITE_TITLE.split(/\s+/);
 ---
@@ -96,34 +97,12 @@ const [brandPrimary = SITE_TITLE] = SITE_TITLE.split(/\s+/);
           [02] Hours
         </span>
         <ul class="font-mono text-sm text-secondary-foreground space-y-2">
-          <li class="flex justify-between">
-            <span>Sun</span>
-            <span>10am-6pm</span>
-          </li>
-          <li class="flex justify-between">
-            <span>Mon</span>
-            <span>10am-6pm</span>
-          </li>
-          <li class="flex justify-between">
-            <span>Tue</span>
-            <span>10am-6pm</span>
-          </li>
-          <li class="flex justify-between">
-            <span>Wed</span>
-            <span>10am-6pm</span>
-          </li>
-          <li class="flex justify-between">
-            <span>Thu</span>
-            <span>10am-8pm</span>
-          </li>
-          <li class="flex justify-between">
-            <span>Fri</span>
-            <span>10am-8pm</span>
-          </li>
-          <li class="flex justify-between">
-            <span>Sat</span>
-            <span>10am-8pm</span>
-          </li>
+          {SITE_HOURS.hours.map((entry) => (
+            <li class="flex justify-between">
+              <span>{entry.shortDay}</span>
+              <span>{entry.display}</span>
+            </li>
+          ))}
         </ul>
       </div>
 

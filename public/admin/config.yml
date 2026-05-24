@@ -45,6 +45,222 @@ collections:
           - { label: Latitude, name: geoLatitude, widget: number, value_type: float }
           - { label: Longitude, name: geoLongitude, widget: number, value_type: float }
           - { label: Google Maps URL, name: googleMapsUrl, widget: string }
+      - label: Studio Hours
+        name: site_hours
+        file: src/data/site-hours.json
+        format: json
+        fields:
+          - { label: Hours Summary, name: summary, widget: string, hint: "Used in SEO and LLM text, for example Sunday-Saturday, 10am-8pm." }
+          - { label: Footer Summary, name: footerSummary, widget: text, hint: "One line per visible footer line." }
+          - label: Daily Hours
+            name: hours
+            widget: list
+            fields:
+              - { label: Day, name: day, widget: string }
+              - { label: Short Day, name: shortDay, widget: string }
+              - { label: Opens, name: opens, widget: string, hint: "24-hour HH:MM format for schema." }
+              - { label: Closes, name: closes, widget: string, hint: "24-hour HH:MM format for schema." }
+              - { label: Display, name: display, widget: string, hint: "Human-facing footer text." }
+      - label: Home Page
+        name: home_page
+        file: src/data/home.json
+        format: json
+        fields:
+          - { label: Meta Title, name: metaTitle, widget: string }
+          - { label: Meta Description, name: metaDescription, widget: text }
+          - { label: Floating CTA Label, name: floatingCtaLabel, widget: string }
+          - label: Hero
+            name: hero
+            widget: object
+            fields:
+              - { label: Kicker, name: kicker, widget: string }
+              - { label: Title Lines, name: titleLines, widget: list, field: { label: Line, name: line, widget: string } }
+              - { label: Description, name: description, widget: text }
+              - { label: Primary CTA Label, name: primaryCtaLabel, widget: string }
+              - { label: Primary CTA URL, name: primaryCtaHref, widget: string }
+              - { label: Secondary CTA Label, name: secondaryCtaLabel, widget: string }
+              - { label: Secondary CTA URL, name: secondaryCtaHref, widget: string }
+              - { label: Note, name: note, widget: string }
+              - { label: Image, name: image, widget: image, choose_url: false, media_folder: public/images, public_folder: /images }
+              - { label: Image Alt Text, name: imageAlt, widget: string }
+          - label: Artists Banner
+            name: artistsBanner
+            widget: object
+            fields:
+              - { label: Meta, name: meta, widget: string }
+              - { label: Title, name: title, widget: string }
+              - { label: Footer Link Label, name: footerLinkLabel, widget: string }
+              - { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists, public_folder: /artists }
+          - label: Work Banner
+            name: workBanner
+            widget: object
+            fields:
+              - { label: Meta, name: meta, widget: string }
+              - { label: Title, name: title, widget: string }
+              - { label: Footer Link Label, name: footerLinkLabel, widget: string }
+              - { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists, public_folder: /artists }
+          - label: Process Banner
+            name: processBanner
+            widget: object
+            fields:
+              - { label: Meta, name: meta, widget: string }
+              - { label: Title, name: title, widget: string }
+              - { label: Footer Text, name: footerText, widget: string }
+              - { label: Footer Link Label, name: footerLinkLabel, widget: string }
+              - { label: Image, name: image, widget: image, choose_url: false, media_folder: public/artists, public_folder: /artists }
+          - label: Process Steps
+            name: processSteps
+            widget: list
+            fields:
+              - { label: Title, name: title, widget: string }
+              - { label: Description, name: description, widget: text }
+      - label: Booking Form
+        name: booking_form
+        file: src/data/booking-form.json
+        format: json
+        fields:
+          - { label: Page Title, name: pageTitle, widget: string }
+          - { label: Page Description, name: pageDescription, widget: text }
+          - label: Hero
+            name: hero
+            widget: object
+            fields:
+              - { label: Eyebrow, name: eyebrow, widget: string }
+              - { label: Title, name: title, widget: string }
+              - { label: Description, name: description, widget: text }
+              - { label: Image, name: image, widget: image, choose_url: false, media_folder: public/images, public_folder: /images }
+              - { label: Image Position, name: imagePosition, widget: string }
+              - { label: Response Stat, name: responseStat, widget: string }
+          - label: Section Copy
+            name: sections
+            widget: object
+            collapsed: true
+            fields:
+              - label: Artist
+                name: artist
+                widget: object
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: Heading, name: heading, widget: string }
+                  - { label: Select Label, name: selectLabel, widget: string }
+                  - { label: Placeholder, name: placeholder, widget: string }
+                  - { label: Hint, name: hint, widget: text }
+                  - { label: Manual Availability Label, name: manualAvailabilityLabel, widget: string }
+                  - { label: Manual Availability Placeholder, name: manualAvailabilityPlaceholder, widget: string }
+                  - { label: Manual Availability Link, name: manualAvailabilityLink, widget: string }
+              - label: Contact
+                name: contact
+                widget: object
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: Heading, name: heading, widget: string }
+              - label: Details
+                name: details
+                widget: object
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: Heading, name: heading, widget: string }
+                  - { label: Style Label, name: styleLabel, widget: string }
+                  - { label: Style Placeholder, name: stylePlaceholder, widget: string }
+                  - { label: Placement Label, name: placementLabel, widget: string }
+                  - { label: Placement Placeholder, name: placementPlaceholder, widget: string }
+                  - { label: Size Label, name: sizeLabel, widget: string }
+                  - { label: Size Placeholder, name: sizePlaceholder, widget: string }
+                  - { label: Budget Label, name: budgetLabel, widget: string }
+                  - { label: Budget Placeholder, name: budgetPlaceholder, widget: string }
+                  - { label: Description Label, name: descriptionLabel, widget: string }
+                  - { label: Description Placeholder, name: descriptionPlaceholder, widget: string }
+              - label: References
+                name: references
+                widget: object
+                fields:
+                  - { label: Label, name: label, widget: string }
+                  - { label: Heading, name: heading, widget: string }
+                  - { label: Description, name: description, widget: text }
+                  - { label: Upload Title, name: uploadTitle, widget: string }
+                  - { label: Upload Hint, name: uploadHint, widget: string }
+          - label: Contact Options
+            name: contactOptions
+            widget: list
+            fields:
+              - { label: Value, name: value, widget: string, hint: "Stable value submitted to the API. Change carefully." }
+              - { label: Label, name: label, widget: string }
+              - { label: Default, name: default, widget: boolean, required: false, default: false }
+          - label: Style Options
+            name: styleOptions
+            widget: list
+            fields:
+              - { label: Value, name: value, widget: string, hint: "Stable value submitted to the API. Change carefully." }
+              - { label: Label, name: label, widget: string }
+              - { label: Default, name: default, widget: boolean, required: false, default: false }
+          - label: Size Options
+            name: sizeOptions
+            widget: list
+            fields:
+              - { label: Value, name: value, widget: string, hint: "Stable value submitted to the API. Change carefully." }
+              - { label: Label, name: label, widget: string }
+              - { label: Default, name: default, widget: boolean, required: false, default: false }
+          - label: Budget Options
+            name: budgetOptions
+            widget: list
+            fields:
+              - { label: Value, name: value, widget: string, hint: "Stable value submitted to the API. Change carefully." }
+              - { label: Label, name: label, widget: string }
+              - { label: Default, name: default, widget: boolean, required: false, default: false }
+          - label: Agreements
+            name: agreements
+            widget: object
+            fields:
+              - { label: Terms Prefix, name: termsPrefix, widget: string }
+              - { label: Terms Joiner, name: termsJoiner, widget: string }
+              - { label: Age Text, name: ageText, widget: string }
+              - { label: Newsletter Text, name: newsletterText, widget: text }
+          - { label: Submit Label, name: submitLabel, widget: string }
+          - label: Success Modal
+            name: success
+            widget: object
+            fields:
+              - { label: Label, name: label, widget: string }
+              - { label: Title, name: title, widget: string }
+              - { label: Message, name: message, widget: text }
+              - { label: Timing, name: timing, widget: string }
+              - { label: Next Heading, name: nextHeading, widget: string }
+              - { label: Next Steps, name: nextSteps, widget: list, field: { label: Step, name: step, widget: string } }
+              - { label: Primary Action Label, name: primaryActionLabel, widget: string }
+              - { label: Secondary Action Label, name: secondaryActionLabel, widget: string }
+
+  - label: Pages
+    name: pages
+    editor:
+      preview: false
+    files:
+      - label: Aftercare
+        name: aftercare
+        file: src/pages/aftercare.mdx
+        format: frontmatter
+        fields:
+          - { label: Layout, name: layout, widget: hidden, default: ../layouts/SiteLayout.astro }
+          - { label: Title, name: title, widget: string }
+          - { label: Description, name: description, widget: text }
+          - { label: Body, name: body, widget: markdown }
+      - label: Privacy Policy
+        name: privacy
+        file: src/pages/privacy.mdx
+        format: frontmatter
+        fields:
+          - { label: Layout, name: layout, widget: hidden, default: ../layouts/SiteLayout.astro }
+          - { label: Title, name: title, widget: string }
+          - { label: Description, name: description, widget: text }
+          - { label: Body, name: body, widget: markdown }
+      - label: Terms of Service
+        name: terms
+        file: src/pages/terms.mdx
+        format: frontmatter
+        fields:
+          - { label: Layout, name: layout, widget: hidden, default: ../layouts/SiteLayout.astro }
+          - { label: Title, name: title, widget: string }
+          - { label: Description, name: description, widget: text }
+          - { label: Body, name: body, widget: markdown }
 
   - label: Blog
     label_singular: Blog Post

@@ -1,0 +1,105 @@
+{
+  "pageTitle": "Request a Consult",
+  "pageDescription": "Request a tattoo consultation with one of our talented artists at United Tattoo in Fountain, CO.",
+  "hero": {
+    "eyebrow": "Booking",
+    "title": "Request a Consult",
+    "description": "Tell us about your tattoo idea, preferred artist, placement, and timing. We will review the request and follow up with next steps.",
+    "image": "/images/united-studio-main.avif",
+    "imagePosition": "center 45%",
+    "responseStat": "24-48h"
+  },
+  "sections": {
+    "artist": {
+      "label": "01 // Artist",
+      "heading": "Who are you looking to work with?",
+      "selectLabel": "Select Artist",
+      "placeholder": "Choose an artist...",
+      "hint": "Select 'No preference' if you'd like us to recommend an artist based on your style.",
+      "manualAvailabilityLabel": "Preferred Dates / Times",
+      "manualAvailabilityPlaceholder": "e.g. Weekends in March, Tuesdays after 4pm",
+      "manualAvailabilityLink": "Can't find a suitable time? Enter manually"
+    },
+    "contact": {
+      "label": "02 // Contact",
+      "heading": "How can we reach you?"
+    },
+    "details": {
+      "label": "03 // Details",
+      "heading": "Tell us about the piece",
+      "styleLabel": "Tattoo Style",
+      "stylePlaceholder": "Select style...",
+      "placementLabel": "Body Placement",
+      "placementPlaceholder": "e.g. Inner forearm",
+      "sizeLabel": "Approximate Size",
+      "sizePlaceholder": "Select size...",
+      "budgetLabel": "Budget Range",
+      "budgetPlaceholder": "Optional",
+      "descriptionLabel": "Description",
+      "descriptionPlaceholder": "Describe your idea in detail..."
+    },
+    "references": {
+      "label": "04 // Visuals",
+      "heading": "Reference Images",
+      "description": "Upload up to 5 images to help us understand your vision. These can be photos of other tattoos, artwork, or placement photos.",
+      "uploadTitle": "Add your inspiration",
+      "uploadHint": "or click to browse · Max 5 images · 10MB each"
+    }
+  },
+  "contactOptions": [
+    { "value": "email", "label": "Email", "default": true },
+    { "value": "phone", "label": "Phone" },
+    { "value": "text", "label": "Text Message" }
+  ],
+  "styleOptions": [
+    { "value": "traditional", "label": "Traditional" },
+    { "value": "neo-traditional", "label": "Neo-Traditional" },
+    { "value": "realism", "label": "Realism" },
+    { "value": "black-and-grey", "label": "Black and Grey" },
+    { "value": "fine-line", "label": "Fine Line" },
+    { "value": "blackwork", "label": "Blackwork" },
+    { "value": "japanese", "label": "Japanese" },
+    { "value": "chicano", "label": "Chicano" },
+    { "value": "geometric", "label": "Geometric" },
+    { "value": "illustrative", "label": "Illustrative" },
+    { "value": "script", "label": "Script/Lettering" },
+    { "value": "other", "label": "Other" }
+  ],
+  "sizeOptions": [
+    { "value": "small", "label": "Small (2-3 inches)" },
+    { "value": "medium", "label": "Medium (4-6 inches)" },
+    { "value": "large", "label": "Large (7-10 inches)" },
+    { "value": "extra-large", "label": "Extra Large (11+ inches)" },
+    { "value": "half-sleeve", "label": "Half Sleeve" },
+    { "value": "full-sleeve", "label": "Full Sleeve" },
+    { "value": "back-piece", "label": "Back Piece" }
+  ],
+  "budgetOptions": [
+    { "value": "under-200", "label": "Under $200" },
+    { "value": "200-500", "label": "$200 - $500" },
+    { "value": "500-1000", "label": "$500 - $1,000" },
+    { "value": "1000-2000", "label": "$1,000 - $2,000" },
+    { "value": "2000-plus", "label": "$2,000+" }
+  ],
+  "agreements": {
+    "termsPrefix": "I agree to the",
+    "termsJoiner": "&",
+    "ageText": "I confirm I am 18+ years old.",
+    "newsletterText": "Stay informed about promotions, events, and tattoo inspiration from United Tattoo."
+  },
+  "submitLabel": "Send Request",
+  "success": {
+    "label": "Request Confirmed",
+    "title": "Thank You",
+    "message": "Your booking request has been received. We'll review your details and respond within 24-48 hours.",
+    "timing": "Expect a response via your preferred contact method.",
+    "nextHeading": "What Happens Next",
+    "nextSteps": [
+      "Our reception desk reviews your request and reference images",
+      "Your selected artist reviews the details and reaches out to discuss your vision",
+      "We propose dates/times and confirm any deposit details"
+    ],
+    "primaryActionLabel": "Return Home",
+    "secondaryActionLabel": "Browse Artists"
+  }
+}

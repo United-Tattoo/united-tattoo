@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { getCollection } from 'astro:content';
+import bookingForm from '../../data/booking-form.json';
 import { getPublicArtists } from '../../services/artists';
 import { formatSelectedSlots } from '../../services/booking-format';
 
@@ -19,38 +20,12 @@ const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000;
 const RATE_LIMIT_MAX_REQUESTS = 5;
 
 // Select inputs are controlled in the UI, but every value is still client input.
-// Keep these allowlists in sync with the options rendered in src/pages/booking.astro.
-const ALLOWED_CONTACT_METHODS = new Set(['email', 'phone', 'text']);
-const ALLOWED_STYLES = new Set([
-  'traditional',
-  'neo-traditional',
-  'realism',
-  'black-and-grey',
-  'fine-line',
-  'blackwork',
-  'japanese',
-  'chicano',
-  'geometric',
-  'illustrative',
-  'script',
-  'other',
-]);
-const ALLOWED_SIZES = new Set([
-  'small',
-  'medium',
-  'large',
-  'extra-large',
-  'half-sleeve',
-  'full-sleeve',
-  'back-piece',
-]);
-const ALLOWED_BUDGETS = new Set([
-  'under-200',
-  '200-500',
-  '500-1000',
-  '1000-2000',
-  '2000-plus',
-]);
+// Source allowlists from the same Decap-editable file used by the booking page.
+const toAllowedSet = (options: { value: string }[]) => new Set(options.map((option) => option.value));
+const ALLOWED_CONTACT_METHODS = toAllowedSet(bookingForm.contactOptions);
+const ALLOWED_STYLES = toAllowedSet(bookingForm.styleOptions);
+const ALLOWED_SIZES = toAllowedSet(bookingForm.sizeOptions);
+const ALLOWED_BUDGETS = toAllowedSet(bookingForm.budgetOptions);
 
 const rateLimitBuckets = new Map<string, { count: number; resetAt: number }>();
 
