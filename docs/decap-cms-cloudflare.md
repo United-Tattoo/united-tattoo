@@ -147,12 +147,12 @@ These files drive global content that is shared by pages and code:
 Paths:
 
 ```text
-src/content/pages/aftercare.mdx
-src/content/pages/privacy.mdx
-src/content/pages/terms.mdx
+src/content/pages/aftercare.md
+src/content/pages/privacy.md
+src/content/pages/terms.md
 ```
 
-These are file entries in Decap. Their page bodies remain clean MDX in the repository and can still be edited manually. The public routes in `src/pages/*.astro` provide the layout wrapper so Decap only has to edit content, not Astro markup.
+These are file entries in Decap. Their page bodies remain clean Markdown in the repository and can still be edited manually. The public routes in `src/pages/*.astro` provide the layout wrapper so Decap only has to edit content, not Astro markup.
 
 ### Artists
 

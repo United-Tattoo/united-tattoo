@@ -236,7 +236,7 @@ collections:
     files:
       - label: Aftercare
         name: aftercare
-        file: src/content/pages/aftercare.mdx
+        file: src/content/pages/aftercare.md
         format: frontmatter
         fields:
           - { label: Title, name: title, widget: string }
@@ -251,7 +251,7 @@ collections:
           - { label: Body, name: body, widget: markdown }
       - label: Privacy Policy
         name: privacy
-        file: src/content/pages/privacy.mdx
+        file: src/content/pages/privacy.md
         format: frontmatter
         fields:
           - { label: Title, name: title, widget: string }
@@ -262,7 +262,7 @@ collections:
           - { label: Body, name: body, widget: markdown }
       - label: Terms of Service
         name: terms
-        file: src/content/pages/terms.mdx
+        file: src/content/pages/terms.md
         format: frontmatter
         fields:
           - { label: Title, name: title, widget: string }
