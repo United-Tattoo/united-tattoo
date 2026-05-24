@@ -7,6 +7,7 @@ import {
   PHONE_NUMBER,
   SITE_TITLE,
 } from '../consts';
+import CmsImage from './CmsImage.astro';
 import DoveMark from './DoveMark.astro';
 
 interface Props {
@@ -48,7 +49,14 @@ const mobileNavItems = [
       <a href="/" class="nav-logo group relative z-[110]" aria-label={`${SITE_TITLE} home`}>
         <span class="nav-mark">
           {LOGO_IMAGE ? (
-            <img src={LOGO_IMAGE} alt="" class="nav-logo-image transition-all duration-300 group-hover:rotate-[-8deg]" />
+            <CmsImage
+              src={LOGO_IMAGE}
+              alt=""
+              width={96}
+              height={96}
+              loading="eager"
+              class="nav-logo-image transition-all duration-300 group-hover:rotate-[-8deg]"
+            />
           ) : (
             <DoveMark class="nav-dove w-5 h-5 transition-all duration-300 group-hover:rotate-[-8deg]" />
           )}

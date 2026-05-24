@@ -7,6 +7,7 @@ import {
   SITE_DESCRIPTION,
 } from '../consts';
 import { getCollection } from 'astro:content';
+import CmsImage from '../components/CmsImage.astro';
 import EditorialFooter from '../components/EditorialFooter.astro';
 import FloatingCTA from '../components/FloatingCTA.astro';
 import homeContent from '../data/home.json';
@@ -88,7 +89,14 @@ const home = homeContent;
     <!-- Full-bleed photo with desaturated treatment -->
     <div class="absolute inset-0 z-0 pointer-events-none overflow-hidden hero-photo-wrap">
       <div class="absolute inset-0 hero-photo-layer scale-[1.03]">
-        <img src={home.hero.image} alt={home.hero.imageAlt} class="w-full h-full object-cover object-center grayscale brightness-[0.62] contrast-[1.12]" />
+        <CmsImage
+          src={home.hero.image}
+          alt={home.hero.imageAlt}
+          width={2400}
+          height={1600}
+          loading="eager"
+          class="w-full h-full object-cover object-center grayscale brightness-[0.62] contrast-[1.12]"
+        />
       </div>
       <div class="absolute inset-0 bg-black/48"></div>
       <div class="absolute inset-0 hero-vignette"></div>
@@ -163,7 +171,7 @@ const home = homeContent;
 
     <!-- Ghost logo -->
     <div class="studio-ghost-image" aria-hidden="true">
-      <img src="/images/united-logo-full.avif" alt="" loading="lazy" />
+      <CmsImage src="/images/united-logo-full.avif" alt="" width={1200} height={600} loading="lazy" />
     </div>
 
     <!-- Two-column editorial layout -->
@@ -216,7 +224,7 @@ const home = homeContent;
       <div class="marquee-scroll">
         {[...marqueeRow1, ...marqueeRow1].map((img) => (
           <div class="marquee-item">
-            <img src={img.src} alt={`Tattoo by ${img.artist}`} loading="lazy" />
+            <CmsImage src={img.src} alt={`Tattoo by ${img.artist}`} width={360} height={480} loading="lazy" />
             <span class="marquee-credit">{img.artist}</span>
           </div>
         ))}
@@ -228,7 +236,7 @@ const home = homeContent;
       <div class="marquee-scroll">
         {[...marqueeRow2, ...marqueeRow2].map((img) => (
           <div class="marquee-item">
-            <img src={img.src} alt={`Tattoo by ${img.artist}`} loading="lazy" />
+            <CmsImage src={img.src} alt={`Tattoo by ${img.artist}`} width={360} height={480} loading="lazy" />
             <span class="marquee-credit">{img.artist}</span>
           </div>
         ))}
@@ -248,7 +256,7 @@ const home = homeContent;
     <!-- Subtle noise bg -->
     <div class="absolute inset-0 noise pointer-events-none"></div>
     <div class="section-banner-image" aria-hidden="true">
-      <img src={home.artistsBanner.image} alt="" loading="lazy" />
+      <CmsImage src={home.artistsBanner.image} alt="" width={2400} height={900} loading="lazy" />
     </div>
     <div class="section-banner-inner">
       <div class="section-banner-meta">
@@ -276,9 +284,11 @@ const home = homeContent;
               </span>
 
               <!-- Mobile Avatar -->
-              <img
+              <CmsImage
                 src={artist.data.portrait}
                 alt=""
+                width={96}
+                height={96}
                 class="w-12 h-12 rounded-full object-cover lg:hidden border border-border"
               />
 
@@ -315,9 +325,11 @@ const home = homeContent;
 
             <!-- Hover Image Reveal (Desktop) -->
             <div class="hidden lg:block absolute top-1/2 right-24 -translate-y-1/2 w-[180px] aspect-[3/4] opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10 bg-card border border-border rotate-2 group-hover:rotate-3 transition-transform shadow-2xl">
-            <img
+            <CmsImage
               src={artist.data.portrait}
               alt={artist.data.name}
+              width={360}
+              height={480}
               class="w-full h-full object-cover grayscale"
             />
             </div>
@@ -336,7 +348,7 @@ const home = homeContent;
     <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
     <div class="absolute inset-0 noise pointer-events-none"></div>
     <div class="section-banner-image" aria-hidden="true">
-      <img src={home.workBanner.image} alt="" loading="lazy" />
+      <CmsImage src={home.workBanner.image} alt="" width={2400} height={900} loading="lazy" />
     </div>
     <div class="section-banner-inner">
       <div class="section-banner-meta">
@@ -364,12 +376,14 @@ const home = homeContent;
             data-analytics-href={`/artists/${img.artistId}`}
           >
             <div class="relative overflow-hidden aspect-[4/5]">
-              <img
+              <CmsImage
                 src={img.src}
-              alt={`Tattoo by ${img.artist}`}
-              loading="lazy"
-              class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
+                alt={`Tattoo by ${img.artist}`}
+                width={800}
+                height={1000}
+                loading="lazy"
+                class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
               <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <span class="absolute bottom-3 left-3 font-mono text-[10px] uppercase tracking-widest text-white/90 opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all duration-300">{img.artist} · View artist</span>
             </div>
@@ -388,7 +402,7 @@ const home = homeContent;
     <div class="grid-dot" style="left:75%;bottom:0;top:auto;transform:translate(-50%,50%)"></div>
     <div class="absolute inset-0 noise pointer-events-none"></div>
     <div class="section-banner-image" aria-hidden="true">
-      <img src={home.processBanner.image} alt="" loading="lazy" />
+      <CmsImage src={home.processBanner.image} alt="" width={2400} height={900} loading="lazy" />
     </div>
     <div class="section-banner-inner">
       <div class="section-banner-meta">

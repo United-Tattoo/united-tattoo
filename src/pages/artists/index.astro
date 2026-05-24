@@ -1,6 +1,7 @@
 ---
 import SiteLayout from '../../layouts/SiteLayout.astro';
 import { getCollection } from 'astro:content';
+import CmsImage from '../../components/CmsImage.astro';
 import EditorialFooter from '../../components/EditorialFooter.astro';
 import PageHero from '../../components/PageHero.astro';
 import { getPublicArtists } from '../../services/artists';
@@ -60,9 +61,11 @@ const heroImage = '/artists/Christy-Lumberg/Portfolio/26-01-02%2019-25-03%2048.j
               data-analytics-artist={artist.id}
               data-analytics-href={`/artists/${artist.id}`}
             >
-              <img
+              <CmsImage
                 src={artist.data.portrait}
                 alt={artist.data.name}
+                width={720}
+                height={960}
                 class="artist-card-image"
               />
               <div class="artist-card-shade"></div>

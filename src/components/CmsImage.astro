@@ -1,0 +1,53 @@
+---
+import { Image } from 'astro:assets';
+
+interface Props {
+  src: string;
+  alt: string;
+  width?: number;
+  height?: number;
+  loading?: 'eager' | 'lazy';
+  decoding?: 'async' | 'sync' | 'auto';
+  class?: string;
+  style?: string;
+  id?: string;
+}
+
+const {
+  src,
+  alt,
+  width,
+  height,
+  loading = 'lazy',
+  decoding = 'async',
+  class: className,
+  style,
+  id,
+} = Astro.props;
+
+const hasDimensions = typeof width === 'number' && typeof height === 'number';
+---
+
+{hasDimensions ? (
+  <Image
+    src={src}
+    alt={alt}
+    width={width}
+    height={height}
+    loading={loading}
+    decoding={decoding}
+    class={className}
+    style={style}
+    id={id}
+  />
+) : (
+  <img
+    src={src}
+    alt={alt}
+    loading={loading}
+    decoding={decoding}
+    class={className}
+    style={style}
+    id={id}
+  />
+)}
