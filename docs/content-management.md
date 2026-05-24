@@ -2,6 +2,8 @@
 
 This guide covers how to add and update artist profiles, manage portfolio images, and configure the calendar integration for each artist.
 
+For a proposed future workflow where staff edit artist content and images in Nextcloud instead of GitHub, see [Nextcloud CMS Publisher Concept](./nextcloud-cms-publisher.md). That document is a design note only; the workflow below describes the current implemented process.
+
 ---
 
 ## Artist Content Collection
@@ -33,7 +35,7 @@ tiktok: "@janesmithink"               # optional
 twitch: janesmithink                  # optional
 portfolioUrl: https://janesmith.com   # optional, external portfolio link
 
-bookingEmailCc: jane@email.com        # optional, artist receives booking CC at this address
+bookingEmailCc: artist@example.com    # optional, artist receives booking CC at this address
 testimonials:                         # optional
   - quote: "Best tattoo of my life."
     client: "Alex T."
@@ -172,13 +174,13 @@ If an artist has no `calendarId`, no `schedule`, or if CalDAV credentials are mi
 
 ## Updating Admin Email Recipients
 
-Booking notifications always go to two hardcoded admin addresses defined in `src/pages/api/booking.ts`:
+Booking notifications always go to the configured admin recipients defined in `src/pages/api/booking.ts`:
 
 ```ts
-const ADMIN_EMAILS = ['Christyl116@yahoo.com', 'ashtonjl.work@gmail.com'];
+const ADMIN_EMAILS = ['owner@example.com', 'studio@example.com'];
 ```
 
-To add or change these, edit that array directly. In addition, if the selected artist has a `bookingEmailCc` field in their MDX file, they are CC'd automatically.
+Do not commit personal recipient addresses to public documentation. If the selected artist has a `bookingEmailCc` field in their MDX file, they are CC'd automatically.
 
 ---
 

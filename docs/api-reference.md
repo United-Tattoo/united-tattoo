@@ -72,7 +72,7 @@ Processes a booking request form submission. Sends notification emails to shop a
 
 Two emails are sent on success:
 
-1. **Admin notification** — sent to `Christyl116@yahoo.com` and `ashtonjl.work@gmail.com`, plus the selected artist's `bookingEmailCc` if set. Includes all form data, selected time slots formatted as human-readable choices, and reference images as attachments. `Reply-To` is set to the client's email.
+1. **Admin notification** — sent to the configured admin recipients, plus the selected artist's `bookingEmailCc` if set. Includes all form data, selected time slots formatted as human-readable choices, and reference images as attachments. `Reply-To` is set to the client's email.
 
 2. **Client confirmation** — sent to the client's email with a summary of their request and a 24-48 hour response time expectation.
 
