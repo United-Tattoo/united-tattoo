@@ -236,30 +236,40 @@ collections:
     files:
       - label: Aftercare
         name: aftercare
-        file: src/pages/aftercare.mdx
+        file: src/content/pages/aftercare.mdx
         format: frontmatter
         fields:
-          - { label: Layout, name: layout, widget: hidden, default: ../layouts/SiteLayout.astro }
           - { label: Title, name: title, widget: string }
           - { label: Description, name: description, widget: text }
+          - { label: Eyebrow, name: eyebrow, widget: string, required: false }
+          - { label: Heading, name: heading, widget: string }
+          - { label: Intro, name: intro, widget: text, required: false }
+          - { label: CTA Eyebrow, name: ctaEyebrow, widget: string, required: false }
+          - { label: CTA Text, name: ctaText, widget: text, required: false }
+          - { label: CTA Label, name: ctaLabel, widget: string, required: false }
+          - { label: CTA URL, name: ctaHref, widget: string, required: false }
           - { label: Body, name: body, widget: markdown }
       - label: Privacy Policy
         name: privacy
-        file: src/pages/privacy.mdx
+        file: src/content/pages/privacy.mdx
         format: frontmatter
         fields:
-          - { label: Layout, name: layout, widget: hidden, default: ../layouts/SiteLayout.astro }
           - { label: Title, name: title, widget: string }
           - { label: Description, name: description, widget: text }
+          - { label: Eyebrow, name: eyebrow, widget: string, required: false }
+          - { label: Heading, name: heading, widget: string }
+          - { label: Last Updated, name: lastUpdated, widget: string, required: false }
           - { label: Body, name: body, widget: markdown }
       - label: Terms of Service
         name: terms
-        file: src/pages/terms.mdx
+        file: src/content/pages/terms.mdx
         format: frontmatter
         fields:
-          - { label: Layout, name: layout, widget: hidden, default: ../layouts/SiteLayout.astro }
           - { label: Title, name: title, widget: string }
           - { label: Description, name: description, widget: text }
+          - { label: Eyebrow, name: eyebrow, widget: string, required: false }
+          - { label: Heading, name: heading, widget: string }
+          - { label: Last Updated, name: lastUpdated, widget: string, required: false }
           - { label: Body, name: body, widget: markdown }
 
   - label: Blog

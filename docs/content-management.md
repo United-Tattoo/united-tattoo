@@ -14,7 +14,7 @@ Decap exposes several repo files for non-technical editing while keeping Git as 
 - `src/data/site-hours.json`: public studio hours for footers, schema, and LLM text.
 - `src/data/home.json`: homepage hero, banners, CTA copy, images, and process steps.
 - `src/data/booking-form.json`: booking page copy, booking select options, agreement text, submit label, and success modal.
-- `src/pages/aftercare.mdx`, `src/pages/privacy.mdx`, `src/pages/terms.mdx`: editable MDX utility pages.
+- `src/content/pages/aftercare.mdx`, `src/content/pages/privacy.mdx`, `src/content/pages/terms.mdx`: editable MDX utility page content.
 
 When editing booking form options, prefer changing labels over values. The `value` fields are submitted by the browser and validated by the booking API.
 

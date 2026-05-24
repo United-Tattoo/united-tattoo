@@ -59,4 +59,23 @@ const blog = defineCollection({
   }),
 });
 
-export const collections = { artists, blog };
+const pages = defineCollection({
+  loader: glob({
+    base: './src/content/pages',
+    pattern: '**/*.mdx'
+  }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string(),
+    eyebrow: z.string().optional(),
+    heading: z.string(),
+    intro: z.string().optional(),
+    lastUpdated: z.string().optional(),
+    ctaEyebrow: z.string().optional(),
+    ctaText: z.string().optional(),
+    ctaLabel: z.string().optional(),
+    ctaHref: z.string().optional(),
+  }),
+});
+
+export const collections = { artists, blog, pages };
