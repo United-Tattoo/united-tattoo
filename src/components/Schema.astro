@@ -8,12 +8,15 @@ import {
   GEO_LATITUDE,
   GEO_LONGITUDE,
   GOOGLE_MAPS_URL,
+  INKROSTER,
   INSTAGRAM,
   PHONE_NUMBER,
   POSTAL_CODE,
   SITE_DESCRIPTION,
   SITE_TITLE,
   URL as SITE_URL,
+  YELP,
+  YOUTUBE,
 } from '../consts';
 
 interface Props {
@@ -70,7 +73,7 @@ const localBusinessSchema = {
   "url": siteUrl,
   "telephone": PHONE_NUMBER,
   "email": EMAIL,
-  "sameAs": [INSTAGRAM],
+  "sameAs": [INSTAGRAM, YOUTUBE, YELP, INKROSTER],
   "hasMap": GOOGLE_MAPS_URL,
   "priceRange": "$$",
   "address": {

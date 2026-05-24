@@ -79,6 +79,7 @@ Important files:
 - `src/components/HeaderNav.astro` controls the main navigation.
 - `src/components/PageHero.astro` provides the shared page hero used across booking, artists, and blog pages.
 - `docs/booking-calendar-integration.md` documents booking, CalDAV availability, and regression testing.
+- `docs/seo-strategy.md` documents local SEO, content, schema, social profiles, and AI/LLM discovery surfaces.
 
 ## Content Editing
 

@@ -1,8 +1,17 @@
 export const prerender = true;
 
 import { getCollection } from 'astro:content';
-
-const SITE_URL = 'https://united-tattoos.com';
+import {
+  EMAIL,
+  INKROSTER,
+  INSTAGRAM,
+  NEWSINSIDERPOST_ARTICLE,
+  PHONE_NUMBER,
+  TATTOO_CONVENTIONS_ARTICLE,
+  URL as SITE_URL,
+  YELP,
+  YOUTUBE,
+} from '../consts';
 
 export async function GET() {
   const artists = await getCollection('artists');
@@ -47,12 +56,21 @@ ${body}`;
 
 URL: ${SITE_URL}
 Address: 5160 Fontaine Blvd, Fountain, CO 80817
-Phone: +1 719 698 9004
-Email: ink@unitedtattoos.com
-Instagram: https://www.instagram.com/unitedtattoosco/
+Phone: ${PHONE_NUMBER}
+Email: ${EMAIL}
+Instagram: ${INSTAGRAM}
+YouTube: ${YOUTUBE}
+Yelp: ${YELP}
+InkRoster: ${INKROSTER}
 Hours: Sunday–Saturday, 10am–8pm
 
 United Tattoo is a custom tattoo studio in Fountain, Colorado. We are home to ${artists.length} resident artists offering a wide range of tattoo styles including American Traditional, Fine Line, Watercolor, Black & Grey, Botanical, Geometric, Illustrative, and more. Every piece is custom-built for the client.
+
+Around the web:
+- United Tattoo on InkRoster: ${INKROSTER}
+- United Tattoo on Yelp: ${YELP}
+- Why United Tattoo Studio in Fountain is Worth the Drive from Colorado Springs: ${NEWSINSIDERPOST_ARTICLE}
+- Famous Tattoo Conventions Around the World: ${TATTOO_CONVENTIONS_ARTICLE}
 
 ---
 

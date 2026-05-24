@@ -1,5 +1,14 @@
 ---
-import { ADDRESS_LINE_1, ADDRESS_LINE_2, EMAIL, INSTAGRAM, PHONE_NUMBER } from '../consts';
+import {
+  ADDRESS_LINE_1,
+  ADDRESS_LINE_2,
+  EMAIL,
+  INKROSTER,
+  INSTAGRAM,
+  PHONE_NUMBER,
+  YELP,
+  YOUTUBE,
+} from '../consts';
 import DoveMark from './DoveMark.astro';
 ---
 
@@ -46,10 +55,19 @@ import DoveMark from './DoveMark.astro';
           Inking beautiful tattoos. Based in Fountain, Colorado.
         </p>
         <div class="flex gap-4">
-          <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
+          <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" aria-label="United Tattoo on Instagram" class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
             <iconify-icon icon="mdi:instagram"></iconify-icon>
           </a>
-          <a href={`mailto:${EMAIL}`} class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
+          <a href={YOUTUBE} target="_blank" rel="noopener noreferrer" aria-label="United Tattoo on YouTube" class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
+            <iconify-icon icon="mdi:youtube"></iconify-icon>
+          </a>
+          <a href={YELP} target="_blank" rel="noopener noreferrer" aria-label="United Tattoo on Yelp" class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
+            <iconify-icon icon="simple-icons:yelp"></iconify-icon>
+          </a>
+          <a href={INKROSTER} target="_blank" rel="noopener noreferrer" aria-label="United Tattoo on InkRoster" class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
+            <iconify-icon icon="mdi:card-account-details-outline"></iconify-icon>
+          </a>
+          <a href={`mailto:${EMAIL}`} aria-label="Email United Tattoo" class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
             <iconify-icon icon="mdi:email"></iconify-icon>
           </a>
         </div>
@@ -129,8 +147,11 @@ import DoveMark from './DoveMark.astro';
       </span>
       <span class="tracking-wider">Freedom in ink</span>
     </div>
-    <div class="flex items-center gap-6 font-mono text-[10px] text-muted-foreground">
+    <div class="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 font-mono text-[10px] text-muted-foreground sm:justify-end">
       <a class="hover:text-primary transition-colors" href={INSTAGRAM} target="_blank" rel="noopener noreferrer">Instagram</a>
+      <a class="hover:text-primary transition-colors" href={YOUTUBE} target="_blank" rel="noopener noreferrer">YouTube</a>
+      <a class="hover:text-primary transition-colors" href={YELP} target="_blank" rel="noopener noreferrer">Yelp</a>
+      <a class="hover:text-primary transition-colors hidden sm:inline" href={INKROSTER} target="_blank" rel="noopener noreferrer">InkRoster</a>
       <a class="hover:text-primary transition-colors hidden sm:inline" href={`mailto:${EMAIL}`}>{EMAIL}</a>
       <a class="hover:text-primary transition-colors" href={`tel:${PHONE_NUMBER.replace(/\s+/g, '')}`}>{PHONE_NUMBER}</a>
     </div>

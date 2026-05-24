@@ -1,8 +1,17 @@
 export const prerender = true;
 
 import { getCollection } from 'astro:content';
-
-const SITE_URL = 'https://united-tattoos.com';
+import {
+  EMAIL,
+  INKROSTER,
+  INSTAGRAM,
+  NEWSINSIDERPOST_ARTICLE,
+  PHONE_NUMBER,
+  TATTOO_CONVENTIONS_ARTICLE,
+  URL as SITE_URL,
+  YELP,
+  YOUTUBE,
+} from '../consts';
 
 export async function GET() {
   const artists = await getCollection('artists');
@@ -43,10 +52,20 @@ ${postLines}
 
 ## Contact
 
-- Email: ink@unitedtattoos.com
-- Phone: +1 719 698 9004
-- Instagram: https://www.instagram.com/unitedtattoosco/
+- Email: ${EMAIL}
+- Phone: ${PHONE_NUMBER}
+- Instagram: ${INSTAGRAM}
+- YouTube: ${YOUTUBE}
+- Yelp: ${YELP}
+- InkRoster: ${INKROSTER}
 - Address: 5160 Fontaine Blvd, Fountain, CO 80817
+
+## Around the Web
+
+- [United Tattoo on InkRoster](${INKROSTER})
+- [United Tattoo on Yelp](${YELP})
+- [Why United Tattoo Studio in Fountain is Worth the Drive from Colorado Springs](${NEWSINSIDERPOST_ARTICLE})
+- [Famous Tattoo Conventions Around the World](${TATTOO_CONVENTIONS_ARTICLE})
 
 ## Optional
 
