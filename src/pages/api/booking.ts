@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { Resend } from 'resend';
 import { getCollection } from 'astro:content';
+import { getPublicArtists } from '../../services/artists';
 import { formatSelectedSlots } from '../../services/booking-format';
 
 const MAX_FILES = 5;
@@ -295,7 +296,7 @@ export const POST: APIRoute = async (context) => {
       return validationError('Invalid email address');
     }
 
-    const artists = await getCollection('artists');
+    const artists = getPublicArtists(await getCollection('artists'));
     const selectedArtist =
       artist === 'no-preference' ? undefined : artists.find((a) => a.id === artist);
 

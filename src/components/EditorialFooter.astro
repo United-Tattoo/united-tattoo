@@ -6,10 +6,13 @@ import {
   INKROSTER,
   INSTAGRAM,
   PHONE_NUMBER,
+  SITE_TITLE,
   YELP,
   YOUTUBE,
 } from '../consts';
 import DoveMark from './DoveMark.astro';
+
+const [brandPrimary = SITE_TITLE] = SITE_TITLE.split(/\s+/);
 ---
 
 <footer class="footer-section bg-background relative z-20" data-scroll-section>
@@ -44,9 +47,9 @@ import DoveMark from './DoveMark.astro';
     <!-- Left Column: Branding -->
     <div class="footer-branding col-span-1 lg:col-span-4 p-8 lg:p-12 border-b lg:border-b-0 lg:border-r border-border flex flex-col justify-between min-h-[300px]">
       <div class="footer-reveal">
-        <h2 class="footer-title text-5xl md:text-6xl lg:text-7xl font-display uppercase tracking-tighter leading-none mb-2 font-normal">United</h2>
+        <h2 class="footer-title text-5xl md:text-6xl lg:text-7xl font-display uppercase tracking-tighter leading-none mb-2 font-normal">{brandPrimary}</h2>
         <span class="font-mono text-xs text-muted-foreground block">
-          © {new Date().getFullYear()} United Tattoo Collective
+          © {new Date().getFullYear()} {SITE_TITLE} Collective
         </span>
       </div>
 
@@ -55,19 +58,19 @@ import DoveMark from './DoveMark.astro';
           Inking beautiful tattoos. Based in Fountain, Colorado.
         </p>
         <div class="flex gap-4">
-          <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" aria-label="United Tattoo on Instagram" class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
+          <a href={INSTAGRAM} target="_blank" rel="noopener noreferrer" aria-label={`${SITE_TITLE} on Instagram`} class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
             <iconify-icon icon="mdi:instagram"></iconify-icon>
           </a>
-          <a href={YOUTUBE} target="_blank" rel="noopener noreferrer" aria-label="United Tattoo on YouTube" class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
+          <a href={YOUTUBE} target="_blank" rel="noopener noreferrer" aria-label={`${SITE_TITLE} on YouTube`} class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
             <iconify-icon icon="mdi:youtube"></iconify-icon>
           </a>
-          <a href={YELP} target="_blank" rel="noopener noreferrer" aria-label="United Tattoo on Yelp" class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
+          <a href={YELP} target="_blank" rel="noopener noreferrer" aria-label={`${SITE_TITLE} on Yelp`} class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
             <iconify-icon icon="simple-icons:yelp"></iconify-icon>
           </a>
-          <a href={INKROSTER} target="_blank" rel="noopener noreferrer" aria-label="United Tattoo on InkRoster" class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
+          <a href={INKROSTER} target="_blank" rel="noopener noreferrer" aria-label={`${SITE_TITLE} on InkRoster`} class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
             <iconify-icon icon="mdi:card-account-details-outline"></iconify-icon>
           </a>
-          <a href={`mailto:${EMAIL}`} aria-label="Email United Tattoo" class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
+          <a href={`mailto:${EMAIL}`} aria-label={`Email ${SITE_TITLE}`} class="footer-social w-10 h-10 border border-input rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground hover:border-primary transition-all">
             <iconify-icon icon="mdi:email"></iconify-icon>
           </a>
         </div>

@@ -1,5 +1,6 @@
 import type { APIRoute } from 'astro';
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { getPublicArtists } from '../../services/artists';
 import { getArtistAvailability } from '../../services/calendar-cache';
 
 export const GET: APIRoute = async ({ url }) => {
@@ -8,7 +9,7 @@ export const GET: APIRoute = async ({ url }) => {
     return new Response(JSON.stringify({ error: 'Artist required' }), { status: 400 });
   }
 
-  const artists = await getCollection('artists');
+  const artists = getPublicArtists(await getCollection('artists'));
   const artist = artists.find(a => a.id === artistSlug);
 
   if (!artist) {
@@ -27,7 +28,7 @@ export const GET: APIRoute = async ({ url }) => {
 
     if (slots.length < 5) {
         // Find alternatives
-        const allArtists = await getCollection('artists');
+        const allArtists = getPublicArtists(await getCollection('artists'));
         const primaryStyles = artist.data.specialties || [];
         
         const candidates = allArtists.filter(a => 

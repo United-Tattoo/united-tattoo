@@ -3,7 +3,9 @@ import {
   ADDRESS_LINE_1,
   ADDRESS_LINE_2,
   GOOGLE_MAPS_URL,
+  LOGO_IMAGE,
   PHONE_NUMBER,
+  SITE_TITLE,
 } from '../consts';
 import DoveMark from './DoveMark.astro';
 
@@ -17,6 +19,8 @@ const isHomePage = currentPath === "/";
 const isArtistsPage = currentPath.startsWith("/artists");
 const isBookingPage = currentPath.startsWith("/booking");
 const isBlogPage = currentPath.startsWith("/blog");
+const [brandPrimary = SITE_TITLE, ...brandRest] = SITE_TITLE.split(/\s+/);
+const brandSecondary = brandRest.join(' ');
 
 const desktopNavItems = [
   { href: '/', label: 'Home', num: '01', active: isHomePage },
@@ -41,13 +45,17 @@ const mobileNavItems = [
   <div class="nav-shell max-w-[1800px] mx-auto px-4 md:px-8 lg:px-12">
     <div class="nav-row flex justify-between items-center gap-4 py-4 md:py-5">
       <!-- Logo / Wordmark -->
-      <a href="/" class="nav-logo group relative z-[110]" aria-label="United Tattoo home">
+      <a href="/" class="nav-logo group relative z-[110]" aria-label={`${SITE_TITLE} home`}>
         <span class="nav-mark">
-          <DoveMark class="nav-dove w-5 h-5 transition-all duration-300 group-hover:rotate-[-8deg]" />
+          {LOGO_IMAGE ? (
+            <img src={LOGO_IMAGE} alt="" class="nav-logo-image transition-all duration-300 group-hover:rotate-[-8deg]" />
+          ) : (
+            <DoveMark class="nav-dove w-5 h-5 transition-all duration-300 group-hover:rotate-[-8deg]" />
+          )}
         </span>
         <span class="nav-brand-text">
-          <span class="nav-wordmark">United</span>
-          <span class="nav-submark">Tattoo</span>
+          <span class="nav-wordmark">{brandPrimary}</span>
+          {brandSecondary && <span class="nav-submark">{brandSecondary}</span>}
         </span>
       </a>
 
@@ -160,6 +168,12 @@ const mobileNavItems = [
     backdrop-filter: blur(14px);
     -webkit-backdrop-filter: blur(14px);
     transition: border-color 0.3s ease, background 0.3s ease;
+  }
+
+  .nav-logo-image {
+    width: 1.55rem;
+    height: 1.55rem;
+    object-fit: contain;
   }
 
   .nav-logo:hover .nav-mark {

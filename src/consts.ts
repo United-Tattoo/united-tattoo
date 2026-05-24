@@ -1,22 +1,52 @@
-// Site-wide constants
-export const SITE_TITLE = 'United Tattoo';
-export const SITE_DESCRIPTION = 'Tattoo studio in Fountain, CO';
-export const ADDRESS_LINE_1 = '5160 Fontaine Blvd';
-export const ADDRESS_LINE_2 = 'Fountain, CO 80817';
+import siteSettings from './data/site-settings.json';
+
+interface SiteSettings {
+  siteTitle: string;
+  siteDescription: string;
+  siteUrl: string;
+  logoImage: string;
+  favicon: string;
+  addressLine1: string;
+  addressLine2: string;
+  addressLocality: string;
+  addressRegion: string;
+  postalCode: string;
+  countryCode: string;
+  phoneNumber: string;
+  email: string;
+  instagram: string;
+  youtube: string;
+  yelp: string;
+  inkroster: string;
+  newsInsiderPostArticle: string;
+  tattooConventionsArticle: string;
+  geoLatitude: number;
+  geoLongitude: number;
+  googleMapsUrl: string;
+}
+
+const settings = siteSettings as SiteSettings;
+
+export const SITE_TITLE = settings.siteTitle;
+export const SITE_DESCRIPTION = settings.siteDescription;
+export const ADDRESS_LINE_1 = settings.addressLine1;
+export const ADDRESS_LINE_2 = settings.addressLine2;
 export const LOCATION = `${ADDRESS_LINE_1}, ${ADDRESS_LINE_2}`;
-export const PHONE_NUMBER = '+1 719 698 9004';
-export const EMAIL = 'ink@unitedtattoos.com';
-export const INSTAGRAM = 'https://www.instagram.com/unitedtattoosco/';
-export const YOUTUBE = 'https://www.youtube.com/@UnitedTattoo';
-export const YELP = 'https://www.yelp.com/biz/united-tattoo-fountain';
-export const INKROSTER = 'https://inkroster.com/studios/united-tattoo/';
-export const NEWSINSIDERPOST_ARTICLE = 'https://newsinsiderpost.com/why-united-tattoo-studio-in-fountain-is-worth-the-drive-from-colorado-springs/';
-export const TATTOO_CONVENTIONS_ARTICLE = 'https://journalposttoday.com/famous-tattoo-conventions-around-the-world/';
-export const URL = 'https://united-tattoos.com';
-export const ADDRESS_LOCALITY = 'Fountain';
-export const ADDRESS_REGION = 'CO';
-export const POSTAL_CODE = '80817';
-export const COUNTRY_CODE = 'US';
-export const GEO_LATITUDE = 38.7367359;
-export const GEO_LONGITUDE = -104.7320189;
-export const GOOGLE_MAPS_URL = 'https://www.google.com/maps/dir//5160+Fontaine+Blvd,+Fountain,+CO+80817/@38.736707,-104.8144199,12z/data=!4m8!4m7!1m0!1m5!1m1!1s0x87134127d88898d3:0xf6ed49a9b9f5ce7e!2m2!1d-104.7320189!2d38.7367359';
+export const PHONE_NUMBER = settings.phoneNumber;
+export const EMAIL = settings.email;
+export const INSTAGRAM = settings.instagram;
+export const YOUTUBE = settings.youtube;
+export const YELP = settings.yelp;
+export const INKROSTER = settings.inkroster;
+export const NEWSINSIDERPOST_ARTICLE = settings.newsInsiderPostArticle;
+export const TATTOO_CONVENTIONS_ARTICLE = settings.tattooConventionsArticle;
+export const URL = settings.siteUrl;
+export const ADDRESS_LOCALITY = settings.addressLocality;
+export const ADDRESS_REGION = settings.addressRegion;
+export const POSTAL_CODE = settings.postalCode;
+export const COUNTRY_CODE = settings.countryCode;
+export const GEO_LATITUDE = settings.geoLatitude;
+export const GEO_LONGITUDE = settings.geoLongitude;
+export const GOOGLE_MAPS_URL = settings.googleMapsUrl;
+export const LOGO_IMAGE = settings.logoImage;
+export const FAVICON = settings.favicon;

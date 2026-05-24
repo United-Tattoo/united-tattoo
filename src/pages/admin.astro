@@ -1,4 +1,6 @@
 ---
+import { SITE_TITLE } from '../consts';
+
 export const prerender = true;
 ---
 
@@ -8,7 +10,7 @@ export const prerender = true;
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="robots" content="noindex" />
-    <title>United Tattoo CMS</title>
+    <title>{SITE_TITLE} CMS</title>
   </head>
   <body>
     <script is:inline src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>

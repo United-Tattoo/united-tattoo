@@ -2,7 +2,7 @@
 
 This document explains the Decap CMS setup for United Tattoo: an open-source, Git-based editing interface hosted on the existing Astro/Cloudflare site.
 
-Status: implemented in-repo. The `/admin` route and same-site `/oauth` routes exist, but production login still requires creating a GitHub OAuth app and configuring Cloudflare secrets.
+Status: implemented in-repo. The `/admin` route and same-site `/oauth` routes exist, and production login uses a GitHub OAuth app with credentials stored as Cloudflare secrets.
 
 ---
 
@@ -19,6 +19,13 @@ The desired workflow is:
 5. Cloudflare rebuilds and deploys the site from Git.
 
 This keeps the current Git-based deployment model while avoiding manual GitHub file editing.
+
+The long-term content model is:
+
+- Writing and page copy should live in Markdown, MDX, or small structured data files.
+- Images should live in `public/` and be referenced from those content files.
+- Decap should edit those same files, not a separate database.
+- Manual repo edits should remain equally valid and should not require exporting content back out of the CMS.
 
 ---
 
@@ -57,7 +64,9 @@ GitHub
 Astro
   src/content/artists/*.mdx
   src/content/blog/*.mdx
+  src/data/site-settings.json
   public/artists/**/*
+  public/images/**/*
 ```
 
 The public site still renders from repository files. Decap only provides a friendlier editing interface over those files.
@@ -113,6 +122,16 @@ Local development can use Decap's local backend so CMS field configuration can b
 
 Start with content that already maps cleanly to files.
 
+### Site Settings
+
+Path:
+
+```text
+src/data/site-settings.json
+```
+
+This file drives the exported values in `src/consts.ts`, including studio contact details, profile links, the header/schema logo image, and the favicon.
+
 ### Artists
 
 Path:
@@ -124,6 +143,7 @@ src/content/artists/*.mdx
 Fields should mirror `src/content.config.ts`:
 
 - `name`
+- `archived`
 - `portrait`
 - `galleryDir`
 - `cmsPortfolioUploads`
@@ -134,6 +154,8 @@ Fields should mirror `src/content.config.ts`:
 - `testimonials`
 - `acceptingBookings`
 - body content
+
+The artist collection is a folder collection, so Decap can create new artist MDX files and delete existing entries. Prefer setting `archived: true` when an artist should disappear from the public site but the content should remain in Git history.
 
 Treat these as review-sensitive at first:
 
@@ -182,7 +204,7 @@ public/artists/{Artist}/Portfolio/
 public/artists/{Artist}/Flash/
 ```
 
-Each artist entry in `public/admin/config.yml` uses image fields pointed at that artist's `Portfolio` and `Flash` folders. Uploading through those fields commits the media file and the matching frontmatter list update together.
+Artist image fields use the shared `public/artists` media library. Keep gallery paths organized under artist folders when adding files manually or through the media picker.
 
 ---
 

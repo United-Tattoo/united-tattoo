@@ -10,6 +10,8 @@ For the browser-based CMS workflow, see [Decap CMS on Cloudflare](./decap-cms-cl
 
 Each artist is represented by a single MDX file in `src/content/artists/`. The filename becomes the artist's URL slug. For example, `christy-lumberg.mdx` is accessible at `/artists/christy-lumberg`.
 
+Decap can create and delete artist entries from the Artists collection. Use the `Archived` toggle to hide an artist from public pages, booking, sitemap, and generated LLM text without deleting the file.
+
 ### Adding a New Artist
 
 1. Create a new file: `src/content/artists/{first-last}.mdx`
@@ -22,6 +24,7 @@ Each artist is represented by a single MDX file in `src/content/artists/`. The f
 ```yaml
 ---
 name: "Jane Smith"                    # required, display name
+archived: false                       # optional, hide from public site when true
 portrait: /artists/Jane-Smith/portrait.avif  # required, path relative to /public
 galleryDir: artists/Jane-Smith        # required, path to gallery folder relative to /public
 

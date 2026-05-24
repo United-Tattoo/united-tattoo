@@ -1,8 +1,8 @@
 export const prerender = true;
 
 import { getCollection } from 'astro:content';
-
-const SITE_URL = 'https://united-tattoos.com';
+import { URL as SITE_URL } from '../consts';
+import { getPublicArtists } from '../services/artists';
 
 interface SitemapEntry {
   url: string;
@@ -11,7 +11,7 @@ interface SitemapEntry {
 }
 
 export async function GET() {
-  const artists = await getCollection('artists');
+  const artists = getPublicArtists(await getCollection('artists'));
   const posts = await getCollection('blog', ({ data }) => !data.draft);
 
   const staticPages: SitemapEntry[] = [

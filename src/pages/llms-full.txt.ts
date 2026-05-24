@@ -5,16 +5,20 @@ import {
   EMAIL,
   INKROSTER,
   INSTAGRAM,
+  LOCATION,
   NEWSINSIDERPOST_ARTICLE,
   PHONE_NUMBER,
+  SITE_DESCRIPTION,
+  SITE_TITLE,
   TATTOO_CONVENTIONS_ARTICLE,
   URL as SITE_URL,
   YELP,
   YOUTUBE,
 } from '../consts';
+import { getPublicArtists } from '../services/artists';
 
 export async function GET() {
-  const artists = await getCollection('artists');
+  const artists = getPublicArtists(await getCollection('artists'));
   const posts = (await getCollection('blog', ({ data }) => !data.draft))
     .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
 
@@ -52,10 +56,10 @@ ${body}`;
     })
     .join('\n\n---\n\n');
 
-  const content = `# United Tattoo — Full Content
+  const content = `# ${SITE_TITLE} — Full Content
 
 URL: ${SITE_URL}
-Address: 5160 Fontaine Blvd, Fountain, CO 80817
+Address: ${LOCATION}
 Phone: ${PHONE_NUMBER}
 Email: ${EMAIL}
 Instagram: ${INSTAGRAM}
@@ -64,12 +68,12 @@ Yelp: ${YELP}
 InkRoster: ${INKROSTER}
 Hours: Sunday–Saturday, 10am–8pm
 
-United Tattoo is a custom tattoo studio in Fountain, Colorado. We are home to ${artists.length} resident artists offering a wide range of tattoo styles including American Traditional, Fine Line, Watercolor, Black & Grey, Botanical, Geometric, Illustrative, and more. Every piece is custom-built for the client.
+${SITE_TITLE} is a custom tattoo studio in Fountain, Colorado. ${SITE_DESCRIPTION}. We are home to ${artists.length} resident artists offering a wide range of tattoo styles including American Traditional, Fine Line, Watercolor, Black & Grey, Botanical, Geometric, Illustrative, and more. Every piece is custom-built for the client.
 
 Around the web:
-- United Tattoo on InkRoster: ${INKROSTER}
-- United Tattoo on Yelp: ${YELP}
-- Why United Tattoo Studio in Fountain is Worth the Drive from Colorado Springs: ${NEWSINSIDERPOST_ARTICLE}
+- ${SITE_TITLE} on InkRoster: ${INKROSTER}
+- ${SITE_TITLE} on Yelp: ${YELP}
+- Why ${SITE_TITLE} Studio in Fountain is Worth the Drive from Colorado Springs: ${NEWSINSIDERPOST_ARTICLE}
 - Famous Tattoo Conventions Around the World: ${TATTOO_CONVENTIONS_ARTICLE}
 
 ---
@@ -92,7 +96,7 @@ ${postSections}
 
 URL: ${SITE_URL}/booking
 
-To book a session at United Tattoo, visit the booking page and select your preferred artist. Clients can request a specific time and provide reference images. All custom work begins with a consultation.
+To book a session at ${SITE_TITLE}, visit the booking page and select your preferred artist. Clients can request a specific time and provide reference images. All custom work begins with a consultation.
 
 ---
 
@@ -100,13 +104,13 @@ To book a session at United Tattoo, visit the booking page and select your prefe
 
 URL: ${SITE_URL}/aftercare
 
-Proper aftercare is essential to keeping your tattoo vibrant and healing correctly. United Tattoo provides detailed aftercare instructions to all clients following their session.
+Proper aftercare is essential to keeping your tattoo vibrant and healing correctly. ${SITE_TITLE} provides detailed aftercare instructions to all clients following their session.
 
 ---
 
 # Studio
 
-United Tattoo is located in Fountain, Colorado — a short drive south of Colorado Springs. The studio is clean, comfortable, and staffed by experienced professional artists.
+${SITE_TITLE} is located at ${LOCATION}, a short drive south of Colorado Springs. The studio is clean, comfortable, and staffed by experienced professional artists.
 `;
 
   return new Response(content, {

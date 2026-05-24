@@ -6,12 +6,13 @@ import SectionSidebar from '../../components/SectionSidebar.astro';
 import FloatingCTA from '../../components/FloatingCTA.astro';
 import ScrollIndicator from '../../components/ScrollIndicator.astro';
 import Breadcrumb from '../../components/Breadcrumb.astro';
+import { getPublicArtists } from '../../services/artists';
 import { getGalleryImages } from '../../services/gallery-images';
 
 export const prerender = true;
 
 export async function getStaticPaths() {
-  const artists = await getCollection('artists');
+  const artists = getPublicArtists(await getCollection('artists'));
   return artists.map((artist) => ({
     params: { slug: artist.id },
     props: { artist },

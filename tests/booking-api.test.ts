@@ -50,6 +50,7 @@ describe('POST /api/booking', () => {
         collection: 'artists',
         data: {
           name: 'Christy Lumberg',
+          archived: false,
           portrait: '/artists/Christy-Lumberg/portrait.avif',
           galleryDir: '/artists/Christy-Lumberg',
           acceptingBookings: true,
@@ -112,6 +113,32 @@ describe('POST /api/booking', () => {
 
   it('rejects spoofed artist ids that are not in the content collection', async () => {
     const response = await postBooking(createBookingForm({ artist: 'unknown-artist' }));
+
+    expect(response.status).toBe(400);
+    await expect(response.json()).resolves.toEqual({
+      success: false,
+      error: 'Invalid artist selection',
+    });
+  });
+
+  it('rejects archived artist ids', async () => {
+    getCollectionMock.mockResolvedValueOnce([
+      {
+        id: 'christy-lumberg',
+        collection: 'artists',
+        data: {
+          name: 'Christy Lumberg',
+          archived: true,
+          portrait: '/artists/Christy-Lumberg/portrait.avif',
+          galleryDir: '/artists/Christy-Lumberg',
+          acceptingBookings: true,
+          bufferMinutes: 30,
+          bookingEmailCc: 'christy@example.com',
+        },
+      },
+    ]);
+
+    const response = await postBooking(createBookingForm());
 
     expect(response.status).toBe(400);
     await expect(response.json()).resolves.toEqual({

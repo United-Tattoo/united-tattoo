@@ -61,7 +61,7 @@ When adding new page types, keep schema close to the real page purpose. Do not a
 
 Local SEO depends on consistent studio identity across the site and third-party profiles.
 
-The canonical business details live in `src/consts.ts`:
+The canonical business details live in `src/data/site-settings.json` and are exported through `src/consts.ts`:
 
 - Name: `United Tattoo`
 - Address: `5160 Fontaine Blvd, Fountain, CO 80817`
@@ -70,11 +70,11 @@ The canonical business details live in `src/consts.ts`:
 - Website: `https://united-tattoos.com`
 - Map URL: Google Maps directions URL
 
-Keep these values consistent anywhere the business appears. If a phone number, email, or domain changes, update `src/consts.ts` first and then search for hard-coded older values.
+Keep these values consistent anywhere the business appears. If a phone number, email, or domain changes, update Site Settings in Decap or edit `src/data/site-settings.json` first, then search for hard-coded older values.
 
 ### Third-Party Profiles
 
-Important profile URLs are also centralized in `src/consts.ts`:
+Important profile URLs are also centralized in Site Settings:
 
 - Instagram
 - YouTube
@@ -87,7 +87,7 @@ These links are used in:
 - Footer/social surfaces.
 - Generated `llms.txt` and `llms-full.txt`.
 
-When adding another official profile, add it to `src/consts.ts`, include it in `sameAs` if it represents the business, and add a visible link only if it helps users.
+When adding another official profile, add it to Site Settings/`src/consts.ts`, include it in `sameAs` if it represents the business, and add a visible link only if it helps users.
 
 ## Content Strategy
 

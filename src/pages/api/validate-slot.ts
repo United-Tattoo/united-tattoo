@@ -1,6 +1,7 @@
 import type { APIRoute } from 'astro';
 import { getCollection } from 'astro:content';
 import { fetchCalendarEvents } from '../../services/caldav';
+import { getPublicArtists } from '../../services/artists';
 import { fromZonedTime } from 'date-fns-tz';
 import { addMinutes } from 'date-fns';
 
@@ -14,7 +15,7 @@ export const POST: APIRoute = async ({ request }) => {
         return new Response(JSON.stringify({ error: 'Missing parameters' }), { status: 400 });
     }
 
-    const artists = await getCollection('artists');
+    const artists = getPublicArtists(await getCollection('artists'));
     const artist = artists.find(a => a.id === artistId);
 
     if (!artist || !artist.data.calendarId) {

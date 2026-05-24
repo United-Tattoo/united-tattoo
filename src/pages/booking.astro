@@ -5,10 +5,11 @@ import CustomSelect from '../components/CustomSelect.astro';
 import EditorialFooter from '../components/EditorialFooter.astro';
 import CalendarPicker from '../components/CalendarPicker.astro';
 import PageHero from '../components/PageHero.astro';
+import { getPublicArtists } from '../services/artists';
 
 export const prerender = true;
 
-const artists = await getCollection('artists');
+const artists = getPublicArtists(await getCollection('artists'));
 const preselectedArtist = Astro.url.searchParams.get('artist') || '';
 
 // Prepare options for selects

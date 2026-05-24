@@ -5,16 +5,20 @@ import {
   EMAIL,
   INKROSTER,
   INSTAGRAM,
+  LOCATION,
   NEWSINSIDERPOST_ARTICLE,
   PHONE_NUMBER,
+  SITE_DESCRIPTION,
+  SITE_TITLE,
   TATTOO_CONVENTIONS_ARTICLE,
   URL as SITE_URL,
   YELP,
   YOUTUBE,
 } from '../consts';
+import { getPublicArtists } from '../services/artists';
 
 export async function GET() {
-  const artists = await getCollection('artists');
+  const artists = getPublicArtists(await getCollection('artists'));
   const posts = (await getCollection('blog', ({ data }) => !data.draft))
     .sort((a, b) => b.data.publishDate.getTime() - a.data.publishDate.getTime());
 
@@ -30,9 +34,9 @@ export async function GET() {
     .map((post) => `- [${post.data.title}](${SITE_URL}/blog/${post.id}): ${post.data.description}`)
     .join('\n');
 
-  const content = `# United Tattoo
+  const content = `# ${SITE_TITLE}
 
-> Custom tattoo studio in Fountain, Colorado. Home to ${artists.length} resident artists specializing in American Traditional, Fine Line, Watercolor, Black & Grey, Botanical, Geometric, and more. Located at 5160 Fontaine Blvd, Fountain, CO 80817. Open Sun–Sat 10am–8pm.
+> ${SITE_DESCRIPTION}. Home to ${artists.length} resident artists specializing in American Traditional, Fine Line, Watercolor, Black & Grey, Botanical, Geometric, and more. Located at ${LOCATION}. Open Sun–Sat 10am–8pm.
 
 ## Studio Pages
 
@@ -58,13 +62,13 @@ ${postLines}
 - YouTube: ${YOUTUBE}
 - Yelp: ${YELP}
 - InkRoster: ${INKROSTER}
-- Address: 5160 Fontaine Blvd, Fountain, CO 80817
+- Address: ${LOCATION}
 
 ## Around the Web
 
-- [United Tattoo on InkRoster](${INKROSTER})
-- [United Tattoo on Yelp](${YELP})
-- [Why United Tattoo Studio in Fountain is Worth the Drive from Colorado Springs](${NEWSINSIDERPOST_ARTICLE})
+- [${SITE_TITLE} on InkRoster](${INKROSTER})
+- [${SITE_TITLE} on Yelp](${YELP})
+- [Why ${SITE_TITLE} Studio in Fountain is Worth the Drive from Colorado Springs](${NEWSINSIDERPOST_ARTICLE})
 - [Famous Tattoo Conventions Around the World](${TATTOO_CONVENTIONS_ARTICLE})
 
 ## Optional

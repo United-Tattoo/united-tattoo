@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { SITE_TITLE } from '../consts';
+import { FAVICON, SITE_TITLE } from '../consts';
 import Announcement from '../components/Announcement.astro';
 import HeaderNav from '../components/HeaderNav.astro';
 import SiteFooter from '../components/SiteFooter.astro';
@@ -67,7 +67,7 @@ const ogImage = new URL(image, siteUrl).toString();
 <html lang="en" class="dark">
   <head>
     <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/images/favicon.svg" />
+    <link rel="icon" href={FAVICON} />
     <meta name="viewport" content="width=device-width" />
     <meta name="generator" content={Astro.generator} />
     <ClientRouter />

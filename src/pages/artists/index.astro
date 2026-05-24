@@ -3,10 +3,11 @@ import SiteLayout from '../../layouts/SiteLayout.astro';
 import { getCollection } from 'astro:content';
 import EditorialFooter from '../../components/EditorialFooter.astro';
 import PageHero from '../../components/PageHero.astro';
+import { getPublicArtists } from '../../services/artists';
 
 export const prerender = true;
 
-const artists = await getCollection('artists');
+const artists = getPublicArtists(await getCollection('artists'));
 
 // Sort artists alphabetically or by some other criteria if needed
 const sortedArtists = artists.sort((a, b) => a.data.name.localeCompare(b.data.name));

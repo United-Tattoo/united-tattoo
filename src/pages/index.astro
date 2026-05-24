@@ -9,11 +9,12 @@ import {
 import { getCollection } from 'astro:content';
 import EditorialFooter from '../components/EditorialFooter.astro';
 import FloatingCTA from '../components/FloatingCTA.astro';
+import { getPublicArtists } from '../services/artists';
 import { getGalleryImages } from '../services/gallery-images';
 
 export const prerender = true;
 
-const artists = await getCollection('artists');
+const artists = getPublicArtists(await getCollection('artists'));
 const featuredArtists = artists.slice(0, 4);
 
 // Collect portfolio images from all artists for the marquee & showcase

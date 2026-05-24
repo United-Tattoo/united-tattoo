@@ -8,6 +8,7 @@ const artists = defineCollection({
   }),
   schema: z.object({
     name: z.string(),
+    archived: z.boolean().default(false),
     portrait: z.string(),
     galleryDir: z.string(),
     specialties: z.array(z.string()).optional(),

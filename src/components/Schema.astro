@@ -10,6 +10,7 @@ import {
   GOOGLE_MAPS_URL,
   INKROSTER,
   INSTAGRAM,
+  LOGO_IMAGE,
   PHONE_NUMBER,
   POSTAL_CODE,
   SITE_DESCRIPTION,
@@ -67,7 +68,7 @@ const toIsoDate = (value: Date | string) => {
 const localBusinessSchema = {
   "@id": `${siteUrl}/#localbusiness`,
   "@type": "TattooShop",
-  "name": "United Tattoo",
+  "name": SITE_TITLE,
   "description": SITE_DESCRIPTION,
   "image": new URL('/images/united-studio-main.avif', siteUrl).toString(),
   "url": siteUrl,
@@ -143,11 +144,11 @@ if (type === 'article' && articleData) {
     },
     "publisher": {
       "@type": "Organization",
-      "name": "United Tattoo",
+      "name": SITE_TITLE,
       "@id": `${siteUrl}/#localbusiness`,
       "logo": {
         "@type": "ImageObject",
-        "url": new URL('/images/united-logo-website.avif', siteUrl).toString()
+        "url": new URL(LOGO_IMAGE, siteUrl).toString()
       }
     }
   });
