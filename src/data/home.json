@@ -3,16 +3,19 @@
   "metaDescription": "Custom tattoos in Fountain, Colorado. Built around the artist, the client, and the work.",
   "floatingCtaLabel": "Request a consult",
   "hero": {
-    "kicker": "Fountain, Colorado",
-    "titleLines": ["United", "Tattoo"],
-    "description": "Custom tattoos in Fountain, Colorado. Built around the artist, the client, and the work.",
     "primaryCtaLabel": "Request a Consult",
-    "primaryCtaHref": "/booking",
-    "secondaryCtaLabel": "View Artists",
     "secondaryCtaHref": "/artists",
+    "titleLines": [
+      "United",
+      "Tattoo"
+    ],
+    "imageAlt": "United Tattoo storefront",
     "note": "No deposit to request · 24-48h response",
+    "kicker": "Fountain, Colorado",
+    "secondaryCtaLabel": "View Artists",
+    "primaryCtaHref": "/booking",
     "image": "/images/united-exterior.avif",
-    "imageAlt": "United Tattoo storefront"
+    "description": "Custom tattoos in Fountain, Colorado. Built around the artist, the client, and the work."
   },
   "artistsBanner": {
     "meta": "01 / Artists",
@@ -31,7 +34,7 @@
     "title": "The Process",
     "footerText": "From idea to ink",
     "footerLinkLabel": "Request a consult",
-    "image": "/artists/Christy-Lumberg/Portfolio/26-01-02%2019-30-50%20139.jpg"
+    "image": "/artists/img_0466.jpeg"
   },
   "processSteps": [
     {
